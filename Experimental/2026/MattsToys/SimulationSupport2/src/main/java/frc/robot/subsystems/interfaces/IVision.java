@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Interface for a basic vision subsystem.
@@ -26,7 +27,8 @@ public interface IVision extends ISubsystem {
    * @param angle yaw to the angle (negative values means that it's to left of
    *              camera center)
    */
-  record TargetData(int id, Angle angle, Distance distance) {}
+  record TargetData(int id, Angle angle, Distance distance) {
+  }
 
   /////////////////////////////////////////////////////////////////////////////
   // Abstract methods
@@ -45,6 +47,16 @@ public interface IVision extends ISubsystem {
    *                  used to compute robot-relative positioning of the targets
    */
   List<TargetData> getVisibleTargets(Pose2d robotPose);
+
+  // --- Default implementations ---
+
+  default boolean canSeeTargetWithId(Pose2d robotPose, int id) {
+    return getVisibleTargets(robotPose).stream().anyMatch(target -> target.id() == id);
+  }
+
+  default Optional<TargetData> getTargetWithId(Pose2d robotPose, int id) {
+    return getVisibleTargets(robotPose).stream().filter(target -> target.id() == id).findFirst();
+  }
 
   public class NullVision extends SubsystemBase implements IVision {
     public NullVision() {

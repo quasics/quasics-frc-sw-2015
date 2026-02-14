@@ -7,8 +7,11 @@ package frc.robot.commands;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.AbstractDrivebase;
+import frc.robot.subsystems.real.AbstractDrivebase;
+
 import java.util.function.Supplier;
 
 /**
@@ -50,8 +53,14 @@ public class ArcadeDrive extends Command {
     // code that checks the values, to make sure that someone doesn't specify
     // something that's "overspeed" for the robot (e.g., the %age #s should always
     // be between -1.0 and +1.0, and then you just use stuff like )
-    m_drivebase.arcadeDrive(MetersPerSecond.of(m_linearSpeedSupplier.get()),
-        RadiansPerSecond.of(m_turnSpeedSupplier.get()));
+
+    // LinearVelocity linearSpeed = AbstractDrivebase.getMaxMotorSpeed() *
+    // MetersPerSecond.of(m_linearSpeedSupplier.get());
+    LinearVelocity linearSpeed = MetersPerSecond.of(m_linearSpeedSupplier.get());
+    AngularVelocity angularVelocity = RadiansPerSecond.of(m_turnSpeedSupplier.get());
+    System.out.println("turnSpeedSupplier = " + m_turnSpeedSupplier);
+    System.out.println("angularVelocity = " + angularVelocity);
+    m_drivebase.arcadeDrive(linearSpeed, angularVelocity);
   }
 
   // Called once the command ends or is interrupted.

@@ -5,7 +5,6 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.Radians;
 
 import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -36,7 +35,6 @@ import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
-import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 // CODE_REVIEW/FIXME: Nothing is happening in this subsystem. Are you planning to make changes to add
@@ -47,7 +45,6 @@ public class Vision extends SubsystemBase {
 
   private static final boolean USE_REEFSCAPE_LAYOUT = true;
   private static final boolean USE_ANDYMARK_CONFIG_FOR_REEFSCAPE = false;
-  private Optional<EstimatedRobotPose> latestPose = Optional.empty();
 
   /** Custom tag positions for use in the Quasics workspace. */
   private static List<AprilTag> CUSTOM_TAGS = Arrays.asList(
@@ -75,7 +72,6 @@ public class Vision extends SubsystemBase {
   public final PhotonPoseEstimator visionEstimator;
   private Supplier<Pose2d> poseSupplier;
   private Pose2d pose;
-  private Pose3d fieldPose;
   private Pose3d robotPose3d;
   private final AprilTagFieldLayout m_tagLayout;
   private PhotonTrackedTarget target;
@@ -136,8 +132,6 @@ public class Vision extends SubsystemBase {
       }
       // System.out.println(simPose);
     }
-    var result = camera.getLatestResult();
-    boolean hasTargets = result.hasTargets();
     // SmartDashboard.putString("found target?", result.hasTargets() ? "true" :
     // "false");
 
@@ -257,15 +251,9 @@ public class Vision extends SubsystemBase {
       return;
     } else {
       for (PhotonPipelineResult result : results) {
-        latestPose = visionEstimator.update(result);
         boolean hasTargets = result.hasTargets();
         if (hasTargets == false) {
           return;
-        } else {
-          List<PhotonTrackedTarget> targets = result.getTargets();
-          target = result.getBestTarget();
-        }
-        SmartDashboard.putString("found target?", result.hasTargets() ? "true" : "false");
       }
     }
   }

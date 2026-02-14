@@ -8,31 +8,28 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Volts;
-import static frc.robot.util.RobotConfigs.NO_ARM;
-import static frc.robot.util.RobotConfigs.NO_CAMERA;
-import static frc.robot.util.RobotConfigs.NO_CANDLE;
-import static frc.robot.util.RobotConfigs.NO_ELEVATOR;
-import static frc.robot.util.RobotConfigs.NO_LIGHTING;
-import static frc.robot.util.RobotConfigs.NO_POWER_DISTRIBUTOR;
 
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import frc.robot.constants.robots.SimulationPorts;
-import frc.robot.util.RobotConfigs.ArmConfig;
-import frc.robot.util.RobotConfigs.CameraConfig;
-import frc.robot.util.RobotConfigs.CandleConfig;
-import frc.robot.util.RobotConfigs.DriveConfig;
-import frc.robot.util.RobotConfigs.DriveFeedForwardConfig;
-import frc.robot.util.RobotConfigs.DriveOrientation;
-import frc.robot.util.RobotConfigs.DriveType;
-import frc.robot.util.RobotConfigs.ElevatorConfig;
-import frc.robot.util.RobotConfigs.ElevatorFeedForwardConfig;
-import frc.robot.util.RobotConfigs.Imaging;
-import frc.robot.util.RobotConfigs.LightingConfig;
-import frc.robot.util.RobotConfigs.Orientation;
-import frc.robot.util.RobotConfigs.PIDConfig;
-import frc.robot.util.RobotConfigs.Position;
-import frc.robot.util.RobotConfigs.PowerDistributor;
-import frc.robot.util.RobotConfigs.RobotConfig;
+import frc.robot.util.config.ArmConfig;
+import frc.robot.util.config.CameraConfig;
+import frc.robot.util.config.CandleConfig;
+import frc.robot.util.config.ClimberConfig;
+import frc.robot.util.config.DriveConfig;
+import frc.robot.util.config.DriveFeedForwardConfig;
+import frc.robot.util.config.DriveOrientation;
+import frc.robot.util.config.DriveType;
+import frc.robot.util.config.ElevatorConfig;
+import frc.robot.util.config.ElevatorFeedForwardConfig;
+import frc.robot.util.config.Imaging;
+import frc.robot.util.config.LightingConfig;
+import frc.robot.util.config.Orientation;
+import frc.robot.util.config.PIDConfig;
+import frc.robot.util.config.Position;
+import frc.robot.util.config.PowerDistributor;
+import frc.robot.util.config.RobotConfig;
+import frc.robot.util.config.SimpleFeedForwardConfig;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -43,7 +40,7 @@ import java.util.Map;
 /**
  * Library of predefined robot configurations.
  *
- * @see frc.robot.util.RobotConfigs
+ * @see frc.robot.util.config.RobotConfigs
  */
 public final class RobotConfigLibrary {
   /** The supported robots. */
@@ -63,6 +60,26 @@ public final class RobotConfigLibrary {
   //
   // Static data members
   //
+
+  /** Invalid CAN ID. */
+  public static final int INVALID_CAN_ID = -1;
+
+  /** Convenience constant for no drive configuration. */
+  public static final DriveConfig NO_DRIVE = null;
+  /** Convenience constant for no camera configuration. */
+  public static final CameraConfig NO_CAMERA = null;
+  /** Convenience constant for no elevator configuration. */
+  public static final ElevatorConfig NO_ELEVATOR = null;
+  /** Convenience constant for no lighting configuration. */
+  public static final LightingConfig NO_LIGHTING = null;
+  /** Convenience constant for no arm configuration. */
+  public static final ArmConfig NO_ARM = null;
+  /** Convenience constant for no CANdle configuration. */
+  public static final CandleConfig NO_CANDLE = null;
+  /** Convenience constant for no power distribution configuration. */
+  public static final PowerDistributor NO_POWER_DISTRIBUTOR = null;
+  /** Convenience constant for no climber configuration. */
+  public static final ClimberConfig NO_CLIMBER = null;
 
   /**
    * Drive config shared by our simulated drive base hardware (in multiple robot
@@ -199,13 +216,16 @@ public final class RobotConfigLibrary {
     final var lightingConfig = new LightingConfig(
         SimulationPorts.PWM.LIGHTING_PORT, 80, lightingSubviews);
 
-    final var candleConfig = new CandleConfig(RobotConfigs.INVALID_CAN_ID);
+    final var candleConfig = new CandleConfig(RobotConfigLibrary.INVALID_CAN_ID);
+
+    ClimberConfig climberConfig = new ClimberConfig(new PIDConfig(1.0, 0, 0),
+        new SimpleFeedForwardConfig(Volts.of(0.01), Volts.of(0.05), 0.20));
 
     return new RobotConfig(true, SIMULATED_DRIVE_BASE_CONFIG,
         Arrays.asList(new CameraConfig[] {
             cameraConfig,
         }),
-        elevatorConfig, armConfig, lightingConfig, candleConfig,
+        elevatorConfig, armConfig, lightingConfig, candleConfig, climberConfig,
         NO_POWER_DISTRIBUTOR);
   }
 
@@ -262,6 +282,8 @@ public final class RobotConfigLibrary {
             // of 15Mar2025.
             new PIDConfig(6.0, 0.00, 0.00), null),
         new LightingConfig(SimulationPorts.PWM.LIGHTING_PORT, 80), NO_CANDLE,
+        new ClimberConfig(new PIDConfig(1.0, 0, 0),
+            new SimpleFeedForwardConfig(Volts.of(0.01), Volts.of(0.05), 0.20)),
         NO_POWER_DISTRIBUTOR);
   }
 
@@ -282,7 +304,7 @@ public final class RobotConfigLibrary {
                 0.01, // Linear data (from 2024)
                 Volts.of(0.19529), 0.01) // Angular data (FAKE)
         ),
-        NO_CAMERA, NO_ELEVATOR, NO_ARM, NO_LIGHTING, NO_CANDLE, power);
+        NO_CAMERA, NO_ELEVATOR, NO_ARM, NO_LIGHTING, NO_CANDLE, NO_CLIMBER, power);
   }
 
   private static RobotConfig generate2026Config() {
@@ -302,6 +324,6 @@ public final class RobotConfigLibrary {
     PowerDistributor power = new PowerDistributor(ModuleType.kRev);
 
     return new RobotConfig(false, drive, NO_CAMERA, NO_ELEVATOR, NO_ARM,
-        NO_LIGHTING, NO_CANDLE, power);
+        NO_LIGHTING, NO_CANDLE, NO_CLIMBER, power);
   }
 }

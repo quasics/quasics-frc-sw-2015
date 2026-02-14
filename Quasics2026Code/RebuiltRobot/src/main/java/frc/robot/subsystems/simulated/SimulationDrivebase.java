@@ -72,12 +72,10 @@ public class SimulationDrivebase extends AbstractDrivebase {
     return m_gyro;
   }
 
-  @Override
   protected final TrivialEncoder getLeftEncoder() {
     return m_leftEncoder;
   }
 
-  @Override
   protected final TrivialEncoder getRightEncoder() {
     return m_rightEncoder;
   }

@@ -12,11 +12,7 @@ import frc.robot.Constants.CanBusIds.SparkMaxIds;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
 
-public class RealDrivebase extends AbstractDrivebase {
-  // TODO: add thriftynova support. (This might be done in a derived class, or
-  // be based on some information about the robot's configuration. I'd recommend
-  // the former approach.)
-  //
+public class SparkMaxDrivebase extends AbstractDrivebase {
   // FINDME(Robert): Do you actually need these to be member variables? (Hint:
   // you don't, though you *may* want to have access to the followers
   // temporarily in the constructor, during setup/configuration. But if you
@@ -54,8 +50,8 @@ public class RealDrivebase extends AbstractDrivebase {
     return m_rightEncoder;
   }
 
-  /** Creates a new RealDrivebase. */
-  public RealDrivebase() {
+  /** Creates a new SparkMaxDrivebase. */
+  public SparkMaxDrivebase() {
     super(new SparkMax(SparkMaxIds.LEFT_LEADER_ID, MotorType.kBrushless),
         new SparkMax(SparkMaxIds.RIGHT_LEADER_ID, MotorType.kBrushless));
     m_leftfollower = new SparkMax(SparkMaxIds.LEFT_FOLLOWER_ID, MotorType.kBrushless);

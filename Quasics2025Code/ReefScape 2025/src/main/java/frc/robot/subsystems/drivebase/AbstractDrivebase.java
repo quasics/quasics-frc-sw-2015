@@ -6,10 +6,6 @@ package frc.robot.subsystems.drivebase;
 
 import static edu.wpi.first.units.Units.*;
 
-import java.util.Optional;
-
-import org.photonvision.EstimatedRobotPose;
-
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Voltage;
 
@@ -19,7 +15,6 @@ import edu.wpi.first.math.controller.LTVUnicycleController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
-import frc.robot.subsystems.Vision;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
@@ -79,8 +74,6 @@ public abstract class AbstractDrivebase extends SubsystemBase {
    * DifferentialDriveFeedforward(1.9802, 1.9202, 1.5001,
    * 0.29782);
    */
-
-  private final Vision m_vision = new Vision(this::getPose);
 
   final protected PIDController m_leftPidController = new PIDController(0.1474, 0.0, 0.0);
   final protected PIDController m_rightPidController = new PIDController(0.16513, 0.0, 0.0);

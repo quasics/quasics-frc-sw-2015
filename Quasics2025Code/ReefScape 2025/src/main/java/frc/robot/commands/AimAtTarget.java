@@ -7,11 +7,9 @@ package frc.robot.commands;
 import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drivebase.AbstractDrivebase;
 import frc.robot.subsystems.Vision;
-import java.util.function.Supplier;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AimAtTarget extends Command {
@@ -21,9 +19,7 @@ public class AimAtTarget extends Command {
 
   private final AbstractDrivebase m_drivebase;
   private final Vision m_vision;
-  private boolean m_inSight = false;
   private int m_fiducialId;
-  private boolean m_aligned = false;
   private boolean m_finished = false;
   private final Mode m_mode;
 

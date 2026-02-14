@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems.real;
 
-import static edu.wpi.first.units.Units.Inches;
-
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -13,7 +11,6 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
-import frc.robot.sensors.TalonEncoderWrapper;
 import frc.robot.subsystems.interfaces.IShooter;
 
 /**
@@ -26,14 +23,12 @@ import frc.robot.subsystems.interfaces.IShooter;
  */
 public class RealShooter extends SubsystemBase implements IShooter {
   private TalonFX m_kraken;
-  private TalonEncoderWrapper m_encoder;
   private final VelocityVoltage m_request;
   private final SparkMax m_kicker;
 
   /** Creates a new RealShooter. */
   public RealShooter() {
     m_kraken = new TalonFX(0);
-    m_encoder = new TalonEncoderWrapper(m_kraken, Inches.of(4));
     var slot0Configs = new Slot0Configs();
     slot0Configs.kV = 0.0; // tune
     slot0Configs.kP = 0.0; // tune
@@ -54,6 +49,21 @@ public class RealShooter extends SubsystemBase implements IShooter {
 
   public void setFlywheelSpeed(double speed) {
     m_kraken.set(speed);
+  }
+
+  @Override
+  public void stopFlywheel() {
+    m_kraken.set(0);
+  }
+
+  @Override
+  public void stopKicker() {
+    m_kicker.set(0);
+  }
+
+  public void stop() {
+    stopFlywheel();
+    stopKicker();
   }
 
   @Override

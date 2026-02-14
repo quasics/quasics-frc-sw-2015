@@ -41,6 +41,10 @@ public interface IShooter {
    */
 
   void setFlywheelVoltage(double output);
-  
+
   void setKickerSpeed(double speed);
+
+  void stopFlywheel();
+
+  void stopKicker();
 }

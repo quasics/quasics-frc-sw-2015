@@ -14,13 +14,12 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.DrivebaseMotors;
 import frc.robot.Constants.DriveteamConstants;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.LinearSpeedCommand;
 import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.subsystems.real.AbstractDrivebase;
-import frc.robot.subsystems.real.SparkMaxDrivebase;
+import frc.robot.subsystems.real.RealDrivebase;
 import frc.robot.subsystems.real.Vision;
 import frc.robot.subsystems.simulated.SimulatedVision;
 import frc.robot.subsystems.simulated.SimulationDrivebase;
@@ -33,27 +32,11 @@ import frc.robot.subsystems.simulated.SimulationDrivebase;
  * commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-
-  // Which robot type are we deploying to?
-  private final Constants.DrivebaseMotors REAL_ROBOT_MOTOR_TYPE = Constants.DrivebaseMotors.ThriftyNova;
-  private final AbstractDrivebase m_drivebase = Robot.isReal() ? createDrivebase(REAL_ROBOT_MOTOR_TYPE)
-      : new SimulationDrivebase();
-
+  // The robot's subsystems and commands are defined here...
+  private final AbstractDrivebase m_drivebase = Robot.isReal() ? new RealDrivebase() : new SimulationDrivebase();
   private final IVision m_vision = (Robot.isReal()) ? new Vision() : new SimulatedVision();
 
-  static AbstractDrivebase createDrivebase(DrivebaseMotors motorType) {
-    switch (motorType) {
-      case ThriftyNova:
-        return null;
-      // TODO(ROBERT): FIXME after fixing ThriftyNovaDrivebase TODOs
-      // return new ThriftyNovaDrivebase();
-      case SparkMax:
-        return new SparkMaxDrivebase();
-      default:
-        throw new IllegalArgumentException("Unknown hardware motor selection " + motorType);
-    }
-  }
-
+  // Replace with CommandPS4Controller or CommandJoystick if needed
   private final Joystick m_driverController = new Joystick(DriveteamConstants.DRIVER_JOYSTICK_ID);
   private final Joystick m_operatorController = new Joystick(DriveteamConstants.OPERATOR_JOYSTICK_ID);
 

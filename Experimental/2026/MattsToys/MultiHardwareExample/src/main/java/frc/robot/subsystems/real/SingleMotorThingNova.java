@@ -36,6 +36,8 @@ public class SingleMotorThingNova extends SingleMotorThing {
     config.inverted = inverted;
     motorController.applyConfig(config);
 
+    // TODO: Add code to ensure that the motor isn't in "follower" mode.
+
     return new ConstructionData(motorController,
         new ThriftyEncoderWrapper(motorController, WHEEL_DIAMETER));
   }

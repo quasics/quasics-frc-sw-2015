@@ -70,6 +70,8 @@ public class SingleMotorThingSpark extends SingleMotorThing {
         com.revrobotics.ResetMode.kNoResetSafeParameters,
         com.revrobotics.PersistMode.kNoPersistParameters);
 
+    // TODO: Add code to ensure that the motor isn't in "follower" mode.
+
     // Set up our encoder
     TrivialEncoder encoder = new SparkMaxEncoderWrapper(motorController.getAlternateEncoder());
 

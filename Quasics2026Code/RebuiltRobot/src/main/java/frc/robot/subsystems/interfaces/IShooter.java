@@ -40,4 +40,11 @@ public interface IShooter {
    * wheels may or may not need PID control
    */
 
+  void setFlywheelVoltage(double output);
+
+  void setKickerSpeed(double speed);
+
+  void stopFlywheel();
+
+  void stopKicker();
 }

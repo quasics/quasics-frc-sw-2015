@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DrivebaseMotors;
@@ -59,6 +60,8 @@ public class RobotContainer {
   private final SlewRateLimiter m_speedSlewRateLimiter = new SlewRateLimiter(1);
   private final SlewRateLimiter m_rotSlewRateLimiter = new SlewRateLimiter(1);
 
+  private boolean m_switchDrive = false;
+
   Supplier<Double> m_arcadeDriveLeftStick;
   Supplier<Double> m_arcadeDriveRightStick;
 
@@ -100,12 +103,20 @@ public class RobotContainer {
    * or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
+
+  Trigger switchDriveTrigger;
+
   private void configureBindings() {
     m_arcadeDriveLeftStick = () -> {
       double scaling = getDriveSpeedScalingFactor();
       double axis = getDriverAxis(Constants.LogitechDualshock.LeftYAxis);
-      double joystickPercent = -axis * scaling;
-      return m_speedSlewRateLimiter.calculate(joystickPercent);
+      if (m_switchDrive) {
+        double joystickPercent = axis * scaling;
+        return m_speedSlewRateLimiter.calculate(joystickPercent);
+      } else {
+        double joystickPercent = -axis * scaling;
+        return m_speedSlewRateLimiter.calculate(joystickPercent);
+      }
     };
     m_arcadeDriveRightStick = () -> {
       double scaling = getDriveSpeedScalingFactor();
@@ -113,6 +124,11 @@ public class RobotContainer {
       double joystickPercent = -axis * scaling;
       return m_rotSlewRateLimiter.calculate(joystickPercent);
     };
+
+    switchDriveTrigger = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.BButton))
+        .onTrue(new InstantCommand(() -> {
+          m_switchDrive = !m_switchDrive;
+        }));
     // Syntax for speed suppliers:
     // () -> m_driverController.getRawAxis(0)
 

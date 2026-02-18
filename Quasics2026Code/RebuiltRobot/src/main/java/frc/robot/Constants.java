@@ -24,12 +24,29 @@ public final class Constants {
   public static final Distance wheelRadius = Meters.of(0.0508);
 
   public static class CanBusIds {
-    // Note: Drive base motor IDs are based on those Quasics has used over the
-    // last couple of years.
-    public static final int LEFT_LEADER_ID = 2;
-    public static final int LEFT_FOLLOWER_ID = 1;
-    public static final int RIGHT_LEADER_ID = 4;
-    public static final int RIGHT_FOLLOWER_ID = 3;
+    public static class SparkMaxIds {
+      // Note: Drive base motor IDs are based on those Quasics has used over the
+      // last couple of years.
+      public static final int LEFT_LEADER_ID = 2;
+      public static final int LEFT_FOLLOWER_ID = 1;
+      public static final int RIGHT_LEADER_ID = 4;
+      public static final int RIGHT_FOLLOWER_ID = 3;
+      public static final int INTAKE_ROLLERS_ID = 5;
+      public static final int RIGHT_INTAKE_DEPLOYMENT_ID = 6;
+      public static final int LEFT_INTAKE_DEPLOYMENT_ID = 7;
+      public static final int INDEXER_ID = 8;
+      public static final int KICKER_ID = 9;
+      public static final int HOOD_ID = 10;
+      public static final int SHOOTER_ID = 11;
+      public static final int CLIMBER_ID = 12;
+    }
+
+    public static class ThriftyNovaIds {
+      public static final int RIGHT_1 = 1;
+      public static final int RIGHT_2 = 2;
+      public static final int LEFT_1 = 3;
+      public static final int LEFT_2 = 4;
+    }
   }
 
   public static class DriveteamConstants {

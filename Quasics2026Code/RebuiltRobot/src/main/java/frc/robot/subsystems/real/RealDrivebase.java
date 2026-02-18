@@ -34,26 +34,24 @@ public class RealDrivebase extends AbstractDrivebase {
   // derived classes) so that it can be used with Thrifty Novas (new code this
   // year), as well as the Spark Max controllers, etc. (This stuff is in the
   // sample code under "Experimental/2026/MattsToys/SimulationSupport".)
-  private final Encoder m_leftEncoder = new Encoder(1, 2);
-  private final Encoder m_rightEncoder = new Encoder(3, 4);
-  private final TrivialEncoder m_mainLeftEncoder = TrivialEncoder.forWpiLibEncoder(m_leftEncoder);
-  private final TrivialEncoder m_mainRightEncoder = TrivialEncoder.forWpiLibEncoder(m_rightEncoder);
+  private final TrivialEncoder m_leftEncoder;
+  private final TrivialEncoder m_rightEncoder;
 
-  private final IGyro m_mainGyro;
+  private final IGyro m_gryo;
 
   @Override
   protected final IGyro getGyro() {
-    return m_mainGyro;
+    return m_gryo;
   }
 
   @Override
   protected final TrivialEncoder getLeftEncoder() {
-    return m_mainLeftEncoder;
+    return m_leftEncoder;
   }
 
   @Override
   protected final TrivialEncoder getRightEncoder() {
-    return m_mainRightEncoder;
+    return m_rightEncoder;
   }
 
   /** Creates a new RealDrivebase. */
@@ -62,11 +60,18 @@ public class RealDrivebase extends AbstractDrivebase {
         new SparkMax(SparkMaxIds.RIGHT_LEADER_ID, MotorType.kBrushless));
     m_leftfollower = new SparkMax(SparkMaxIds.LEFT_FOLLOWER_ID, MotorType.kBrushless);
     m_rightfollower = new SparkMax(SparkMaxIds.RIGHT_FOLLOWER_ID, MotorType.kBrushless);
-    m_leftEncoder.setDistancePerPulse(getDistancePerPulse());
-    m_rightEncoder.setDistancePerPulse(getDistancePerPulse());
+
+    Encoder leftEncoder = new Encoder(1, 2);
+    Encoder rightEncoder  = new Encoder(3, 4);
+
+    leftEncoder.setDistancePerPulse(getDistancePerPulse());
+    rightEncoder.setDistancePerPulse(getDistancePerPulse());
+
+    m_leftEncoder = TrivialEncoder.forWpiLibEncoder(leftEncoder);
+    m_rightEncoder = TrivialEncoder.forWpiLibEncoder(rightEncoder);
 
     AnalogGyro gyro = new AnalogGyro(0);
-    m_mainGyro = IGyro.wrapGyro(gyro);
+    m_gryo = IGyro.wrapGyro(gyro);
 
     // TODO: Configure the motor controllers on the left/right sides (e.g.,
     // ensuring that "leader/follower" is set up in case a controller gets

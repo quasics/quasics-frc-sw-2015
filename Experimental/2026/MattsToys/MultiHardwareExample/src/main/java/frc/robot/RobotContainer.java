@@ -40,7 +40,7 @@ public class RobotContainer {
   // configuration.
   final ISingleMotorThing m_singleMotorThing = switch (m_hardware) {
     case Simulated -> new SingleMotorThingSim();
-    case Spark -> new SingleMotorThingSpark(5, true);
+    case Spark -> new SingleMotorThingSpark(7, true);
     case Talon -> new SingleMotorThingTalon(6);
     case Thrifty -> new SingleMotorThingNova(5);
     case Victor ->
@@ -59,13 +59,22 @@ public class RobotContainer {
   public RobotContainer() {
     System.out.println("Hardware configuration: " + m_hardware);
 
+    double reverse3 = -.1;
+    double reverse2 = -.2;
+    double reverse1 = -.3;
+    double forward1 = +.3;
+    double forward2 = +.2;
+    double forward3 = +.1;
+    
+
     addPowerButton("Stop!", 0);
-    addPowerButton("-25% power", -.25);
-    addPowerButton("-50% power", -.5);
-    addPowerButton("-100% power", -1.0);
-    addPowerButton("+25% power", +.25);
-    addPowerButton("+50% power", +.5);
-    addPowerButton("+100% power", +1.0);
+    addPowerButton(forward3 * 100 + "% power", forward3);
+    addPowerButton(forward2 * 100 + "% power", forward2);
+    addPowerButton(forward1 * 100 + "% power", reverse3);
+    addPowerButton(forward1 * 100 + "% power", forward1);
+    addPowerButton(forward2 * 100 + "% power", forward2);
+    addPowerButton(forward3 * 100 + "% power", forward3);
+    addPowerButton("8% power", .08);
 
     SmartDashboard.putData(m_singleMotorThing.asSendable());
   }
@@ -76,6 +85,8 @@ public class RobotContainer {
             // onInit (can't be null)
             () -> {
               m_singleMotorThing.setSpeed(percent);
+              System.out.println("Get position: " + m_singleMotorThing.getPosition());
+              System.out.println("Get speed: " + m_singleMotorThing.getSpeed());
             },
             // onExecute (can't be null)
             () -> {

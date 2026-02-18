@@ -15,7 +15,14 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.units.measure.Voltage;
 
-/** IMotorControllerPlus specialization for TalonFX motors. */
+/**
+ * IMotorControllerPlus specialization for TalonFX motors.
+ * 
+ * Note: this code is (as yet) untested, as I don't have any TalonFX motors to
+ * test it with. It may need some adjustments to work properly.
+ * 
+ * TODO: Test this code with a real TalonFX motor and make any necessary fixes.
+ */
 public class TalonMotorControllerPlus implements IMotorControllerPlus {
   /** Wrapped TalonFX motor. */
   final TalonFX m_talon;

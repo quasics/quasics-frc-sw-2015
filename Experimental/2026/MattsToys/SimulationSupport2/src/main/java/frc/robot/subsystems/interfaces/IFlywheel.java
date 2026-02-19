@@ -24,4 +24,26 @@ public interface IFlywheel {
   default void stop() {
     setRPM(0);
   }
+
+  /**
+   * A null implementation of IFlywheel that does nothing. This can be used for
+   * testing or as a placeholder (e.g., when the flywheel subsystem is not
+   * supported on a particular robot configuration).
+   */
+  public class NullFlywheel implements IFlywheel {
+    @Override
+    public void setRPM(double targetRPM) {
+      // Do nothing
+    }
+
+    @Override
+    public double getCurrentRPM() {
+      return 0;
+    }
+
+    @Override
+    public double getSetpointRPM() {
+      return 0;
+    }
+  }
 }

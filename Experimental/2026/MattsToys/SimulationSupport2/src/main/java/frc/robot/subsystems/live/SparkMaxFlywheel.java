@@ -16,6 +16,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.interfaces.IFlywheel;
 
 /**
  * A simple flywheel subsystem that uses a SparkMax and WPILib's
@@ -26,7 +27,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  * provide a good starting point for understanding how to use feedforward
  * control with a SparkMax.
  */
-public class Flywheel extends SubsystemBase {
+public class SparkMaxFlywheel extends SubsystemBase implements IFlywheel {
   private final SparkMax motor;
   private final SimpleMotorFeedforward feedforward;
 
@@ -37,7 +38,7 @@ public class Flywheel extends SubsystemBase {
   private static final double kA = 0.0001; // Volts per RPM
   private static final double kP = 0.0001; // Proportional gain for onboard loop
 
-  public Flywheel(int deviceId) {
+  public SparkMaxFlywheel(int deviceId) {
     motor = new SparkMax(deviceId, MotorType.kBrushless);
 
     // Initialize WPILib Feedforward with SysId constants (Volts)
@@ -55,6 +56,7 @@ public class Flywheel extends SubsystemBase {
     motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
+  @Override
   public void setRPM(double targetRPM) {
     // Calculate the necessary voltage using WPILib's helper
     final double ffVoltage = feedforward.calculate(targetRPM);
@@ -79,13 +81,23 @@ public class Flywheel extends SubsystemBase {
     );
   }
 
+  @Override
+  public double getCurrentRPM() {
+    return motor.getEncoder().getVelocity();
+  }
+
+  @Override
+  public double getSetpointRPM() {
+    return motor.getClosedLoopController().getSetpoint();
+  }
+
   static final boolean kDebug = true;
 
   @Override
   public void periodic() {
     if (kDebug) {
-      final double targetRPM = motor.getClosedLoopController().getSetpoint();
-      final double currentRPM = motor.getEncoder().getVelocity();
+      final double targetRPM = getCurrentRPM();
+      final double currentRPM = getSetpointRPM();
       final double ffVoltage = feedforward.calculate(targetRPM);
       SmartDashboard.putNumber("Flywheel RPM", currentRPM);
       SmartDashboard.putNumber("Flywheel Target RPM", targetRPM);

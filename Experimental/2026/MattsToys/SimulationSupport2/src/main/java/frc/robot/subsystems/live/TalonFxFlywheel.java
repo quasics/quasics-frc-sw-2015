@@ -20,6 +20,14 @@ import frc.robot.subsystems.interfaces.IFlywheel;
  * experimentation. It may not be fully optimized or robust, but it should
  * provide a good starting point for understanding how to use feedforward
  * control with a TalonFX.
+ * 
+ * For information on how to use SysId to determine the feedforward constants,
+ * see the CTRE Phoenix 6 documentation and the WPILib documentation on
+ * feedforward control.
+ * 
+ * @see https://v6.docs.ctr-electronics.com/en/latest/docs/api-reference/wpilib-integration/sysid-integration/index.html
+ * @see https://v6.docs.ctr-electronics.com/en/latest/docs/api-reference/wpilib-integration/sysid-integration/plumbing-and-running-sysid.html
+ * @see https://v6.docs.ctr-electronics.com/en/latest/docs/tuner/tools/log-extractor.html
  */
 public class TalonFxFlywheel extends SubsystemBase implements IFlywheel {
   private final TalonFX motor;

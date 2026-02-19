@@ -13,10 +13,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.interfaces.IFlywheel;
+import frc.robot.subsystems.BaseFlywheel;
 
 /**
  * A simple flywheel subsystem that uses a SparkMax and WPILib's
@@ -27,9 +24,8 @@ import frc.robot.subsystems.interfaces.IFlywheel;
  * provide a good starting point for understanding how to use feedforward
  * control with a SparkMax.
  */
-public class SparkMaxFlywheel extends SubsystemBase implements IFlywheel {
+public class SparkMaxFlywheel extends BaseFlywheel {
   private final SparkMax motor;
-  private final SimpleMotorFeedforward feedforward;
 
   // TODO: These constants should be determined experimentally using SysId or
   // another approach.
@@ -39,10 +35,9 @@ public class SparkMaxFlywheel extends SubsystemBase implements IFlywheel {
   private static final double kP = 0.0001; // Proportional gain for onboard loop
 
   public SparkMaxFlywheel(int deviceId) {
-    motor = new SparkMax(deviceId, MotorType.kBrushless);
+    super(kS, kV, kA);
 
-    // Initialize WPILib Feedforward with SysId constants (Volts)
-    feedforward = new SimpleMotorFeedforward(kS, kV, kA);
+    motor = new SparkMax(deviceId, MotorType.kBrushless);
 
     SparkMaxConfig config = new SparkMaxConfig();
 
@@ -89,19 +84,5 @@ public class SparkMaxFlywheel extends SubsystemBase implements IFlywheel {
   @Override
   public double getSetpointRPM() {
     return motor.getClosedLoopController().getSetpoint();
-  }
-
-  static final boolean kDebug = true;
-
-  @Override
-  public void periodic() {
-    if (kDebug) {
-      final double targetRPM = getCurrentRPM();
-      final double currentRPM = getSetpointRPM();
-      final double ffVoltage = feedforward.calculate(targetRPM);
-      SmartDashboard.putNumber("Flywheel RPM", currentRPM);
-      SmartDashboard.putNumber("Flywheel Target RPM", targetRPM);
-      SmartDashboard.putNumber("Flywheel FF Voltage", ffVoltage);
-    }
   }
 }

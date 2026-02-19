@@ -8,9 +8,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.interfaces.IFlywheel;
+import frc.robot.subsystems.BaseFlywheel;
 
 /**
  * A simple flywheel subsystem that uses a TalonFX and WPILib's
@@ -25,13 +23,17 @@ import frc.robot.subsystems.interfaces.IFlywheel;
  * see the CTRE Phoenix 6 documentation and the WPILib documentation on
  * feedforward control.
  * 
+ * Note: the base class defines speeds and feedforward in terms of RPM, but the
+ * TalonFX expects velocity in RPS. This class handles the conversion
+ * internally, so you can work with RPM values when using the setRPM and
+ * getCurrentRPM methods.
+ * 
  * @see https://v6.docs.ctr-electronics.com/en/latest/docs/api-reference/wpilib-integration/sysid-integration/index.html
  * @see https://v6.docs.ctr-electronics.com/en/latest/docs/api-reference/wpilib-integration/sysid-integration/plumbing-and-running-sysid.html
  * @see https://v6.docs.ctr-electronics.com/en/latest/docs/tuner/tools/log-extractor.html
  */
-public class TalonFxFlywheel extends SubsystemBase implements IFlywheel {
+public class TalonFxFlywheel extends BaseFlywheel {
   private final TalonFX motor;
-  private final SimpleMotorFeedforward ffModel;
   private final VelocityVoltage velocityRequest = new VelocityVoltage(0);
 
   // TODO: These constants should be determined experimentally using SysId or
@@ -42,7 +44,8 @@ public class TalonFxFlywheel extends SubsystemBase implements IFlywheel {
   private static final double kP = 0.11; // Small proportional gain for on-board loop
 
   public TalonFxFlywheel(int deviceId) {
-    ffModel = new SimpleMotorFeedforward(kS, kV, kA);
+    super(kS, kV, kA);
+
     motor = new TalonFX(deviceId);
 
     // Set ONLY kP for the onboard loop. (If we see a persistant small gap between
@@ -61,7 +64,7 @@ public class TalonFxFlywheel extends SubsystemBase implements IFlywheel {
   @Override
   public void setRPM(double targetRPM) {
     // Calculate the necessary voltage using WPILib's helper
-    final double ffVoltage = ffModel.calculate(targetRPM);
+    final double ffVoltage = feedforward.calculate(targetRPM);
 
     // Set the velocity request with the calculated feedforward voltage
     velocityRequest
@@ -81,5 +84,4 @@ public class TalonFxFlywheel extends SubsystemBase implements IFlywheel {
   public double getSetpointRPM() {
     return velocityRequest.Velocity * 60; // Convert RPS back to RPM
   }
-
 }

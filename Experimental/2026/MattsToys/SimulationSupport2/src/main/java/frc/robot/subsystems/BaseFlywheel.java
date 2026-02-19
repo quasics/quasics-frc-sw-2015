@@ -48,6 +48,13 @@ public abstract class BaseFlywheel extends SubsystemBase implements IFlywheel {
     this.feedforward = new SimpleMotorFeedforward(kS, kV, kA);
   }
 
+  /**
+   * Enables or disables debug output to SmartDashboard. When enabled, the
+   * periodic() method will log the current RPM, target RPM, and feedforward
+   * voltage to SmartDashboard for debugging purposes.
+   * 
+   * @param tf True to enable debug output, false to disable it
+   */
   public void enableDebug(boolean tf) {
     m_debug = tf;
   }

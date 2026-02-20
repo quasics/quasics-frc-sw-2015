@@ -4,13 +4,20 @@
 
 package frc.robot.subsystems.real;
 
+import static edu.wpi.first.units.Units.*;
+
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
 import frc.robot.subsystems.interfaces.IShooter;
 
@@ -27,10 +34,13 @@ public class RealShooter extends SubsystemBase implements IShooter {
   private final VelocityVoltage m_request;
   private final SparkMax m_kicker;
   private double m_ff;
+  private final VoltageOut m_sysIdControl = new VoltageOut(0);
 
   /** Creates a new RealShooter. */
   public RealShooter() {
     m_kraken = new TalonFX(0);
+    TalonFXConfiguration config = new TalonFXConfiguration();
+    m_kraken.getConfigurator().apply(config);
     var slot0Configs = new Slot0Configs();
     // TODO: tune these
     slot0Configs.kV = 0.0;
@@ -39,6 +49,7 @@ public class RealShooter extends SubsystemBase implements IShooter {
     m_kraken.getConfigurator().apply(slot0Configs);
     m_request = new VelocityVoltage(0).withSlot(0);
     m_kicker = new SparkMax(SparkMaxIds.KICKER_ID, MotorType.kBrushless);
+    SignalLogger.start();
   }
 
   @Override
@@ -73,6 +84,18 @@ public class RealShooter extends SubsystemBase implements IShooter {
   public double getFlywheelSpeed() {
     double speed = m_kraken.get();
     return speed;
+  }
+
+  private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
+      new SysIdRoutine.Config(null, Volts.of(4), null, state -> SignalLogger.writeString("state", state.toString())),
+      new SysIdRoutine.Mechanism(volts -> m_kraken.setControl(m_sysIdControl.withOutput(volts)), null, this));
+
+  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+    return m_sysIdRoutine.quasistatic(direction);
+  }
+
+  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+    return m_sysIdRoutine.dynamic(direction);
   }
 
   @Override

@@ -14,12 +14,14 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.DriveteamConstants;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.LinearSpeedCommand;
 import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.subsystems.real.AbstractDrivebase;
 import frc.robot.subsystems.real.RealDrivebase;
+import frc.robot.subsystems.real.RealShooter;
 import frc.robot.subsystems.real.Vision;
 import frc.robot.subsystems.simulated.SimulatedVision;
 import frc.robot.subsystems.simulated.SimulationDrivebase;
@@ -35,6 +37,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final AbstractDrivebase m_drivebase = Robot.isReal() ? new RealDrivebase() : new SimulationDrivebase();
   private final IVision m_vision = (Robot.isReal()) ? new Vision() : new SimulatedVision();
+  private final RealShooter m_shooter = new RealShooter();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final Joystick m_driverController = new Joystick(DriveteamConstants.DRIVER_JOYSTICK_ID);
@@ -56,6 +59,8 @@ public class RobotContainer {
   public RobotContainer() {
     // Connect cross-subsystem suppliers (so that the systems don't know about
     // each other directly)
+    addSysIdButtonsToSmartDashboard();
+
     m_vision.setReferencePositionSupplier(() -> {
       if (m_drivebase != null) {
         return m_drivebase.getEstimatedPose();
@@ -74,6 +79,13 @@ public class RobotContainer {
 
     // Configure the trigger bindings
     configureBindings();
+  }
+
+  private void addSysIdButtonsToSmartDashboard() {
+    SmartDashboard.putData("Flywheel Quasistatic Forward", m_shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    SmartDashboard.putData("Flywheel Quasistatic Reverse", m_shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    SmartDashboard.putData("Flywheel Dynamic Forward", m_shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    SmartDashboard.putData("Flywheel Dynamic Reverse", m_shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
   }
 
   /**

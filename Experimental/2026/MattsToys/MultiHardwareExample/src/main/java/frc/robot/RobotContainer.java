@@ -93,9 +93,11 @@ public class RobotContainer {
     System.out.println("Hardware configuration: " + m_hardware);
 
     addPowerButton("Stop!", 0);
+    addPowerButton("-10% power", -.10);
     addPowerButton("-25% power", -.25);
     addPowerButton("-50% power", -.5);
     addPowerButton("-100% power", -1.0);
+    addPowerButton("+10% power", +.10);
     addPowerButton("+25% power", +.25);
     addPowerButton("+50% power", +.5);
     addPowerButton("+100% power", +1.0);

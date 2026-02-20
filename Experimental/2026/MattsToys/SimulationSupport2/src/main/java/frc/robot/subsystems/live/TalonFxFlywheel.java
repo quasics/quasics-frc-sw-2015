@@ -37,12 +37,18 @@ public class TalonFxFlywheel extends BaseFlywheel {
   private final VelocityVoltage velocityRequest = new VelocityVoltage(0);
 
   // TODO: These constants should be determined experimentally using SysId or
-  // another approach.
+  // another approach. See discussion at the following link for more information:
+  // https://github.com/quasics/quasics-frc-sw-2015/wiki/Profiling-a-flywheel-to-get-PID-and-FF-constants
   private static final double kS = 0.1; // Volts (can often be ignored for flywheel velocity control)
   private static final double kV = 0.002; // Volts per RPM
-  private static final double kA = 0.0001; // Volts per RPM
+  private static final double kA = 0.0001; // Volts per Rotations per (Time Unit)^2
   private static final double kP = 0.11; // Small proportional gain for on-board loop
 
+  /**
+   * Creates a new TalonFxFlywheel subsystem.
+   * 
+   * @param deviceId the CAN ID of the TalonFX motor controller.
+   */
   public TalonFxFlywheel(int deviceId) {
     super(kS, kV, kA);
 

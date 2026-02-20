@@ -39,7 +39,21 @@ import frc.robot.util.config.DriveConfig;
  * now) to isolate simulation-specific code.
  */
 public class SimDrivebase extends DrivebaseBase {
+  //
+  // Constants for simulation setup.
+  //
+
   final static boolean USE_MASS_AND_MOI_FOR_SIM_SETUP = false;
+
+  /** Mass of the simulated robot. */
+  final static Mass SIMULATED_ROBOT_MASS = Kilograms.of(55.0); // ~121 pounds
+
+  /** Moment of intertia for the simulated robot, in kg * m^2 (typically 3-8). */
+  final static double MOMENT_OF_INERTIA = 7.5;
+
+  //
+  // Simulation-specific fields
+  //
 
   /** Controls the base class's left encoder under simulation. */
   final EncoderSim m_leftEncoderSim;
@@ -50,55 +64,16 @@ public class SimDrivebase extends DrivebaseBase {
   /** Controls the base class's gyro under simulation. */
   final AnalogGyroSim m_gyroSim;
 
-  /** Mass of the simulated robot. */
-  final static Mass SIMULATED_ROBOT_MASS = Kilograms.of(55.0); // ~121 pounds
-
-  /** Moment of intertia for the simulated robot, in kg * m^2 (typically 3-8). */
-  final static double MOMENT_OF_INERTIA = 7.5;
-
   /** Simulation driver for the overall drive train. */
-  final DifferentialDrivetrainSim m_drivetrainSimulator = (USE_MASS_AND_MOI_FOR_SIM_SETUP
-      ? new DifferentialDrivetrainSim(
-          // Drive motor type and count (per side)
-          DCMotor.getNEO(2),
-          // Gear ratio
-          GEAR_RATIO,
-          // Moment of intertia (joules/(kg*m^2))
-          MOMENT_OF_INERTIA,
-          // Robot mass (kg)
-          SIMULATED_ROBOT_MASS.in(Kilograms),
-          // Wheel radius (m)
-          WHEEL_DIAMETER.in(Meters) / 2,
-          // Track width (m)
-          TRACK_WIDTH.in(Meters),
-          // configure for no noise in measurements
-          null)
-      : new DifferentialDrivetrainSim(
-          // Linear system describing the drive train.
-          //
-          // Notice that this data will (had better!) look *remarkably* similar to the
-          // computed "feed forward" values for this simulated drive base when it is
-          // profiled, since they are... well, the actual/ideal values defining that.
-          LinearSystemId.identifyDrivetrainSystem(
-              // Linear components (velocity, acceleration)
-              1.98, 0.2,
-              // Angular components (velocity, acceleration)
-              1.5, 0.3),
-          // Drive motor type and count (per side)
-          DCMotor.getNEO(2),
-          // Gear ratio
-          GEAR_RATIO,
-          // Track width (m)
-          TRACK_WIDTH.in(Meters),
-          // Wheel radius (m)
-          WHEEL_DIAMETER.in(Meters) / 2,
-          // configure for no noise in measurements
-          null));
+  final DifferentialDrivetrainSim m_drivetrainSimulator;
 
   /**
    * Constructor.
    *
    * @param config the configuration for this drive base
+   * 
+   * @see #SimDrivebase(DriveConfig, SimulatedEncoderPair, SimulatedEncoderPair,
+   *      AnalogGyro)
    */
   public SimDrivebase(DriveConfig config) {
     this(config,
@@ -136,6 +111,44 @@ public class SimDrivebase extends DrivebaseBase {
     m_leftEncoderSim = left.encoderSim;
     m_rightEncoderSim = right.encoderSim;
     m_gyroSim = new AnalogGyroSim(rawGyro);
+
+    m_drivetrainSimulator = (USE_MASS_AND_MOI_FOR_SIM_SETUP
+        ? new DifferentialDrivetrainSim(
+            // Drive motor type and count (per side)
+            DCMotor.getNEO(2),
+            // Gear ratio
+            GEAR_RATIO,
+            // Moment of intertia (joules/(kg*m^2))
+            MOMENT_OF_INERTIA,
+            // Robot mass (kg)
+            SIMULATED_ROBOT_MASS.in(Kilograms),
+            // Wheel radius (m)
+            WHEEL_DIAMETER.in(Meters) / 2,
+            // Track width (m)
+            config.trackWidth().in(Meters),
+            // configure for no noise in measurements
+            null)
+        : new DifferentialDrivetrainSim(
+            // Linear system describing the drive train.
+            //
+            // Notice that this data will (had better!) look *remarkably* similar to the
+            // computed "feed forward" values for this simulated drive base when it is
+            // profiled, since they are... well, the actual/ideal values defining that.
+            LinearSystemId.identifyDrivetrainSystem(
+                // Linear components (velocity, acceleration)
+                1.98, 0.2,
+                // Angular components (velocity, acceleration)
+                1.5, 0.3),
+            // Drive motor type and count (per side)
+            DCMotor.getNEO(2),
+            // Gear ratio
+            GEAR_RATIO,
+            // Track width (m)
+            config.trackWidth().in(Meters),
+            // Wheel radius (m)
+            WHEEL_DIAMETER.in(Meters) / 2,
+            // configure for no noise in measurements
+            null));
 
     updateStartingPointSelector(null);
   }

@@ -76,9 +76,6 @@ public class DrivebaseBase extends SubsystemBase implements IDrivebasePlus {
   /** Gearing ratio from motor to wheel. */
   public static final double GEAR_RATIO = 8.45;
 
-  /** Track width (distance between left and right wheels) in meters. */
-  public static final Distance TRACK_WIDTH = Meters.of(0.5588); /* 22 inches (from 2024) */
-
   /** Zero linear velocity. (A potentially useful constant.) */
   public static final LinearVelocity ZERO_MPS = MetersPerSecond.of(0.0);
 
@@ -91,20 +88,21 @@ public class DrivebaseBase extends SubsystemBase implements IDrivebasePlus {
   /** Maximum rotational velocity for arcade drive. */
   public static final AngularVelocity MAX_ROTATION = DegreesPerSecond.of(360);
 
-  /** Kinematics calculator for the drivebase. */
-  public final DifferentialDriveKinematics m_kinematics;
-
   /** Zero wheel speeds. (A potentially useful constant.) */
   private static final DifferentialDriveWheelSpeeds ZERO_WHEEL_SPEEDS = new DifferentialDriveWheelSpeeds(0.0, 0.0);
-
-  /** Feedforward calculator for the drivebase. */
-  protected final SimpleMotorFeedforward m_feedforward;
 
   //
   // Core definitions
   //
 
+  /** Drive configuration data. */
   protected final DriveConfig m_config;
+
+  /** Kinematics calculator for the drivebase. */
+  protected final DifferentialDriveKinematics m_kinematics;
+
+  /** Feedforward calculator for the drivebase. */
+  protected final SimpleMotorFeedforward m_feedforward;
 
   /** Left-side motor controller. */
   protected final IMotorControllerPlus m_leftController;

@@ -19,12 +19,15 @@ import java.util.function.Supplier;
  * also supports additional functionality (e.g., retrieving the motor voltage
  * for use during characterization, closure, etc.).
  * 
- * TODO: Consider adding support for PID control, either directly using onboard
- * controllers (when supported by the hardware, such as on a SparkMax) or by
- * implementing it using the PIDController class and a velocity sensor (i.e.,
- * encoder). This would be in addition to the existing "set speed"
- * functionality, not a replacement for it.)
- * 
+ * Possible future additions to this interface include:
+ * <ul>
+ * <li>
+ * Adding support for PID control, either directly using onboard controllers
+ * (when supported by the hardware, such as on a SparkMax) or by implementing it
+ * using the PIDController class and a velocity sensor (i.e., encoder). This
+ * would be in addition to the existing "set speed" functionality, not a
+ * replacement for it.)
+ * <p>
  * If we do add PID control support, we should also consider how to handle
  * feedforward control. One option would be to allow users to specify a
  * feedforward function that calculates the necessary voltage based on the
@@ -32,6 +35,7 @@ import java.util.function.Supplier;
  * feedforward voltage to the output. This would make it easier to use
  * feedforward control without having to manually calculate and apply the
  * feedforward voltage in the user code.
+ * </ul>
  */
 public interface IMotorControllerPlus extends MotorController {
   /** @return the voltage currently being applied to the motor. */

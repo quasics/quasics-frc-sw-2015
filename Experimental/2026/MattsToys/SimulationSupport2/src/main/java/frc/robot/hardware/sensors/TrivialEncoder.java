@@ -60,7 +60,14 @@ import java.io.IOException;
  * functions to help encapsulate specific examples "real" encoder classes with
  * the wrapper.
  *
- * TODO: Consider adding genericized "safe" access to underlying controller.
+ * Possible future additions to this interface include:
+ * <ul>
+ * <li>
+ * Adding support for acceleration, which is also commonly provided by encoders.
+ * 
+ * <li>
+ * Adding genericized "safe" access to underlying controller.
+ * </ul>
  *
  * @see <a href="https://en.wikipedia.org/wiki/Adapter_pattern">Adapter
  *      pattern</a>

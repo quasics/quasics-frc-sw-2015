@@ -103,7 +103,7 @@ public class RobotContainer {
    *
    * TODO: Add selector support to the smart dashboard (and saving), along with
    * a notification that it won't take affect until restart (e.g., using
-   * SmartDashboard.reportWarning()), or at least an indicator for the current
+   * DriverStation.reportWarning()), or at least an indicator for the current
    * value.
    */
   final RobotConfigLibrary.Robot m_robotSelection = Robot.isReal() ? DEFAULT_LIVE_ROBOT : DEFAULT_SIMULATION_ROBOT;

@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.live;
 
+import static frc.robot.util.RevSupportFunctions.configureAsNotFollowing;
+
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.ClosedLoopSlot;
@@ -40,6 +42,7 @@ public class SparkMaxFlywheel extends BaseFlywheel {
     motor = new SparkMax(deviceId, MotorType.kBrushless);
 
     SparkMaxConfig config = new SparkMaxConfig();
+    configureAsNotFollowing(config);
 
     // Set ONLY kP for the onboard loop. (If we see a persistant small gap between
     // the target RPM and what we're actually getting out of the subsystem, then I

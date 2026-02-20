@@ -4,12 +4,13 @@
 
 package frc.robot.subsystems.live;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static frc.robot.util.RevSupportFunctions.configureAsNotFollowing;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.IShooterHood;
-
-import static edu.wpi.first.units.Units.Degrees;
 
 import java.io.IOException;
 
@@ -59,6 +60,7 @@ public class ShooterHoodSubsystem extends SubsystemBase implements IShooterHood 
     m_pidController = m_motor.getClosedLoopController();
 
     SparkMaxConfig config = new SparkMaxConfig();
+    configureAsNotFollowing(config);
 
     // Set the conversion factor: 1 rotation * 360 = 360 degrees. Velocity
     // conversion is (similarly) 360/60 for Degrees per Second.

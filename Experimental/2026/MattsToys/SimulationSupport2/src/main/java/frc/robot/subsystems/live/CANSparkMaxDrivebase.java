@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.live;
 
+import static frc.robot.util.RevSupportFunctions.configureAsNotFollowing;
 import static frc.robot.util.RevSupportFunctions.configureMotorToFollow;
 import static frc.robot.util.RevSupportFunctions.configureSparkMaxEncoderForDistance;
 
@@ -63,6 +64,9 @@ public class CANSparkMaxDrivebase extends DrivebaseBase {
 
     final SparkMaxConfig leftLeaderConfig = new SparkMaxConfig();
     final SparkMaxConfig rightLeaderConfig = new SparkMaxConfig();
+
+    configureAsNotFollowing(leftLeaderConfig);
+    configureAsNotFollowing(rightLeaderConfig);
 
     configureSparkMaxEncoderForDistance(
         leftLeaderConfig, config.wheelRadius(), config.gearing());

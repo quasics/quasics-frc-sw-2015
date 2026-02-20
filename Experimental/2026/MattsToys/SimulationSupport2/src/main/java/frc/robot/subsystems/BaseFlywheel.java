@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.IFlywheel;
@@ -25,6 +26,18 @@ public abstract class BaseFlywheel extends SubsystemBase implements IFlywheel {
 
   /** Feedforward controller for calculating voltage based on RPM. */
   protected final SimpleMotorFeedforward feedforward;
+
+  /**
+   * Constructor for BaseFlywheel. Initializes the feedforward controller with the
+   * given constants.
+   * 
+   * @param feedforward a SimpleMotorFeedforward object that has been initialized
+   *                    with the appropriate kS, kV, and kA constants for the
+   *                    flywheel
+   */
+  protected BaseFlywheel(SimpleMotorFeedforward feedforward) {
+    this.feedforward = feedforward;
+  }
 
   /**
    * Constructor for BaseFlywheel. Initializes the feedforward controller with the

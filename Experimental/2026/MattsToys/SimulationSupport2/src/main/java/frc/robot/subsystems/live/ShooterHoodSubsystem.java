@@ -31,14 +31,6 @@ import com.revrobotics.spark.SparkMax;
  */
 public class ShooterHoodSubsystem extends SubsystemBase implements IShooterHood {
   /**
-   * CAN ID for the hood motor.
-   * 
-   * TODO: Move this into robot configuration, and update based on the actual
-   * wiring of the robot.
-   */
-  protected static final int kHoodMotorCanId = 10;
-
-  /**
    * PID settings for the shooter hood.
    * Note that the PID constants (kP, kI, kD) would need to be tuned for the
    * actual mechanism; these are just starting points.
@@ -48,9 +40,16 @@ public class ShooterHoodSubsystem extends SubsystemBase implements IShooterHood 
    */
   protected static final double kP = 0.05, kI = 0, kD = 0;
 
+  /** Hood configuration data. */
   protected final HoodConfig m_config;
+
+  /** Motor controller used to adjust the hood position. */
   protected final SparkMax m_motor;
+
+  /** Absolute encoder used to read the current hood position. */
   protected final SparkAbsoluteEncoder m_absoluteEncoder;
+
+  /** PID controller handling hood positioning. */
   protected final SparkClosedLoopController m_pidController;
 
   /**
@@ -72,7 +71,7 @@ public class ShooterHoodSubsystem extends SubsystemBase implements IShooterHood 
     }
 
     m_config = hoodConfig;
-    m_motor = new SparkMax(kHoodMotorCanId, MotorType.kBrushless);
+    m_motor = new SparkMax(hoodConfig.canId(), MotorType.kBrushless);
     m_absoluteEncoder = m_motor.getAbsoluteEncoder();
     m_pidController = m_motor.getClosedLoopController();
 

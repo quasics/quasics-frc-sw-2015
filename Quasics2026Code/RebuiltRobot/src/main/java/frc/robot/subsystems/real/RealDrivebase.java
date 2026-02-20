@@ -81,8 +81,11 @@ public class RealDrivebase extends AbstractDrivebase {
     m_leftEncoder = TrivialEncoder.forWpiLibEncoder(leftEncoder);
     m_rightEncoder = TrivialEncoder.forWpiLibEncoder(rightEncoder);
 
-    // TODO(DISCUSS): What about our encoders are missing information here...
     // Configure the gyro.
+    //
+    // TODO: Switch this to use the gyro that we're actually going to be using on
+    // the real robot.
+    //
     // FINDME(Robert): This needs to be updated, since we're not actually going to
     // be using an AnalogGyro for the real robot. (We'll probably be using a
     // Pigeon2.)

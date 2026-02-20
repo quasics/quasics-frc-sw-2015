@@ -26,6 +26,10 @@ import frc.robot.subsystems.real.SingleMotorThingTalon;
 import frc.robot.subsystems.simulation.SingleMotorThingSim;
 import frc.robot.subsystems.SingleMotorThingGroup;
 
+/**
+ * The container for the robot. Contains/configures subsystems, OI devices, and
+ * commands.
+ */
 public class RobotContainer {
   /** Supported hardware configurations. */
   enum HardwareConfig {
@@ -86,9 +90,7 @@ public class RobotContainer {
           TrivialEncoder.forWpiLibEncoder(new Encoder(1, 2))));
   };
 
-  /**
-   * The container for the robot. Contains subsystems, OI devices, and commands.
-   */
+  /** Constructor. */
   public RobotContainer() {
     System.out.println("Hardware configuration: " + m_hardware);
 

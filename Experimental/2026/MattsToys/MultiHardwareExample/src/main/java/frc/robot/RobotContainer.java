@@ -24,6 +24,7 @@ import frc.robot.subsystems.real.SingleMotorThingNova;
 import frc.robot.subsystems.real.SingleMotorThingSpark;
 import frc.robot.subsystems.real.SingleMotorThingTalon;
 import frc.robot.subsystems.simulation.SingleMotorThingSim;
+import frc.robot.subsystems.SingleMotorThingGroup;
 
 public class RobotContainer {
   /** Supported hardware configurations. */
@@ -32,6 +33,8 @@ public class RobotContainer {
     Simulated,
     /** SparkMax motor controller (live). */
     Spark,
+    /** Paired SparkMax motor controllers (live). */
+    SparkPair,
     /** TalonFX motor controller (live). */
     Talon,
     /**
@@ -45,6 +48,9 @@ public class RobotContainer {
     Victor,
   }
 
+  public static final int RIGHT_INTAKE_DEPLOYMENT_ID = 6;
+  public static final int LEFT_INTAKE_DEPLOYMENT_ID = 7;
+
   /** Selected hardware configuration. */
   final HardwareConfig m_hardware = Robot.isSimulation() ? HardwareConfig.Simulated : HardwareConfig.Spark;
 
@@ -53,6 +59,15 @@ public class RobotContainer {
   final ISingleMotorThing m_singleMotorThing = switch (m_hardware) {
     case Simulated -> new SingleMotorThingSim();
     case Spark -> new SingleMotorThingSpark(5, true);
+    case SparkPair -> {
+      // Generate an example of a pair of motors being treated as a single (logical)
+      // entity (e.g., paired motors responsible for extending/retracting an intake,
+      // mounted in opposite directions from each other).
+      yield new SingleMotorThingGroup(
+          new SingleMotorThingSpark(
+              RIGHT_INTAKE_DEPLOYMENT_ID, true),
+          new SingleMotorThingSpark(LEFT_INTAKE_DEPLOYMENT_ID, false));
+    }
     case Talon -> new SingleMotorThingTalon(6);
     case TalonDirect -> {
       final TalonFX talon = new TalonFX(6);

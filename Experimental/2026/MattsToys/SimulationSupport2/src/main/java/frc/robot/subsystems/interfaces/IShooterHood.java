@@ -6,7 +6,10 @@ package frc.robot.subsystems.interfaces;
 
 import static edu.wpi.first.units.Units.Degrees;
 
+import java.io.IOException;
+
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
  * Sample interface for a shooter hood subsystem, which controls the angle of
@@ -40,4 +43,44 @@ public interface IShooterHood extends ISubsystem {
 
   /** Returns the maximum angle for the shooter hood. */
   Angle getMaxAngle();
+
+  /**
+   * Null implementation of the IShooterHood interface, for use (if needed) when
+   * the subsystem is not present.
+   */
+  public class NullShooterHood extends SubsystemBase implements IShooterHood {
+    public NullShooterHood() {
+      setName(SUBSYSTEM_NAME);
+    }
+
+    @Override
+    public void setPosition(Angle targetAngle) {
+      // No-op
+    }
+
+    @Override
+    public Angle getCurrentPosition() {
+      return Degrees.of(0);
+    }
+
+    @Override
+    public Angle getTargetAngle() {
+      return Degrees.of(0);
+    }
+
+    @Override
+    public Angle getMinAngle() {
+      return Degrees.of(0);
+    }
+
+    @Override
+    public Angle getMaxAngle() {
+      return Degrees.of(0);
+    }
+
+    @Override
+    public void close() throws IOException {
+      // No-op
+    }
+  }
 }

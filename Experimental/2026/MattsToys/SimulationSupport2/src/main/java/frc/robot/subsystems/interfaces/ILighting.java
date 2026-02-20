@@ -12,6 +12,8 @@ import java.io.IOException;
  * Basic interface to a lighting subsystem.
  */
 public interface ILighting extends ISubsystem {
+  public static final String SUBSYSTEM_NAME = "Lighting";
+
   //////////////////////////////////////////////////////////////////////
   //
   // Primary functions/types
@@ -187,7 +189,9 @@ public interface ILighting extends ISubsystem {
    */
   public default void SetAlternatingColors(Color color1, Color color2) {
     SetStripColor(
-        (int position) -> { return (position % 2 == 0) ? color1 : color2; });
+        (int position) -> {
+          return (position % 2 == 0) ? color1 : color2;
+        });
   }
 
   /**
@@ -230,7 +234,7 @@ public interface ILighting extends ISubsystem {
       extends SubsystemBase implements ILighting {
     /** Constructor. */
     public NullLighting() {
-      setName("NullLighting");
+      setName("Null" + SUBSYSTEM_NAME);
     }
 
     @Override

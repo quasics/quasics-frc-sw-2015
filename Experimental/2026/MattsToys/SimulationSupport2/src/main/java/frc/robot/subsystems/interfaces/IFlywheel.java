@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.interfaces;
 
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 /**
  * An interface for a flywheel subsystem. This is meant to be a simple
  * abstraction that can be implemented by different types of flywheel
@@ -11,6 +13,8 @@ package frc.robot.subsystems.interfaces;
  * hardware details.
  */
 public interface IFlywheel {
+  public static final String SUBSYSTEM_NAME = "Flywheel";
+
   /** Sets the target RPM for the flywheel. */
   public void setRPM(double targetRPM);
 
@@ -30,7 +34,11 @@ public interface IFlywheel {
    * testing or as a placeholder (e.g., when the flywheel subsystem is not
    * supported on a particular robot configuration).
    */
-  public class NullFlywheel implements IFlywheel {
+  public class NullFlywheel extends SubsystemBase implements IFlywheel {
+    public NullFlywheel() {
+      setName("Null" + SUBSYSTEM_NAME);
+    }
+
     @Override
     public void setRPM(double targetRPM) {
       // Do nothing

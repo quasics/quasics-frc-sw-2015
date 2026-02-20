@@ -60,7 +60,7 @@ public interface ISingleJointArm extends ISubsystem {
 
   public class NullArm extends SubsystemBase implements ISingleJointArm {
     public NullArm() {
-      setName(SUBSYSTEM_NAME);
+      setName("Null" + SUBSYSTEM_NAME);
     }
 
     @Override

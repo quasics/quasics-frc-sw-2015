@@ -7,6 +7,7 @@ package frc.robot.subsystems.interfaces;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.ILighting.StockColor;
 import java.io.IOException;
 
@@ -24,6 +25,9 @@ import java.io.IOException;
  *      class</a>
  */
 public interface ICandle extends ISubsystem {
+  /** Name of the subsystem. */
+  final String SUBSYSTEM_NAME = "CANdle";
+
   /** The number of LEDs built into the CANdle hardware. */
   final int CANDLE_DEFAULT_LENGTH = 8;
 
@@ -111,9 +115,10 @@ public interface ICandle extends ISubsystem {
    * without, and don't want to have to check in code every time we might do
    * something with the CANdle to see if we actually have one.)
    */
-  public static class NullCandle implements ICandle {
+  public static class NullCandle extends SubsystemBase implements ICandle {
     /** Constructor. */
     public NullCandle() {
+      setName("Null" + SUBSYSTEM_NAME);
       System.out.println("INFO: allocating NullCandle");
     }
 

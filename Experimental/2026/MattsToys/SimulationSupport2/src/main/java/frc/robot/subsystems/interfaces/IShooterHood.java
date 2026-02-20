@@ -49,7 +49,7 @@ public interface IShooterHood extends ISubsystem {
    */
   public class NullShooterHood extends SubsystemBase implements IShooterHood {
     public NullShooterHood() {
-      setName(SUBSYSTEM_NAME);
+      setName("Null" + SUBSYSTEM_NAME);
     }
 
     @Override

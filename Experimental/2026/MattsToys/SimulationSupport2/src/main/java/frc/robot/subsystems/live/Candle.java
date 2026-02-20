@@ -35,7 +35,7 @@ public class Candle extends SubsystemBase implements ICandle {
    * @param config the configuration for the robot being targeted
    */
   public Candle(RobotConfig config) {
-    setName("Candle");
+    setName(SUBSYSTEM_NAME);
 
     m_candle = new CANdle(config.candle().canId());
 

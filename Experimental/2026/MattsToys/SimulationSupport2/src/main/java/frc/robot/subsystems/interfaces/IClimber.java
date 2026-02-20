@@ -68,6 +68,10 @@ public interface IClimber extends ISubsystem {
 
   /** Trivial implementation of the IClimber interface. */
   public class NullClimber extends SubsystemBase implements IClimber {
+    public NullClimber() {
+      setName("Null" + SUBSYSTEM_NAME);
+    }
+
     @Override
     public void close() throws IOException {
     }

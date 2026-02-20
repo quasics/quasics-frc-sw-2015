@@ -60,7 +60,7 @@ public interface IVision extends ISubsystem {
 
   public class NullVision extends SubsystemBase implements IVision {
     public NullVision() {
-      setName(SUBSYSTEM_NAME);
+      setName("Null" + SUBSYSTEM_NAME);
     }
 
     @Override

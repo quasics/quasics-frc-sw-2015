@@ -9,6 +9,7 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
 import frc.robot.subsystems.interfaces.IShooter;
@@ -25,13 +26,16 @@ public class RealShooter extends SubsystemBase implements IShooter {
   private TalonFX m_kraken;
   private final VelocityVoltage m_request;
   private final SparkMax m_kicker;
+  private double m_ff;
 
   /** Creates a new RealShooter. */
   public RealShooter() {
     m_kraken = new TalonFX(0);
     var slot0Configs = new Slot0Configs();
-    slot0Configs.kV = 0.0; // tune
-    slot0Configs.kP = 0.0; // tune
+    // TODO: tune these
+    slot0Configs.kV = 0.0;
+    slot0Configs.kP = 0.0;
+    m_ff = 0.0;
     m_kraken.getConfigurator().apply(slot0Configs);
     m_request = new VelocityVoltage(0).withSlot(0);
     m_kicker = new SparkMax(SparkMaxIds.KICKER_ID, MotorType.kBrushless);
@@ -39,7 +43,7 @@ public class RealShooter extends SubsystemBase implements IShooter {
 
   @Override
   public void setFlywheelVoltage(double rps) {
-    m_kraken.setControl(m_request.withVelocity(rps).withFeedForward(0));
+    m_kraken.setControl(m_request.withVelocity(rps).withFeedForward(m_ff));
   }
 
   @Override
@@ -66,8 +70,14 @@ public class RealShooter extends SubsystemBase implements IShooter {
     stopKicker();
   }
 
+  public double getFlywheelSpeed() {
+    double speed = m_kraken.get();
+    return speed;
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Flywheel Speed: ", getFlywheelSpeed());
   }
 }

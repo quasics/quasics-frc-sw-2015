@@ -8,18 +8,16 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.real.RealShooter;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class RunShooter extends Command {
+public class RunShooterPID extends Command {
   RealShooter m_shooter;
-  private double m_shooterSpeed;
-  private double m_kickerSpeed;
-  private boolean m_shooting;
+  private double m_velocityRPS;
+  private double m_kickSpeed;
 
   /** Creates a new RunShooter. */
-  public RunShooter(RealShooter shooter, double shooterSpeed, double kickerSpeed, boolean shooting) {
+  public RunShooterPID(RealShooter shooter, double velocity, double kickSpeed) {
     m_shooter = shooter;
-    m_shooterSpeed = shooterSpeed;
-    m_kickerSpeed = kickerSpeed;
-    m_shooting = shooting;
+    m_velocityRPS = velocity;
+    m_kickSpeed = kickSpeed;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(shooter);
   }
@@ -27,19 +25,15 @@ public class RunShooter extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (!m_shooting) {
-      m_shooterSpeed = -m_shooterSpeed;
-      m_kickerSpeed = -m_kickerSpeed;
-    }
-    m_shooter.setFlywheelSpeed(m_shooterSpeed);
-    m_shooter.setKickerSpeed(m_kickerSpeed);
+    m_shooter.setFlywheelVoltage(m_velocityRPS);
+    m_shooter.setKickerSpeed(m_kickSpeed);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_shooter.setFlywheelSpeed(m_shooterSpeed);
-    m_shooter.setKickerSpeed(m_kickerSpeed);
+    m_shooter.setFlywheelVoltage(m_velocityRPS);
+    m_shooter.setKickerSpeed(m_kickSpeed);
   }
 
   // Called once the command ends or is interrupted.

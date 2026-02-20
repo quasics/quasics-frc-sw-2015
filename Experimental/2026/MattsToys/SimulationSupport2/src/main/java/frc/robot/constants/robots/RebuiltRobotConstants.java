@@ -11,5 +11,14 @@ package frc.robot.constants.robots;
  * the "Rebuilt" robot.
  */
 public class RebuiltRobotConstants {
-  public static final int FLYWHEEL_MOTOR_ID = 1;
+  public static class SparkMaxConstants {
+    public static final int INTAKE_ROLLERS_ID = 5;
+    public static final int RIGHT_INTAKE_DEPLOYMENT_ID = 6;
+    public static final int LEFT_INTAKE_DEPLOYMENT_ID = 7;
+    public static final int INDEXER_ID = 8;
+    public static final int KICKER_ID = 9;
+    public static final int HOOD_MOTOR_ID = 10;
+    public static final int FLYWHEEL_MOTOR_ID = 11;
+    public static final int CLIMBER_ID = 12;
+  }
 }

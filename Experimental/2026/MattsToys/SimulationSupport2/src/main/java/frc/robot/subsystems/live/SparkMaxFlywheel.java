@@ -7,6 +7,7 @@ package frc.robot.subsystems.live;
 import static frc.robot.util.RevSupportFunctions.configureAsNotFollowing;
 
 import com.revrobotics.PersistMode;
+import com.revrobotics.REVLibError;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -15,6 +16,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.subsystems.BaseFlywheel;
 import frc.robot.util.config.FlywheelConfig;
 
@@ -60,15 +62,18 @@ public class SparkMaxFlywheel extends BaseFlywheel {
     // Note: The FF voltage is not a "setpoint" for the PID loop; it's more of a
     // starting point that helps the motor get close to the target RPM faster, and
     // reduces the amount of work the PID controller has to do.
-    //
-    // TODO: Add error handling. (Or at least logging.)
-    motor.getClosedLoopController().setSetpoint(
+    var result = motor.getClosedLoopController().setSetpoint(
         targetRPM,
         ControlType.kVelocity,
         ClosedLoopSlot.kSlot0, // Slot ID
         ffVoltage, // The Arbitrary Feedforward value
         ArbFFUnits.kVoltage // Specify that the FF value is in Volts
     );
+    if (result != REVLibError.kOk) {
+      // Handle error (e.g., log it)
+      final String errorMessage = "Error setting flywheel RPM: " + result;
+      DriverStation.reportError(errorMessage, false);
+    }
   }
 
   @Override

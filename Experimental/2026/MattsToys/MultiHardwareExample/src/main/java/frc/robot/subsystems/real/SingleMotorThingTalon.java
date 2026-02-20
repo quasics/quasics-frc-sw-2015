@@ -10,7 +10,7 @@ import static frc.robot.util.EncoderSupport.configureEncoderForDistance;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.motorcontrol.PWMTalonFX;
-import frc.robot.sensors.TrivialEncoder;
+import frc.robot.hardware.sensors.TrivialEncoder;
 import frc.robot.subsystems.implementation.SingleMotorThing;
 
 /**

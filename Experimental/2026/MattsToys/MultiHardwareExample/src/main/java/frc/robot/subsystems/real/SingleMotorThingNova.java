@@ -11,7 +11,7 @@ import com.thethriftybot.devices.ThriftyNova.EncoderType;
 import com.thethriftybot.devices.ThriftyNova.ThriftyNovaConfig;
 
 import edu.wpi.first.units.measure.Distance;
-import frc.robot.sensors.ThriftyEncoderWrapper;
+import frc.robot.hardware.sensors.ThriftyEncoderWrapper;
 import frc.robot.subsystems.implementation.SingleMotorThing;
 
 /**

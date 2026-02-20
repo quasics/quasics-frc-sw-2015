@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
-import frc.robot.sensors.TrivialEncoder;
+import frc.robot.hardware.sensors.TrivialEncoder;
 import frc.robot.subsystems.implementation.SingleMotorThing;
 import frc.robot.subsystems.interfaces.ISingleMotorThing;
 import frc.robot.subsystems.real.SingleMotorThingNova;

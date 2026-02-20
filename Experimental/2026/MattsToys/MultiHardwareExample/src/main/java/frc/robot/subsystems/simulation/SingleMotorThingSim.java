@@ -11,7 +11,7 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
-import frc.robot.sensors.TrivialEncoder;
+import frc.robot.hardware.sensors.TrivialEncoder;
 import frc.robot.subsystems.implementation.SingleMotorThing;
 
 /**
@@ -56,7 +56,8 @@ public class SingleMotorThingSim extends SingleMotorThing {
 
   /** Data we use to actually create one of these things. */
   private record SimulationClassData(
-      PWMSparkMax controller, Encoder encoder, EncoderSim encoderSim) {}
+      PWMSparkMax controller, Encoder encoder, EncoderSim encoderSim) {
+  }
 
   /** Helper function used to allocate the underlying controllers, etc. */
   private static SimulationClassData allocateSimulationData() {
@@ -93,7 +94,7 @@ public class SingleMotorThingSim extends SingleMotorThing {
    * "raw stuff" that's needed to handle simulating things.
    *
    * @param data the SimulationClassData (controller, encoder, encoder
-   *     simulation
+   *             simulation
    *             hook) used to set up the object
    */
   private SingleMotorThingSim(SimulationClassData data) {

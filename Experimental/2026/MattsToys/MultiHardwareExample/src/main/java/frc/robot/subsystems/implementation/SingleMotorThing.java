@@ -7,7 +7,7 @@ package frc.robot.subsystems.implementation;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.sensors.TrivialEncoder;
+import frc.robot.hardware.sensors.TrivialEncoder;
 import frc.robot.subsystems.interfaces.ISingleMotorThing;
 
 /**
@@ -41,8 +41,8 @@ public class SingleMotorThing
    *
    * @see frc.robot.subsystems.real.SingleMotorThingPwmSpark for an example
    */
-  public record
-      ConstructionData(MotorController controller, TrivialEncoder encoder) {}
+  public record ConstructionData(MotorController controller, TrivialEncoder encoder) {
+  }
 
   /**
    * The motor controller used for this "thing". This will be allocated by the

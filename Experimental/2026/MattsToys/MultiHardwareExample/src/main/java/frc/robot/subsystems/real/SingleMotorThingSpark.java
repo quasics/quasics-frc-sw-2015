@@ -10,8 +10,8 @@ import static edu.wpi.first.units.Units.Meters;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.units.measure.Distance;
-import frc.robot.sensors.SparkMaxEncoderWrapper;
-import frc.robot.sensors.TrivialEncoder;
+import frc.robot.hardware.sensors.SparkMaxEncoderWrapper;
+import frc.robot.hardware.sensors.TrivialEncoder;
 import frc.robot.subsystems.implementation.SingleMotorThing;
 
 /**

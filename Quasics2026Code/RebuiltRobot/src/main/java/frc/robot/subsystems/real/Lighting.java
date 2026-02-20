@@ -13,8 +13,8 @@ public class Lighting extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    // This method will be called once per scheduler run (approx. 50x per second).
   }
 
-  // TODO: Add other functionality here.
+  // TODO: Add functionality here.
 }

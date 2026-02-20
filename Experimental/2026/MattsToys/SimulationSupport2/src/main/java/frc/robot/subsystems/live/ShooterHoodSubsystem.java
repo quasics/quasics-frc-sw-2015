@@ -9,6 +9,7 @@ import static frc.robot.util.RevSupportFunctions.configureAsNotFollowing;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.IShooterHood;
 import frc.robot.util.config.HoodConfig;
@@ -16,6 +17,7 @@ import frc.robot.util.config.HoodConfig;
 import java.io.IOException;
 
 import com.revrobotics.PersistMode;
+import com.revrobotics.REVLibError;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.FeedbackSensor;
@@ -108,7 +110,10 @@ public class ShooterHoodSubsystem extends SubsystemBase implements IShooterHood 
     final double positionDegrees = targetAngle.in(Degrees);
     final double clampedPosition = MathUtil.clamp(positionDegrees, getMinAngle().in(Degrees),
         getMaxAngle().in(Degrees));
-    m_pidController.setSetpoint(clampedPosition, SparkMax.ControlType.kPosition);
+    var result = m_pidController.setSetpoint(clampedPosition, SparkMax.ControlType.kPosition);
+    if (result != REVLibError.kOk) {
+      DriverStation.reportError("Failed to set hood position: " + result, false);
+    }
   }
 
   @Override

@@ -56,13 +56,6 @@ public class RealDrivebase extends AbstractDrivebase {
         new SparkMax(SparkMaxIds.RIGHT_LEADER_ID, MotorType.kBrushless));
 
     // Configure followers to follow the leaders.
-    //
-    // Note that this is important to do in code (instead of just setting the
-    // followers to follow the leaders simply be using a configration app) to ensure
-    // that the followers will be correctly configured even if a motor controller
-    // gets swapped out (e.g., if a controller gets damaged and needs to be
-    // replaced, or if we need to swap a controller from one side of the drivebase
-    // to the other for some reason, etc.).
     final SparkMax leftfollower = new SparkMax(SparkMaxIds.LEFT_FOLLOWER_ID, MotorType.kBrushless);
     final SparkMax rightfollower = new SparkMax(SparkMaxIds.RIGHT_FOLLOWER_ID, MotorType.kBrushless);
 
@@ -93,6 +86,22 @@ public class RealDrivebase extends AbstractDrivebase {
     m_gryo = IGyro.wrapGyro(gyro);
   }
 
+  /**
+   * Configures a follower SparkMax motor controller to follow a leader SparkMax
+   * motor controller.
+   * 
+   * Note that this is important to do in code (instead of just setting the
+   * followers to follow the leaders simply be using a configration app) to ensure
+   * that the followers will be correctly configured even if a motor controller
+   * gets swapped out (e.g., if a controller gets damaged and needs to be
+   * replaced, or if we need to swap a controller from one side of the drivebase
+   * to the other for some reason, etc.).
+   * 
+   * @param leader   leader SparkMax motor controller that the follower should
+   *                 follow
+   * @param follower SparkMax motor controller that should be configured to follow
+   *                 the leader
+   */
   private void configureMotorControllersForFollowing(SparkMax leader, SparkMax follower) {
     SparkMaxConfig followerConfig = new SparkMaxConfig();
 
@@ -102,6 +111,11 @@ public class RealDrivebase extends AbstractDrivebase {
 
     // Apply the configuration to the follower motor
     follower.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    // TODO: Configure the leader so that it is *not* a follower of anything.
+    //
+    // FINDME(Robert): This is important to do to ensure that the leader motor
+    // controllers are correctly configured even if they get swapped out.
   }
 
   // We've removed @Override periodic, but be sure to use super.periodic if we

@@ -4,7 +4,9 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -69,8 +71,12 @@ public abstract class AbstractDrivebase
     SmartDashboard.putData("Field", m_field);
   }
 
-  public double getMaxMotorSpeed() {
-    return m_maxMotorSpeedMPS;
+  public static LinearVelocity getMaxMotorLinearSpeed() {
+    return MetersPerSecond.of(m_maxMotorSpeedMPS);
+  }
+
+  public static AngularVelocity getMaxMotorTurnSpeed() {
+    return DegreesPerSecond.of(m_maxMotorSpeedMPS);
   }
 
   @Override

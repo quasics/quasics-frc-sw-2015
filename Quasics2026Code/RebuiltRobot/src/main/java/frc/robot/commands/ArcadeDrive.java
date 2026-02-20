@@ -53,11 +53,12 @@ public class ArcadeDrive extends Command {
     // something that's "overspeed" for the robot (e.g., the %age #s should always
     // be between -1.0 and +1.0, and then you just use stuff like )
 
-    // LinearVelocity linearSpeed = AbstractDrivebase.getMaxMotorSpeed() *
-    // MetersPerSecond.of(m_linearSpeedSupplier.get());
-    LinearVelocity linearSpeed = MetersPerSecond.of(m_linearSpeedSupplier.get());
-    AngularVelocity angularVelocity = RadiansPerSecond.of(m_turnSpeedSupplier.get());
-    System.out.println("turnSpeedSupplier = " + m_turnSpeedSupplier);
+    final double linearSpeedPercent = m_linearSpeedSupplier.get();
+    final LinearVelocity linearSpeed = AbstractDrivebase.getMaxMotorLinearSpeed().times(linearSpeedPercent);
+    final double angularVelocityPercent = m_turnSpeedSupplier.get();
+    final AngularVelocity angularVelocity = AbstractDrivebase.getMaxMotorTurnSpeed().times(angularVelocityPercent);
+
+    System.out.println("turnSpeedSupplier = " + linearSpeed);
     System.out.println("angularVelocity = " + angularVelocity);
     m_drivebase.arcadeDrive(linearSpeed, angularVelocity);
   }

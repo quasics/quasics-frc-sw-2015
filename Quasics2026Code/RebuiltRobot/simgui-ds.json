@@ -4,15 +4,13 @@
       "visible": true
     }
   },
-  "System Joysticks": {
-    "window": {
-      "visible": false
-    }
-  },
   "keyboardJoysticks": [
     {
       "axisConfig": [
-        {},
+        {
+          "decKey": 69,
+          "incKey": 82
+        },
         {
           "decKey": 87,
           "incKey": 83
@@ -97,6 +95,10 @@
   "robotJoysticks": [
     {
       "guid": "Keyboard0"
+    },
+    {
+      "guid": "030000006d04000016c2000000000000",
+      "useGamepad": true
     }
   ]
 }

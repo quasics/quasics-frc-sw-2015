@@ -30,8 +30,13 @@ public class SingleMotorThingNova extends SingleMotorThing {
    */
   static ConstructionData getStuffForBaseClassSetup(int deviceID, boolean inverted) {
     ThriftyNova motorController = new ThriftyNova(deviceID); // , ThriftyNova.MotorType.NEO
-    ThriftyNovaConfig config = new ThriftyNovaConfig();
 
+    // Resets the motor controller to its default state (including resetting any
+    // "follower" configuration, which is important if you are reusing motor
+    // controllers from a previous robot or a different mechanism).
+    motorController.factoryReset();
+
+    ThriftyNovaConfig config = new ThriftyNovaConfig();
     config.encoderType = EncoderType.INTERNAL; // Built-in NEO encoder
     config.inverted = inverted;
     motorController.applyConfig(config);

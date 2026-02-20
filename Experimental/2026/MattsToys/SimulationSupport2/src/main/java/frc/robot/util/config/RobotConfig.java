@@ -18,12 +18,28 @@ import java.util.List;
  * @param candle   CANdle configuration (may be null)
  * @param power    power distribution configuration (may be null)
  */
-public record RobotConfig(boolean isSimulated, DriveConfig drive,
-    List<CameraConfig> cameras, ElevatorConfig elevator, ArmConfig arm,
-    LightingConfig lighting, CandleConfig candle, ClimberConfig climber, PowerDistributor power) {
-  public RobotConfig(boolean isSimulated, DriveConfig drive,
-      List<CameraConfig> cameras, ElevatorConfig elevator, ArmConfig arm,
-      LightingConfig lighting, CandleConfig candle, ClimberConfig climber, PowerDistributor power) {
+public record RobotConfig(
+    boolean isSimulated,
+    DriveConfig drive,
+    List<CameraConfig> cameras,
+    ElevatorConfig elevator,
+    ArmConfig arm,
+    LightingConfig lighting,
+    CandleConfig candle,
+    ClimberConfig climber,
+    FlywheelConfig flywheel,
+    PowerDistributor power) {
+  public RobotConfig(
+      boolean isSimulated,
+      DriveConfig drive,
+      List<CameraConfig> cameras,
+      ElevatorConfig elevator,
+      ArmConfig arm,
+      LightingConfig lighting,
+      CandleConfig candle,
+      ClimberConfig climber,
+      FlywheelConfig flywheel,
+      PowerDistributor power) {
     if (drive != null) {
       assert (isSimulated == (drive.driveType() == DriveType.Simulated))
           : "Simulation setting mismatch (robot vs. drive)";
@@ -40,6 +56,7 @@ public record RobotConfig(boolean isSimulated, DriveConfig drive,
     this.lighting = lighting;
     this.candle = candle;
     this.climber = climber;
+    this.flywheel = flywheel;
     this.power = power;
   }
 
@@ -54,12 +71,20 @@ public record RobotConfig(boolean isSimulated, DriveConfig drive,
    * @param candle   CANdle configuration (may be null)
    * @param power    power distribution configuration (may be null)
    */
-  public RobotConfig(boolean isSimulated, DriveConfig drive, CameraConfig camera,
-      ElevatorConfig elevator, ArmConfig arm, LightingConfig lighting,
-      CandleConfig candle, ClimberConfig climber, PowerDistributor power) {
+  public RobotConfig(
+      boolean isSimulated,
+      DriveConfig drive,
+      CameraConfig camera,
+      ElevatorConfig elevator,
+      ArmConfig arm,
+      LightingConfig lighting,
+      CandleConfig candle,
+      ClimberConfig climber,
+      FlywheelConfig flywheel,
+      PowerDistributor power) {
     this(isSimulated, drive,
         camera != null ? Collections.singletonList(camera) : null, elevator,
-        arm, lighting, candle, climber, power);
+        arm, lighting, candle, climber, flywheel, power);
   }
 
   /**
@@ -134,5 +159,14 @@ public record RobotConfig(boolean isSimulated, DriveConfig drive,
    */
   public boolean hasClimber() {
     return climber != null;
+  }
+
+  /**
+   * Determines if we have flywheel configuration data.
+   *
+   * @return true iff the configuration includes data for the flywheel
+   */
+  public boolean hasFlywheel() {
+    return flywheel != null;
   }
 }

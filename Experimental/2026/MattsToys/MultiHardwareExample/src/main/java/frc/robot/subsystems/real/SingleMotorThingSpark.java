@@ -60,8 +60,17 @@ public class SingleMotorThingSpark extends SingleMotorThing {
   static ConstructionData getStuffForBaseClassSetup(int deviceID, boolean inverted) {
     // Set up the basic configuration for our motor controller.
     SparkMaxConfig config = new SparkMaxConfig();
+
+    // Set up encoder
     configureSparkMaxEncoderForDistance(config, WHEEL_DIAMETER, GEAR_RATIO);
+
+    // Set the motor inversion based on the parameter passed in.
     config.inverted(inverted);
+
+    // Follow "no one" to reset any follower configuration, which is important if
+    // you are reusing motor controllers from a previous robot or a different
+    // mechanism.
+    config.follow(0);
 
     // Allocate the motor controller and apply the configuration to it.
     SparkMax motorController = new SparkMax(
@@ -70,7 +79,7 @@ public class SingleMotorThingSpark extends SingleMotorThing {
         com.revrobotics.ResetMode.kNoResetSafeParameters,
         com.revrobotics.PersistMode.kNoPersistParameters);
 
-    // Set up our encoder
+    // Create the encoder wrapper object.
     TrivialEncoder encoder = new SparkMaxEncoderWrapper(motorController.getAlternateEncoder());
 
     // OK, we've got the stuff to build a SingleMotorThing!

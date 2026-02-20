@@ -66,9 +66,6 @@ public class ArcadeDrive extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    // TODO: Implement and Call m_drivebase.stop()
-    // FINDME(Robert): I've done this for you, because it's important. (And
-    // because what to do was already on the line above. :-) -mjh
     m_drivebase.stop();
   }
 }

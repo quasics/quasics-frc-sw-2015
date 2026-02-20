@@ -23,6 +23,7 @@ import frc.robot.util.config.DriveType;
 import frc.robot.util.config.ElevatorConfig;
 import frc.robot.util.config.ElevatorFeedForwardConfig;
 import frc.robot.util.config.FlywheelConfig;
+import frc.robot.util.config.HoodConfig;
 import frc.robot.util.config.Imaging;
 import frc.robot.util.config.LightingConfig;
 import frc.robot.util.config.Orientation;
@@ -84,6 +85,8 @@ public final class RobotConfigLibrary {
   public static final ClimberConfig NO_CLIMBER = null;
   /** Convenience constant for no flywheel configuration. */
   public static final FlywheelConfig NO_FLYWHEEL = null;
+  /** Convenience constant for no hood configuration. */
+  public static final HoodConfig NO_HOOD = null;
 
   /**
    * Drive config shared by our simulated drive base hardware (in multiple robot
@@ -237,6 +240,7 @@ public final class RobotConfigLibrary {
         candleConfig,
         climberConfig,
         NO_FLYWHEEL,
+        NO_HOOD,
         NO_POWER_DISTRIBUTOR);
   }
 
@@ -296,6 +300,7 @@ public final class RobotConfigLibrary {
         new ClimberConfig(new PIDConfig(1.0, 0, 0),
             new SimpleFeedForwardConfig(Volts.of(0.01), Volts.of(0.05), 0.20)),
         NO_FLYWHEEL,
+        NO_HOOD,
         NO_POWER_DISTRIBUTOR);
   }
 
@@ -316,7 +321,15 @@ public final class RobotConfigLibrary {
                 0.01, // Linear data (from 2024)
                 Volts.of(0.19529), 0.01) // Angular data (FAKE)
         ),
-        NO_CAMERA, NO_ELEVATOR, NO_ARM, NO_LIGHTING, NO_CANDLE, NO_CLIMBER, NO_FLYWHEEL, power);
+        NO_CAMERA,
+        NO_ELEVATOR,
+        NO_ARM,
+        NO_LIGHTING,
+        NO_CANDLE,
+        NO_CLIMBER,
+        NO_FLYWHEEL,
+        NO_HOOD,
+        power);
   }
 
   private static RobotConfig generate2026Config() {
@@ -335,7 +348,9 @@ public final class RobotConfigLibrary {
 
     final PowerDistributor power = new PowerDistributor(ModuleType.kRev);
     final FlywheelConfig flywheel = new FlywheelConfig(FlywheelConfig.FlywheelType.TalonFX,
-        RebuiltRobotConstants.FLYWHEEL_MOTOR_ID, false);
+        RebuiltRobotConstants.SparkMaxConstants.FLYWHEEL_MOTOR_ID, false);
+    final HoodConfig hood = new HoodConfig(HoodConfig.ControlType.SparkMax,
+        RebuiltRobotConstants.SparkMaxConstants.HOOD_MOTOR_ID, Degrees.of(0), Degrees.of(90));
 
     return new RobotConfig(
         false,
@@ -347,6 +362,7 @@ public final class RobotConfigLibrary {
         NO_CANDLE,
         NO_CLIMBER,
         flywheel,
+        hood,
         power);
   }
 }

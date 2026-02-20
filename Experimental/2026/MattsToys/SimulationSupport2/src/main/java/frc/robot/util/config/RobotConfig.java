@@ -16,6 +16,9 @@ import java.util.List;
  * @param lighting lighting configuration (may be null)
  * @param arm      arm configuration (may be null)
  * @param candle   CANdle configuration (may be null)
+ * @param climber  climber configuration (may be null)
+ * @param flywheel flywheel configuration (may be null)
+ * @param hood     hood configuration (may be null)
  * @param power    power distribution configuration (may be null)
  */
 public record RobotConfig(
@@ -28,6 +31,7 @@ public record RobotConfig(
     CandleConfig candle,
     ClimberConfig climber,
     FlywheelConfig flywheel,
+    HoodConfig hood,
     PowerDistributor power) {
   public RobotConfig(
       boolean isSimulated,
@@ -39,6 +43,7 @@ public record RobotConfig(
       CandleConfig candle,
       ClimberConfig climber,
       FlywheelConfig flywheel,
+      HoodConfig hood,
       PowerDistributor power) {
     if (drive != null) {
       assert (isSimulated == (drive.driveType() == DriveType.Simulated))
@@ -57,6 +62,7 @@ public record RobotConfig(
     this.candle = candle;
     this.climber = climber;
     this.flywheel = flywheel;
+    this.hood = hood;
     this.power = power;
   }
 
@@ -69,6 +75,9 @@ public record RobotConfig(
    * @param lighting lighting configuration (may be null)
    * @param arm      arm configuration (may be null)
    * @param candle   CANdle configuration (may be null)
+   * @param climber  climber configuration (may be null)
+   * @param flywheel flywheel configuration (may be null)
+   * @param hood     hood configuration (may be null)
    * @param power    power distribution configuration (may be null)
    */
   public RobotConfig(
@@ -81,10 +90,11 @@ public record RobotConfig(
       CandleConfig candle,
       ClimberConfig climber,
       FlywheelConfig flywheel,
+      HoodConfig hood,
       PowerDistributor power) {
     this(isSimulated, drive,
         camera != null ? Collections.singletonList(camera) : null, elevator,
-        arm, lighting, candle, climber, flywheel, power);
+        arm, lighting, candle, climber, flywheel, hood, power);
   }
 
   /**
@@ -168,5 +178,14 @@ public record RobotConfig(
    */
   public boolean hasFlywheel() {
     return flywheel != null;
+  }
+
+  /**
+   * Determines if we have hood configuration data.
+   *
+   * @return true iff the configuration includes data for the hood
+   */
+  public boolean hasHood() {
+    return hood != null;
   }
 }

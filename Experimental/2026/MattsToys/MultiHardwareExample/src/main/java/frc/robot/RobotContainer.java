@@ -4,12 +4,19 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Inches;
+
+import com.ctre.phoenix6.hardware.TalonFX;
+
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import frc.robot.hardware.actuators.IMotorControllerPlus;
+import frc.robot.hardware.actuators.TalonMotorControllerPlus;
+import frc.robot.hardware.sensors.TalonEncoderWrapper;
 import frc.robot.hardware.sensors.TrivialEncoder;
 import frc.robot.subsystems.implementation.SingleMotorThing;
 import frc.robot.subsystems.interfaces.ISingleMotorThing;
@@ -18,19 +25,24 @@ import frc.robot.subsystems.real.SingleMotorThingSpark;
 import frc.robot.subsystems.real.SingleMotorThingTalon;
 import frc.robot.subsystems.simulation.SingleMotorThingSim;
 
-/**
- * This class is where the bulk of the robot should be declared. Since
- * Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in
- * the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of
- * the robot (including
- * subsystems, commands, and trigger mappings) should be declared here.
- */
 public class RobotContainer {
   /** Supported hardware configurations. */
   enum HardwareConfig {
-    Simulated, Thrifty, Spark, Talon, Victor
+    /** Simulated motor only. */
+    Simulated,
+    /** SparkMax motor controller (live). */
+    Spark,
+    /** TalonFX motor controller (live). */
+    Talon,
+    /**
+     * TalonFX motor controller, constructed directly from the basic
+     * SingleMotorThing class (live).
+     */
+    TalonDirect,
+    /** Thrifty Nova motor controller (live). */
+    Thrifty,
+    /** Victor motor controller (live). */
+    Victor,
   }
 
   /** Selected hardware configuration. */
@@ -42,6 +54,12 @@ public class RobotContainer {
     case Simulated -> new SingleMotorThingSim();
     case Spark -> new SingleMotorThingSpark(5, true);
     case Talon -> new SingleMotorThingTalon(6);
+    case TalonDirect -> {
+      final TalonFX talon = new TalonFX(6);
+      final IMotorControllerPlus motorController = new TalonMotorControllerPlus(talon);
+      final TrivialEncoder encoder = new TalonEncoderWrapper(talon, Inches.of(6));
+      yield new SingleMotorThing(new SingleMotorThing.ConstructionData(motorController, encoder));
+    }
     case Thrifty -> new SingleMotorThingNova(5);
     case Victor ->
       // Sample of how to use the SingleMotorThing class without needing

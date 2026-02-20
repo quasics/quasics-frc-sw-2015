@@ -10,6 +10,7 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
+import java.io.IOException;
 
 /**
  * Convenience wrapper, allowing a CANSparkMax's RelativeEncoder to be used as a
@@ -41,5 +42,10 @@ public class SparkMaxEncoderWrapper implements TrivialEncoder {
   @Override
   public LinearVelocity getVelocity() {
     return MetersPerSecond.of(encoder.getVelocity());
+  }
+
+  @Override
+  public void close() throws IOException {
+    // No-op: SparkMax encoder doesn't expose this method.
   }
 }

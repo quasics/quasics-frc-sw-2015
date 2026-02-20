@@ -10,6 +10,8 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
+import java.io.Closeable;
+import java.io.IOException;
 
 /**
  * This defines a "wrapper" type that can be used so that any arbitrary type of
@@ -30,6 +32,7 @@ import edu.wpi.first.wpilibj.simulation.EncoderSim;
  * (and implementation) assume that a specific type of electrical/signalling
  * interface will be used to communicate with it.
  * </li>
+ *
  * <li>
  * Other types of encoders (e.g., for the REV SparkMax controllers) provide
  * similar functionality, but don't have a common base class (which would allow
@@ -38,14 +41,16 @@ import edu.wpi.first.wpilibj.simulation.EncoderSim;
  * (which further restricts their drop-in use via other mechanisms, such as
  * templates in C++ or Java "generics").
  * </li>
+ *
  * <li>
  * However, they're *all* doing the same basic thing: keeping track of the data
  * for a motor/wheel (distance, velocity/rate, acceleration, etc.).
  * </li>
+ *
  * <li>
  * An additional concern is that the WPILib team is taking active steps to move
  * some other kinds of classes *further* away from having a common type (see the
- * comments on the IGyro class), which would suggest that this state of affairs
+ * comments on my "IGyro" type), which would suggest that this state of affairs
  * is unlikely to change for the better anytime soon.
  * </li>
  * </ul>
@@ -55,14 +60,21 @@ import edu.wpi.first.wpilibj.simulation.EncoderSim;
  * functions to help encapsulate specific examples "real" encoder classes with
  * the wrapper.
  *
- * TODO: Consider adding genericized "safe" access to underlying controller.
+ * Possible future additions to this interface include:
+ * <ul>
+ * <li>
+ * Adding support for acceleration, which is also commonly provided by encoders.
+ * 
+ * <li>
+ * Adding genericized "safe" access to underlying controller.
+ * </ul>
  *
- * @see <a href="https://refactoring.guru/design-patterns/decorator">Decorator
- *      pattern</a>
  * @see <a href="https://en.wikipedia.org/wiki/Adapter_pattern">Adapter
  *      pattern</a>
+ * @see <a href="https://refactoring.guru/design-patterns/decorator">Decorator
+ *      pattern</a>
  */
-public interface TrivialEncoder {
+public interface TrivialEncoder extends Closeable {
   /**
    * Returns the distance recorded by the encoder.
    *
@@ -107,6 +119,11 @@ public interface TrivialEncoder {
       public void reset() {
         encoder.reset();
       }
+
+      @Override
+      public void close() throws IOException {
+        encoder.close();
+      }
     };
   }
 
@@ -144,6 +161,11 @@ public interface TrivialEncoder {
         encoder.reset();
         encoderSim.setCount(0);
       }
+
+      @Override
+      public void close() throws IOException {
+        encoder.close();
+      }
     };
   }
 
@@ -166,6 +188,10 @@ public interface TrivialEncoder {
 
     @Override
     public void reset() {
+    }
+
+    @Override
+    public void close() throws IOException {
     }
   }
 }

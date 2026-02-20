@@ -55,12 +55,22 @@ public class BaseChoreoTrajectoryCommand extends Command {
     Optional<Pose2d> initialPose = m_trajectory.get().getInitialPose(m_mirrorPoses);
 
     if (initialPose.isPresent()) {
+      // "Pretend" that the robot is at the initial pose, even if it's not.
       m_drivebase.resetOdometry(initialPose.get());
+
       // TODO: Consider some of the following options.
-      // 1) Providing an indication of how closely the initial pose matches the
-      // current drivebase pose.
-      // 2) Adapting the trajectory (somehow) to the current pose.
-      // 3) (Longshot) First, get us to the targeted initial pose, and then....
+      // 1) Providing at least some warning, etc., of how closely the initial pose
+      // matches the current drivebase pose.
+      // 2) Save the offset of the current pose from the initial pose, and then apply
+      // that offset at the end of the trajectory following, so that we (mostly) undo
+      // the reset of the odometry. (This is a bit hacky, but it would allow us to
+      // follow the trajectory more closely without needing to reset the odometry on
+      // the live drivebase.)
+      // 3) Use a wrapper around the odometry that allows us to "fake" the initial
+      // pose for the trajectory following, so that we don't need to reset the
+      // odometry on the live drivebase.
+      // 4) Adapting the trajectory (somehow) to the current pose.
+      // 5) (Longshot) First, get us to the targeted initial pose, and then....
     }
 
     // Reset and start the timer when the autonomous period begins

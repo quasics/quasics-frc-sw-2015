@@ -79,8 +79,7 @@ public class TalonMotorControllerPlus implements IMotorControllerPlus {
 
   @Override
   public void close() throws IOException {
-    // No-op: TalonFX doesn't have any resources that need to be explicitly
-    // released, and can just be garbage collected when no longer needed.
+    m_talon.close();
   }
 
   @Override

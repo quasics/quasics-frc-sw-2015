@@ -13,6 +13,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.robot.subsystems.live.ShooterHoodSubsystem;
+import frc.robot.util.config.HoodConfig;
 
 /**
  * Sample implementation of the IShooterHood subsystem, for use under
@@ -45,19 +46,19 @@ public class SimShooterHoodSubsystem extends ShooterHoodSubsystem {
   private SingleJointedArmSim m_hoodSim;
 
   /** Constructor. */
-  public SimShooterHoodSubsystem() {
-    super();
+  public SimShooterHoodSubsystem(HoodConfig hoodConfig) {
+    super(hoodConfig);
     m_motorSim = new SparkMaxSim(m_motor, DCMotor.getNEO(1));
     m_absEncSim = m_motorSim.getAbsoluteEncoderSim();
     m_hoodSim = new SingleJointedArmSim(
         DCMotor.getNEO(1),
-        100.0,
+        1.0,
         0.01,
         0.2,
-        kMinPos.in(Radians),
-        kMaxPos.in(Radians),
+        hoodConfig.minAngle().in(Radians),
+        hoodConfig.maxAngle().in(Radians),
         true,
-        kMinPos.in(Radians));
+        hoodConfig.minAngle().in(Radians));
   }
 
   @Override

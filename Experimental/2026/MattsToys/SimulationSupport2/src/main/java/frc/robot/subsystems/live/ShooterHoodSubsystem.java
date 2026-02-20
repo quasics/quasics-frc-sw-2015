@@ -11,6 +11,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.IShooterHood;
+import frc.robot.util.config.HoodConfig;
 
 import java.io.IOException;
 
@@ -47,20 +48,36 @@ public class ShooterHoodSubsystem extends SubsystemBase implements IShooterHood 
    */
   protected static final double kP = 0.05, kI = 0, kD = 0;
 
+  protected final HoodConfig m_config;
   protected final SparkMax m_motor;
   protected final SparkAbsoluteEncoder m_absoluteEncoder;
   protected final SparkClosedLoopController m_pidController;
 
-  /** Constructor. */
-  public ShooterHoodSubsystem() {
-    setName("ShooterHood");
+  /**
+   * Constructor.
+   * 
+   * @param hoodConfig configuration for the shooter hood subsystem, which
+   *                   includes the control type, CAN ID, and min/max angles. The
+   *                   control type is expected to be SparkMax for this
+   *                   implementation, and the CAN ID should match the actual
+   *                   wiring of the robot. The min/max angles will be used to
+   *                   clamp the target position to prevent mechanical issues.
+   */
+  public ShooterHoodSubsystem(HoodConfig hoodConfig) {
+    setName(SUBSYSTEM_NAME);
 
+    if (hoodConfig.type() != HoodConfig.ControlType.SparkMax) {
+      throw new IllegalArgumentException(
+          "Unsupported control type for ShooterHoodSubsystem: " + hoodConfig.type());
+    }
+
+    m_config = hoodConfig;
     m_motor = new SparkMax(kHoodMotorCanId, MotorType.kBrushless);
     m_absoluteEncoder = m_motor.getAbsoluteEncoder();
     m_pidController = m_motor.getClosedLoopController();
 
-    SparkMaxConfig config = new SparkMaxConfig();
-    configureAsNotFollowing(config);
+    SparkMaxConfig motorConfig = new SparkMaxConfig();
+    configureAsNotFollowing(motorConfig);
 
     // Set the conversion factor: 1 rotation * 360 = 360 degrees. Velocity
     // conversion is (similarly) 360/60 for Degrees per Second.
@@ -70,7 +87,7 @@ public class ShooterHoodSubsystem extends SubsystemBase implements IShooterHood 
     // there were gearing between the motor and the hood, we would need to adjust
     // the conversion factor accordingly (e.g., if there were a 2:1 gear reduction,
     // the conversion factor would be 180 degrees per rotation).
-    config.absoluteEncoder
+    motorConfig.absoluteEncoder
         .positionConversionFactor(360.0)
         .velocityConversionFactor(360.0 / 60.0);
 
@@ -79,18 +96,19 @@ public class ShooterHoodSubsystem extends SubsystemBase implements IShooterHood 
     // moving too fast, which could cause mechanical stress or overshooting.
     final double minOutput = -0.5;
     final double maxOutput = 0.5;
-    config.closedLoop
+    motorConfig.closedLoop
         .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
         .p(kP).i(kI).d(kD)
         .outputRange(minOutput, maxOutput);
 
-    m_motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   @Override
   public void setPosition(Angle targetAngle) {
     final double positionDegrees = targetAngle.in(Degrees);
-    final double clampedPosition = MathUtil.clamp(positionDegrees, kMinPos.in(Degrees), kMaxPos.in(Degrees));
+    final double clampedPosition = MathUtil.clamp(positionDegrees, getMinAngle().in(Degrees),
+        getMaxAngle().in(Degrees));
     m_pidController.setSetpoint(clampedPosition, SparkMax.ControlType.kPosition);
   }
 
@@ -102,6 +120,16 @@ public class ShooterHoodSubsystem extends SubsystemBase implements IShooterHood 
   @Override
   public Angle getTargetAngle() {
     return Degrees.of(m_pidController.getSetpoint());
+  }
+
+  @Override
+  public Angle getMinAngle() {
+    return m_config.minAngle();
+  }
+
+  @Override
+  public Angle getMaxAngle() {
+    return m_config.maxAngle();
   }
 
   //

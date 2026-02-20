@@ -16,10 +16,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  * the shooter hood to adjust the trajectory of the ball. The hood is typically
  * controlled by a motor with an absolute encoder for feedback, and uses a PID
  * controller to move to the desired angle.
- * 
- * TODO: Update min/max angles based on the actual mechanism design and testing.
  */
 public interface IShooterHood extends ISubsystem {
+  /** Name of the subsystem. */
   final static String SUBSYSTEM_NAME = "ShooterHood";
 
   /**

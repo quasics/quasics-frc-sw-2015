@@ -19,12 +19,12 @@ import frc.robot.hardware.actuators.TalonMotorControllerPlus;
 import frc.robot.hardware.sensors.TalonEncoderWrapper;
 import frc.robot.hardware.sensors.TrivialEncoder;
 import frc.robot.subsystems.implementation.SingleMotorThing;
+import frc.robot.subsystems.implementation.SingleMotorThingGroup;
 import frc.robot.subsystems.interfaces.ISingleMotorThing;
 import frc.robot.subsystems.real.SingleMotorThingNova;
 import frc.robot.subsystems.real.SingleMotorThingSpark;
 import frc.robot.subsystems.real.SingleMotorThingTalon;
 import frc.robot.subsystems.simulation.SingleMotorThingSim;
-import frc.robot.subsystems.SingleMotorThingGroup;
 
 /**
  * The container for the robot. Contains/configures subsystems, OI devices, and

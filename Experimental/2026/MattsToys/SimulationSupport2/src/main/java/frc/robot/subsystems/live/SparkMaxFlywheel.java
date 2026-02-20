@@ -17,7 +17,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import frc.robot.subsystems.BaseFlywheel;
+import frc.robot.subsystems.bases.BaseFlywheel;
 import frc.robot.util.config.FlywheelConfig;
 
 /**

@@ -15,7 +15,7 @@ import frc.robot.constants.robots.QuasicsThriftyNovaConstants.QuasicsDrivebaseCa
 import frc.robot.hardware.actuators.ThriftyNovaMotorControllerPlus;
 import frc.robot.hardware.sensors.Pigeon2Wrapper;
 import frc.robot.hardware.sensors.ThriftyEncoderWrapper;
-import frc.robot.subsystems.DrivebaseBase;
+import frc.robot.subsystems.bases.DrivebaseBase;
 import frc.robot.util.config.DriveConfig;
 
 /**

@@ -32,6 +32,7 @@ import frc.robot.commands.driving.BaseChoreoTrajectoryCommand;
 import frc.robot.commands.driving.FollowTrajectoryCommand;
 import frc.robot.commands.driving.PushbuttonTrajectory;
 import frc.robot.commands.driving.TankDrive;
+import frc.robot.commands.driving.TurnUntilTargetInView;
 import frc.robot.commands.lighting.RainbowLighting;
 import frc.robot.commands.lighting.TargetingSupportCommand;
 import frc.robot.constants.OperatorConstants;
@@ -61,12 +62,12 @@ import frc.robot.subsystems.simulated.SimClimber;
 import frc.robot.subsystems.simulated.SimDrivebase;
 import frc.robot.util.DriverJoystickWrapper;
 import frc.robot.util.RobotConfigLibrary;
-import frc.robot.util.RobotConfigs;
-import frc.robot.util.RobotConfigs.RobotConfig;
 import frc.robot.util.SpeedMode;
 import frc.robot.util.SpeedModeScaler;
 import frc.robot.util.SysIdGenerator;
 import frc.robot.util.SysIdGenerator.DrivebaseProfilingMode;
+import frc.robot.util.config.RobotConfig;
+
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -174,6 +175,7 @@ public class RobotContainer {
     maybeConfigureLightingWhenDisabled();
     maybeConfigureChoreoCommands();
     maybeConfigureClimberCommands();
+    configureVisionCommands();
     configureBindings();
 
     if (Robot.isSimulation()) {
@@ -185,6 +187,11 @@ public class RobotContainer {
     if (m_pdp != null) {
       SmartDashboard.putData(m_pdp);
     }
+  }
+
+  private void configureVisionCommands() {
+    SmartDashboard.putData("Cmd: Get target 26 in view",
+        new TurnUntilTargetInView(m_vision, m_drivebase, 26));
   }
 
   private void maybeConfigureClimberCommands() {
@@ -538,7 +545,7 @@ public class RobotContainer {
    * @return an ICandle subsystem for this robot (may be trivial)
    */
   private static ICandle allocateCandle(
-      RobotConfigs.RobotConfig config, ILighting lighting) {
+      RobotConfig config, ILighting lighting) {
     if (!config.hasCandle()) {
       return new ICandle.NullCandle();
     }
@@ -567,7 +574,7 @@ public class RobotContainer {
    *         allocate a buffer)
    */
   private static ILighting allocateSideLighting(
-      RobotConfigs.RobotConfig config, ILighting lighting, boolean leftSide) {
+      RobotConfig config, ILighting lighting, boolean leftSide) {
     if (!config.hasLighting() || lighting == null
         || !(lighting instanceof Lighting)) {
       // Can't do it....

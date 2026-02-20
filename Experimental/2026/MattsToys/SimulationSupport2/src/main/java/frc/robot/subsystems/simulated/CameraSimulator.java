@@ -12,9 +12,9 @@ import frc.robot.subsystems.interfaces.IDrivebasePlus;
 import frc.robot.subsystems.interfaces.IPhotonVision;
 import frc.robot.subsystems.interfaces.IPoseEstimator;
 import frc.robot.util.BulletinBoard;
-import frc.robot.util.RobotConfigs;
-import frc.robot.util.RobotConfigs.CameraConfig;
-import frc.robot.util.RobotConfigs.RobotConfig;
+import frc.robot.util.config.CameraConfig;
+import frc.robot.util.config.RobotConfig;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -63,8 +63,7 @@ public class CameraSimulator extends SubsystemBase {
    */
   public CameraSimulator(RobotConfig config, IPhotonVision realVision) {
     // Sanity checking parameters.
-    if (config.cameras().size()
-        != realVision.getCameraDataForSimulation().size()) {
+    if (config.cameras().size() != realVision.getCameraDataForSimulation().size()) {
       throw new RuntimeException("Camera data mismatch:"
           + " config has " + config.cameras().size() + " but we have "
           + realVision.getCameraDataForSimulation().size()
@@ -76,8 +75,7 @@ public class CameraSimulator extends SubsystemBase {
     m_realVision = realVision;
 
     // Add the tag layout to the vision simulation.
-    final AprilTagFieldLayout tagLayout =
-        m_realVision.getFieldLayoutForSimulation();
+    final AprilTagFieldLayout tagLayout = m_realVision.getFieldLayoutForSimulation();
     if (tagLayout != null) {
       m_visionSim.addAprilTags(tagLayout);
     } else {
@@ -87,12 +85,9 @@ public class CameraSimulator extends SubsystemBase {
     //
     // Set up simulation for each of the cameras.
     //
-    for (int index = 0;
-        index < m_realVision.getCameraDataForSimulation().size(); ++index) {
-      final RobotConfigs.CameraConfig cameraConfig =
-          config.cameras().get(index);
-      final IPhotonVision.CameraData cameraData =
-          m_realVision.getCameraDataForSimulation().get(index);
+    for (int index = 0; index < m_realVision.getCameraDataForSimulation().size(); ++index) {
+      final CameraConfig cameraConfig = config.cameras().get(index);
+      final IPhotonVision.CameraData cameraData = m_realVision.getCameraDataForSimulation().get(index);
       m_visionSim.addCamera(configureCameraSim(cameraConfig, cameraData),
           cameraData.transform3d());
     }
@@ -107,7 +102,7 @@ public class CameraSimulator extends SubsystemBase {
    * @return the simulation controller for the camera
    */
   private PhotonCameraSim configureCameraSim(
-      RobotConfigs.CameraConfig cameraConfig,
+      CameraConfig cameraConfig,
       IPhotonVision.CameraData cameraData) {
     // Set up the camera simulation
     PhotonCameraSim cameraSim = new PhotonCameraSim(
@@ -172,18 +167,16 @@ public class CameraSimulator extends SubsystemBase {
 
     // Update the simulator to show where the drive base's (pure) odometry
     // suggests that we are located.
-    Pose2d driveBasePoseMeters =
-        (Pose2d) BulletinBoard.common
-            .getValue(IDrivebasePlus.ODOMETRY_KEY, Pose2d.class)
-            .orElse(new Pose2d());
+    Pose2d driveBasePoseMeters = (Pose2d) BulletinBoard.common
+        .getValue(IDrivebasePlus.ODOMETRY_KEY, Pose2d.class)
+        .orElse(new Pose2d());
     m_visionSim.update(driveBasePoseMeters);
 
     // Update the simulator to reflect where the (purely) vision-based pose
     // estimate suggests that we are located.
     List<Pose2d> estimatedPoses = Collections.emptyList();
     if (m_realVision instanceof IPoseEstimator) {
-      Optional<Pose2d> visionPoseOpt =
-          ((IPoseEstimator) m_realVision).getEstimatedPose();
+      Optional<Pose2d> visionPoseOpt = ((IPoseEstimator) m_realVision).getEstimatedPose();
       if (visionPoseOpt.isPresent()) {
         estimatedPoses = Collections.singletonList(visionPoseOpt.get());
       }

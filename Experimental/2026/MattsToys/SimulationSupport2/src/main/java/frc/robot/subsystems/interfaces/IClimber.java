@@ -10,6 +10,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
  * Lightweight interface to work with a climber.
+ * 
+ * Note: this interface is intentionally minimal and does not include any
+ * methods for querying the climber's position or other state; this is because
+ * the climber's exact position is not critical. However, it *is* assumed that
+ * the climber has some sort of position feedback (e.g., an encoder) that allows
+ * it to move to defined positions under PID control.
  */
 public interface IClimber extends ISubsystem {
   /** Subsystem name. */

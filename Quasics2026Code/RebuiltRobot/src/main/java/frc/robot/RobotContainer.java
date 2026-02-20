@@ -11,17 +11,20 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.DriveteamConstants;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.LinearSpeedCommand;
-import frc.robot.subsystems.AbstractDrivebase;
-import frc.robot.subsystems.RealDrivebase;
-import frc.robot.subsystems.SimulatedVision;
-import frc.robot.subsystems.SimulationDrivebase;
-import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.interfaces.IVision;
+import frc.robot.subsystems.real.AbstractDrivebase;
+import frc.robot.subsystems.real.RealDrivebase;
+import frc.robot.subsystems.real.RealShooter;
+import frc.robot.subsystems.real.Vision;
+import frc.robot.subsystems.simulated.SimulatedVision;
+import frc.robot.subsystems.simulated.SimulationDrivebase;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -34,6 +37,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final AbstractDrivebase m_drivebase = Robot.isReal() ? new RealDrivebase() : new SimulationDrivebase();
   private final IVision m_vision = (Robot.isReal()) ? new Vision() : new SimulatedVision();
+  private final RealShooter m_shooter = new RealShooter();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final Joystick m_driverController = new Joystick(DriveteamConstants.DRIVER_JOYSTICK_ID);
@@ -42,6 +46,8 @@ public class RobotContainer {
   private final double DEADBAND_CONSTANT = 0.08;
   private final SlewRateLimiter m_speedSlewRateLimiter = new SlewRateLimiter(1);
   private final SlewRateLimiter m_rotSlewRateLimiter = new SlewRateLimiter(1);
+
+  private boolean m_switchDrive = false;
 
   Supplier<Double> m_arcadeDriveLeftStick;
   Supplier<Double> m_arcadeDriveRightStick;
@@ -53,6 +59,8 @@ public class RobotContainer {
   public RobotContainer() {
     // Connect cross-subsystem suppliers (so that the systems don't know about
     // each other directly)
+    addSysIdButtonsToSmartDashboard();
+
     m_vision.setReferencePositionSupplier(() -> {
       if (m_drivebase != null) {
         return m_drivebase.getEstimatedPose();
@@ -73,6 +81,13 @@ public class RobotContainer {
     configureBindings();
   }
 
+  private void addSysIdButtonsToSmartDashboard() {
+    SmartDashboard.putData("Flywheel Quasistatic Forward", m_shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    SmartDashboard.putData("Flywheel Quasistatic Reverse", m_shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    SmartDashboard.putData("Flywheel Dynamic Forward", m_shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    SmartDashboard.putData("Flywheel Dynamic Reverse", m_shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+  }
+
   /**
    * Use this method to define your trigger->command mappings. Triggers can be
    * created via the
@@ -84,12 +99,20 @@ public class RobotContainer {
    * or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
+
+  Trigger switchDriveTrigger;
+
   private void configureBindings() {
     m_arcadeDriveLeftStick = () -> {
       double scaling = getDriveSpeedScalingFactor();
       double axis = getDriverAxis(Constants.LogitechDualshock.LeftYAxis);
-      double joystickPercent = -axis * scaling;
-      return m_speedSlewRateLimiter.calculate(joystickPercent);
+      if (m_switchDrive) {
+        double joystickPercent = axis * scaling;
+        return m_speedSlewRateLimiter.calculate(joystickPercent);
+      } else {
+        double joystickPercent = -axis * scaling;
+        return m_speedSlewRateLimiter.calculate(joystickPercent);
+      }
     };
     m_arcadeDriveRightStick = () -> {
       double scaling = getDriveSpeedScalingFactor();
@@ -97,6 +120,11 @@ public class RobotContainer {
       double joystickPercent = -axis * scaling;
       return m_rotSlewRateLimiter.calculate(joystickPercent);
     };
+
+    switchDriveTrigger = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.BButton))
+        .onTrue(new InstantCommand(() -> {
+          m_switchDrive = !m_switchDrive;
+        }));
     // Syntax for speed suppliers:
     // () -> m_driverController.getRawAxis(0)
 

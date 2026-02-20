@@ -8,8 +8,12 @@ package frc.robot.subsystems.interfaces;
  * Interface for controlling the indexing of balls (between the intake and
  * shooter).
  * 
+ * per sarima: 1 neo 550 
+ * 
  * TODO: Define the indexer interface (and then implement it).
  */
 public interface IIndexer {
-
+  /*
+   * Spin rollers in both directions (1 motor)
+   */
 }

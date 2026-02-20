@@ -33,5 +33,18 @@ package frc.robot.subsystems.interfaces;
  * TODO: Define the shooter interface (and then implement it).
  */
 public interface IShooter {
+  /*
+   * (1 motor for flywheels, 1 motor for kicker wheels)
+   * Spin flywheels and kicker wheels in either direction (independently)
+   * PID control for flywheels to maintain constant RPM from ball to ball; kicker
+   * wheels may or may not need PID control
+   */
 
+  void setFlywheelVoltage(double output);
+
+  void setKickerSpeed(double speed);
+
+  void stopFlywheel();
+
+  void stopKicker();
 }

@@ -44,29 +44,43 @@ public class SingleMotorThingSpark extends SingleMotorThing {
   //
 
   /** Creates a new SingleMotorThingSpark. */
-  public SingleMotorThingSpark() {
-    super(getStuffForBaseClassSetup());
+  public SingleMotorThingSpark(int deviceID) {
+    this(deviceID, false);
+  }
+
+  /** Creates a new SingleMotorThingSpark. */
+  public SingleMotorThingSpark(int deviceID, boolean inverted) {
+    super(getStuffForBaseClassSetup(deviceID, inverted));
+    System.out.println("Set up SingleMotorThingSpark!");
   }
 
   /**
    * Builds the actual hardware wrappers that will be passed to the base class.
    */
-  static ConstructionData getStuffForBaseClassSetup() {
+  static ConstructionData getStuffForBaseClassSetup(int deviceID, boolean inverted) {
     // Set up the basic configuration for our motor controller.
     SparkMaxConfig config = new SparkMaxConfig();
+
+    // Set up encoder
     configureSparkMaxEncoderForDistance(config, WHEEL_DIAMETER, GEAR_RATIO);
-    config.inverted(false);
+
+    // Set the motor inversion based on the parameter passed in.
+    config.inverted(inverted);
+
+    // Follow "no one" to reset any follower configuration, which is important if
+    // you are reusing motor controllers from a previous robot or a different
+    // mechanism.
+    config.follow(0);
 
     // Allocate the motor controller and apply the configuration to it.
     SparkMax motorController = new SparkMax(
-        1, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
+        deviceID, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
     motorController.configure(config,
         com.revrobotics.ResetMode.kNoResetSafeParameters,
         com.revrobotics.PersistMode.kNoPersistParameters);
 
-    // Set up our encoder
-    TrivialEncoder encoder =
-        new SparkMaxEncoderWrapper(motorController.getAlternateEncoder());
+    // Create the encoder wrapper object.
+    TrivialEncoder encoder = new SparkMaxEncoderWrapper(motorController.getAlternateEncoder());
 
     // OK, we've got the stuff to build a SingleMotorThing!
     return new ConstructionData(motorController, encoder);
@@ -86,8 +100,7 @@ public class SingleMotorThingSpark extends SingleMotorThing {
    */
   public static void configureSparkMaxEncoderForDistance(
       SparkMaxConfig config, Distance outerDiameter, double gearRatio) {
-    final double distanceScalingFactorForGearing =
-        outerDiameter.div(gearRatio).in(Meters);
+    final double distanceScalingFactorForGearing = outerDiameter.div(gearRatio).in(Meters);
     final double velocityScalingFactor = distanceScalingFactorForGearing / 60;
 
     config.encoder.positionConversionFactor(distanceScalingFactorForGearing)

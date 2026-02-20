@@ -7,6 +7,9 @@ package frc.robot.subsystems.real;
 import static edu.wpi.first.units.Units.Inches;
 
 import com.thethriftybot.devices.ThriftyNova;
+import com.thethriftybot.devices.ThriftyNova.EncoderType;
+import com.thethriftybot.devices.ThriftyNova.ThriftyNovaConfig;
+
 import edu.wpi.first.units.measure.Distance;
 import frc.robot.sensors.ThriftyEncoderWrapper;
 import frc.robot.subsystems.implementation.SingleMotorThing;
@@ -22,25 +25,32 @@ public class SingleMotorThingNova extends SingleMotorThing {
   /** Wheel diameter in inches. */
   public static final Distance WHEEL_DIAMETER = Inches.of(6);
 
-  public static final int CAN_ID = 7;
-
   /**
    * Builds the actual hardware wrappers that will be passed to the base class.
    */
-  static ConstructionData getStuffForBaseClassSetup() {
-    ThriftyNova motorController =
-        new ThriftyNova(CAN_ID); // , ThriftyNova.MotorType.NEO
+  static ConstructionData getStuffForBaseClassSetup(int deviceID, boolean inverted) {
+    ThriftyNova motorController = new ThriftyNova(deviceID); // , ThriftyNova.MotorType.NEO
+
+    // Resets the motor controller to its default state (including resetting any
+    // "follower" configuration, which is important if you are reusing motor
+    // controllers from a previous robot or a different mechanism).
+    motorController.factoryReset();
+
+    ThriftyNovaConfig config = new ThriftyNovaConfig();
+    config.encoderType = EncoderType.INTERNAL; // Built-in NEO encoder
+    config.inverted = inverted;
+    motorController.applyConfig(config);
+
     return new ConstructionData(motorController,
         new ThriftyEncoderWrapper(motorController, WHEEL_DIAMETER));
   }
 
-  public SingleMotorThingNova() {
-    super(getStuffForBaseClassSetup());
-    System.out.println("Set up SingleMotorThingNova!");
+  public SingleMotorThingNova(int deviceID) {
+    this(deviceID, false);
   }
 
-  @Override
-  public void periodic() {
-    // ((ThriftyNova)super.controller).setPercent(0.5);
+  public SingleMotorThingNova(int deviceID, boolean inverted) {
+    super(getStuffForBaseClassSetup(deviceID, inverted));
+    System.out.println("Set up SingleMotorThingNova!");
   }
 }

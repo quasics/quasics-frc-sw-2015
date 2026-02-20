@@ -31,6 +31,21 @@ public final class Constants {
       public static final int LEFT_FOLLOWER_ID = 1;
       public static final int RIGHT_LEADER_ID = 4;
       public static final int RIGHT_FOLLOWER_ID = 3;
+      public static final int INTAKE_ROLLERS_ID = 5;
+      public static final int RIGHT_INTAKE_DEPLOYMENT_ID = 6;
+      public static final int LEFT_INTAKE_DEPLOYMENT_ID = 7;
+      public static final int INDEXER_ID = 8;
+      public static final int KICKER_ID = 9;
+      public static final int HOOD_ID = 10;
+      public static final int SHOOTER_ID = 11;
+      public static final int CLIMBER_ID = 12;
+    }
+
+    public static class ThriftyNovaIds {
+      public static final int LEFT_LEADER_ID = 2;
+      public static final int LEFT_FOLLOWER_ID = 1;
+      public static final int RIGHT_LEADER_ID = 4;
+      public static final int RIGHT_FOLLOWER_ID = 3;
     }
   }
 
@@ -150,4 +165,13 @@ public final class Constants {
     public static final double NORMAL_SPEED_SCALING = 0.6;
     public static final double TURBO_SPEED_SCALING = 0.9;
   }
+
+  // TODO: Likely want configurable settings other than just this (track width,
+  // etc): See RobotSettings.java in Reefscape code
+  public static enum DrivebaseMotors {
+    Unknown,
+    SparkMax,
+    ThriftyNova
+  }
+
 }

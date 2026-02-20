@@ -1,4 +1,4 @@
-// Copyright (c) 2024, Matthew J. Healy and other Quasics contributors.
+// Copyright (c) 2026, Matthew J. Healy and other Quasics contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -33,15 +33,13 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
   /**
    * Thrifty conversion object, used to translate native velocity units to RPMs.
    */
-  final Conversion m_shooterConverter =
-      new Conversion(VelocityUnit.ROTATIONS_PER_MIN, EncoderType.INTERNAL);
+  final Conversion m_shooterConverter = new Conversion(VelocityUnit.ROTATIONS_PER_MIN, EncoderType.INTERNAL);
 
   /**
    * Thrifty conversion object, used to translate native positional units to
    * rotations.
    */
-  final Conversion m_distanceConverter =
-      new Conversion(PositionUnit.ROTATIONS, EncoderType.INTERNAL);
+  final Conversion m_distanceConverter = new Conversion(PositionUnit.ROTATIONS, EncoderType.INTERNAL);
 
   /**
    * Constructor.
@@ -58,17 +56,15 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
 
   @Override
   public Distance getPosition() {
-    final double currentRevolutions =
-        m_distanceConverter.fromMotor(m_motorController.getPosition());
+    final double currentRevolutions = m_distanceConverter.fromMotor(m_motorController.getPosition());
     return m_rotationDistance.times(currentRevolutions);
   }
 
   @Override
   public LinearVelocity getVelocity() {
-    final double currentRPM =
-        m_shooterConverter.fromMotor(m_motorController.getVelocity());
+    final double currentRPM = m_shooterConverter.fromMotor(m_motorController.getVelocity());
     final double revsPerSec = currentRPM * 60;
-    return MetersPerSecond.of(m_rotationDistance.in(Meters) *revsPerSec);
+    return MetersPerSecond.of(m_rotationDistance.in(Meters) * revsPerSec);
   }
 
   @Override

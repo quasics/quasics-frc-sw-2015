@@ -29,7 +29,7 @@ import frc.robot.hardware.actuators.IMotorControllerPlus;
 import frc.robot.hardware.sensors.IGyro;
 import frc.robot.hardware.sensors.TrivialEncoder;
 import frc.robot.subsystems.DrivebaseBase;
-import frc.robot.util.RobotConfigs.DriveConfig;
+import frc.robot.util.config.DriveConfig;
 
 /**
  * Extension of the Drivebase subsystem for simulation support.

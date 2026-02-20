@@ -9,6 +9,7 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import frc.robot.subsystems.BaseFlywheel;
+import frc.robot.util.config.FlywheelConfig;
 
 /**
  * A simple flywheel subsystem that uses a TalonFX and WPILib's
@@ -36,33 +37,21 @@ public class TalonFxFlywheel extends BaseFlywheel {
   private final TalonFX motor;
   private final VelocityVoltage velocityRequest = new VelocityVoltage(0);
 
-  // TODO: These constants should be determined experimentally using SysId or
-  // another approach. See discussion at the following link for more information:
-  // https://github.com/quasics/quasics-frc-sw-2015/wiki/Profiling-a-flywheel-to-get-PID-and-FF-constants
-  private static final double kS = 0.1; // Volts (can often be ignored for flywheel velocity control)
-  private static final double kV = 0.002; // Volts per RPM
-  private static final double kA = 0.0001; // Volts per Rotations per (Time Unit)^2
-  private static final double kP = 0.11; // Small proportional gain for on-board loop
-
   /**
    * Creates a new TalonFxFlywheel subsystem.
    * 
-   * @param deviceId the CAN ID of the TalonFX motor controller.
+   * @param flywheelConfig the flywheel configuration to use.
    */
-  public TalonFxFlywheel(int deviceId) {
-    super(kS, kV, kA);
+  public TalonFxFlywheel(FlywheelConfig flywheelConfig) {
+    super(flywheelConfig.feedForward());
 
-    motor = new TalonFX(deviceId);
+    motor = new TalonFX(flywheelConfig.motorID());
 
-    // Set ONLY kP for the onboard loop. (If we see a persistant small gap between
-    // the target RPM and what we're actually getting out of the subsystem, then I
-    // can try adding a *tiny* bit of kI.)
-    //
     // Note: I am leaving kFF at 0 because I am calculating it manually.
     TalonFXConfiguration configs = new TalonFXConfiguration();
-    configs.Slot0.kP = kP;
-    configs.Slot0.kI = 0.0;
-    configs.Slot0.kD = 0.0;
+    configs.Slot0.kP = flywheelConfig.pidConfig().kP();
+    configs.Slot0.kI = flywheelConfig.pidConfig().kI();
+    configs.Slot0.kD = flywheelConfig.pidConfig().kD();
 
     motor.getConfigurator().apply(configs);
   }

@@ -16,6 +16,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import frc.robot.subsystems.BaseFlywheel;
+import frc.robot.util.config.FlywheelConfig;
 
 /**
  * A simple flywheel subsystem that uses a SparkMax and WPILib's
@@ -29,27 +30,18 @@ import frc.robot.subsystems.BaseFlywheel;
 public class SparkMaxFlywheel extends BaseFlywheel {
   private final SparkMax motor;
 
-  // TODO: These constants should be determined experimentally using SysId or
-  // another approach.
-  private static final double kS = 0.1; // Volts (can often be ignored for flywheel velocity control)
-  private static final double kV = 0.002; // Volts per RPM
-  private static final double kA = 0.0001; // Volts per RPM
-  private static final double kP = 0.0001; // Proportional gain for onboard loop
+  public SparkMaxFlywheel(FlywheelConfig flywheelConfig) {
+    super(flywheelConfig.feedForward());
 
-  public SparkMaxFlywheel(int deviceId) {
-    super(kS, kV, kA);
-
-    motor = new SparkMax(deviceId, MotorType.kBrushless);
+    motor = new SparkMax(flywheelConfig.motorID(), MotorType.kBrushless);
 
     SparkMaxConfig config = new SparkMaxConfig();
     configureAsNotFollowing(config);
 
-    // Set ONLY kP for the onboard loop. (If we see a persistant small gap between
-    // the target RPM and what we're actually getting out of the subsystem, then I
-    // can try adding a *tiny* bit of kI.)
-    //
     // Note: I am leaving kFF at 0 because I am calculating it manually.
-    config.closedLoop.p(kP, ClosedLoopSlot.kSlot0);
+    config.closedLoop.p(flywheelConfig.pidConfig().kP(), ClosedLoopSlot.kSlot0);
+    config.closedLoop.i(flywheelConfig.pidConfig().kI(), ClosedLoopSlot.kSlot0);
+    config.closedLoop.d(flywheelConfig.pidConfig().kD(), ClosedLoopSlot.kSlot0);
 
     motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
@@ -59,8 +51,8 @@ public class SparkMaxFlywheel extends BaseFlywheel {
     // Calculate the necessary voltage using WPILib's helper
     final double ffVoltage = feedforward.calculate(targetRPM);
 
-    // Send target to SparkMax and "inject" the Feedforward voltage
-    // This tells the SparkMax: "Aim for this RPM, and start with this many Volts"
+    // Send target to SparkMax and "inject" the Feedforward voltage.
+    // This tells the SparkMax: "Aim for this RPM, and start with this many Volts."
     // The SparkMax will then use its onboard PID controller to adjust the voltage
     // it applies to the motor, starting from the FF voltage, to try to reach the
     // target RPM.

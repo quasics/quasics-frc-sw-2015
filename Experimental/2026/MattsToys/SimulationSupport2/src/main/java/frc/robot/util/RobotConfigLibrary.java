@@ -337,7 +337,6 @@ public final class RobotConfigLibrary {
     final DriveConfig drive = new DriveConfig(DriveType.ThriftyNova, Inches.of(3),
         Inches.of(20.25), // Hand-wavy.....
         8.45, DriveOrientation.RightInverted,
-        // TODO: Compute left/right PID and FF data for 2026 robot
         new PIDConfig(0.29613), // Left PID
         new PIDConfig(0.29613), // Right PID
         new DriveFeedForwardConfig(Volts.of(0), // Ks (linear)
@@ -347,10 +346,22 @@ public final class RobotConfigLibrary {
     );
 
     final PowerDistributor power = new PowerDistributor(ModuleType.kRev);
-    final FlywheelConfig flywheel = new FlywheelConfig(FlywheelConfig.FlywheelType.TalonFX,
-        RebuiltRobotConstants.SparkMaxConstants.FLYWHEEL_MOTOR_ID, false);
-    final HoodConfig hood = new HoodConfig(HoodConfig.ControlType.SparkMax,
-        RebuiltRobotConstants.SparkMaxConstants.HOOD_MOTOR_ID, Degrees.of(0), Degrees.of(90));
+    // TODO: Update 2026 flywheel configuration data with real numbers.
+    final FlywheelConfig flywheel = new FlywheelConfig(
+        FlywheelConfig.FlywheelType.TalonFX,
+        RebuiltRobotConstants.SparkMaxConstants.FLYWHEEL_MOTOR_ID, false,
+        new SimpleFeedForwardConfig(
+            Volts.of(0.1), // kS
+            Volts.of(0.002), // kV
+            0.0001), // kA
+        new PIDConfig(0.11));
+
+    // TODO: Update 2026 hood configuration data with real numbers.
+    final HoodConfig hood = new HoodConfig(
+        HoodConfig.ControlType.SparkMax,
+        RebuiltRobotConstants.SparkMaxConstants.HOOD_MOTOR_ID,
+        Degrees.of(0),
+        Degrees.of(90));
 
     return new RobotConfig(
         false,

@@ -6,14 +6,14 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Encoder;
 
 public class WpiLibSupportFunctions {
-
   /**
    * Helper function to allocate/configure a WPILib Encoder.
    *
    * @param portId1                   "A" port for the encoder
    * @param portId2                   "B" port for the encoder
    * @param inverted                  indicates if the encoder is inverted
-   * @param outerDiameter             diameter of the thing being measured by the
+   * @param outerDiameter             diameter of the thing being measured by
+   *     the
    *                                  encoder (used to calculate distance per
    *                                  pulse)
    * @param encoderTicksPerRevolution number of encoder ticks per revolution of
@@ -21,11 +21,13 @@ public class WpiLibSupportFunctions {
    *                                  pulse)
    * @return a configured encoder
    */
-  public static Encoder getConfiguredEncoder(
-      int portId1, int portId2, boolean inverted, Distance outerDiameter, double encoderTicksPerRevolution) {
+  public static Encoder getConfiguredEncoder(int portId1, int portId2,
+      boolean inverted, Distance outerDiameter,
+      double encoderTicksPerRevolution) {
     final Encoder encoder = new Encoder(portId1, portId2);
     encoder.setReverseDirection(inverted);
-    configureEncoderForDistance(encoder, outerDiameter, encoderTicksPerRevolution);
+    configureEncoderForDistance(
+        encoder, outerDiameter, encoderTicksPerRevolution);
     return encoder;
   }
 
@@ -42,10 +44,9 @@ public class WpiLibSupportFunctions {
    *                                  the wheel (used to calculate distance per
    *                                  pulse)
    */
-  public static void configureEncoderForDistance(
-      Encoder encoder, Distance outerDiameter, double encoderTicksPerRevolution) {
+  public static void configureEncoderForDistance(Encoder encoder,
+      Distance outerDiameter, double encoderTicksPerRevolution) {
     encoder.setDistancePerPulse(
         Math.PI * outerDiameter.in(Meters) / encoderTicksPerRevolution);
   }
-
 }

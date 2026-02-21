@@ -6,21 +6,19 @@ package frc.robot.hardware.actuators;
 
 import static edu.wpi.first.units.Units.Volts;
 
-import java.io.IOException;
-
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.units.measure.Voltage;
+import java.io.IOException;
 
 /**
  * IMotorControllerPlus specialization for TalonFX motors.
- * 
+ *
  * Note: this code is (as yet) untested, as I don't have any TalonFX motors to
  * test it with. It may need some adjustments to work properly.
- * 
+ *
  * TODO: Test this code with a real TalonFX motor and make any necessary fixes.
  */
 public class TalonMotorControllerPlus implements IMotorControllerPlus {
@@ -60,7 +58,8 @@ public class TalonMotorControllerPlus implements IMotorControllerPlus {
   public boolean getInverted() {
     TalonFXConfiguration currentConfigs = new TalonFXConfiguration();
     m_talon.getConfigurator().refresh(currentConfigs);
-    return currentConfigs.MotorOutput.Inverted == InvertedValue.Clockwise_Positive;
+    return currentConfigs.MotorOutput.Inverted
+        == InvertedValue.Clockwise_Positive;
   }
 
   @Override
@@ -90,9 +89,8 @@ public class TalonMotorControllerPlus implements IMotorControllerPlus {
   @Override
   public void setBrakeMode(boolean enabled) {
     TalonFXConfiguration config = new TalonFXConfiguration();
-    config.MotorOutput.NeutralMode = enabled
-        ? NeutralModeValue.Brake
-        : NeutralModeValue.Coast;
+    config.MotorOutput.NeutralMode =
+        enabled ? NeutralModeValue.Brake : NeutralModeValue.Coast;
 
     m_talon.getConfigurator().apply(config);
   }

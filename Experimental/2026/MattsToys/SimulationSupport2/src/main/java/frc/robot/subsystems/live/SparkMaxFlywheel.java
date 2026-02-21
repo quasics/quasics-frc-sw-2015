@@ -15,7 +15,6 @@ import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.subsystems.bases.BaseFlywheel;
 import frc.robot.util.config.FlywheelConfig;
@@ -45,7 +44,8 @@ public class SparkMaxFlywheel extends BaseFlywheel {
     config.closedLoop.i(flywheelConfig.pidConfig().kI(), ClosedLoopSlot.kSlot0);
     config.closedLoop.d(flywheelConfig.pidConfig().kD(), ClosedLoopSlot.kSlot0);
 
-    motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    motor.configure(
+        config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   @Override
@@ -54,17 +54,16 @@ public class SparkMaxFlywheel extends BaseFlywheel {
     final double ffVoltage = feedforward.calculate(targetRPM);
 
     // Send target to SparkMax and "inject" the Feedforward voltage.
-    // This tells the SparkMax: "Aim for this RPM, and start with this many Volts."
-    // The SparkMax will then use its onboard PID controller to adjust the voltage
-    // it applies to the motor, starting from the FF voltage, to try to reach the
-    // target RPM.
+    // This tells the SparkMax: "Aim for this RPM, and start with this many
+    // Volts." The SparkMax will then use its onboard PID controller to adjust
+    // the voltage it applies to the motor, starting from the FF voltage, to try
+    // to reach the target RPM.
     //
     // Note: The FF voltage is not a "setpoint" for the PID loop; it's more of a
-    // starting point that helps the motor get close to the target RPM faster, and
-    // reduces the amount of work the PID controller has to do.
+    // starting point that helps the motor get close to the target RPM faster,
+    // and reduces the amount of work the PID controller has to do.
     var result = motor.getClosedLoopController().setSetpoint(
-        targetRPM,
-        ControlType.kVelocity,
+        targetRPM, ControlType.kVelocity,
         ClosedLoopSlot.kSlot0, // Slot ID
         ffVoltage, // The Arbitrary Feedforward value
         ArbFFUnits.kVoltage // Specify that the FF value is in Volts

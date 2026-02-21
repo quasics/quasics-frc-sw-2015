@@ -8,7 +8,6 @@ import static edu.wpi.first.units.Units.Radians;
 
 import com.revrobotics.sim.SparkAbsoluteEncoderSim;
 import com.revrobotics.sim.SparkMaxSim;
-
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
@@ -19,7 +18,7 @@ import frc.robot.util.config.HoodConfig;
  * Sample implementation of the IShooterHood subsystem, for use under
  * simulation. This class simulates the behavior of the shooter hood mechanism,
  * including the motor, absolute encoder, and the physical dynamics of the hood.
- * 
+ *
  * The simulation uses a SingleJointedArmSim to model the hood as a
  * single-jointed arm driven by a motor, and updates the simulated encoder
  * readings based on the arm's position and velocity.
@@ -35,11 +34,11 @@ public class SimShooterHoodSubsystem extends ShooterHoodSubsystem {
   private SparkAbsoluteEncoderSim m_absEncSim;
 
   /**
-   * Simulation of the physical dynamics of the shooter hood, modeled as a single
-   * joint arm driven by a motor. The parameters (gear ratio, moment of inertia,
-   * etc.) would need to be tuned based on the actual mechanism design and
-   * testing.
-   * 
+   * Simulation of the physical dynamics of the shooter hood, modeled as a
+   * single joint arm driven by a motor. The parameters (gear ratio, moment of
+   * inertia, etc.) would need to be tuned based on the actual mechanism design
+   * and testing.
+   *
    * The angle limits are set based on the kMinPosDegrees and kMaxPosDegrees
    * constants defined in the IShooterHood interface.
    */
@@ -50,25 +49,22 @@ public class SimShooterHoodSubsystem extends ShooterHoodSubsystem {
     super(hoodConfig);
     m_motorSim = new SparkMaxSim(m_motor, DCMotor.getNEO(1));
     m_absEncSim = m_motorSim.getAbsoluteEncoderSim();
-    m_hoodSim = new SingleJointedArmSim(
-        DCMotor.getNEO(1),
-        1.0,
-        0.01,
-        0.2,
-        hoodConfig.minAngle().in(Radians),
-        hoodConfig.maxAngle().in(Radians),
-        true,
-        hoodConfig.minAngle().in(Radians));
+    m_hoodSim = new SingleJointedArmSim(DCMotor.getNEO(1), 1.0, 0.01, 0.2,
+        hoodConfig.minAngle().in(Radians), hoodConfig.maxAngle().in(Radians),
+        true, hoodConfig.minAngle().in(Radians));
   }
 
   @Override
   public void simulationPeriodic() {
-    m_hoodSim.setInput(m_motorSim.getBusVoltage() * m_motorSim.getAppliedOutput());
+    m_hoodSim.setInput(
+        m_motorSim.getBusVoltage() * m_motorSim.getAppliedOutput());
     m_hoodSim.update(0.020);
 
     // Convert back to degrees before injecting into the SparkMaxSim
-    double currentAngleDegrees = Units.radiansToDegrees(m_hoodSim.getAngleRads());
-    double currentVelocityDegreesPerSec = Units.radiansToDegrees(m_hoodSim.getVelocityRadPerSec());
+    double currentAngleDegrees =
+        Units.radiansToDegrees(m_hoodSim.getAngleRads());
+    double currentVelocityDegreesPerSec =
+        Units.radiansToDegrees(m_hoodSim.getVelocityRadPerSec());
 
     m_absEncSim.setPosition(currentAngleDegrees);
     m_absEncSim.setVelocity(currentVelocityDegreesPerSec);

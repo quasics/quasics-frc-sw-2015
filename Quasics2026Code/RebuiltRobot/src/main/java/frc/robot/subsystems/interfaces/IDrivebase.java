@@ -4,24 +4,23 @@
 
 package frc.robot.subsystems.interfaces;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
-
-import static edu.wpi.first.units.Units.MetersPerSecond;
-
 import java.util.function.Supplier;
 
 public interface IDrivebase {
   void arcadeDrive(LinearVelocity forwardspeed, AngularVelocity turnspeed);
 
-  // TODO(ROBERT): This should take a linear valocity the ability to control speed
-  // directly or percentage speed
+  // TODO(ROBERT): This should take a linear valocity the ability to control
+  // speed directly or percentage speed
   void setSpeeds(LinearVelocity leftSpeed, LinearVelocity rightSpeed);
 
-  // Used to set voltage directly to the motors (for characterization, trajectory
-  // following, etc.)
+  // Used to set voltage directly to the motors (for characterization,
+  // trajectory following, etc.)
   void setVoltages(Voltage leftVoltage, Voltage rightVoltage);
 
   void setPercent(double leftPercent, double rightPersent);

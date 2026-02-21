@@ -22,12 +22,13 @@ public class TurnUntilTargetInView extends Command {
 
   /**
    * Constructor.
-   * 
+   *
    * @param vision    vision subsystem
    * @param drivebase drive base subsystem
    * @param targetId  the ID of the target to look for
    */
-  public TurnUntilTargetInView(IVision vision, IDrivebasePlus drivebase, int targetId) {
+  public TurnUntilTargetInView(
+      IVision vision, IDrivebasePlus drivebase, int targetId) {
     m_vision = vision;
     m_drivebase = drivebase;
     m_targetId = targetId;
@@ -36,12 +37,13 @@ public class TurnUntilTargetInView extends Command {
 
   @Override
   public void initialize() {
-    if (m_vision.canSeeTargetWithId(m_drivebase.getEstimatedPose(), m_targetId)) {
+    if (m_vision.canSeeTargetWithId(
+            m_drivebase.getEstimatedPose(), m_targetId)) {
       // If we can already see the target, then we don't need to do anything.
       // (This is mostly to avoid a weird edge case where the command gets
-      // scheduled, but then the target is immediately visible, which would cause
-      // the command to end immediately and thus not run any of the "end" logic
-      // that might be important for some commands that extend this one.)
+      // scheduled, but then the target is immediately visible, which would
+      // cause the command to end immediately and thus not run any of the "end"
+      // logic that might be important for some commands that extend this one.)
       cancel();
       return;
     }
@@ -57,7 +59,9 @@ public class TurnUntilTargetInView extends Command {
 
   @Override
   public boolean isFinished() {
-    System.out.println("Visible targets: " + m_vision.getVisibleTargets(m_drivebase.getEstimatedPose()));
-    return m_vision.canSeeTargetWithId(m_drivebase.getEstimatedPose(), m_targetId);
+    System.out.println("Visible targets: "
+        + m_vision.getVisibleTargets(m_drivebase.getEstimatedPose()));
+    return m_vision.canSeeTargetWithId(
+        m_drivebase.getEstimatedPose(), m_targetId);
   }
 }

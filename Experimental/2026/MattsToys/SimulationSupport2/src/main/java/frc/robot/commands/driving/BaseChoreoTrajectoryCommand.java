@@ -4,8 +4,6 @@
 
 package frc.robot.commands.driving;
 
-import java.util.Optional;
-
 import choreo.Choreo;
 import choreo.trajectory.DifferentialSample;
 import choreo.trajectory.Trajectory;
@@ -17,24 +15,27 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.interfaces.IDrivebasePlus;
+import java.util.Optional;
 
 public class BaseChoreoTrajectoryCommand extends Command {
   static final boolean SHOULD_MIRROR_POSES_FOR_RED_ALLIANCE = false;
 
   private final Timer m_timer = new Timer();
-  private final LTVUnicycleController m_controller = new LTVUnicycleController(0.02);
+  private final LTVUnicycleController m_controller =
+      new LTVUnicycleController(0.02);
   private final IDrivebasePlus m_drivebase;
   private final Optional<Trajectory<DifferentialSample>> m_trajectory;
   private boolean m_mirrorPoses;
 
   /**
    * Constructor.
-   * 
+   *
    * @param trajectoryName file name for the trajectory (Choreo will assume the
    *                       file path is known)
    * @param drivebase      drive base being controlled
    */
-  public BaseChoreoTrajectoryCommand(String trajectoryName, IDrivebasePlus drivebase) {
+  public BaseChoreoTrajectoryCommand(
+      String trajectoryName, IDrivebasePlus drivebase) {
     m_drivebase = drivebase;
     m_trajectory = Choreo.loadTrajectory(trajectoryName);
 
@@ -48,29 +49,30 @@ public class BaseChoreoTrajectoryCommand extends Command {
       return;
     }
 
-    m_mirrorPoses = DriverStation.getAlliance().orElse(Alliance.Blue).equals(Alliance.Red)
+    m_mirrorPoses =
+        DriverStation.getAlliance().orElse(Alliance.Blue).equals(Alliance.Red)
         && SHOULD_MIRROR_POSES_FOR_RED_ALLIANCE;
 
     // Get the initial pose of the trajectory
-    Optional<Pose2d> initialPose = m_trajectory.get().getInitialPose(m_mirrorPoses);
+    Optional<Pose2d> initialPose =
+        m_trajectory.get().getInitialPose(m_mirrorPoses);
 
     if (initialPose.isPresent()) {
       // "Pretend" that the robot is at the initial pose, even if it's not.
       m_drivebase.resetOdometry(initialPose.get());
 
       // TODO: Consider some of the following options.
-      // 1) Providing at least some warning, etc., of how closely the initial pose
-      // matches the current drivebase pose.
-      // 2) Save the offset of the current pose from the initial pose, and then apply
-      // that offset at the end of the trajectory following, so that we (mostly) undo
-      // the reset of the odometry. (This is a bit hacky, but it would allow us to
-      // follow the trajectory more closely without needing to reset the odometry on
-      // the live drivebase.)
-      // 3) Use a wrapper around the odometry that allows us to "fake" the initial
-      // pose for the trajectory following, so that we don't need to reset the
-      // odometry on the live drivebase.
-      // 4) Adapting the trajectory (somehow) to the current pose.
-      // 5) (Longshot) First, get us to the targeted initial pose, and then....
+      // 1) Providing at least some warning, etc., of how closely the initial
+      // pose matches the current drivebase pose. 2) Save the offset of the
+      // current pose from the initial pose, and then apply that offset at the
+      // end of the trajectory following, so that we (mostly) undo the reset of
+      // the odometry. (This is a bit hacky, but it would allow us to follow the
+      // trajectory more closely without needing to reset the odometry on the
+      // live drivebase.) 3) Use a wrapper around the odometry that allows us to
+      // "fake" the initial pose for the trajectory following, so that we don't
+      // need to reset the odometry on the live drivebase. 4) Adapting the
+      // trajectory (somehow) to the current pose. 5) (Longshot) First, get us
+      // to the targeted initial pose, and then....
     }
 
     // Reset and start the timer when the autonomous period begins
@@ -86,10 +88,7 @@ public class BaseChoreoTrajectoryCommand extends Command {
 
     // Generate the next speeds for the robot
     ChassisSpeeds speeds = m_controller.calculate(
-        pose,
-        sample.getPose(),
-        ff.vxMetersPerSecond,
-        ff.omegaRadiansPerSecond);
+        pose, sample.getPose(), ff.vxMetersPerSecond, ff.omegaRadiansPerSecond);
 
     // Apply the generated speeds
     m_drivebase.driveTankWithPID(speeds);
@@ -99,7 +98,8 @@ public class BaseChoreoTrajectoryCommand extends Command {
   public void execute() {
     if (m_timer.isRunning() && m_trajectory.isPresent()) {
       // Sample the trajectory at the current time into the autonomous period
-      Optional<DifferentialSample> sample = m_trajectory.get().sampleAt(m_timer.get(), m_mirrorPoses);
+      Optional<DifferentialSample> sample =
+          m_trajectory.get().sampleAt(m_timer.get(), m_mirrorPoses);
       if (sample.isPresent()) {
         followTrajectory(sample.get());
       }
@@ -115,8 +115,7 @@ public class BaseChoreoTrajectoryCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !m_timer.isRunning()
-        || m_trajectory.isEmpty()
+    return !m_timer.isRunning() || m_trajectory.isEmpty()
         || m_timer.hasElapsed(m_trajectory.get().getTotalTime());
   }
 
@@ -138,7 +137,8 @@ public class BaseChoreoTrajectoryCommand extends Command {
   // drive(speeds);
 
   // // Or, if you don't drive via ChassisSpeeds
-  // DifferentialDriveWheelSpeeds wheelSpeeds = kinematics.toWheelSpeeds(speeds);
+  // DifferentialDriveWheelSpeeds wheelSpeeds =
+  // kinematics.toWheelSpeeds(speeds);
   // //
   // drive(wheelSpeeds.leftMetersPerSecond, wheelSpeeds.rightMetersPerSecond);
   // }

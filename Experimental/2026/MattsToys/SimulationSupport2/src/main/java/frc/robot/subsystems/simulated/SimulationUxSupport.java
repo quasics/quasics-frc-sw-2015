@@ -36,11 +36,11 @@ public class SimulationUxSupport {
   private static final String CLIMBER_KEY = IClimber.SUBSYSTEM_NAME + " Sim";
 
   /** Name used to publish the elevator simulation UX to SmartDashboard. */
-  private static final String ELEVATOR_KEY = IElevator.SUBSYSTEM_NAME
-      + " Sim";
+  private static final String ELEVATOR_KEY = IElevator.SUBSYSTEM_NAME + " Sim";
 
   /** Color used to mark a fixed target position for the elevator's reach. */
-  private static final Color8Bit FIXED_POSITION_COLOR = new Color8Bit(0, 0, 255);
+  private static final Color8Bit FIXED_POSITION_COLOR =
+      new Color8Bit(0, 0, 255);
 
   /**
    * Color used to mark the elevator's floor ("zero point", which may be
@@ -116,16 +116,20 @@ public class SimulationUxSupport {
         (SimElevator.getDefinedHeightForPosition(IElevator.ElevatorPosition.TOP)
             * 1.15) // Leave a little room at the top
     );
-    m_elevatorMech2d = m_elevatorAndArmRootMech2d.getRoot("Root", 5, 0)
-        .append(new MechanismLigament2d(IElevator.SUBSYSTEM_NAME, 0, 90));
-    m_armMech2d = m_elevatorMech2d.append(new MechanismLigament2d(ISingleJointArm.SUBSYSTEM_NAME, ARM_LENGTH, 0));
+    m_elevatorMech2d =
+        m_elevatorAndArmRootMech2d.getRoot("Root", 5, 0)
+            .append(new MechanismLigament2d(IElevator.SUBSYSTEM_NAME, 0, 90));
+    m_armMech2d = m_elevatorMech2d.append(
+        new MechanismLigament2d(ISingleJointArm.SUBSYSTEM_NAME, ARM_LENGTH, 0));
 
     // Set up climber simulation rendering
     m_climberRootMech2d = new Mechanism2d(9,
-        ((SimClimber.MAX_HEIGHT - SimClimber.MIN_HEIGHT) * 1.15) // Leave a little room at the top
+        ((SimClimber.MAX_HEIGHT - SimClimber.MIN_HEIGHT)
+            * 1.15) // Leave a little room at the top
     );
-    m_climberMech2d = m_climberRootMech2d.getRoot("Root", 5, 0)
-        .append(new MechanismLigament2d(IClimber.SUBSYSTEM_NAME, 0, 90));
+    m_climberMech2d =
+        m_climberRootMech2d.getRoot("Root", 5, 0)
+            .append(new MechanismLigament2d(IClimber.SUBSYSTEM_NAME, 0, 90));
 
     // Render climber boundary markers
     addClimberMarkers();
@@ -139,18 +143,24 @@ public class SimulationUxSupport {
   }
 
   /**
-   * Renders climber "marker lines" for comparison basis (e.g., is it at position
-   * X, etc.).
+   * Renders climber "marker lines" for comparison basis (e.g., is it at
+   * position X, etc.).
    */
   private void addClimberMarkers() {
-    addClimberLevel("Retracted", SimClimber.getHeightForPosition(IClimber.Position.Retracted), FIXED_POSITION_COLOR);
-    addClimberLevel("Extended", SimClimber.getHeightForPosition(IClimber.Position.Extended), FIXED_POSITION_COLOR);
-    addClimberLevel("PulledUp", SimClimber.getHeightForPosition(IClimber.Position.PulledUp), FIXED_POSITION_COLOR);
+    addClimberLevel("Retracted",
+        SimClimber.getHeightForPosition(IClimber.Position.Retracted),
+        FIXED_POSITION_COLOR);
+    addClimberLevel("Extended",
+        SimClimber.getHeightForPosition(IClimber.Position.Extended),
+        FIXED_POSITION_COLOR);
+    addClimberLevel("PulledUp",
+        SimClimber.getHeightForPosition(IClimber.Position.PulledUp),
+        FIXED_POSITION_COLOR);
   }
 
   /**
-   * Renders elevator "marker lines" for comparison basis (e.g., is it at position
-   * X, etc.).
+   * Renders elevator "marker lines" for comparison basis (e.g., is it at
+   * position X, etc.).
    */
   private void addElevatorMarkers() {
     addElevatorLevel("Floor", 0, LIMIT_COLOR);
@@ -182,7 +192,8 @@ public class SimulationUxSupport {
    * @param color  color to use for the marker
    */
   private void addClimberLevel(String name, double height, Color8Bit color) {
-    m_climberRootMech2d.getRoot(name + "Root", 0, height - SimClimber.MIN_HEIGHT)
+    m_climberRootMech2d
+        .getRoot(name + "Root", 0, height - SimClimber.MIN_HEIGHT)
         .append(new MechanismLigament2d(name, 10, 0, 1, color));
   }
 
@@ -268,7 +279,8 @@ public class SimulationUxSupport {
    * @param targetHeight  target height of the climber
    * @param status        current status of the climber
    */
-  public void updateClimber(double currentHeight, double targetHeight, DeviceStatus status) {
+  public void updateClimber(
+      double currentHeight, double targetHeight, DeviceStatus status) {
     m_climberMech2d.setLength(currentHeight);
     setMechanismColor(m_climberMech2d, status);
     lazyPublishToSmartDashboard(CLIMBER_KEY, m_climberRootMech2d);
@@ -315,7 +327,8 @@ public class SimulationUxSupport {
    * Updates the robot's estimated pose on the field (based on some approach for
    * doing so).
    *
-   * @param label     label associated with the estimated pose (e.g., "Odometry")
+   * @param label     label associated with the estimated pose (e.g.,
+   *     "Odometry")
    * @param robotPose current estimated pose of the robot
    */
   public void updateEstimatedRobotPose(String label, Pose2d robotPose) {

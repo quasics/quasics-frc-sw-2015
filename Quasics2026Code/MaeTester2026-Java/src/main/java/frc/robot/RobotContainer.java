@@ -25,10 +25,11 @@ import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.Shooter;
 
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
- * subsystems, commands, and trigger mappings) should be declared here.
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a "declarative" paradigm, very little robot logic should
+ * actually be handled in the {@link Robot} periodic methods (other than the
+ * scheduler calls). Instead, the structure of the robot (including subsystems,
+ * commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
@@ -42,7 +43,10 @@ public class RobotContainer {
   private final CommandXboxController m_operatorController =
       new CommandXboxController(OPERATOR_JOYSTICK_ID);
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  /**
+   * The container for the robot. Contains subsystems, OI devices, and
+   * commands.
+   */
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
@@ -65,8 +69,8 @@ public class RobotContainer {
    *     the driver's joysticks (for normal, turbo, and turtle modes)
    */
   private double getDriveSpeedScalingFactor() {
-    final boolean isTurbo =
-        m_driverController.getRawButton(Constants.LogitechGamePad.RightShoulder);
+    final boolean isTurbo = m_driverController.getRawButton(
+        Constants.LogitechGamePad.RightShoulder);
     final boolean isTurtle =
         m_driverController.getRawButton(Constants.LogitechGamePad.LeftShoulder);
 
@@ -80,12 +84,14 @@ public class RobotContainer {
   }
 
   /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
-   * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
+   * Use this method to define your trigger->command mappings. Triggers can be
+   * created via the
+   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor
+   * with an arbitrary predicate, or via the named factories in {@link
+   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for
+   * {@link CommandXboxController Xbox}/{@link
+   * edu.wpi.first.wpilibj2.command.button.CommandPS4Controller PS4} controllers
+   * or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
   private void configureBindings() {
@@ -93,15 +99,17 @@ public class RobotContainer {
     new Trigger(m_exampleSubsystem::exampleCondition)
         .whileTrue(new ExampleCommand(m_exampleSubsystem));
 
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    m_operatorController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    // Schedule `exampleMethodCommand` when the Xbox controller's B button is
+    // pressed, cancelling on release.
+    m_operatorController.b().whileTrue(
+        m_exampleSubsystem.exampleMethodCommand());
 
     new Trigger(
         // Call this function (static or a lambda) to decide if we should
         // trigger something or not.
         () -> m_driverController.getRawButton(LogitechGamePad.XButton))
-        // While the function called above returns true, run the specified command.
+        // While the function called above returns true, run the specified
+        // command.
         .whileTrue(
             // Comand to be run while true
             new RunShootingMotor(m_shooter, .5));

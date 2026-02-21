@@ -17,8 +17,8 @@ public class TimedRunTransitionRoller extends Command {
   private final double m_transitionSpeed;
   Timer m_timer = new Timer();
   private final Time m_time;
-  public TimedRunTransitionRoller(
-      TransitionRoller transition, double transitionSpeed, Time time, boolean transitionTakingIn) {
+  public TimedRunTransitionRoller(TransitionRoller transition,
+      double transitionSpeed, Time time, boolean transitionTakingIn) {
     m_time = time;
     m_transition = transition;
     if (transitionTakingIn) {

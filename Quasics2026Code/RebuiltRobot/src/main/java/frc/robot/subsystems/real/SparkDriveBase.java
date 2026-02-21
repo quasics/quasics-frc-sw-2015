@@ -9,7 +9,6 @@ import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
-
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Encoder;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
@@ -56,11 +55,15 @@ public class SparkDriveBase extends AbstractDrivebase {
         new SparkMax(SparkMaxIds.RIGHT_LEADER_ID, MotorType.kBrushless));
 
     // Configure followers to follow the leaders.
-    final SparkMax leftfollower = new SparkMax(SparkMaxIds.LEFT_FOLLOWER_ID, MotorType.kBrushless);
-    final SparkMax rightfollower = new SparkMax(SparkMaxIds.RIGHT_FOLLOWER_ID, MotorType.kBrushless);
+    final SparkMax leftfollower =
+        new SparkMax(SparkMaxIds.LEFT_FOLLOWER_ID, MotorType.kBrushless);
+    final SparkMax rightfollower =
+        new SparkMax(SparkMaxIds.RIGHT_FOLLOWER_ID, MotorType.kBrushless);
 
-    configureMotorControllersForFollowing((SparkMax) getLeftLeader(), leftfollower);
-    configureMotorControllersForFollowing((SparkMax) getRightLeader(), rightfollower);
+    configureMotorControllersForFollowing(
+        (SparkMax) getLeftLeader(), leftfollower);
+    configureMotorControllersForFollowing(
+        (SparkMax) getRightLeader(), rightfollower);
 
     // Configure the encoders.
     Encoder leftEncoder = new Encoder(1, 2);
@@ -76,11 +79,11 @@ public class SparkDriveBase extends AbstractDrivebase {
 
     // Configure the gyro.
     //
-    // TODO: Switch this to use the gyro that we're actually going to be using on
-    // the real robot.
+    // TODO: Switch this to use the gyro that we're actually going to be using
+    // on the real robot.
     //
-    // FINDME(Robert): This needs to be updated, since we're not actually going to
-    // be using an AnalogGyro for the real robot. (We'll probably be using a
+    // FINDME(Robert): This needs to be updated, since we're not actually going
+    // to be using an AnalogGyro for the real robot. (We'll probably be using a
     // Pigeon2.)
     AnalogGyro gyro = new AnalogGyro(0);
     m_gryo = IGyro.wrapGyro(gyro);
@@ -89,20 +92,22 @@ public class SparkDriveBase extends AbstractDrivebase {
   /**
    * Configures a follower SparkMax motor controller to follow a leader SparkMax
    * motor controller.
-   * 
+   *
    * Note that this is important to do in code (instead of just setting the
-   * followers to follow the leaders simply be using a configration app) to ensure
-   * that the followers will be correctly configured even if a motor controller
-   * gets swapped out (e.g., if a controller gets damaged and needs to be
-   * replaced, or if we need to swap a controller from one side of the drivebase
-   * to the other for some reason, etc.).
-   * 
+   * followers to follow the leaders simply be using a configration app) to
+   * ensure that the followers will be correctly configured even if a motor
+   * controller gets swapped out (e.g., if a controller gets damaged and needs
+   * to be replaced, or if we need to swap a controller from one side of the
+   * drivebase to the other for some reason, etc.).
+   *
    * @param leader   leader SparkMax motor controller that the follower should
    *                 follow
-   * @param follower SparkMax motor controller that should be configured to follow
+   * @param follower SparkMax motor controller that should be configured to
+   *     follow
    *                 the leader
    */
-  private void configureMotorControllersForFollowing(SparkMax leader, SparkMax follower) {
+  private void configureMotorControllersForFollowing(
+      SparkMax leader, SparkMax follower) {
     SparkMaxConfig followerConfig = new SparkMaxConfig();
 
     // Configure the motor to follow the leader
@@ -110,7 +115,8 @@ public class SparkDriveBase extends AbstractDrivebase {
     followerConfig.follow(leader);
 
     // Apply the configuration to the follower motor
-    follower.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    follower.configure(followerConfig, ResetMode.kResetSafeParameters,
+        PersistMode.kPersistParameters);
 
     // TODO: Configure the leader so that it is *not* a follower of anything.
     //

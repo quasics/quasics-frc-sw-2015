@@ -17,7 +17,8 @@ public class IntakeRoller extends SubsystemBase {
   /** Creates a new IntakeRoller. */
   public IntakeRoller() {
     if (!ConditionalConstants.SALLY) {
-      m_intake = new SparkMax(SparkMaxIds.INTAKE_MOTOR_ID, MotorType.kBrushless);
+      m_intake =
+          new SparkMax(SparkMaxIds.INTAKE_MOTOR_ID, MotorType.kBrushless);
     }
   }
 

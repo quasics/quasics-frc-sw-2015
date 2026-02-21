@@ -14,7 +14,6 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.thethriftybot.devices.ThriftyNova;
 import com.thethriftybot.devices.ThriftyNova.EncoderType;
 import com.thethriftybot.devices.ThriftyNova.ThriftyNovaConfig;
-
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Encoder;
@@ -25,7 +24,6 @@ import frc.robot.Constants.CanBusIds.ThriftyNovaIds;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.ThriftyEncoderWrapper;
 import frc.robot.sensors.TrivialEncoder;
-import frc.robot.sensors.ThriftyEncoderWrapper;
 
 public class NovaDriveBase extends AbstractDrivebase {
   // TODO: add thriftynova support. (This might be done in a derived class, or
@@ -62,15 +60,20 @@ public class NovaDriveBase extends AbstractDrivebase {
   }
 
   /** Creates a new RealDrivebase. */
-  public NovaDriveBase(ThriftyNova leftMotorController, ThriftyNova rightMotorController) {
+  public NovaDriveBase(
+      ThriftyNova leftMotorController, ThriftyNova rightMotorController) {
     super(leftMotorController, rightMotorController);
 
     // Configure followers to follow the leaders.
-    final ThriftyNova leftfollower = new ThriftyNova(ThriftyNovaIds.LEFT_FOLLOWER_ID);
-    final ThriftyNova rightfollower = new ThriftyNova(ThriftyNovaIds.RIGHT_FOLLOWER_ID);
+    final ThriftyNova leftfollower =
+        new ThriftyNova(ThriftyNovaIds.LEFT_FOLLOWER_ID);
+    final ThriftyNova rightfollower =
+        new ThriftyNova(ThriftyNovaIds.RIGHT_FOLLOWER_ID);
 
-    configureMotorControllersForFollowing(ThriftyNovaIds.LEFT_LEADER_ID, leftfollower);
-    configureMotorControllersForFollowing(ThriftyNovaIds.RIGHT_LEADER_ID, rightfollower);
+    configureMotorControllersForFollowing(
+        ThriftyNovaIds.LEFT_LEADER_ID, leftfollower);
+    configureMotorControllersForFollowing(
+        ThriftyNovaIds.RIGHT_LEADER_ID, rightfollower);
 
     // Configure the encoders.
     ThriftyNovaConfig config = new ThriftyNovaConfig();
@@ -78,48 +81,50 @@ public class NovaDriveBase extends AbstractDrivebase {
     leftfollower.applyConfig(config);
     rightfollower.applyConfig(config);
 
-    final Distance wheelDiam = Meters.of(2.0 * Constants.wheelRadius.in(Meters));
+    final Distance wheelDiam =
+        Meters.of(2.0 * Constants.wheelRadius.in(Meters));
     m_leftEncoder = new ThriftyEncoderWrapper(leftMotorController, wheelDiam);
     m_rightEncoder = new ThriftyEncoderWrapper(leftMotorController, wheelDiam);
 
     // Configure the gyro.
     //
-    // TODO: Switch this to use the gyro that we're actually going to be using on
-    // the real robot.
+    // TODO: Switch this to use the gyro that we're actually going to be using
+    // on the real robot.
     //
-    // FINDME(Robert): This needs to be updated, since we're not actually going to
-    // be using an AnalogGyro for the real robot. (We'll probably be using a
+    // FINDME(Robert): This needs to be updated, since we're not actually going
+    // to be using an AnalogGyro for the real robot. (We'll probably be using a
     // Pigeon2.)
     AnalogGyro gyro = new AnalogGyro(0);
     m_gryo = IGyro.wrapGyro(gyro);
   }
 
   public NovaDriveBase() {
-    this(new ThriftyNova(ThriftyNovaIds.LEFT_LEADER_ID), new ThriftyNova(ThriftyNovaIds.RIGHT_LEADER_ID));
+    this(new ThriftyNova(ThriftyNovaIds.LEFT_LEADER_ID),
+        new ThriftyNova(ThriftyNovaIds.RIGHT_LEADER_ID));
   }
 
   /**
    * Configures a follower SparkMax motor controller to follow a leader SparkMax
    * motor controller.
-   * 
+   *
    * Note that this is important to do in code (instead of just setting the
-   * followers to follow the leaders simply be using a configration app) to ensure
-   * that the followers will be correctly configured even if a motor controller
-   * gets swapped out (e.g., if a controller gets damaged and needs to be
-   * replaced, or if we need to swap a controller from one side of the drivebase
-   * to the other for some reason, etc.).
-   * 
+   * followers to follow the leaders simply be using a configration app) to
+   * ensure that the followers will be correctly configured even if a motor
+   * controller gets swapped out (e.g., if a controller gets damaged and needs
+   * to be replaced, or if we need to swap a controller from one side of the
+   * drivebase to the other for some reason, etc.).
+   *
    * @param leader   leader SparkMax motor controller that the follower should
    *                 follow
-   * @param follower SparkMax motor controller that should be configured to follow
+   * @param follower SparkMax motor controller that should be configured to
+   *     follow
    *                 the leader
    */
-  private void configureMotorControllersForFollowing(int leader, ThriftyNova follower) {
-
+  private void configureMotorControllersForFollowing(
+      int leader, ThriftyNova follower) {
     // Configure the motor to follow the leader
     // Pass second parameter of 'true' to invert the direction
     follower.follow(leader);
-
   }
 
   // We've removed @Override periodic, but be sure to use super.periodic if we

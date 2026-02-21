@@ -13,8 +13,8 @@ public class TankDrive extends Command {
   private final Supplier<Double> m_rightSupplier;
 
   /** Creates a new TankDrive. */
-  public TankDrive(
-      Drivebase drivebase, Supplier<Double> leftSupplier, Supplier<Double> rightSupplier) {
+  public TankDrive(Drivebase drivebase, Supplier<Double> leftSupplier,
+      Supplier<Double> rightSupplier) {
     m_leftSupplier = leftSupplier;
     m_rightSupplier = rightSupplier;
     m_drivebase = drivebase;

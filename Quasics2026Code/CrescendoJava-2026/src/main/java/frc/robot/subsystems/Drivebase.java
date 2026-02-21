@@ -6,8 +6,8 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.PersistMode;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
@@ -36,9 +36,12 @@ public class Drivebase extends SubsystemBase {
   private final DifferentialDriveKinematics m_kinematics;
   private static final LinearVelocity ZERO_MPS = MetersPerSecond.of(0);
 
-  final SparkMax m_leftLeader = new SparkMax(SparkMaxIds.LEFT_LEADER_ID, MotorType.kBrushless);
-  final SparkMax m_leftFollower = new SparkMax(SparkMaxIds.LEFT_FOLLOWER_ID, MotorType.kBrushless);
-  final SparkMax m_rightLeader = new SparkMax(SparkMaxIds.RIGHT_LEADER_ID, MotorType.kBrushless);
+  final SparkMax m_leftLeader =
+      new SparkMax(SparkMaxIds.LEFT_LEADER_ID, MotorType.kBrushless);
+  final SparkMax m_leftFollower =
+      new SparkMax(SparkMaxIds.LEFT_FOLLOWER_ID, MotorType.kBrushless);
+  final SparkMax m_rightLeader =
+      new SparkMax(SparkMaxIds.RIGHT_LEADER_ID, MotorType.kBrushless);
   final SparkMax m_rightFollower =
       new SparkMax(SparkMaxIds.RIGHT_FOLLOWER_ID, MotorType.kBrushless);
 
@@ -46,24 +49,27 @@ public class Drivebase extends SubsystemBase {
   public static final LinearVelocity MAX_SPEED = MetersPerSecond.of(1.0);
 
   /** Maximum rotational speed is 1 rotation per second. */
-  public static final AngularVelocity MAX_ANGULAR_SPEED = RadiansPerSecond.of(Math.PI);
+  public static final AngularVelocity MAX_ANGULAR_SPEED =
+      RadiansPerSecond.of(Math.PI);
 
   public static final Distance TRACK_WIDTH_METERS = Meters.of(0.5588);
 
   private final RelativeEncoder m_leftEncoder = m_leftLeader.getEncoder();
   private final RelativeEncoder m_rightEncoder = m_rightLeader.getEncoder();
 
-  static final double ANDYMARK_6IN_PLACTION_DIAMETER_METERS = Units.inchesToMeters(6.0);
-  static final double WHEEL_CIRCUMFERENCE_METERS = Math.PI * ANDYMARK_6IN_PLACTION_DIAMETER_METERS;
+  static final double ANDYMARK_6IN_PLACTION_DIAMETER_METERS =
+      Units.inchesToMeters(6.0);
+  static final double WHEEL_CIRCUMFERENCE_METERS =
+      Math.PI * ANDYMARK_6IN_PLACTION_DIAMETER_METERS;
   static final double DRIVEBASE_GEAR_RATIO = 8.45;
-
 
   final private DifferentialDriveOdometry m_odometry =
       new DifferentialDriveOdometry(new Rotation2d(), 0, 0, new Pose2d());
 
   private final DifferentialDrivePoseEstimator m_estimator;
 
-  private final Pigeon2 m_pigeon = new Pigeon2(Constants.CanBusIds.PIGEON2_CAN_ID);
+  private final Pigeon2 m_pigeon =
+      new Pigeon2(Constants.CanBusIds.PIGEON2_CAN_ID);
 
   final SparkMaxConfig m_leftFollowerConfig = new SparkMaxConfig();
   final SparkMaxConfig m_rightFollowerConfig = new SparkMaxConfig();
@@ -76,8 +82,8 @@ public class Drivebase extends SubsystemBase {
   /** Creates a new Drivebase. */
   public Drivebase() {
     m_kinematics = new DifferentialDriveKinematics(TRACK_WIDTH_METERS);
-    m_estimator =
-        new DifferentialDrivePoseEstimator(m_kinematics, new Rotation2d(), 0, 0, new Pose2d());
+    m_estimator = new DifferentialDrivePoseEstimator(
+        m_kinematics, new Rotation2d(), 0, 0, new Pose2d());
     resetOdometry();
     setupSmartDashboard();
     configureEncoders();
@@ -85,14 +91,14 @@ public class Drivebase extends SubsystemBase {
     m_leftFollowerConfig.follow(SparkMaxIds.LEFT_LEADER_ID);
     m_rightFollowerConfig.follow(SparkMaxIds.RIGHT_LEADER_ID);
 
-    m_leftFollower.configure(
-        m_leftFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    m_rightFollower.configure(
-        m_rightFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    m_leftLeader.configure(
-        m_leftLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    m_rightLeader.configure(
-        m_rightLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_leftFollower.configure(m_leftFollowerConfig,
+        ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_rightFollower.configure(m_rightFollowerConfig,
+        ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_leftLeader.configure(m_leftLeaderConfig, ResetMode.kResetSafeParameters,
+        PersistMode.kPersistParameters);
+    m_rightLeader.configure(m_rightLeaderConfig, ResetMode.kResetSafeParameters,
+        PersistMode.kPersistParameters);
   }
 
   @Override
@@ -135,8 +141,10 @@ public class Drivebase extends SubsystemBase {
       Pose2d toPrint = pose.estimatedPose.toPose2d();
       SmartDashboard.putNumber("returned x", toPrint.getX());
       SmartDashboard.putNumber("returned y", toPrint.getY());
-      SmartDashboard.putNumber("returned angle", toPrint.getRotation().getDegrees());
-      m_estimator.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
+      SmartDashboard.putNumber("returned angle",
+    toPrint.getRotation().getDegrees());
+      m_estimator.addVisionMeasurement(pose.estimatedPose.toPose2d(),
+    pose.timestampSeconds);
 
     }
     */
@@ -144,12 +152,18 @@ public class Drivebase extends SubsystemBase {
 
   public void setupSmartDashboard() {
     SmartDashboard.putData("Reset odometry to (0, 0, 0deg)",
-        new InstantCommand(() -> resetOdometry(new Pose2d(0, 0, new Rotation2d(Degrees.of(0))))));
+        new InstantCommand(()
+                               -> resetOdometry(new Pose2d(
+                                   0, 0, new Rotation2d(Degrees.of(0))))));
 
     SmartDashboard.putData("Reset odometry to (0, 0, 45deg)",
-        new InstantCommand(() -> resetOdometry(new Pose2d(0, 0, new Rotation2d(Degrees.of(45))))));
+        new InstantCommand(()
+                               -> resetOdometry(new Pose2d(
+                                   0, 0, new Rotation2d(Degrees.of(45))))));
     SmartDashboard.putData("Reset odometry to (3, 0, 90deg)",
-        new InstantCommand(() -> resetOdometry(new Pose2d(3, 0, new Rotation2d(Degrees.of(90))))));
+        new InstantCommand(()
+                               -> resetOdometry(new Pose2d(
+                                   3, 0, new Rotation2d(Degrees.of(90))))));
   }
 
   public void setVoltages(double leftVoltage, double rightVoltage) {
@@ -175,14 +189,20 @@ public class Drivebase extends SubsystemBase {
         WHEEL_CIRCUMFERENCE_METERS / DRIVEBASE_GEAR_RATIO;
     final double velocityScalingFactor = distanceScalingFactorForGearing / 60;
 
-    m_leftLeaderConfig.encoder.positionConversionFactor(distanceScalingFactorForGearing);
+    m_leftLeaderConfig.encoder.positionConversionFactor(
+        distanceScalingFactorForGearing);
     m_leftLeaderConfig.encoder.velocityConversionFactor(velocityScalingFactor);
-    m_rightLeaderConfig.encoder.positionConversionFactor(distanceScalingFactorForGearing);
+    m_rightLeaderConfig.encoder.positionConversionFactor(
+        distanceScalingFactorForGearing);
     m_rightLeaderConfig.encoder.velocityConversionFactor(velocityScalingFactor);
-    m_leftFollowerConfig.encoder.positionConversionFactor(distanceScalingFactorForGearing);
-    m_leftFollowerConfig.encoder.velocityConversionFactor(velocityScalingFactor);
-    m_rightFollowerConfig.encoder.positionConversionFactor(distanceScalingFactorForGearing);
-    m_rightFollowerConfig.encoder.velocityConversionFactor(velocityScalingFactor);
+    m_leftFollowerConfig.encoder.positionConversionFactor(
+        distanceScalingFactorForGearing);
+    m_leftFollowerConfig.encoder.velocityConversionFactor(
+        velocityScalingFactor);
+    m_rightFollowerConfig.encoder.positionConversionFactor(
+        distanceScalingFactorForGearing);
+    m_rightFollowerConfig.encoder.velocityConversionFactor(
+        velocityScalingFactor);
 
     resetEncoders();
   }
@@ -200,8 +220,8 @@ public class Drivebase extends SubsystemBase {
   }
 
   public void resetOdometry(Pose2d pose) {
-    m_odometry.resetPosition(
-        m_pigeon.getRotation2d(), m_leftEncoder.getPosition(), m_rightEncoder.getPosition(), pose);
+    m_odometry.resetPosition(m_pigeon.getRotation2d(),
+        m_leftEncoder.getPosition(), m_rightEncoder.getPosition(), pose);
     m_estimator.resetPosition(m_pigeon.getRotation2d(), 0, 0, pose);
   }
 
@@ -221,7 +241,8 @@ public class Drivebase extends SubsystemBase {
   }
 
   public void arcadeDrive(LinearVelocity fSpeed, AngularVelocity rSpeed) {
-    setSpeeds(m_kinematics.toWheelSpeeds(new ChassisSpeeds(fSpeed, ZERO_MPS, rSpeed)));
+    setSpeeds(m_kinematics.toWheelSpeeds(
+        new ChassisSpeeds(fSpeed, ZERO_MPS, rSpeed)));
   }
 
   public void enableBreakingMode(boolean breaking) {
@@ -259,12 +280,13 @@ public class Drivebase extends SubsystemBase {
       final var rightVoltage = getRightVoltage();
       log.motor("drive-left")
       .voltage(m_appliedVoltage.mut_replace(leftVoltage, Volts))
-        .linearPosition(m_distance.mut_replace(m_leftEncoder.getPosition(), Meters))
-      .linearVelocity(m_velocity.mut_replace(m_leftEncoder.getVelocity(), MetersPerSecond));
-      log.motor("drive-right")
+        .linearPosition(m_distance.mut_replace(m_leftEncoder.getPosition(),
+  Meters)) .linearVelocity(m_velocity.mut_replace(m_leftEncoder.getVelocity(),
+  MetersPerSecond)); log.motor("drive-right")
       .voltage(m_appliedVoltage.mut_replace(rightVoltage, Volts))
-      .linearPosition(m_distance.mut_replace(m_rightEncoder.getPosition(), Meters))
-      .linearVelocity(m_velocity.mut_replace(m_rightEncoder.getVelocity(), MetersPerSecond));
+      .linearPosition(m_distance.mut_replace(m_rightEncoder.getPosition(),
+  Meters)) .linearVelocity(m_velocity.mut_replace(m_rightEncoder.getVelocity(),
+  MetersPerSecond));
     },
     this));
 

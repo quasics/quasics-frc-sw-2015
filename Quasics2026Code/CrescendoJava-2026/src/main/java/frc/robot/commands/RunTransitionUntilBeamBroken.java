@@ -13,8 +13,9 @@ public class RunTransitionUntilBeamBroken extends Command {
   private final boolean m_enableSensor;
 
   /** Creates a new RunTransitionUntilBeamBroken. */
-  public RunTransitionUntilBeamBroken(TransitionRoller transitionRoller, double transitionSpeed,
-      boolean transitionTakingIn, boolean enableSensor) {
+  public RunTransitionUntilBeamBroken(TransitionRoller transitionRoller,
+      double transitionSpeed, boolean transitionTakingIn,
+      boolean enableSensor) {
     m_transition = transitionRoller;
     if (transitionTakingIn) {
       m_transitionSpeed = Math.abs(transitionSpeed);

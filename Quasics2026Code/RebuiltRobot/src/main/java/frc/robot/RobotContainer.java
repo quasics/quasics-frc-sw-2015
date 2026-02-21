@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import java.util.function.Supplier;
-
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -20,11 +18,12 @@ import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.LinearSpeedCommand;
 import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.subsystems.real.AbstractDrivebase;
-import frc.robot.subsystems.real.SparkDriveBase;
 import frc.robot.subsystems.real.RealShooter;
+import frc.robot.subsystems.real.SparkDriveBase;
 import frc.robot.subsystems.real.Vision;
 import frc.robot.subsystems.simulated.SimulatedVision;
 import frc.robot.subsystems.simulated.SimulationDrivebase;
+import java.util.function.Supplier;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -35,13 +34,17 @@ import frc.robot.subsystems.simulated.SimulationDrivebase;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final AbstractDrivebase m_drivebase = Robot.isReal() ? new SparkDriveBase() : new SimulationDrivebase();
-  private final IVision m_vision = (Robot.isReal()) ? new Vision() : new SimulatedVision();
+  private final AbstractDrivebase m_drivebase =
+      Robot.isReal() ? new SparkDriveBase() : new SimulationDrivebase();
+  private final IVision m_vision =
+      (Robot.isReal()) ? new Vision() : new SimulatedVision();
   private final RealShooter m_shooter = new RealShooter();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final Joystick m_driverController = new Joystick(DriveteamConstants.DRIVER_JOYSTICK_ID);
-  private final Joystick m_operatorController = new Joystick(DriveteamConstants.OPERATOR_JOYSTICK_ID);
+  private final Joystick m_driverController =
+      new Joystick(DriveteamConstants.DRIVER_JOYSTICK_ID);
+  private final Joystick m_operatorController =
+      new Joystick(DriveteamConstants.OPERATOR_JOYSTICK_ID);
 
   private final double DEADBAND_CONSTANT = 0.08;
   private final SlewRateLimiter m_speedSlewRateLimiter = new SlewRateLimiter(1);
@@ -82,10 +85,14 @@ public class RobotContainer {
   }
 
   private void addSysIdButtonsToSmartDashboard() {
-    SmartDashboard.putData("Flywheel Quasistatic Forward", m_shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    SmartDashboard.putData("Flywheel Quasistatic Reverse", m_shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    SmartDashboard.putData("Flywheel Dynamic Forward", m_shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    SmartDashboard.putData("Flywheel Dynamic Reverse", m_shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    SmartDashboard.putData("Flywheel Quasistatic Forward",
+        m_shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    SmartDashboard.putData("Flywheel Quasistatic Reverse",
+        m_shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    SmartDashboard.putData("Flywheel Dynamic Forward",
+        m_shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    SmartDashboard.putData("Flywheel Dynamic Reverse",
+        m_shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
   }
 
   /**
@@ -121,25 +128,29 @@ public class RobotContainer {
       return m_rotSlewRateLimiter.calculate(joystickPercent);
     };
 
-    switchDriveTrigger = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.BButton))
-        .onTrue(new InstantCommand(() -> {
-          m_switchDrive = !m_switchDrive;
-        }));
+    switchDriveTrigger =
+        new Trigger(()
+                        -> m_driverController.getRawButton(
+                            Constants.LogitechDualshock.BButton))
+            .onTrue(
+                new InstantCommand(() -> { m_switchDrive = !m_switchDrive; }));
     // Syntax for speed suppliers:
     // () -> m_driverController.getRawAxis(0)
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is
     // pressed, cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
-    m_drivebase.setDefaultCommand(
-        new ArcadeDrive(m_arcadeDriveLeftStick, m_arcadeDriveRightStick, m_drivebase));
+    m_drivebase.setDefaultCommand(new ArcadeDrive(
+        m_arcadeDriveLeftStick, m_arcadeDriveRightStick, m_drivebase));
     LinearSpeedCommand setLinearSpeed = new LinearSpeedCommand(m_drivebase);
     SmartDashboard.putData("LinearSpeedCommand", setLinearSpeed);
   }
 
   private double getDriveSpeedScalingFactor() {
-    final boolean isTurtle = m_driverController.getRawButton(Constants.LogitechDualshock.LeftShoulder);
-    final boolean isTurbo = m_driverController.getRawButton(Constants.LogitechDualshock.RightShoulder);
+    final boolean isTurtle = m_driverController.getRawButton(
+        Constants.LogitechDualshock.LeftShoulder);
+    final boolean isTurbo = m_driverController.getRawButton(
+        Constants.LogitechDualshock.RightShoulder);
 
     if (isTurtle) {
       return Constants.RobotSpeedScaling.TURTLE_SPEED_SCALING;

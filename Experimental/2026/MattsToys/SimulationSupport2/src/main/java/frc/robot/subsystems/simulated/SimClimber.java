@@ -4,23 +4,22 @@
 
 package frc.robot.subsystems.simulated;
 
-import java.io.IOException;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.IClimber;
 import frc.robot.util.config.ClimberConfig;
+import java.io.IOException;
 
 /**
  * Simulated climber subsystem.
- * 
+ *
  * This simulates a simple linear actuator with built-in PID control on the
  * motor controller, and optional limit switches at the top and bottom. The
  * climber can be commanded to move to specific positions under PID control, or
  * to extend/retract manually (without PID control). The simulated display will
  * show the current height of the climber, the target position (if any), and the
  * current state (Idle, Manual, At Setpoint, Not At Setpoint).
- * 
+ *
  * Note that this is a very basic simulation, and doesn't attempt to model
  * things like motor current limits, stalling, or the effects of gravity. In
  * addition, we're not even using MotorController objects in this; we're just
@@ -28,8 +27,8 @@ import frc.robot.util.config.ClimberConfig;
  */
 public class SimClimber extends SubsystemBase implements IClimber {
   /**
-   * If true, simulate limit switches that stop the climber from moving beyond its
-   * physical limits.
+   * If true, simulate limit switches that stop the climber from moving beyond
+   * its physical limits.
    */
   private static final boolean SIMULATE_LIMIT_SWITCHES = true;
 
@@ -63,23 +62,24 @@ public class SimClimber extends SubsystemBase implements IClimber {
 
   /**
    * Constructor.
-   * 
+   *
    * @param config the climber configuration (used to set PID constants, etc.)
    */
   public SimClimber(ClimberConfig config) {
     setName(SUBSYSTEM_NAME);
-    m_pidController = new PIDController(config.pid().kP(), config.pid().kI(), config.pid().kD());
-    // Note that I'm ignoring the feedforward term here, since we're simulating the
-    // built-in PID on the motor controller, which doesn't have a feedforward
-    // component.
+    m_pidController = new PIDController(
+        config.pid().kP(), config.pid().kI(), config.pid().kD());
+    // Note that I'm ignoring the feedforward term here, since we're simulating
+    // the built-in PID on the motor controller, which doesn't have a
+    // feedforward component.
   }
 
   /**
    * Returns the height (in meters) for a given position.
-   * 
+   *
    * Note that this is exposed for simulation purposes, so that we can easily
    * convert between the enum values and their corresponding heights.
-   * 
+   *
    * @param pos the position to get the height for
    * @return the height (in meters) for the given position
    */
@@ -98,7 +98,8 @@ public class SimClimber extends SubsystemBase implements IClimber {
       case Idle -> SimulationUxSupport.DeviceStatus.Idle;
       case Rising, Descending -> SimulationUxSupport.DeviceStatus.Manual;
       case PidControlled ->
-        (Math.abs(m_currentHeight - getHeightForPosition(m_targetPosition)) < ACCEPTABLE_ERROR)
+        (Math.abs(m_currentHeight - getHeightForPosition(m_targetPosition))
+            < ACCEPTABLE_ERROR)
             ? SimulationUxSupport.DeviceStatus.AtSetpoint
             : SimulationUxSupport.DeviceStatus.NotAtSetpoint;
     };
@@ -113,18 +114,21 @@ public class SimClimber extends SubsystemBase implements IClimber {
     // Simulate behavior of motors during a command loop cycle
     switch (m_state) {
       case PidControlled:
-        // Simple PID control to move to target position. (Simulating built-in PID on
-        // motor controller; we'd do this in periodic(), otherwise.)
+        // Simple PID control to move to target position. (Simulating built-in
+        // PID on motor controller; we'd do this in periodic(), otherwise.)
         double targetHeight = getHeightForPosition(m_targetPosition);
-        double output = m_pidController.calculate(m_currentHeight, targetHeight);
-        m_currentHeight += output * 0.02; // Simulate movement over the 20ms interval
+        double output =
+            m_pidController.calculate(m_currentHeight, targetHeight);
+        m_currentHeight +=
+            output * 0.02; // Simulate movement over the 20ms interval
         if (Math.abs(m_currentHeight - targetHeight) < ACCEPTABLE_ERROR) {
           m_currentHeight = targetHeight;
           m_state = State.Idle;
         }
         break;
       case Rising:
-        m_currentHeight = Math.max(m_currentHeight + MANUAL_DELTA_PER_CYCLE, MAX_HEIGHT);
+        m_currentHeight =
+            Math.max(m_currentHeight + MANUAL_DELTA_PER_CYCLE, MAX_HEIGHT);
         if (m_currentHeight >= MAX_HEIGHT) {
           if (SIMULATE_LIMIT_SWITCHES) {
             m_state = State.Idle;
@@ -132,7 +136,8 @@ public class SimClimber extends SubsystemBase implements IClimber {
         }
         break;
       case Descending:
-        m_currentHeight = Math.max(m_currentHeight + MANUAL_DELTA_PER_CYCLE, MAX_HEIGHT);
+        m_currentHeight =
+            Math.max(m_currentHeight + MANUAL_DELTA_PER_CYCLE, MAX_HEIGHT);
         if (m_currentHeight >= MAX_HEIGHT) {
           if (SIMULATE_LIMIT_SWITCHES) {
             m_state = State.Idle;

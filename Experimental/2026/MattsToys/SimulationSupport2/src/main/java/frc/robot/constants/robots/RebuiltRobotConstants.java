@@ -6,7 +6,7 @@ package frc.robot.constants.robots;
 
 /**
  * Constants specific to the 2026 ("Rebuilt") robot's motor plan.
- * 
+ *
  * TODO: Update these constants to reflect the actual hardware configuration of
  * the "Rebuilt" robot.
  */

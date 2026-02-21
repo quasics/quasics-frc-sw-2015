@@ -13,5 +13,4 @@ import edu.wpi.first.units.measure.Angle;
  * @param roll  The counterclockwise rotation angle around the X axis (roll).
  * @param yaw   The counterclockwise rotation angle around the Z axis (yaw).
  */
-public record Orientation(Angle pitch, Angle roll, Angle yaw) {
-}
+public record Orientation(Angle pitch, Angle roll, Angle yaw) {}

@@ -29,7 +29,8 @@ public class SimulationDrivebase extends AbstractDrivebase {
   private static final int RIGHT_ENCODER_CHANNEL_A = 3;
   private static final int RIGHT_ENCODER_CHANNEL_B = 4;
 
-  private final Logger m_logger = new Logger(Logger.Verbosity.Info, "SimulatedDriveBase");
+  private final Logger m_logger =
+      new Logger(Logger.Verbosity.Info, "SimulatedDriveBase");
 
   private final TrivialEncoder m_leftEncoder;
   private final TrivialEncoder m_rightEncoder;
@@ -39,13 +40,14 @@ public class SimulationDrivebase extends AbstractDrivebase {
   private final IGyro m_gyro;
   private final AnalogGyroSim m_gyroSim;
 
-  private DifferentialDrivetrainSim m_driveSim = DifferentialDrivetrainSim.createKitbotSim(
-      KitbotMotor.kDualCIMPerSide, // 2 CIMs per side.
-      KitbotGearing.k12p75, // 12.75:1 if this changes, we may have to use a
-                            // new diffDrivetrain sim
-      KitbotWheelSize.kSixInch, // 6" diameter wheels.
-      null // No measurement noise.
-  );
+  private DifferentialDrivetrainSim m_driveSim =
+      DifferentialDrivetrainSim.createKitbotSim(
+          KitbotMotor.kDualCIMPerSide, // 2 CIMs per side.
+          KitbotGearing.k12p75, // 12.75:1 if this changes, we may have to use a
+                                // new diffDrivetrain sim
+          KitbotWheelSize.kSixInch, // 6" diameter wheels.
+          null // No measurement noise.
+      );
 
   /** Creates a new SimulationDrivebase. */
   public SimulationDrivebase() {
@@ -55,16 +57,20 @@ public class SimulationDrivebase extends AbstractDrivebase {
     m_gyroSim = new AnalogGyroSim(gyro);
     m_gyro = IGyro.wrapGyro(gyro);
 
-    Encoder leftEncoder = new Encoder(LEFT_ENCODER_CHANNEL_A, LEFT_ENCODER_CHANNEL_B);
-    Encoder rightEncoder = new Encoder(RIGHT_ENCODER_CHANNEL_A, RIGHT_ENCODER_CHANNEL_B);
+    Encoder leftEncoder =
+        new Encoder(LEFT_ENCODER_CHANNEL_A, LEFT_ENCODER_CHANNEL_B);
+    Encoder rightEncoder =
+        new Encoder(RIGHT_ENCODER_CHANNEL_A, RIGHT_ENCODER_CHANNEL_B);
 
     leftEncoder.setDistancePerPulse(getDistancePerPulse());
     rightEncoder.setDistancePerPulse(getDistancePerPulse());
 
     m_leftEncoderSim = new EncoderSim(leftEncoder);
     m_rightEncoderSim = new EncoderSim(rightEncoder);
-    m_leftEncoder = TrivialEncoder.forWpiLibEncoder(leftEncoder, m_leftEncoderSim);
-    m_rightEncoder = TrivialEncoder.forWpiLibEncoder(rightEncoder, m_rightEncoderSim);
+    m_leftEncoder =
+        TrivialEncoder.forWpiLibEncoder(leftEncoder, m_leftEncoderSim);
+    m_rightEncoder =
+        TrivialEncoder.forWpiLibEncoder(rightEncoder, m_rightEncoderSim);
   }
 
   @Override

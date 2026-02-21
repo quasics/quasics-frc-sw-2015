@@ -17,8 +17,8 @@ import java.util.List;
  * @see frc.robot.subsystems.live.Lighting
  * @see frc.robot.subsystems.live.LightingBuffer
  */
-public record LightingConfig(
-    int pwmPort, int stripLength, List<Integer> subViews) {
+public record
+    LightingConfig(int pwmPort, int stripLength, List<Integer> subViews) {
   /**
    * Constructor (with sanity checking).
    *
@@ -29,11 +29,11 @@ public record LightingConfig(
    */
   public LightingConfig {
     if (subViews != null) {
-      final int subViewTotalSize = subViews.stream().mapToInt(Integer::intValue).sum();
+      final int subViewTotalSize =
+          subViews.stream().mapToInt(Integer::intValue).sum();
       if (subViewTotalSize > stripLength) {
-        throw new IllegalArgumentException("Sub-view size ("
-            + subViewTotalSize + ") exceeds strip length (" + stripLength
-            + ")");
+        throw new IllegalArgumentException("Sub-view size (" + subViewTotalSize
+            + ") exceeds strip length (" + stripLength + ")");
       }
     }
   }

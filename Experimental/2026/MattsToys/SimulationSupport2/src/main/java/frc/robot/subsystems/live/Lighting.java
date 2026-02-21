@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.ICandle;
 import frc.robot.subsystems.interfaces.ILighting;
 import frc.robot.util.config.RobotConfig;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -95,7 +94,7 @@ public class Lighting extends SubsystemBase implements ILighting {
     this(pwmPort, numLights,
         Stream
             .concat(Collections.singletonList(ICandle.CANDLE_DEFAULT_LENGTH)
-                .stream(),
+                        .stream(),
                 (subViews != null ? subViews : Collections.EMPTY_LIST).stream())
             .toList());
   }
@@ -138,7 +137,7 @@ public class Lighting extends SubsystemBase implements ILighting {
     if (subViewsSum > 0 && numLights < subViewsSum) {
       throw new IllegalArgumentException(
           "Invalid LED strip length for requested subviews: " + numLights
-              + " (must be at least " + subViewsSum + ")");
+          + " (must be at least " + subViewsSum + ")");
     } else {
       System.err.println(
           "INFO: configuring LED strip support with " + numLights + " LEDs");

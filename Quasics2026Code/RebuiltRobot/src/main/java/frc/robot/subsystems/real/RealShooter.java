@@ -90,7 +90,8 @@ public class RealShooter extends SubsystemBase implements IShooter {
       new SysIdRoutine.Config(null, Volts.of(4), null,
           (state) -> SignalLogger.writeString("state", state.toString())),
       new SysIdRoutine.Mechanism(
-          (volts) -> m_kraken.setControl(m_sysIdControl.withOutput(volts)),
+          (volts)
+              -> m_kraken.setControl(m_sysIdControl.withOutput(volts)),
           null, this));
 
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {

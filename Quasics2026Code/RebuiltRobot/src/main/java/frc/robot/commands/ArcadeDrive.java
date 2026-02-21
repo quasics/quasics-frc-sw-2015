@@ -48,9 +48,11 @@ public class ArcadeDrive extends Command {
     // ensure that the values are in that range).
 
     final double linearSpeedPercent = m_linearSpeedSupplier.get();
-    final LinearVelocity linearSpeed = AbstractDrivebase.getMaxMotorLinearSpeed().times(linearSpeedPercent);
+    final LinearVelocity linearSpeed =
+        AbstractDrivebase.getMaxMotorLinearSpeed().times(linearSpeedPercent);
     final double angularVelocityPercent = m_turnSpeedSupplier.get();
-    final AngularVelocity angularVelocity = AbstractDrivebase.getMaxMotorTurnSpeed().times(angularVelocityPercent);
+    final AngularVelocity angularVelocity =
+        AbstractDrivebase.getMaxMotorTurnSpeed().times(angularVelocityPercent);
 
     System.out.println("turnSpeedSupplier = " + linearSpeed);
     System.out.println("angularVelocity = " + angularVelocity);

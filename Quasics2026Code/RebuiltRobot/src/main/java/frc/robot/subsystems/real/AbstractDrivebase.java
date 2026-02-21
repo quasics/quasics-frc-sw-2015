@@ -37,7 +37,8 @@ public abstract class AbstractDrivebase
 
   /** Track width (distance between left and right wheels) in meters. */
   // TODO: this should come from a robot config
-  public static final Distance TRACK_WIDTH = Meters.of(0.5588); /* 22 inches (from 2024) */
+  public static final Distance TRACK_WIDTH =
+      Meters.of(0.5588); /* 22 inches (from 2024) */
 
   /** Kinematics calculator for the drivebase. */
   private final DifferentialDriveKinematics m_kinematics;
@@ -57,7 +58,8 @@ public abstract class AbstractDrivebase
   // implemented for all cases
   private final Field2d m_field = new Field2d();
 
-  private final Logger m_logger = new Logger(Logger.Verbosity.Info, "AbstractDriveBase");
+  private final Logger m_logger =
+      new Logger(Logger.Verbosity.Info, "AbstractDriveBase");
 
   /** Creates a new AbstractDrivebase. */
   public AbstractDrivebase(

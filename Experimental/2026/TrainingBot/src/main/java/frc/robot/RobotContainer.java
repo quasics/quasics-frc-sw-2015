@@ -33,12 +33,19 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final AbstractDrivebase m_driveBase;
 
+  // Establish how we'll control the robot's movement under simulation.
+  private static final boolean USE_KEYBOARD_DRIVING_UNDER_SIMULATION = false;
+
+  private static final boolean USING_REAL_CONTROLLER =
+      // Assume we have a real controller available if either:
+      // 1) The robot is real (so we're using an actual driver station + joystick).
+      // 2) The robot isn't real, but we're *not* using the keyboard under simulation.
+      Robot.isReal() || !USE_KEYBOARD_DRIVING_UNDER_SIMULATION;
+
   private final CommandJoystick m_driverController = new CommandJoystick(0);
 
   private final Supplier<Double> m_leftSupplier;
   private final Supplier<Double> m_rightSupplier;
-
-  private final boolean useButtonsOnController = Robot.isReal();
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -48,15 +55,18 @@ public class RobotContainer {
     if (Robot.isReal()) {
       // Configuring the real robot.
       m_driveBase = new RealDrivebase();
-
-      // Note that we're inverting the values because Xbox controllers return
-      // negative values when we push forward.
-      m_leftSupplier = () -> -m_driverController.getRawAxis(LogitechGamePad.LeftYAxis);
-      m_rightSupplier = () -> -m_driverController.getRawAxis(LogitechGamePad.RightYAxis);
     } else {
       // Configuring the simulated robot
       m_driveBase = new SimulatedDrivebase();
+    }
 
+    // Set up the driving controls.
+    if (USING_REAL_CONTROLLER) {
+      // Note that we're inverting the values because Xbox and similar controllers
+      // return negative values when we push forward.
+      m_leftSupplier = () -> -m_driverController.getRawAxis(LogitechGamePad.LeftYAxis);
+      m_rightSupplier = () -> -m_driverController.getRawAxis(LogitechGamePad.RightYAxis);
+    } else {
       // Note that we're assuming a keyboard-based controller is actually being
       // used in the simulation environment (for now), and thus we want to use
       // axis 0&1 (from the "Keyboard 0" configuration).
@@ -64,16 +74,20 @@ public class RobotContainer {
       m_rightSupplier = () -> m_driverController.getRawAxis(1);
     }
 
-    // Set default commands for subsystems.
+    // Set default commands for subsystems (using the driving controls).
     Command driveCommand = new TankDrive(m_driveBase, m_leftSupplier, m_rightSupplier);
     m_driveBase.setDefaultCommand(driveCommand);
 
+    // Add other commands to the dashboard.
     addCommandsToDashboard();
 
-    // Configure the trigger bindings.
+    // Configure the trigger bindings (if any).
     configureBindings();
   }
 
+  /**
+   * Add some sample commands to the dashboard for testing purposes.
+   */
   private void addCommandsToDashboard() {
     SmartDashboard.putData("3 feet, 25%",
         new DriveForDistance(m_driveBase, 0.25, Feet.of(3)));
@@ -81,6 +95,18 @@ public class RobotContainer {
         new DriveForDistance(m_driveBase, 0.5, Meters.of(3)));
   }
 
+  /**
+   * Example of building a sequence of commands to be executed (a form of
+   * "command composition", as the WPILib docs call them).
+   * 
+   * There's also options for *parallel* execution of commands (i.e., do these N
+   * different things at the same time), but since we've only really got one
+   * subsystem to work with, and commands take exclusive control of the subsystems
+   * that they use while they're running, there's not a lot we can do with
+   * those....
+   * 
+   * @see https://docs.wpilib.org/en/stable/docs/software/commandbased/command-compositions.htm
+   */
   public static Command moveForwardThenBackward(AbstractDrivebase drivebase) {
     return Commands.sequence(
         new DriveForDistance(drivebase, 0.30, 1), new DriveForDistance(drivebase, 0.30, -1));
@@ -100,7 +126,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    if (useButtonsOnController) {
+    if (USING_REAL_CONTROLLER) {
       // Run a command (to print something) when someone pushes button #1 on the
       // controller.
       new Trigger(() -> m_driverController.getHID().getRawButton(1))

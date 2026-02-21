@@ -327,7 +327,6 @@ public final class RobotConfigLibrary {
             Volts.of(0.19529), 0.01) // Angular data (FAKE)
     );
 
-    final PowerDistributor power = new PowerDistributor(ModuleType.kRev);
     // TODO: Update 2026 flywheel configuration data with real numbers.
     final FlywheelConfig flywheel = new FlywheelConfig(FlywheelConfig.FlywheelType.TalonFX,
         RebuiltRobotConstants.SparkMaxConstants.FLYWHEEL_MOTOR_ID, false,
@@ -339,6 +338,8 @@ public final class RobotConfigLibrary {
     final HoodConfig hood = new HoodConfig(HoodConfig.ControlType.SparkMax,
         RebuiltRobotConstants.SparkMaxConstants.HOOD_MOTOR_ID, Degrees.of(45),
         Degrees.of(75));
+
+    final PowerDistributor power = new PowerDistributor(ModuleType.kRev);
 
     return new RobotConfig(false, drive, NO_CAMERA, NO_ELEVATOR, NO_ARM,
         NO_LIGHTING, NO_CANDLE, NO_CLIMBER, flywheel, hood, power);

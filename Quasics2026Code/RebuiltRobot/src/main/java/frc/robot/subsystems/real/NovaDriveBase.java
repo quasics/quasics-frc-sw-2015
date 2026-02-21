@@ -18,15 +18,6 @@ import frc.robot.sensors.ThriftyEncoderWrapper;
 import frc.robot.sensors.TrivialEncoder;
 
 public class NovaDriveBase extends AbstractDrivebase {
-  // TODO: Change these to use the encoders that are associated with the real
-  // hardware (i.e., either the relative encoders that are built into the Spark
-  // Max hardware, or else the functions that are built into the ThriftyNova
-  // motor controller class).
-  //
-  // Note that Mr. Healy has updated the "TrivialEncoder" class (and some
-  // derived classes) so that it can be used with Thrifty Novas (new code this
-  // year), as well as the Spark Max controllers, etc. (This stuff is in the
-  // sample code under "Experimental/2026/MattsToys/SimulationSupport".)
   private final TrivialEncoder m_leftEncoder;
   private final TrivialEncoder m_rightEncoder;
 
@@ -82,10 +73,8 @@ public class NovaDriveBase extends AbstractDrivebase {
     super(leftController, rightController);
 
     // Configure followers to follow the leaders.
-    final ThriftyNova leftfollower =
-        new ThriftyNova(ThriftyNovaIds.LEFT_FOLLOWER_ID);
-    final ThriftyNova rightfollower =
-        new ThriftyNova(ThriftyNovaIds.RIGHT_FOLLOWER_ID);
+    final ThriftyNova leftfollower = new ThriftyNova(ThriftyNovaIds.LEFT_FOLLOWER_ID);
+    final ThriftyNova rightfollower = new ThriftyNova(ThriftyNovaIds.RIGHT_FOLLOWER_ID);
 
     configureMotorControllersForFollowing(
         ThriftyNovaIds.LEFT_LEADER_ID, leftfollower);
@@ -98,8 +87,7 @@ public class NovaDriveBase extends AbstractDrivebase {
     leftfollower.applyConfig(config);
     rightfollower.applyConfig(config);
 
-    final Distance wheelDiam =
-        Meters.of(2.0 * Constants.wheelRadius.in(Meters));
+    final Distance wheelDiam = Meters.of(2.0 * Constants.wheelRadius.in(Meters));
     m_leftEncoder = new ThriftyEncoderWrapper(leftController, wheelDiam);
     m_rightEncoder = new ThriftyEncoderWrapper(leftController, wheelDiam);
 

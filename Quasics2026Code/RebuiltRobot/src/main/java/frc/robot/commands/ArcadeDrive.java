@@ -34,6 +34,8 @@ public class ArcadeDrive extends Command {
   public void initialize() {
   }
 
+  static final boolean LOG_DATA = false;
+
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
@@ -54,8 +56,10 @@ public class ArcadeDrive extends Command {
     final double angularVelocityPercent = m_turnSpeedSupplier.get();
     final AngularVelocity angularVelocity = AbstractDrivebase.getMaxMotorTurnSpeed().times(angularVelocityPercent);
 
-    System.out.println("turnSpeedSupplier = " + linearSpeed);
-    System.out.println("angularVelocity = " + angularVelocity);
+    if (LOG_DATA) {
+      System.out.println("turnSpeedSupplier = " + linearSpeed);
+      System.out.println("angularVelocity = " + angularVelocity);
+    }
     m_drivebase.arcadeDrive(linearSpeed, angularVelocity);
   }
 

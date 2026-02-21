@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.DriveteamConstants;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.LinearSpeedCommand;
+import frc.robot.commands.RunShooterPID;
 import frc.robot.subsystems.interfaces.IIndexer;
 import frc.robot.subsystems.interfaces.IIntake;
 import frc.robot.subsystems.interfaces.IVision;
@@ -93,12 +94,12 @@ public class RobotContainer {
   }
 
   private void addButtonsToSmartDashboard() {
-    SmartDashboard.putData("Run Flwyheel @ 1200 RPM", new InstantCommand(() -> m_shooter.setFlywheelRPM(RPM.of(1200))));
-    SmartDashboard.putData("Run Flywheel @ 3700 RPM", new InstantCommand(() -> m_shooter.setFlywheelRPM(RPM.of(3700))));
-    SmartDashboard.putData("Run Kicker @ 12.5% speed", new InstantCommand(() -> m_shooter.setKickerSpeed(0.125)));
-    SmartDashboard.putData("Run Kicker @ 38.7% speed", new InstantCommand(() -> m_shooter.setKickerSpeed(.387)));
     SmartDashboard.putData("Run Indexer", new InstantCommand(() -> m_indexerSubsystem.setIndexSpeed(0.1)));
     SmartDashboard.putData("Run Intake Rollers", new InstantCommand(() -> m_intakeSubsystem.setRollerSpeed(-.1)));
+    SmartDashboard.putData("Run Flywheel @ 1200 RPM, Kicker @ 12.5% speed",
+        new RunShooterPID(m_shooter, RPM.of(1200), .125));
+    SmartDashboard.putData("Run Flywheel @ 3700 RPM, Kicker @ 38.7% speed",
+        new RunShooterPID(m_shooter, RPM.of(3700), .387));
 
   }
 

@@ -37,8 +37,7 @@ public abstract class AbstractDrivebase
 
   /** Track width (distance between left and right wheels) in meters. */
   // TODO: this should come from a robot config
-  public static final Distance TRACK_WIDTH =
-      Meters.of(0.5588); /* 22 inches (from 2024) */
+  public static final Distance TRACK_WIDTH = Meters.of(0.5588); /* 22 inches (from 2024) */
 
   /** Kinematics calculator for the drivebase. */
   private final DifferentialDriveKinematics m_kinematics;
@@ -58,8 +57,7 @@ public abstract class AbstractDrivebase
   // implemented for all cases
   private final Field2d m_field = new Field2d();
 
-  private final Logger m_logger =
-      new Logger(Logger.Verbosity.Info, "AbstractDriveBase");
+  private final Logger m_logger = new Logger(Logger.Verbosity.Info, "AbstractDriveBase");
 
   /** Creates a new AbstractDrivebase. */
   public AbstractDrivebase(
@@ -113,13 +111,11 @@ public abstract class AbstractDrivebase
     // straightforward, doable with 2 lines of code.)
   }
 
-  // TODO(ROBERT): Cap this - it shouldn't be greater than max speed.
-  // Probably print a warning too so that we can fix whatever is commanding us
-  // too high.
   @Override
   public double mpsToPercent(LinearVelocity speed) {
-    // FINDME(Robert): This isn't doing what I think *you* think it's doing, at
-    // least in terms of how it's being used from LinearSpeedCommand.
+    // TODO(ROBERT): Cap this - it shouldn't be greater than max speed.
+    // Probably print a warning too so that we can fix whatever is commanding us
+    // too high.
     return speed.in(MetersPerSecond) / m_maxMotorSpeedMPS;
   }
 

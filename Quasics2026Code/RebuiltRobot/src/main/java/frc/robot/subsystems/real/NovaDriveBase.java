@@ -18,10 +18,6 @@ import frc.robot.sensors.ThriftyEncoderWrapper;
 import frc.robot.sensors.TrivialEncoder;
 
 public class NovaDriveBase extends AbstractDrivebase {
-  // TODO: add thriftynova support. (This might be done in a derived class, or
-  // be based on some information about the robot's configuration. I'd recommend
-  // the former approach.)
-
   // TODO: Change these to use the encoders that are associated with the real
   // hardware (i.e., either the relative encoders that are built into the Spark
   // Max hardware, or else the functions that are built into the ThriftyNova

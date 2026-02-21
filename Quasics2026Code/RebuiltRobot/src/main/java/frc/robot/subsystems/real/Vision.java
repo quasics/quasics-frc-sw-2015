@@ -31,18 +31,15 @@ import org.photonvision.targeting.PhotonTrackedTarget;
  * Vision subsystem implementation.
  */
 public class Vision extends SubsystemBase implements IVision {
-  private static final AprilTagFields FIELD_LAYOUT =
-      AprilTagFields.kDefaultField;
+  private static final AprilTagFields FIELD_LAYOUT = AprilTagFields.kDefaultField;
   private final AprilTagFieldLayout m_tagLayout;
   protected PhotonCamera camera = new PhotonCamera("camera1");
   protected PhotonPoseEstimator photonEstimator;
   private Pose3d latestPose3d = new Pose3d();
   protected Pose2d latestPose2d = new Pose2d();
-  private Translation3d robotToCamTrl =
-      new Translation3d(0.0762, -0.17145, 0.53975);
+  private Translation3d robotToCamTrl = new Translation3d(0.0762, -0.17145, 0.53975);
   private Rotation3d robotToCameraRot = new Rotation3d();
-  private Transform3d robotToCamera =
-      new Transform3d(robotToCamTrl, robotToCameraRot);
+  private Transform3d robotToCamera = new Transform3d(robotToCamTrl, robotToCameraRot);
 
   private final Logger m_logger = new Logger(Logger.Verbosity.Info, "Vision");
 
@@ -69,6 +66,10 @@ public class Vision extends SubsystemBase implements IVision {
   }
 
   private PhotonPipelineResult getLatestPipelineResults() {
+    // FINDME(Rylie): You may want to take a look at what Mr. Healy is doing in the
+    // "SimulationSupport" code under the "Experimental/2026/MattsToys" directory,
+    // to see how he's using the new (non-deprecated) functions for getting pipeline
+    // results from the PhotonCamera class.
     return camera.getLatestResult();
   }
 
@@ -132,15 +133,13 @@ public class Vision extends SubsystemBase implements IVision {
     }
     if (results.hasTargets()) {
       for (PhotonTrackedTarget target : targets) {
-        Optional<Pose3d> tagPose =
-            m_tagLayout.getTagPose(target.getFiducialId());
+        Optional<Pose3d> tagPose = m_tagLayout.getTagPose(target.getFiducialId());
         Pose3d tagPose3d = new Pose3d();
         if (!tagPose.isEmpty()) {
           tagPose3d = tagPose.get();
         }
         Pose2d tagPose2d = tagPose3d.toPose2d();
-        double distanceToTargetPose =
-            PhotonUtils.getDistanceToPose(latestPose2d, tagPose2d);
+        double distanceToTargetPose = PhotonUtils.getDistanceToPose(latestPose2d, tagPose2d);
         TargetData targetData = new TargetData(target.getFiducialId(),
             target.getYaw(), target.getPitch(), distanceToTargetPose);
         listTargetData.add(targetData);

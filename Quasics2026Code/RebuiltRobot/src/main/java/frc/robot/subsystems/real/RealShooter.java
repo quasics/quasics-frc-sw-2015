@@ -14,7 +14,6 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-import edu.wpi.first.units.AngularVelocityUnit;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -57,7 +56,7 @@ public class RealShooter extends SubsystemBase implements IShooter {
 
   @Override
   public void setFlywheelRPM(AngularVelocity rpm) {
-    double rps = rpm.in(RotationsPerSecond);
+    var rps = rpm.in(RotationsPerSecond);
     m_kraken.setControl(m_request.withVelocity(rps).withFeedForward(m_ff));
   }
 
@@ -95,8 +94,7 @@ public class RealShooter extends SubsystemBase implements IShooter {
       new SysIdRoutine.Config(null, Volts.of(4), null,
           (state) -> SignalLogger.writeString("state", state.toString())),
       new SysIdRoutine.Mechanism(
-          (volts)
-              -> m_kraken.setControl(m_sysIdControl.withOutput(volts)),
+          (volts) -> m_kraken.setControl(m_sysIdControl.withOutput(volts)),
           null, this));
 
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {

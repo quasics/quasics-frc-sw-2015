@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.interfaces;
 
+import edu.wpi.first.units.measure.AngularVelocity;
+
 /**
  * Interface for controlling the shooter.
  *
@@ -40,7 +42,7 @@ public interface IShooter {
    * kicker wheels may or may not need PID control
    */
 
-  void setFlywheelVoltage(double output);
+  void setFlywheelRPM(AngularVelocity rpm);
 
   void setKickerSpeed(double speed);
 

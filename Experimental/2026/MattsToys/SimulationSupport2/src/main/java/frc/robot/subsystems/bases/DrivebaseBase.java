@@ -191,37 +191,6 @@ public class DrivebaseBase extends SubsystemBase implements IDrivebasePlus {
   }
 
   /**
-   * Helper function to allocate/configure a WPILib Encoder.
-   *
-   * @param portId1  "A" port for the encoder
-   * @param portId2  "B" port for the encoder
-   * @param inverted indicates if the encoder is inverted
-   * @return a configured encoder
-   */
-  protected static Encoder getConfiguredEncoder(
-      int portId1, int portId2, boolean inverted) {
-    final Encoder encoder = new Encoder(portId1, portId2);
-    encoder.setReverseDirection(inverted);
-    configureEncoderForDistance(encoder, WHEEL_DIAMETER);
-    return encoder;
-  }
-
-  /**
-   * Updates a SparkMaxConfig to work with distance-based values (meters and
-   * meters/sec), rather than the native rotation-based units (rotations and
-   * RPM).
-   *
-   * @param encoder       the encoder being configured
-   * @param outerDiameter distance of the object (wheel, sprocket, etc.) being
-   *                      turned
-   */
-  protected static void configureEncoderForDistance(
-      Encoder encoder, Distance outerDiameter) {
-    encoder.setDistancePerPulse(
-        Math.PI * WHEEL_DIAMETER.in(Meters) / ENCODER_TICKS_PER_REVOLUTION);
-  }
-
-  /**
    * Sets the speeds of the left and right sides of the drivetrain. (Note:
    * operates directly; no PID.)
    *

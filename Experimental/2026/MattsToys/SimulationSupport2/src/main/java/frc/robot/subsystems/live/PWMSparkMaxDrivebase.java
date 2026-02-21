@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems.live;
 
+import static edu.wpi.first.units.Units.Inches;
+
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import frc.robot.constants.robots.SimulationPorts;
@@ -11,6 +14,7 @@ import frc.robot.hardware.actuators.IMotorControllerPlus;
 import frc.robot.hardware.sensors.IGyro;
 import frc.robot.hardware.sensors.TrivialEncoder;
 import frc.robot.subsystems.bases.DrivebaseBase;
+import frc.robot.util.WpiLibSupportFunctions;
 import frc.robot.util.config.DriveConfig;
 
 /**
@@ -29,6 +33,13 @@ import frc.robot.util.config.DriveConfig;
  * easily be merged into this class instead.
  */
 public class PWMSparkMaxDrivebase extends DrivebaseBase {
+
+  /** Encoder ticks per revolution. */
+  protected static final int ENCODER_TICKS_PER_REVOLUTION = -4096;
+
+  /** Wheel diameter in inches. */
+  protected static final Distance WHEEL_DIAMETER = Inches.of(6);
+
   /** Creates a new Drivebase. */
   public PWMSparkMaxDrivebase(DriveConfig config) {
     super(config,
@@ -37,13 +48,19 @@ public class PWMSparkMaxDrivebase extends DrivebaseBase {
         IMotorControllerPlus.forPWMMotorController(
             new PWMSparkMax(SimulationPorts.PWM.RIGHT_MOTOR_PORT)),
         TrivialEncoder.forWpiLibEncoder(
-            getConfiguredEncoder(SimulationPorts.DIO.LEFT_ENCODER_A_PORT,
+            WpiLibSupportFunctions.getConfiguredEncoder(
+                SimulationPorts.DIO.LEFT_ENCODER_A_PORT,
                 SimulationPorts.DIO.LEFT_ENCODER_B_PORT,
-                config.orientation().isLeftInverted())),
+                config.orientation().isLeftInverted(),
+                WHEEL_DIAMETER,
+                ENCODER_TICKS_PER_REVOLUTION)),
         TrivialEncoder.forWpiLibEncoder(
-            getConfiguredEncoder(SimulationPorts.DIO.RIGHT_ENCODER_A_PORT,
+            WpiLibSupportFunctions.getConfiguredEncoder(
+                SimulationPorts.DIO.RIGHT_ENCODER_A_PORT,
                 SimulationPorts.DIO.RIGHT_ENCODER_B_PORT,
-                config.orientation().isRightInverted())),
+                config.orientation().isRightInverted(),
+                WHEEL_DIAMETER,
+                ENCODER_TICKS_PER_REVOLUTION)),
         IGyro.wrapGyro(new AnalogGyro(SimulationPorts.Channel.GYRO_PORT)),
         true);
   }

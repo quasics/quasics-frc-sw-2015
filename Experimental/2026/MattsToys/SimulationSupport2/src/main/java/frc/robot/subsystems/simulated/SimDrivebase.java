@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.simulated;
 
+import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Kilograms;
 import static edu.wpi.first.units.Units.Meters;
 
@@ -12,6 +13,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Mass;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Encoder;
@@ -29,6 +31,7 @@ import frc.robot.hardware.actuators.IMotorControllerPlus;
 import frc.robot.hardware.sensors.IGyro;
 import frc.robot.hardware.sensors.TrivialEncoder;
 import frc.robot.subsystems.bases.DrivebaseBase;
+import frc.robot.util.WpiLibSupportFunctions;
 import frc.robot.util.config.DriveConfig;
 
 /**
@@ -50,6 +53,12 @@ public class SimDrivebase extends DrivebaseBase {
 
   /** Moment of intertia for the simulated robot, in kg * m^2 (typically 3-8). */
   final static double MOMENT_OF_INERTIA = 7.5;
+
+  /** Encoder ticks per revolution. */
+  protected static final int ENCODER_TICKS_PER_REVOLUTION = -4096;
+
+  /** Wheel diameter in inches. */
+  protected static final Distance WHEEL_DIAMETER = Inches.of(6);
 
   //
   // Simulation-specific fields
@@ -167,7 +176,9 @@ public class SimDrivebase extends DrivebaseBase {
    */
   protected static SimulatedEncoderPair getSimulatedEncoderPair(
       int portId1, int portId2, boolean inverted) {
-    Encoder e = getConfiguredEncoder(portId1, portId2, inverted);
+    Encoder e = WpiLibSupportFunctions.getConfiguredEncoder(
+        portId1, portId2, inverted,
+        WHEEL_DIAMETER, ENCODER_TICKS_PER_REVOLUTION);
     EncoderSim sim = new EncoderSim(e);
     return new SimulatedEncoderPair(e, sim);
   }

@@ -93,6 +93,10 @@ public class RobotContainer {
 
   private void addButtonsToSmartDashboard() {
     SmartDashboard.putData("Run Flwyheel @ 1200 RPM", new InstantCommand(() -> m_shooter.setFlywheelRPM(RPM.of(1200))));
+    SmartDashboard.putData("Run Flywheel @ 3700 RPM", new InstantCommand(() -> m_shooter.setFlywheelRPM(RPM.of(3700))));
+    SmartDashboard.putData("Run Kicker @ 12.5% speed", new InstantCommand(() -> m_shooter.setKickerSpeed(0.125)));
+    SmartDashboard.putData("Run Kicker @ 38.7% speed", new InstantCommand(() -> m_shooter.setKickerSpeed(.387)));
+
   }
 
   private void addSysIdButtonsToSmartDashboard() {

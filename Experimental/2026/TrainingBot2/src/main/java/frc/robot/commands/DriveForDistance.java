@@ -65,9 +65,10 @@ public class DriveForDistance extends Command {
   /**
    * Creates a new DriveForDistance.
    *
-   * Note that there's a bug in this constructor: it doesn't handle cases when the
-   * speed says "move forward", but the distance says "move backward" or vice
-   * versa. It would be good for someone to fix this.
+   * Note that there's potential for conflicting data, such as when the speed says
+   * "move forward", but the distance says "move backward" or vice versa. We'll
+   * handle this by ignoring the sign on the speed, and just let the distance
+   * determine "forward" vs. "backward".
    *
    * @param drivebase    The drivebase to use.
    * @param percentSpeed The speed to drive at, as a percentage of full speed

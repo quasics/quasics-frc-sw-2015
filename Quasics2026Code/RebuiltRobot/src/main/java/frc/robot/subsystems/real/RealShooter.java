@@ -7,16 +7,19 @@ package frc.robot.subsystems.real;
 import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
 import frc.robot.subsystems.interfaces.IShooter;
 
@@ -41,9 +44,8 @@ public class RealShooter extends SubsystemBase implements IShooter {
     // TalonFXConfiguration config = new TalonFXConfiguration();
     // m_kraken.getConfigurator().apply(config);
     var slot0Configs = new Slot0Configs();
-    // TODO: tune these
-    slot0Configs.kV = 0.11676;
-    slot0Configs.kP = 0.077577;
+    slot0Configs.kV = Constants.FlywheelPIDConstants.kV;
+    slot0Configs.kP = Constants.FlywheelPIDConstants.kP;
     m_ff = 0.0;
     m_kraken.getConfigurator().apply(slot0Configs);
     // m_kraken.getConfigurator().apply(config);
@@ -53,7 +55,8 @@ public class RealShooter extends SubsystemBase implements IShooter {
   }
 
   @Override
-  public void setFlywheelVoltage(double rps) {
+  public void setFlywheelRPM(AngularVelocity rpm) {
+    var rps = rpm.in(RotationsPerSecond);
     m_kraken.setControl(m_request.withVelocity(rps).withFeedForward(m_ff));
   }
 
@@ -81,17 +84,17 @@ public class RealShooter extends SubsystemBase implements IShooter {
     stopKicker();
   }
 
-  public double getFlywheelSpeed() {
-    double speed = m_kraken.get();
-    return speed;
+  public AngularVelocity getFlywheelVelocity() {
+    StatusSignal<AngularVelocity> signalVelocity = m_kraken.getVelocity();
+    AngularVelocity velocity = signalVelocity.getValue();
+    return velocity;
   }
 
   private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(null, Volts.of(4), null,
           (state) -> SignalLogger.writeString("state", state.toString())),
       new SysIdRoutine.Mechanism(
-          (volts)
-              -> m_kraken.setControl(m_sysIdControl.withOutput(volts)),
+          (volts) -> m_kraken.setControl(m_sysIdControl.withOutput(volts)),
           null, this));
 
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
@@ -105,6 +108,6 @@ public class RealShooter extends SubsystemBase implements IShooter {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Flywheel Speed: ", getFlywheelSpeed());
+    SmartDashboard.putNumber("[RPM] Flywheel Velocity: ", getFlywheelVelocity().in(RPM));
   }
 }

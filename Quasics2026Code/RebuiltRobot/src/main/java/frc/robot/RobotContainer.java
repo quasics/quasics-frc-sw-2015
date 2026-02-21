@@ -20,6 +20,7 @@ import frc.robot.subsystems.interfaces.IIndexer;
 import frc.robot.subsystems.interfaces.IIntake;
 import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.subsystems.real.AbstractDrivebase;
+import frc.robot.subsystems.real.NovaDriveBase;
 import frc.robot.subsystems.real.RealIndexer;
 import frc.robot.subsystems.real.RealIntake;
 import frc.robot.subsystems.real.RealShooter;
@@ -27,6 +28,9 @@ import frc.robot.subsystems.real.SparkDriveBase;
 import frc.robot.subsystems.real.Vision;
 import frc.robot.subsystems.simulated.SimulatedVision;
 import frc.robot.subsystems.simulated.SimulationDrivebase;
+
+import static edu.wpi.first.units.Units.RPM;
+
 import java.util.function.Supplier;
 
 /**
@@ -41,17 +45,13 @@ public class RobotContainer {
   private final IIndexer m_indexerSubsystem = new RealIndexer();
 
   // The robot's subsystems and commands are defined here...
-  private final AbstractDrivebase m_drivebase =
-      Robot.isReal() ? new SparkDriveBase() : new SimulationDrivebase();
-  private final IVision m_vision =
-      (Robot.isReal()) ? new Vision() : new SimulatedVision();
+  private final AbstractDrivebase m_drivebase = Robot.isReal() ? new NovaDriveBase() : new SimulationDrivebase();
+  private final IVision m_vision = (Robot.isReal()) ? new Vision() : new SimulatedVision();
   private final RealShooter m_shooter = new RealShooter();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final Joystick m_driverController =
-      new Joystick(DriveteamConstants.DRIVER_JOYSTICK_ID);
-  private final Joystick m_operatorController =
-      new Joystick(DriveteamConstants.OPERATOR_JOYSTICK_ID);
+  private final Joystick m_driverController = new Joystick(DriveteamConstants.DRIVER_JOYSTICK_ID);
+  private final Joystick m_operatorController = new Joystick(DriveteamConstants.OPERATOR_JOYSTICK_ID);
 
   private final double DEADBAND_CONSTANT = 0.08;
   private final SlewRateLimiter m_speedSlewRateLimiter = new SlewRateLimiter(1);
@@ -69,6 +69,7 @@ public class RobotContainer {
   public RobotContainer() {
     // Connect cross-subsystem suppliers (so that the systems don't know about
     // each other directly)
+    addButtonsToSmartDashboard();
     addSysIdButtonsToSmartDashboard();
 
     m_vision.setReferencePositionSupplier(() -> {
@@ -89,6 +90,16 @@ public class RobotContainer {
 
     // Configure the trigger bindings
     configureBindings();
+  }
+
+  private void addButtonsToSmartDashboard() {
+    SmartDashboard.putData("Run Flwyheel @ 1200 RPM", new InstantCommand(() -> m_shooter.setFlywheelRPM(RPM.of(1200))));
+    SmartDashboard.putData("Run Flywheel @ 3700 RPM", new InstantCommand(() -> m_shooter.setFlywheelRPM(RPM.of(3700))));
+    SmartDashboard.putData("Run Kicker @ 12.5% speed", new InstantCommand(() -> m_shooter.setKickerSpeed(0.125)));
+    SmartDashboard.putData("Run Kicker @ 38.7% speed", new InstantCommand(() -> m_shooter.setKickerSpeed(.387)));
+    SmartDashboard.putData("Run Indexer", new InstantCommand(() -> m_indexerSubsystem.setIndexSpeed(0.1)));
+    SmartDashboard.putData("Run Intake Rollers", new InstantCommand(() -> m_intakeSubsystem.setRollerSpeed(-.1)));
+
   }
 
   private void addSysIdButtonsToSmartDashboard() {
@@ -135,12 +146,12 @@ public class RobotContainer {
       return m_rotSlewRateLimiter.calculate(joystickPercent);
     };
 
-    switchDriveTrigger =
-        new Trigger(()
-                        -> m_driverController.getRawButton(
-                            Constants.LogitechDualshock.BButton))
-            .onTrue(
-                new InstantCommand(() -> { m_switchDrive = !m_switchDrive; }));
+    switchDriveTrigger = new Trigger(() -> m_driverController.getRawButton(
+        Constants.LogitechDualshock.BButton))
+        .onTrue(
+            new InstantCommand(() -> {
+              m_switchDrive = !m_switchDrive;
+            }));
     // Syntax for speed suppliers:
     // () -> m_driverController.getRawAxis(0)
 

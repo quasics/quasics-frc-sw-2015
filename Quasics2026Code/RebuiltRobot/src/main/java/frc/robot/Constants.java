@@ -54,6 +54,11 @@ public final class Constants {
     public static final int OPERATOR_JOYSTICK_ID = 1;
   }
 
+  public static class FlywheelPIDConstants {
+    public static final double kV = 0.11676;
+    public static final double kP = 0.17735;
+  }
+
   /**
    * Defines constants for the different controls on a Logitech gamepad when
    * used in "Dualshock" mode.
@@ -173,5 +178,4 @@ public final class Constants {
     SparkMax,
     ThriftyNova
   }
-
 }

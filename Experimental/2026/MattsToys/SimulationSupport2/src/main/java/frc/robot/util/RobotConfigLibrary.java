@@ -239,44 +239,34 @@ public final class RobotConfigLibrary {
     return new RobotConfig(true, SIMULATED_DRIVE_BASE_CONFIG,
         Arrays.asList(new CameraConfig[] {
             new CameraConfig("USBCamera1",
-                // Our camera is mounted 0.1 meters forward and 0.5
-                // meters up
-                // from the robot pose (which is considered to be its
-                // center of
-                // rotation at the floor level, or Z = 0)...
+                // Our camera is mounted 0.1 meters forward and 0.5 meters up from the robot
+                // pose (which is considered to be its center of rotation at the floor level, or
+                // Z = 0)...
                 new Position(Meters.of(0.1), // x
                     Meters.of(0.0), // y
                     Meters.of(0.5)), // z
-                // ...pitched 15 degrees up, pointing straightforward
-                // and in
-                // plane with the robot,...
+                // ...pitched 15 degrees up, pointing straightforward and in plane with the
+                // robot,...
                 new Orientation(Degrees.of(-15), // pitch
                     Degrees.of(0), // roll
                     Degrees.of(0) // yaw
                 ),
-                // ...with image dimensions 960x720, 100 degree field of
-                // view,
-                // and 30 FPS.
+                // ...with image dimensions 960x720, 100 degree field of view, and 30 FPS.
                 new Imaging(960, 720, Degrees.of(100), 30)),
             new CameraConfig("USBCamera2",
-                // Our 2nd camera is mounted 0.25 meters back and 1.0
-                // meters up
-                // from the robot pose (which is considered to be its
-                // center of
-                // rotation at the floor level, or Z = 0)...
+                // Our 2nd camera is mounted 0.25 meters back and 1.0 meters up from the robot
+                // pose (which is considered to be its center of rotation at the floor level, or
+                // Z = 0)...
                 new Position(Meters.of(-0.25), // x
                     Meters.of(0.0), // y
                     Meters.of(1.0)), // z
-                // ...pitched 0 degrees up, pointing straight backward
-                // and in
-                // plane with the robot,...
+                // ...pitched 0 degrees up, pointing straight backward and in plane with the
+                // robot,...
                 new Orientation(Degrees.of(0), // roll
                     Degrees.of(0), // pitch
                     Degrees.of(180) // yaw
                 ),
-                // ...with image dimensions 960x720, 100 degree field of
-                // view,
-                // and 30 FPS.
+                // ...with image dimensions 960x720, 100 degree field of view, and 30 FPS.
                 new Imaging(960, 720, Degrees.of(100), 30)),
         }),
         new ElevatorConfig(

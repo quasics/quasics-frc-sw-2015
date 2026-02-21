@@ -16,19 +16,6 @@ import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
 
 public class SparkDriveBase extends AbstractDrivebase {
-  // TODO: add thriftynova support. (This might be done in a derived class, or
-  // be based on some information about the robot's configuration. I'd recommend
-  // the former approach.)
-
-  // TODO: Change these to use the encoders that are associated with the real
-  // hardware (i.e., either the relative encoders that are built into the Spark
-  // Max hardware, or else the functions that are built into the ThriftyNova
-  // motor controller class).
-  //
-  // Note that Mr. Healy has updated the "TrivialEncoder" class (and some
-  // derived classes) so that it can be used with Thrifty Novas (new code this
-  // year), as well as the Spark Max controllers, etc. (This stuff is in the
-  // sample code under "Experimental/2026/MattsToys/SimulationSupport".)
   private final TrivialEncoder m_leftEncoder;
   private final TrivialEncoder m_rightEncoder;
 
@@ -55,10 +42,8 @@ public class SparkDriveBase extends AbstractDrivebase {
         new SparkMax(SparkMaxIds.RIGHT_LEADER_ID, MotorType.kBrushless));
 
     // Configure followers to follow the leaders.
-    final SparkMax leftfollower =
-        new SparkMax(SparkMaxIds.LEFT_FOLLOWER_ID, MotorType.kBrushless);
-    final SparkMax rightfollower =
-        new SparkMax(SparkMaxIds.RIGHT_FOLLOWER_ID, MotorType.kBrushless);
+    final SparkMax leftfollower = new SparkMax(SparkMaxIds.LEFT_FOLLOWER_ID, MotorType.kBrushless);
+    final SparkMax rightfollower = new SparkMax(SparkMaxIds.RIGHT_FOLLOWER_ID, MotorType.kBrushless);
 
     configureMotorControllersForFollowing(
         (SparkMax) getLeftLeader(), leftfollower);
@@ -80,11 +65,10 @@ public class SparkDriveBase extends AbstractDrivebase {
     // Configure the gyro.
     //
     // TODO: Switch this to use the gyro that we're actually going to be using
-    // on the real robot.
+    // on the test bed (Sally).
     //
-    // FINDME(Robert): This needs to be updated, since we're not actually going
-    // to be using an AnalogGyro for the real robot. (We'll probably be using a
-    // Pigeon2.)
+    // FINDME(Robert): This needs to be updated, since we're Sally has a Pigeon2,
+    // not an AnalogGyro.
     AnalogGyro gyro = new AnalogGyro(0);
     m_gryo = IGyro.wrapGyro(gyro);
   }
@@ -103,7 +87,7 @@ public class SparkDriveBase extends AbstractDrivebase {
    * @param leader   leader SparkMax motor controller that the follower should
    *                 follow
    * @param follower SparkMax motor controller that should be configured to
-   *     follow
+   *                 follow
    *                 the leader
    */
   private void configureMotorControllersForFollowing(
@@ -121,7 +105,8 @@ public class SparkDriveBase extends AbstractDrivebase {
     // TODO: Configure the leader so that it is *not* a follower of anything.
     //
     // FINDME(Robert): This is important to do to ensure that the leader motor
-    // controllers are correctly configured even if they get swapped out.
+    // controllers are correctly configured even if they get swapped out. It can be
+    // done with 1-2 lines of code.
   }
 
   // We've removed @Override periodic, but be sure to use super.periodic if we

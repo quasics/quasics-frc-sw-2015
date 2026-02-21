@@ -8,7 +8,6 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -91,8 +90,7 @@ public class RealShooter extends SubsystemBase implements IShooter {
       new SysIdRoutine.Config(null, Volts.of(4), null,
           (state) -> SignalLogger.writeString("state", state.toString())),
       new SysIdRoutine.Mechanism(
-          (volts)
-              -> m_kraken.setControl(m_sysIdControl.withOutput(volts)),
+          (volts) -> m_kraken.setControl(m_sysIdControl.withOutput(volts)),
           null, this));
 
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {

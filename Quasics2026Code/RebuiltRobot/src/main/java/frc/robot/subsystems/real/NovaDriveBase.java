@@ -6,20 +6,12 @@ package frc.robot.subsystems.real;
 
 import static edu.wpi.first.units.Units.Meters;
 
-import com.revrobotics.PersistMode;
-import com.revrobotics.ResetMode;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkMaxConfig;
 import com.thethriftybot.devices.ThriftyNova;
 import com.thethriftybot.devices.ThriftyNova.EncoderType;
 import com.thethriftybot.devices.ThriftyNova.ThriftyNovaConfig;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.AnalogGyro;
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import frc.robot.Constants;
-import frc.robot.Constants.CanBusIds.SparkMaxIds;
 import frc.robot.Constants.CanBusIds.ThriftyNovaIds;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.ThriftyEncoderWrapper;
@@ -65,10 +57,8 @@ public class NovaDriveBase extends AbstractDrivebase {
     super(leftMotorController, rightMotorController);
 
     // Configure followers to follow the leaders.
-    final ThriftyNova leftfollower =
-        new ThriftyNova(ThriftyNovaIds.LEFT_FOLLOWER_ID);
-    final ThriftyNova rightfollower =
-        new ThriftyNova(ThriftyNovaIds.RIGHT_FOLLOWER_ID);
+    final ThriftyNova leftfollower = new ThriftyNova(ThriftyNovaIds.LEFT_FOLLOWER_ID);
+    final ThriftyNova rightfollower = new ThriftyNova(ThriftyNovaIds.RIGHT_FOLLOWER_ID);
 
     configureMotorControllersForFollowing(
         ThriftyNovaIds.LEFT_LEADER_ID, leftfollower);
@@ -81,8 +71,7 @@ public class NovaDriveBase extends AbstractDrivebase {
     leftfollower.applyConfig(config);
     rightfollower.applyConfig(config);
 
-    final Distance wheelDiam =
-        Meters.of(2.0 * Constants.wheelRadius.in(Meters));
+    final Distance wheelDiam = Meters.of(2.0 * Constants.wheelRadius.in(Meters));
     m_leftEncoder = new ThriftyEncoderWrapper(leftMotorController, wheelDiam);
     m_rightEncoder = new ThriftyEncoderWrapper(leftMotorController, wheelDiam);
 
@@ -117,7 +106,7 @@ public class NovaDriveBase extends AbstractDrivebase {
    * @param leader   leader SparkMax motor controller that the follower should
    *                 follow
    * @param follower SparkMax motor controller that should be configured to
-   *     follow
+   *                 follow
    *                 the leader
    */
   private void configureMotorControllersForFollowing(

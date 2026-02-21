@@ -20,6 +20,7 @@ import frc.robot.subsystems.interfaces.IIndexer;
 import frc.robot.subsystems.interfaces.IIntake;
 import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.subsystems.real.AbstractDrivebase;
+import frc.robot.subsystems.real.NovaDriveBase;
 import frc.robot.subsystems.real.RealIndexer;
 import frc.robot.subsystems.real.RealIntake;
 import frc.robot.subsystems.real.RealShooter;
@@ -44,7 +45,7 @@ public class RobotContainer {
   private final IIndexer m_indexerSubsystem = new RealIndexer();
 
   // The robot's subsystems and commands are defined here...
-  private final AbstractDrivebase m_drivebase = Robot.isReal() ? new SparkDriveBase() : new SimulationDrivebase();
+  private final AbstractDrivebase m_drivebase = Robot.isReal() ? new NovaDriveBase() : new SimulationDrivebase();
   private final IVision m_vision = (Robot.isReal()) ? new Vision() : new SimulatedVision();
   private final RealShooter m_shooter = new RealShooter();
 
@@ -96,6 +97,8 @@ public class RobotContainer {
     SmartDashboard.putData("Run Flywheel @ 3700 RPM", new InstantCommand(() -> m_shooter.setFlywheelRPM(RPM.of(3700))));
     SmartDashboard.putData("Run Kicker @ 12.5% speed", new InstantCommand(() -> m_shooter.setKickerSpeed(0.125)));
     SmartDashboard.putData("Run Kicker @ 38.7% speed", new InstantCommand(() -> m_shooter.setKickerSpeed(.387)));
+    SmartDashboard.putData("Run Indexer", new InstantCommand(() -> m_indexerSubsystem.setIndexSpeed(0.1)));
+    SmartDashboard.putData("Run Intake Rollers", new InstantCommand(() -> m_intakeSubsystem.setRollerSpeed(-.1)));
 
   }
 

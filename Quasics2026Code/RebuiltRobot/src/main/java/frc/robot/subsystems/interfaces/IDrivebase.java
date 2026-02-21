@@ -57,6 +57,15 @@ public interface IDrivebase {
    */
   void setPercent(double leftPercent, double rightPercent);
 
+  /**
+   * Stops the robot by setting the motor speeds to zero. (This is a convenience
+   * method that can be called from commands, etc., to stop the robot without
+   * having to know the details of how to set the speeds to zero.)
+   */
+  default void stop() {
+    setSpeeds(MetersPerSecond.of(0), MetersPerSecond.of(0));
+  }
+
   // Used to set voltage directly to the motors (for characterization,
   // trajectory following, etc.)
   void setVoltages(Voltage leftVoltage, Voltage rightVoltage);
@@ -68,10 +77,6 @@ public interface IDrivebase {
   Pose2d getEstimatedPose();
 
   void resetOdometry(Pose2d pose);
-
-  default void stop() {
-    setSpeeds(MetersPerSecond.of(0), MetersPerSecond.of(0));
-  }
 
   void setReferencePositionSupplier(Supplier<Pose2d> supplier);
 }

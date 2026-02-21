@@ -28,16 +28,12 @@ public class LinearSpeedCommand extends Command {
    * Creates a new LinearSpeedCommand, with the specified % of max speed to be
    * used while running.
    *
+   * TODO: Add a STOP condition and take a DISTANCE parameter
+   *
    * @param drivebase    The subsystem used by this command.
    * @param percentSpeed How fast this command should move.
-   *                     TODO: Add a STOP condition and take a DISTANCE
-   * parameter
    */
   public LinearSpeedCommand(AbstractDrivebase drivebase, double percentSpeed) {
-    // TODO(Robert): Decide if we want this to take a speed (LinearVelocity) or
-    // a percent. We initially wrote it to take a speed. This is a good lesson
-    // for both of us on why it's important not to use magic numbers - It's
-    // ambiguous!
     m_drivebase = drivebase;
     m_percentSpeed = percentSpeed;
     addRequirements(drivebase);

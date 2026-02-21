@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Feet;
 import static edu.wpi.first.units.Units.Meters;
 
@@ -17,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.LogitechGamePad;
 import frc.robot.commands.DriveForDistance;
 import frc.robot.commands.TankDrive;
+import frc.robot.commands.TurnRobot;
 import frc.robot.subsystems.AbstractDrivebase;
 import frc.robot.subsystems.RealDrivebase;
 import frc.robot.subsystems.SimulatedDrivebase;
@@ -97,6 +99,9 @@ public class RobotContainer {
 
     SmartDashboard.putData("1m @ 10%", new DriveForDistance(m_driveBase, 0.10, Meters.of(1)));
     SmartDashboard.putData("-1m @ 10%", new DriveForDistance(m_driveBase, 0.10, Meters.of(-1)));
+
+    SmartDashboard.putData("Turn 90 @ 50%",
+        new TurnRobot(m_driveBase, 0.5, Degrees.of(90)));
 
     // Another example, using a separate function to create/return the command
     // (sequence) to be added behind a dashboard button.

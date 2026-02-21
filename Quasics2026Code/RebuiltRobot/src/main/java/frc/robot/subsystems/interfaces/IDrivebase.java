@@ -9,6 +9,8 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
+
 import java.util.function.Supplier;
 
 public interface IDrivebase {
@@ -16,20 +18,15 @@ public interface IDrivebase {
 
   // TODO(ROBERT): This should take a linear valocity the ability to control speed
   // directly or percentage speed
-  // void setSpeeds(LinearVelocity leftSpeed, LinearVelocity rightSpeed);
-  void setSpeeds(double leftSpeed, double rightSpeed);
+  void setSpeeds(LinearVelocity leftSpeed, LinearVelocity rightSpeed);
 
   // Used to set voltage directly to the motors (for characterization, trajectory
   // following, etc.)
   void setVoltages(Voltage leftVoltage, Voltage rightVoltage);
 
-  // TODO(ROBERT): Create the ability to control speed directly or percentage
-  // speed
-  // void setPercent(double leftPercent, double rightPersent);
+  void setPercent(double leftPercent, double rightPersent);
 
-  // TODO(ROBERT): This should take a unit
-  // double mpsToPercent(LinearVelocity speed);
-  double mpsToPercent(double speed);
+  double mpsToPercent(LinearVelocity speed);
 
   Pose2d getOdometryPose();
 
@@ -38,7 +35,7 @@ public interface IDrivebase {
   void resetOdometry(Pose2d pose);
 
   default void stop() {
-    setSpeeds(0, 0);
+    setSpeeds(MetersPerSecond.of(0), MetersPerSecond.of(0));
   }
 
   void setReferencePositionSupplier(Supplier<Pose2d> supplier);

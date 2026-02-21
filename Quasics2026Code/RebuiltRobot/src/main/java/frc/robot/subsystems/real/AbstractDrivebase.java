@@ -86,14 +86,20 @@ public abstract class AbstractDrivebase
     m_robotDrive.arcadeDrive(forwardspeed.magnitude(), turnspeed.magnitude());
   }
 
-  // FINDME(Robert): This isn't doing what I think *you* think it's doing, at
-  // least in terms of how it's being used from LinearSpeedCommand.
   @Override
-  public void setSpeeds(double leftSpeed, double rightSpeed) {
+  public void setSpeeds(LinearVelocity leftSpeed, LinearVelocity rightSpeed) {
     m_leftMotor.set(mpsToPercent(leftSpeed));
     m_rightMotor.set(mpsToPercent(rightSpeed));
     m_logger.log("Left Speed set to " + leftSpeed, Verbosity.Debug);
     m_logger.log("Right Speed set to " + rightSpeed, Verbosity.Debug);
+
+    m_robotDrive.feed();
+  }
+
+  @Override
+  public void setPercent(double leftPercent, double rightPercent) {
+    m_leftMotor.set(leftPercent);
+    m_rightMotor.set(rightPercent);
 
     m_robotDrive.feed();
   }
@@ -109,10 +115,10 @@ public abstract class AbstractDrivebase
   // Probably print a warning too so that we can fix whatever is commanding us too
   // high.
   @Override
-  public double mpsToPercent(double speed) {
+  public double mpsToPercent(LinearVelocity speed) {
     // FINDME(Robert): This isn't doing what I think *you* think it's doing, at
     // least in terms of how it's being used from LinearSpeedCommand.
-    return speed / m_maxMotorSpeedMPS;
+    return speed.in(MetersPerSecond) / m_maxMotorSpeedMPS;
   }
 
   @Override

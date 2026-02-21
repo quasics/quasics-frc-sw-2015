@@ -45,8 +45,7 @@ public class LinearSpeedCommand extends Command {
 
   @Override
   public void execute() {
-    // TODO(ROBERT): This is not a speed! It is a percent.
-    m_drivebase.setSpeeds(m_percentSpeed, m_percentSpeed);
+    m_drivebase.setPercent(m_percentSpeed, m_percentSpeed);
   }
 
   @Override

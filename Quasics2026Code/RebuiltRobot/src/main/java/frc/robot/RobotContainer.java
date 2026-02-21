@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.DriveteamConstants;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.LinearSpeedCommand;
+import frc.robot.commands.RunIntakeExtension;
 import frc.robot.commands.RunShooterPID;
 import frc.robot.subsystems.interfaces.IIndexer;
 import frc.robot.subsystems.interfaces.IIntake;
@@ -25,7 +26,6 @@ import frc.robot.subsystems.real.NovaDriveBase;
 import frc.robot.subsystems.real.RealIndexer;
 import frc.robot.subsystems.real.RealIntake;
 import frc.robot.subsystems.real.RealShooter;
-import frc.robot.subsystems.real.SparkDriveBase;
 import frc.robot.subsystems.real.Vision;
 import frc.robot.subsystems.simulated.SimulatedVision;
 import frc.robot.subsystems.simulated.SimulationDrivebase;
@@ -42,8 +42,8 @@ import java.util.function.Supplier;
  * commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  private final IIntake m_intakeSubsystem = new RealIntake();
-  private final IIndexer m_indexerSubsystem = new RealIndexer();
+  private final IIntake m_intake = new RealIntake();
+  private final IIndexer m_indexer = new RealIndexer();
 
   // The robot's subsystems and commands are defined here...
   private final AbstractDrivebase m_drivebase = Robot.isReal() ? new NovaDriveBase() : new SimulationDrivebase();
@@ -94,13 +94,16 @@ public class RobotContainer {
   }
 
   private void addButtonsToSmartDashboard() {
-    SmartDashboard.putData("Run Indexer", new InstantCommand(() -> m_indexerSubsystem.setIndexSpeed(0.1)));
-    SmartDashboard.putData("Run Intake Rollers", new InstantCommand(() -> m_intakeSubsystem.setRollerSpeed(-.1)));
+    SmartDashboard.putData("Run Indexer", new InstantCommand(() -> m_indexer.setIndexSpeed(0.1)));
+    SmartDashboard.putData("Run Intake Rollers", new InstantCommand(() -> m_intake.setRollerSpeed(-.1)));
     SmartDashboard.putData("Run Flywheel @ 1200 RPM, Kicker @ 12.5% speed",
         new RunShooterPID(m_shooter, RPM.of(1200), .125));
     SmartDashboard.putData("Run Flywheel @ 3700 RPM, Kicker @ 38.7% speed",
         new RunShooterPID(m_shooter, RPM.of(3700), .387));
-
+    SmartDashboard.putData("Extend Intake",
+        new RunIntakeExtension(m_intake, 0.10, true));
+    SmartDashboard.putData("Retract Intake",
+        new RunIntakeExtension(m_intake, 0.10, false));
   }
 
   private void addSysIdButtonsToSmartDashboard() {
@@ -112,6 +115,7 @@ public class RobotContainer {
         m_shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
     SmartDashboard.putData("Flywheel Dynamic Reverse",
         m_shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+        
   }
 
   /**

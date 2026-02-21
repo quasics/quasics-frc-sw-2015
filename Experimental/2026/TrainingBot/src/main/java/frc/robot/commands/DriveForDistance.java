@@ -37,18 +37,29 @@ public class DriveForDistance extends Command {
 
   /**
    * Creates a new DriveForDistance, using our *other* constructor to do the work.
+   * (This will assume that we want to go at 50% speed.)
+   * 
+   * @param drivebase The drivebase to use.
+   * @param distance  The distance to drive.
+   * 
+   * @see #DriveForDistance(AbstractDrivebase, double, Distance)
+   */
+  public DriveForDistance(AbstractDrivebase drivebase, Distance distance) {
+    this(drivebase, .5, distance);
+  }
+
+  /**
+   * Creates a new DriveForDistance, using our *other* constructor to do the work.
    *
    * @param drivebase    The drivebase to use.
    * @param percentSpeed The speed to drive at, as a percentage of full speed
    *                     (-1.0 to +1.0)
    * @param meters       The distance to drive, in meters.
+   * 
+   * @see #DriveForDistance(AbstractDrivebase, double, Distance)
    */
   public DriveForDistance(AbstractDrivebase drivebase, double percentSpeed, double meters) {
     this(drivebase, percentSpeed, Meters.of(meters));
-  }
-
-  public DriveForDistance(AbstractDrivebase drivebase, Distance distance) {
-    this(drivebase, .5, distance);
   }
 
   /**

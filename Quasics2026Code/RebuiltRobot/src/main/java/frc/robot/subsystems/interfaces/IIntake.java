@@ -8,7 +8,7 @@ package frc.robot.subsystems.interfaces;
  * Interface for controlling the intake mechanism, used to pick up balls from
  * the floor.
  * 
- * TODO: add functionality for intake extension.
+ * TODO: Define the intake interface (and then implement it).
  */
 public interface IIntake {
   /*

@@ -12,7 +12,6 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import frc.robot.subsystems.real.Vision;
-
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
@@ -40,14 +39,16 @@ public class SimulatedVision extends Vision {
   private VisionSystemSim m_visionSim;
   private SimCameraProperties cameraProp;
   private PhotonCameraSim cameraSim;
-  private static final AprilTagFields FIELD_LAYOUT = AprilTagFields.k2026RebuiltAndymark;
+  private static final AprilTagFields FIELD_LAYOUT =
+      AprilTagFields.k2026RebuiltAndymark;
 
   /** Creates a new SimulatedVision. */
   public SimulatedVision() {
     m_visionSim = new VisionSystemSim("main");
     AprilTagFieldLayout tagLayout = null;
     try {
-      tagLayout = AprilTagFieldLayout.loadFromResource(FIELD_LAYOUT.m_resourceFile);
+      tagLayout =
+          AprilTagFieldLayout.loadFromResource(FIELD_LAYOUT.m_resourceFile);
     } catch (IOException ioe) {
       System.err.println(
           "Warning: failed to load April Tags layout (" + FIELD_LAYOUT + ")");
@@ -75,14 +76,16 @@ public class SimulatedVision extends Vision {
     //
 
     // Where is the camera located, relative to the center of the robot's base?
-    Translation3d robotToCameraTr = new Translation3d(0.0762, -0.17145, 0.53975);
+    Translation3d robotToCameraTr =
+        new Translation3d(0.0762, -0.17145, 0.53975);
     // What is the angling of the camera, relative to the drive base?
     Rotation3d robotToCameraRot = new Rotation3d();
     // Create the overall transformation used to convert data from the robot's
     // perspective to the camera's.
     // FINDME(Rylie): This should ideally match the "robotToCamera"
     // configuration being used in the base ("Vision") subsystem class's code.
-    Transform3d robotToCamera = new Transform3d(robotToCameraTr, robotToCameraRot);
+    Transform3d robotToCamera =
+        new Transform3d(robotToCameraTr, robotToCameraRot);
 
     // Allocate the camera simulation object.
     cameraSim = new PhotonCameraSim(camera, cameraProp);

@@ -29,8 +29,10 @@ public class Climbers extends SubsystemBase {
   /** Creates a new Climbers. */
   public Climbers() {
     if (!ConditionalConstants.SALLY) {
-      m_leftClimber = new SparkMax(SparkMaxIds.LEFT_CLIMBER_ID, MotorType.kBrushless);
-      m_rightClimber = new SparkMax(SparkMaxIds.RIGHT_CLIMBER_ID, MotorType.kBrushless);
+      m_leftClimber =
+          new SparkMax(SparkMaxIds.LEFT_CLIMBER_ID, MotorType.kBrushless);
+      m_rightClimber =
+          new SparkMax(SparkMaxIds.RIGHT_CLIMBER_ID, MotorType.kBrushless);
       m_leftEncoder = m_leftClimber.getEncoder();
       m_rightEncoder = m_rightClimber.getEncoder();
     }

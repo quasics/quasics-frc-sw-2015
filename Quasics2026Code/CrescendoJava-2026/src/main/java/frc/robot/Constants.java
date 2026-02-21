@@ -5,12 +5,13 @@
 package frc.robot;
 
 /**
- * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
- * constants. This class should not be used for any other purpose. All constants should be declared
- * globally (i.e. public static). Do not put anything functional in this class.
+ * The Constants class provides a convenient place for teams to hold robot-wide
+ * numerical or boolean constants. This class should not be used for any other
+ * purpose. All constants should be declared globally (i.e. public static). Do
+ * not put anything functional in this class.
  *
- * <p>It is advised to statically import this class (or one of its inner classes) wherever the
- * constants are needed, to reduce verbosity.
+ * <p>It is advised to statically import this class (or one of its inner
+ * classes) wherever the constants are needed, to reduce verbosity.
  */
 public final class Constants {
   public static class LogitechGamePad {
@@ -49,8 +50,8 @@ public final class Constants {
 
   public static class CanBusIds {
     public static class SparkMaxIds {
-      // Note: Drive base motor IDs are based on those Quasics has used over the last
-      // couple of years.
+      // Note: Drive base motor IDs are based on those Quasics has used over the
+      // last couple of years.
       public static final int LEFT_LEADER_ID = 2;
       public static final int LEFT_FOLLOWER_ID = 1;
       public static final int RIGHT_LEADER_ID = 4;
@@ -60,7 +61,8 @@ public final class Constants {
       public static final int RIGHT_CLIMBER_ID = 6;
 
       public static final int AMP_MOTOR_ID = 0; // update when id is known
-      public static final int TRANSITION_MOTOR_ID = 7; // update when we know port
+      public static final int TRANSITION_MOTOR_ID =
+          7; // update when we know port
       public static final int INTAKE_MOTOR_ID = 8;
 
       public static final int LEFT_SHOOTER_ID = 9;
@@ -98,15 +100,18 @@ public final class Constants {
     public static final String none = "None";
     public static final String rightOfSpeakerAllianceNote =
         "Score right of speaker (alliance note)";
-    public static final String rightOfSpeakerCenterNote = "Score right of speaker (center note)";
+    public static final String rightOfSpeakerCenterNote =
+        "Score right of speaker (center note)";
   } // public static class AutonomousScore2Options
 
   public static class AutonomousScore3Options {
     public static final String none = "None";
     public static final String amp = "Score in amp";
     public static final String leftOfSpeaker = "Score left of speaker";
-    public static final String inFrontOfSpeakerAmpNote = "Score in front of speaker (amp note)";
-    public static final String inFrontOfSpeakerStageNote = "Score in front of speaker (stage note)";
+    public static final String inFrontOfSpeakerAmpNote =
+        "Score in front of speaker (amp note)";
+    public static final String inFrontOfSpeakerStageNote =
+        "Score in front of speaker (stage note)";
     public static final String inFrontOfSpeakerCenterNote =
         "Score in front of speaker (center note)";
     public static final String rightOfSpeaker = "Score right of speaker";
@@ -129,7 +134,8 @@ public final class Constants {
     public static final double kD = 0;
   }
 
-  public static class PathWeaverConstantsMargaret { // average of left and right characterizations
+  public static class PathWeaverConstantsMargaret { // average of left and right
+                                                    // characterizations
     public static final double kS = (0.017001 + 0.015565) / 2;
     public static final double kV = (0.1979 + 0.19042) / 2;
     public static final double kA = (0.031501 + 0.030128) / 2;

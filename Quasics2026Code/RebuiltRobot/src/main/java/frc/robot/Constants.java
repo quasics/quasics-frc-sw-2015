@@ -168,10 +168,5 @@ public final class Constants {
 
   // TODO: Likely want configurable settings other than just this (track width,
   // etc): See RobotSettings.java in Reefscape code
-  public static enum DrivebaseMotors {
-    Unknown,
-    SparkMax,
-    ThriftyNova
-  }
-
+  public static enum DrivebaseMotors { Unknown, SparkMax, ThriftyNova }
 }

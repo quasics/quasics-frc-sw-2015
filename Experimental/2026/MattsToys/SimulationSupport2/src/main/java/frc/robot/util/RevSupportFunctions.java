@@ -30,7 +30,8 @@ public class RevSupportFunctions {
    */
   public static void configureSparkMaxEncoderForDistance(
       SparkMaxConfig config, Distance outerDiameter, double gearRatio) {
-    final double distanceScalingFactorForGearing = outerDiameter.div(gearRatio).in(Meters);
+    final double distanceScalingFactorForGearing =
+        outerDiameter.div(gearRatio).in(Meters);
     final double velocityScalingFactor = distanceScalingFactorForGearing / 60;
 
     config.encoder.positionConversionFactor(distanceScalingFactorForGearing)
@@ -73,10 +74,11 @@ public class RevSupportFunctions {
   /**
    * Updates a SparkMaxConfig to disable follower mode, so that the motor will
    * not be configured to follow another motor.
-   * 
+   *
    * Note that this is necessary to call if you want to use a motor as a leader,
-   * but it has previously been configured as a follower, since the SparkMaxConfig
-   * may persist the follower configuration until it is explicitly disabled.
+   * but it has previously been configured as a follower, since the
+   * SparkMaxConfig may persist the follower configuration until it is
+   * explicitly disabled.
    *
    * @param config the configuration to update
    */

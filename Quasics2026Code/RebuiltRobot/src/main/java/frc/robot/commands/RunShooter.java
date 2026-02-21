@@ -7,19 +7,28 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.real.RealShooter;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
+/* You should consider using the more terse Command factories API instead
+ * https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands
+ */
 public class RunShooter extends Command {
   RealShooter m_shooter;
   private double m_shooterSpeed;
   private double m_kickerSpeed;
-  private boolean m_shooting;
 
   /** Creates a new RunShooter. */
-  public RunShooter(RealShooter shooter, double shooterSpeed, double kickerSpeed, boolean shooting) {
+  public RunShooter(RealShooter shooter, double shooterSpeed,
+      double kickerSpeed, boolean shooting) {
     m_shooter = shooter;
     m_shooterSpeed = shooterSpeed;
     m_kickerSpeed = kickerSpeed;
-    m_shooting = shooting;
+    if (shooting) {
+      m_shooterSpeed = Math.abs(shooterSpeed);
+      m_kickerSpeed = Math.abs(kickerSpeed);
+    } else {
+      m_shooterSpeed = -Math.abs(shooterSpeed);
+      m_kickerSpeed = -Math.abs(kickerSpeed);
+    }
+
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(shooter);
   }
@@ -27,10 +36,6 @@ public class RunShooter extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (!m_shooting) {
-      m_shooterSpeed = -m_shooterSpeed;
-      m_kickerSpeed = -m_kickerSpeed;
-    }
     m_shooter.setFlywheelSpeed(m_shooterSpeed);
     m_shooter.setKickerSpeed(m_kickerSpeed);
   }

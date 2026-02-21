@@ -16,8 +16,8 @@ import edu.wpi.first.units.measure.Voltage;
  * @param kV kV, in V/(m/s)
  * @param kA kA, in V/(m/s^2)
  */
-public record ElevatorFeedForwardConfig(
-    Voltage kS, Voltage kG, double kV, double kA) {
+public record
+    ElevatorFeedForwardConfig(Voltage kS, Voltage kG, double kV, double kA) {
   /**
    * Overloaded constructor.
    *
@@ -26,8 +26,7 @@ public record ElevatorFeedForwardConfig(
    * @param kV kV, in V/(m/s)
    * @param kA kA, in V/(m/s^2)
    */
-  public ElevatorFeedForwardConfig(
-      double kS, double kG, double kV, double kA) {
+  public ElevatorFeedForwardConfig(double kS, double kG, double kV, double kA) {
     this(Volts.of(kS), Volts.of(kG), kV, kA);
   }
 }

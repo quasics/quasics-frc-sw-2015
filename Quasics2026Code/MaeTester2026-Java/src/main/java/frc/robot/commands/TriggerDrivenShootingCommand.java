@@ -19,8 +19,9 @@ public class TriggerDrivenShootingCommand extends Command {
   private final Supplier<Boolean> m_runLowSpeed;
 
   /** Creates a new TriggerDrivenShootingCommand. */
-  public TriggerDrivenShootingCommand(Shooter shooter, double highSpeed, double lowSpeed,
-      Supplier<Boolean> runHighSpeed, Supplier<Boolean> runLowSpeed) {
+  public TriggerDrivenShootingCommand(Shooter shooter, double highSpeed,
+      double lowSpeed, Supplier<Boolean> runHighSpeed,
+      Supplier<Boolean> runLowSpeed) {
     m_shooter = shooter;
     m_highSpeed = highSpeed;
     m_lowSpeed = lowSpeed;

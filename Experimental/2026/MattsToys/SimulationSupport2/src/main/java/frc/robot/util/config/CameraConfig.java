@@ -10,5 +10,4 @@ package frc.robot.util.config;
  * @param imaging     characteristics of the camera's image feed
  */
 public record CameraConfig(
-    String name, Position pos, Orientation orientation, Imaging imaging) {
-}
+    String name, Position pos, Orientation orientation, Imaging imaging) {}

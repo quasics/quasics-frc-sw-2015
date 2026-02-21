@@ -189,9 +189,7 @@ public interface ILighting extends ISubsystem {
    */
   public default void SetAlternatingColors(Color color1, Color color2) {
     SetStripColor(
-        (int position) -> {
-          return (position % 2 == 0) ? color1 : color2;
-        });
+        (int position) -> { return (position % 2 == 0) ? color1 : color2; });
   }
 
   /**

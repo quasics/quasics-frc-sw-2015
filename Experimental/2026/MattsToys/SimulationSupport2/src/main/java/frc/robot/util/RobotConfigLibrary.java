@@ -32,7 +32,6 @@ import frc.robot.util.config.Position;
 import frc.robot.util.config.PowerDistributor;
 import frc.robot.util.config.RobotConfig;
 import frc.robot.util.config.SimpleFeedForwardConfig;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -111,17 +110,17 @@ public final class RobotConfigLibrary {
    * kS: 0.01417
    * kV: 1.9803
    * kA: 0.19186
-   * 
+   *
    * kS (Ang): 0.021613
    * kV (Ang): 2.6333
    * kA (Ang): 0.52163
-   * 
+   *
    * Post-change:
    * kP: 2.5662
    * kS: 0.011404
    * kV: 2.2002
    * kA: 0.56983
-   * 
+   *
    * kS (Ang): 0.019793
    * kV (Ang): 3.8643
    * kA (Ang): 1.7422
@@ -228,64 +227,46 @@ public final class RobotConfigLibrary {
     ClimberConfig climberConfig = new ClimberConfig(new PIDConfig(1.0, 0, 0),
         new SimpleFeedForwardConfig(Volts.of(0.01), Volts.of(0.05), 0.20));
 
-    return new RobotConfig(
-        true,
-        SIMULATED_DRIVE_BASE_CONFIG,
+    return new RobotConfig(true, SIMULATED_DRIVE_BASE_CONFIG,
         Arrays.asList(new CameraConfig[] {
             cameraConfig,
         }),
-        elevatorConfig,
-        armConfig,
-        lightingConfig,
-        candleConfig,
-        climberConfig,
-        NO_FLYWHEEL,
-        NO_HOOD,
-        NO_POWER_DISTRIBUTOR);
+        elevatorConfig, armConfig, lightingConfig, candleConfig, climberConfig,
+        NO_FLYWHEEL, NO_HOOD, NO_POWER_DISTRIBUTOR);
   }
 
   private static RobotConfig generateTwoCameraSimulationConfig() {
     return new RobotConfig(true, SIMULATED_DRIVE_BASE_CONFIG,
         Arrays.asList(new CameraConfig[] {
             new CameraConfig("USBCamera1",
-                // Our camera is mounted 0.1 meters forward and 0.5
-                // meters up
-                // from the robot pose (which is considered to be its
-                // center of
-                // rotation at the floor level, or Z = 0)...
+                // Our camera is mounted 0.1 meters forward and 0.5 meters up from the robot
+                // pose (which is considered to be its center of rotation at the floor level, or
+                // Z = 0)...
                 new Position(Meters.of(0.1), // x
                     Meters.of(0.0), // y
                     Meters.of(0.5)), // z
-                // ...pitched 15 degrees up, pointing straightforward
-                // and in
-                // plane with the robot,...
+                // ...pitched 15 degrees up, pointing straightforward and in plane with the
+                // robot,...
                 new Orientation(Degrees.of(-15), // pitch
                     Degrees.of(0), // roll
                     Degrees.of(0) // yaw
                 ),
-                // ...with image dimensions 960x720, 100 degree field of
-                // view,
-                // and 30 FPS.
+                // ...with image dimensions 960x720, 100 degree field of view, and 30 FPS.
                 new Imaging(960, 720, Degrees.of(100), 30)),
             new CameraConfig("USBCamera2",
-                // Our 2nd camera is mounted 0.25 meters back and 1.0
-                // meters up
-                // from the robot pose (which is considered to be its
-                // center of
-                // rotation at the floor level, or Z = 0)...
+                // Our 2nd camera is mounted 0.25 meters back and 1.0 meters up from the robot
+                // pose (which is considered to be its center of rotation at the floor level, or
+                // Z = 0)...
                 new Position(Meters.of(-0.25), // x
                     Meters.of(0.0), // y
                     Meters.of(1.0)), // z
-                // ...pitched 0 degrees up, pointing straight backward
-                // and in
-                // plane with the robot,...
+                // ...pitched 0 degrees up, pointing straight backward and in plane with the
+                // robot,...
                 new Orientation(Degrees.of(0), // roll
                     Degrees.of(0), // pitch
                     Degrees.of(180) // yaw
                 ),
-                // ...with image dimensions 960x720, 100 degree field of
-                // view,
-                // and 30 FPS.
+                // ...with image dimensions 960x720, 100 degree field of view, and 30 FPS.
                 new Imaging(960, 720, Degrees.of(100), 30)),
         }),
         new ElevatorConfig(
@@ -299,9 +280,7 @@ public final class RobotConfigLibrary {
         new LightingConfig(SimulationPorts.PWM.LIGHTING_PORT, 80), NO_CANDLE,
         new ClimberConfig(new PIDConfig(1.0, 0, 0),
             new SimpleFeedForwardConfig(Volts.of(0.01), Volts.of(0.05), 0.20)),
-        NO_FLYWHEEL,
-        NO_HOOD,
-        NO_POWER_DISTRIBUTOR);
+        NO_FLYWHEEL, NO_HOOD, NO_POWER_DISTRIBUTOR);
   }
 
   private static RobotConfig generateSallyConfig() {
@@ -321,15 +300,8 @@ public final class RobotConfigLibrary {
                 0.01, // Linear data (from 2024)
                 Volts.of(0.19529), 0.01) // Angular data (FAKE)
         ),
-        NO_CAMERA,
-        NO_ELEVATOR,
-        NO_ARM,
-        NO_LIGHTING,
-        NO_CANDLE,
-        NO_CLIMBER,
-        NO_FLYWHEEL,
-        NO_HOOD,
-        power);
+        NO_CAMERA, NO_ELEVATOR, NO_ARM, NO_LIGHTING, NO_CANDLE, NO_CLIMBER,
+        NO_FLYWHEEL, NO_HOOD, power);
   }
 
   private static RobotConfig generate2026Config() {
@@ -345,35 +317,21 @@ public final class RobotConfigLibrary {
             Volts.of(0.19529), 0.01) // Angular data (FAKE)
     );
 
-    final PowerDistributor power = new PowerDistributor(ModuleType.kRev);
     // TODO: Update 2026 flywheel configuration data with real numbers.
-    final FlywheelConfig flywheel = new FlywheelConfig(
-        FlywheelConfig.FlywheelType.TalonFX,
+    final FlywheelConfig flywheel = new FlywheelConfig(FlywheelConfig.FlywheelType.TalonFX,
         RebuiltRobotConstants.SparkMaxConstants.FLYWHEEL_MOTOR_ID, false,
-        new SimpleFeedForwardConfig(
-            Volts.of(0.1), // kS
+        new SimpleFeedForwardConfig(Volts.of(0.1), // kS
             Volts.of(0.002), // kV
             0.0001), // kA
         new PIDConfig(0.11));
 
-    // TODO: Update 2026 hood configuration data with real numbers.
-    final HoodConfig hood = new HoodConfig(
-        HoodConfig.ControlType.SparkMax,
-        RebuiltRobotConstants.SparkMaxConstants.HOOD_MOTOR_ID,
-        Degrees.of(0),
-        Degrees.of(90));
+    final HoodConfig hood = new HoodConfig(HoodConfig.ControlType.SparkMax,
+        RebuiltRobotConstants.SparkMaxConstants.HOOD_MOTOR_ID, Degrees.of(45),
+        Degrees.of(75));
 
-    return new RobotConfig(
-        false,
-        drive,
-        NO_CAMERA,
-        NO_ELEVATOR,
-        NO_ARM,
-        NO_LIGHTING,
-        NO_CANDLE,
-        NO_CLIMBER,
-        flywheel,
-        hood,
-        power);
+    final PowerDistributor power = new PowerDistributor(ModuleType.kRev);
+
+    return new RobotConfig(false, drive, NO_CAMERA, NO_ELEVATOR, NO_ARM,
+        NO_LIGHTING, NO_CANDLE, NO_CLIMBER, flywheel, hood, power);
   }
 }

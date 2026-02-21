@@ -4,42 +4,80 @@
 
 package frc.robot.subsystems.interfaces;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
-
 import java.util.function.Supplier;
 
 public interface IDrivebase {
+  /**
+   * Drives the robot using arcade controls. (That is, one parameter controls
+   * forward/backward speed, and the other controls turning speed.)
+   *
+   * The implementation is expected to combine these in a way that allows the
+   * robot to do both at the same time, and to turn in place when the forward
+   * speed is zero.
+   *
+   * @param forwardspeed forward/backward speed (positive is forward, negative
+   *                     is backward)
+   * @param turnspeed    turning speed (positive is clockwise, negative is
+   *                     counterclockwise)
+   */
   void arcadeDrive(LinearVelocity forwardspeed, AngularVelocity turnspeed);
 
-  // TODO(ROBERT): This should take a linear valocity the ability to control speed
-  // directly or percentage speed
-  // void setSpeeds(LinearVelocity leftSpeed, LinearVelocity rightSpeed);
-  void setSpeeds(double leftSpeed, double rightSpeed);
+  /**
+   * Drives the robot using "tank drive" style controls. (That is, one parameter
+   * controls the speed of the left side of the drivebase, and the other
+   * controls the speed of the right side.)
+   *
+   * @param leftSpeed  the speed for the left side of the drivebase (positive is
+   *                   forward, negative is backward)
+   * @param rightSpeed the speed for the right side of the drivebase (positive
+   *     is
+   *                   forward, negative is backward)
+   */
+  void setSpeeds(LinearVelocity leftSpeed, LinearVelocity rightSpeed);
 
-  // Used to set voltage directly to the motors (for characterization, trajectory
-  // following, etc.)
+  /**
+   * Drives the robot using "tank drive" style controls. (That is, one parameter
+   * controls the speed of the left side of the drivebase, and the other
+   * controls the speed of the right side.)
+   *
+   * The parameters are expected to be in the range [-1, 1], where 1 represents
+   * full forward speed, and -1 represents full backward speed. (The
+   * implementation should ensure that values outside this range are handled
+   * appropriately, e.g., by clamping them to the range.)
+   *
+   * @param leftPercent  the percentage of full speed for the left side of the
+   *                     drivebase
+   * @param rightPercent the percentage of full speed for the right side of the
+   *                     drivebase
+   */
+  void setPercent(double leftPercent, double rightPercent);
+
+  /**
+   * Stops the robot by setting the motor speeds to zero. (This is a convenience
+   * method that can be called from commands, etc., to stop the robot without
+   * having to know the details of how to set the speeds to zero.)
+   */
+  default void stop() {
+    setSpeeds(MetersPerSecond.of(0), MetersPerSecond.of(0));
+  }
+
+  // Used to set voltage directly to the motors (for characterization,
+  // trajectory following, etc.)
   void setVoltages(Voltage leftVoltage, Voltage rightVoltage);
 
-  // TODO(ROBERT): Create the ability to control speed directly or percentage
-  // speed
-  // void setPercent(double leftPercent, double rightPersent);
-
-  // TODO(ROBERT): This should take a unit
-  // double mpsToPercent(LinearVelocity speed);
-  double mpsToPercent(double speed);
+  double mpsToPercent(LinearVelocity speed);
 
   Pose2d getOdometryPose();
 
   Pose2d getEstimatedPose();
 
   void resetOdometry(Pose2d pose);
-
-  default void stop() {
-    setSpeeds(0, 0);
-  }
 
   void setReferencePositionSupplier(Supplier<Pose2d> supplier);
 }

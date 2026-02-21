@@ -9,8 +9,8 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.logging.Logger;
 import frc.robot.logging.Logger.Verbosity;
@@ -66,6 +66,10 @@ public class Vision extends SubsystemBase implements IVision {
   }
 
   private PhotonPipelineResult getLatestPipelineResults() {
+    // FINDME(Rylie): You may want to take a look at what Mr. Healy is doing in the
+    // "SimulationSupport" code under the "Experimental/2026/MattsToys" directory,
+    // to see how he's using the new (non-deprecated) functions for getting pipeline
+    // results from the PhotonCamera class.
     return camera.getLatestResult();
   }
 

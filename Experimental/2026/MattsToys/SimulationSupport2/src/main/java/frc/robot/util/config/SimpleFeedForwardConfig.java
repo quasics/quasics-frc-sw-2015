@@ -15,8 +15,7 @@ import edu.wpi.first.units.measure.Voltage;
  * @param kV kV, in V/(m/s); must be > 0
  * @param kA kA, in V/(m/s^2)
  */
-public record SimpleFeedForwardConfig(
-    Voltage kS, Voltage kV, double kA) {
+public record SimpleFeedForwardConfig(Voltage kS, Voltage kV, double kA) {
   /**
    * Overloaded constructor.
    *

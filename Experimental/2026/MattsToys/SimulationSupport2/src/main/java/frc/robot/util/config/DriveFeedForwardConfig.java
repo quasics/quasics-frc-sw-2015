@@ -34,8 +34,8 @@ public record DriveFeedForwardConfig(
    * @param kvAngular angular (rotational) feedforward kV value
    * @param kaAngular angular (rotational) feedforward kA value
    */
-  public DriveFeedForwardConfig(Voltage kvLinear, double kaLinear,
-      Voltage kvAngular, double kaAngular) {
+  public DriveFeedForwardConfig(
+      Voltage kvLinear, double kaLinear, Voltage kvAngular, double kaAngular) {
     this(new SimpleFeedForwardConfig(kvLinear, kaLinear),
         new SimpleFeedForwardConfig(kvAngular, kaAngular));
   }

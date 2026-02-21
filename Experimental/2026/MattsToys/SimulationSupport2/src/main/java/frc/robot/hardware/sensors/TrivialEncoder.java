@@ -64,7 +64,7 @@ import java.io.IOException;
  * <ul>
  * <li>
  * Adding support for acceleration, which is also commonly provided by encoders.
- * 
+ *
  * <li>
  * Adding genericized "safe" access to underlying controller.
  * </ul>

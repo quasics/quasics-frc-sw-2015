@@ -18,7 +18,7 @@ import frc.robot.constants.robots.QuasicsSparkMaxConstants.QuasicsDrivebaseCanId
 import frc.robot.hardware.actuators.SparkMaxMotorControllerPlus;
 import frc.robot.hardware.sensors.Pigeon2Wrapper;
 import frc.robot.hardware.sensors.SparkMaxEncoderWrapper;
-import frc.robot.subsystems.DrivebaseBase;
+import frc.robot.subsystems.bases.DrivebaseBase;
 import frc.robot.util.config.DriveConfig;
 
 /**

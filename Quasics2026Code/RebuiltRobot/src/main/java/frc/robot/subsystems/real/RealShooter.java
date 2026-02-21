@@ -8,7 +8,6 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -24,7 +23,7 @@ import frc.robot.subsystems.interfaces.IShooter;
 /**
  * Subsystem for controlling the shooter mechanism, which is used to shoot balls
  * into the Hub.
- * 
+ *
  * FINDME(Rylie): Some suggested reading for this subsystem:
  * * Straightforward PID control for flywheels:
  * https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/tuning-flywheel.html
@@ -39,14 +38,15 @@ public class RealShooter extends SubsystemBase implements IShooter {
   /** Creates a new RealShooter. */
   public RealShooter() {
     m_kraken = new TalonFX(0);
-    TalonFXConfiguration config = new TalonFXConfiguration();
-    m_kraken.getConfigurator().apply(config);
+    // TalonFXConfiguration config = new TalonFXConfiguration();
+    // m_kraken.getConfigurator().apply(config);
     var slot0Configs = new Slot0Configs();
     // TODO: tune these
-    slot0Configs.kV = 0.0;
-    slot0Configs.kP = 0.0;
+    slot0Configs.kV = 0.11676;
+    slot0Configs.kP = 0.077577;
     m_ff = 0.0;
     m_kraken.getConfigurator().apply(slot0Configs);
+    // m_kraken.getConfigurator().apply(config);
     m_request = new VelocityVoltage(0).withSlot(0);
     m_kicker = new SparkMax(SparkMaxIds.KICKER_ID, MotorType.kBrushless);
     SignalLogger.start();
@@ -87,8 +87,12 @@ public class RealShooter extends SubsystemBase implements IShooter {
   }
 
   private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
-      new SysIdRoutine.Config(null, Volts.of(4), null, state -> SignalLogger.writeString("state", state.toString())),
-      new SysIdRoutine.Mechanism(volts -> m_kraken.setControl(m_sysIdControl.withOutput(volts)), null, this));
+      new SysIdRoutine.Config(null, Volts.of(4), null,
+          (state) -> SignalLogger.writeString("state", state.toString())),
+      new SysIdRoutine.Mechanism(
+          (volts)
+              -> m_kraken.setControl(m_sysIdControl.withOutput(volts)),
+          null, this));
 
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
     return m_sysIdRoutine.quasistatic(direction);

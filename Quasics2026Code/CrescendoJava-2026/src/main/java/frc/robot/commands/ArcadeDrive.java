@@ -16,8 +16,8 @@ public class ArcadeDrive extends Command {
   private final Supplier<Double> m_rotationSupplier;
 
   /** Creates a new ArcadeDrive. */
-  public ArcadeDrive(
-      Drivebase drivebase, Supplier<Double> leftSupplier, Supplier<Double> rightSupplier) {
+  public ArcadeDrive(Drivebase drivebase, Supplier<Double> leftSupplier,
+      Supplier<Double> rightSupplier) {
     m_speedSupplier = leftSupplier;
     m_rotationSupplier = rightSupplier;
     m_drivebase = drivebase;
@@ -42,7 +42,8 @@ public class ArcadeDrive extends Command {
     final double rightInput = m_rotationSupplier.get();
 
     LinearVelocity forwardSpeed = Drivebase.MAX_SPEED.times(leftInput);
-    AngularVelocity rotationSpeed = Drivebase.MAX_ANGULAR_SPEED.times(rightInput);
+    AngularVelocity rotationSpeed =
+        Drivebase.MAX_ANGULAR_SPEED.times(rightInput);
 
     m_drivebase.arcadeDrive(forwardSpeed, rotationSpeed);
   }

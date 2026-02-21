@@ -11,8 +11,8 @@ public class RunTransitionRoller extends Command {
   private final TransitionRoller m_transition;
   private final double m_transitionSpeed;
 
-  public RunTransitionRoller(
-      TransitionRoller transition, double transitionSpeed, boolean transitionTakingIn) {
+  public RunTransitionRoller(TransitionRoller transition,
+      double transitionSpeed, boolean transitionTakingIn) {
     m_transition = transition;
     if (transitionTakingIn) {
       m_transitionSpeed = Math.abs(transitionSpeed);

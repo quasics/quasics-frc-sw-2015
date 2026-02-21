@@ -23,5 +23,4 @@ import edu.wpi.first.units.measure.Distance;
  *      "https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html#robot-coordinate-system">Robot
  *      coordinate system</a>
  */
-public record Position(Distance x, Distance y, Distance z) {
-}
+public record Position(Distance x, Distance y, Distance z) {}

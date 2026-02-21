@@ -8,9 +8,9 @@ import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -37,7 +37,8 @@ public abstract class AbstractDrivebase
 
   /** Track width (distance between left and right wheels) in meters. */
   // TODO: this should come from a robot config
-  public static final Distance TRACK_WIDTH = Meters.of(0.5588); /* 22 inches (from 2024) */
+  public static final Distance TRACK_WIDTH =
+      Meters.of(0.5588); /* 22 inches (from 2024) */
 
   /** Kinematics calculator for the drivebase. */
   private final DifferentialDriveKinematics m_kinematics;
@@ -52,12 +53,13 @@ public abstract class AbstractDrivebase
   private final DifferentialDriveOdometry m_odometry;
   private final DifferentialDrivePoseEstimator m_poseEstimator;
 
-  // Thoughts on this from Robert: Might be helpful for driveteam to have a backup
-  // of being able to see the field display sometimes, so leave field implemented
-  // for all cases
+  // Thoughts on this from Robert: Might be helpful for driveteam to have a
+  // backup of being able to see the field display sometimes, so leave field
+  // implemented for all cases
   private final Field2d m_field = new Field2d();
 
-  private final Logger m_logger = new Logger(Logger.Verbosity.Info, "AbstractDriveBase");
+  private final Logger m_logger =
+      new Logger(Logger.Verbosity.Info, "AbstractDriveBase");
 
   /** Creates a new AbstractDrivebase. */
   public AbstractDrivebase(
@@ -86,10 +88,8 @@ public abstract class AbstractDrivebase
     m_robotDrive.arcadeDrive(forwardspeed.magnitude(), turnspeed.magnitude());
   }
 
-  // FINDME(Robert): This isn't doing what I think *you* think it's doing, at
-  // least in terms of how it's being used from LinearSpeedCommand.
   @Override
-  public void setSpeeds(double leftSpeed, double rightSpeed) {
+  public void setSpeeds(LinearVelocity leftSpeed, LinearVelocity rightSpeed) {
     m_leftMotor.set(mpsToPercent(leftSpeed));
     m_rightMotor.set(mpsToPercent(rightSpeed));
     m_logger.log("Left Speed set to " + leftSpeed, Verbosity.Debug);
@@ -99,20 +99,26 @@ public abstract class AbstractDrivebase
   }
 
   @Override
-  public void setVoltages(Voltage leftVoltage, Voltage rightVoltage) {
-    // TODO(Robert): Implement this method (and then use it for characterization,
-    // trajectory following, etc.). (It should be pretty straightforward, doable
-    // with 2 lines of code.)
+  public void setPercent(double leftPercent, double rightPercent) {
+    m_leftMotor.set(leftPercent);
+    m_rightMotor.set(rightPercent);
+
+    m_robotDrive.feed();
   }
 
-  // TODO(ROBERT): Cap this - it shouldn't be greater than max speed.
-  // Probably print a warning too so that we can fix whatever is commanding us too
-  // high.
   @Override
-  public double mpsToPercent(double speed) {
-    // FINDME(Robert): This isn't doing what I think *you* think it's doing, at
-    // least in terms of how it's being used from LinearSpeedCommand.
-    return speed / m_maxMotorSpeedMPS;
+  public void setVoltages(Voltage leftVoltage, Voltage rightVoltage) {
+    // TODO(Robert): Implement this method (and then use it for
+    // characterization, trajectory following, etc.). (It should be pretty
+    // straightforward, doable with 2 lines of code.)
+  }
+
+  @Override
+  public double mpsToPercent(LinearVelocity speed) {
+    // TODO(ROBERT): Cap this - it shouldn't be greater than max speed.
+    // Probably print a warning too so that we can fix whatever is commanding us
+    // too high.
+    return speed.in(MetersPerSecond) / m_maxMotorSpeedMPS;
   }
 
   @Override

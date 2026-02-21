@@ -4,24 +4,19 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Feet;
 import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.Seconds;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.LogitechGamePad;
 import frc.robot.commands.DriveForDistance;
 import frc.robot.commands.TankDrive;
-import frc.robot.commands.TurnRobot;
 import frc.robot.subsystems.AbstractDrivebase;
 import frc.robot.subsystems.RealDrivebase;
 import frc.robot.subsystems.SimulatedDrivebase;
@@ -80,44 +75,10 @@ public class RobotContainer {
   }
 
   private void addCommandsToDashboard() {
-    SmartDashboard.putData("3 feet, 25%", 
+    SmartDashboard.putData("3 feet, 25%",
         new DriveForDistance(m_driveBase, 0.25, Feet.of(3)));
     SmartDashboard.putData("3 meters, 50%",
         new DriveForDistance(m_driveBase, 0.5, Meters.of(3)));
-    SmartDashboard.putData("30 degrees, 50%",
-        new TurnRobot(m_driveBase, 0.5, Degrees.of(30)));
-    SmartDashboard.putData("30 degrees, 25%",
-        new TurnRobot(m_driveBase, 0.25, Degrees.of(30)));
-    SmartDashboard.putData("-30 degrees, 5%",
-        new TurnRobot(m_driveBase, 0.05, Degrees.of(-30)));
-    SmartDashboard.putData("30 degrees, 5%",
-        new TurnRobot(m_driveBase, 0.05, Degrees.of(30)));
-    
-    //Turn Robot overrotates; therefore, degrees fpr square are less than 90
-    // TODO: Improve rotation handling, and fix this up.
-    SmartDashboard.putData("Drive in a square",
-        new SequentialCommandGroup(
-          new DriveForDistance(m_driveBase, 0.5,Meters.of(5)),
-          new TurnRobot(m_driveBase, 0.05, Degrees.of(77.5)),
-          new WaitCommand(Seconds.of(1)),
-          new DriveForDistance(m_driveBase, 0.5,Meters.of(5)),
-          new TurnRobot(m_driveBase, 0.05, Degrees.of(77.5)),
-          new WaitCommand(Seconds.of(1)),
-          new DriveForDistance(m_driveBase, 0.5,Meters.of(5)),
-          new TurnRobot(m_driveBase, 0.05, Degrees.of(77.5)),
-          new WaitCommand(Seconds.of(1)),
-          new DriveForDistance(m_driveBase, 0.5,Meters.of(5)),
-          new TurnRobot(m_driveBase, 0.05, Degrees.of(77.5)),
-          new WaitCommand(Seconds.of(1))));
-
-      SequentialCommandGroup squareGroup =
-          new SequentialCommandGroup(Commands.print("Driving in a square"));
-      for(int i = 0; i < 4; ++i) {
-        squareGroup.addCommands(new DriveForDistance(m_driveBase, 0.5, Meters.of(1)));
-        squareGroup.addCommands(new TurnRobot(m_driveBase, 0.05, Degrees.of(77.5)));
-      }
-    SmartDashboard.putData("Square 2", squareGroup);
-
   }
 
   public static Command moveForwardThenBackward(AbstractDrivebase drivebase) {

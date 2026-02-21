@@ -81,12 +81,14 @@ public class MoveClimbersAuto extends Command {
   @Override
   public boolean isFinished() {
     if (m_extending) {
-      if (m_climber.GetLeftRevolutions() < -3 && m_climber.GetRightRevolutions() < -3) {
+      if (m_climber.GetLeftRevolutions() < -3
+          && m_climber.GetRightRevolutions() < -3) {
         return true;
       }
       return false;
     } else {
-      if (m_climber.GetLeftRevolutions() >= 0 && m_climber.GetRightRevolutions() >= 0) {
+      if (m_climber.GetLeftRevolutions() >= 0
+          && m_climber.GetRightRevolutions() >= 0) {
         return true;
       }
       return false;

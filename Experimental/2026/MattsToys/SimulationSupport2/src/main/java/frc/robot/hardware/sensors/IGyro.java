@@ -1,4 +1,4 @@
-// Copyright (c) 2024-2025, Matthew J. Healy and other Quasics contributors.
+// Copyright (c) 2024-2026, Matthew J. Healy and other Quasics contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -104,7 +104,11 @@ public interface IGyro extends Closeable {
         // Most functions are passed through to the gyro being wrapped...
         g::calibrate, g::getAngle, g::getRate, g::getRotation2d,
         // ...but reset() is replaced with a no-op.
-        () -> {}, () -> {});
+        ()
+            -> {},
+        // And close() is also null, since we don't want to close the underlying
+        // gyro when this wrapper is closed.
+        () -> {});
   }
 
   /**
@@ -122,6 +126,7 @@ public interface IGyro extends Closeable {
     private final Supplier<Rotation2d> m_rotationSupplier;
     /** Reset function. */
     private final Runnable m_resetter;
+    /** Close function. */
     private final Closeable m_closer;
 
     /**

@@ -12,8 +12,7 @@ import edu.wpi.first.wpilibj.PowerDistribution;
  * @param type  power distribution panel type
  * @param canId CAN ID for the device
  */
-public record PowerDistributor(
-    PowerDistribution.ModuleType type, int canId) {
+public record PowerDistributor(PowerDistribution.ModuleType type, int canId) {
   /**
    * Constructor, which will set the CAN ID based on the default for the
    * specified module type.

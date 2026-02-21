@@ -51,10 +51,38 @@ public class NovaDriveBase extends AbstractDrivebase {
     return m_rightEncoder;
   }
 
-  /** Creates a new RealDrivebase. */
+  /**
+   * Creates a new NovaDriveBase, using the default motor controller IDs specified
+   * in Constants.CanBusIds. (This is the constructor that should be used in
+   * most... if not all... cases, since it will ensure that the correct motor
+   * controller IDs are used, and that the followers are correctly configured to
+   * follow the leaders, etc. If you need to use different motor controller IDs
+   * for some reason, then you can use the other constructor, but be sure to use
+   * it correctly.)
+   *
+   * @see #NovaDriveBase(ThriftyNova, ThriftyNova)
+   */
+  public NovaDriveBase() {
+    this(new ThriftyNova(ThriftyNovaIds.LEFT_LEADER_ID),
+        new ThriftyNova(ThriftyNovaIds.RIGHT_LEADER_ID));
+  }
+
+  /**
+   * Creates a new NovaDriveBase.
+   * 
+   * Note that the motor controllers passed in here should be the "leader" motor
+   * controllers (i.e., the ones that the followers will be configured to follow).
+   * If you pass in the "follower" motor controllers here, then the followers
+   * won't be correctly configured to follow the leaders, and the drivebase won't
+   * work correctly. (And if you pass in a mix of leaders and followers, then the
+   * behavior will be... well, it will be weird, and probably not what you want.)
+   * 
+   * @param leftController  the ThriftyNova motor controller for the left side
+   * @param rightController the ThriftyNova motor controller for the right side
+   */
   public NovaDriveBase(
-      ThriftyNova leftMotorController, ThriftyNova rightMotorController) {
-    super(leftMotorController, rightMotorController);
+      ThriftyNova leftController, ThriftyNova rightController) {
+    super(leftController, rightController);
 
     // Configure followers to follow the leaders.
     final ThriftyNova leftfollower = new ThriftyNova(ThriftyNovaIds.LEFT_FOLLOWER_ID);
@@ -72,8 +100,8 @@ public class NovaDriveBase extends AbstractDrivebase {
     rightfollower.applyConfig(config);
 
     final Distance wheelDiam = Meters.of(2.0 * Constants.wheelRadius.in(Meters));
-    m_leftEncoder = new ThriftyEncoderWrapper(leftMotorController, wheelDiam);
-    m_rightEncoder = new ThriftyEncoderWrapper(leftMotorController, wheelDiam);
+    m_leftEncoder = new ThriftyEncoderWrapper(leftController, wheelDiam);
+    m_rightEncoder = new ThriftyEncoderWrapper(leftController, wheelDiam);
 
     // Configure the gyro.
     //
@@ -85,11 +113,6 @@ public class NovaDriveBase extends AbstractDrivebase {
     // Pigeon2.)
     AnalogGyro gyro = new AnalogGyro(0);
     m_gryo = IGyro.wrapGyro(gyro);
-  }
-
-  public NovaDriveBase() {
-    this(new ThriftyNova(ThriftyNovaIds.LEFT_LEADER_ID),
-        new ThriftyNova(ThriftyNovaIds.RIGHT_LEADER_ID));
   }
 
   /**

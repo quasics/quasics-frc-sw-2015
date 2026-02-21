@@ -40,8 +40,7 @@ public class TalonEncoderWrapper implements TrivialEncoder {
   /**
    * Constructor.
    *
-   * @param motorController the TalonFX motor controller whose encoder we want
-   *     to
+   * @param motorController the TalonFX motor controller whose encoder we want to
    *                        wrap
    * @param outerDiameter   the outer diameter of the wheel being turned by the
    *                        motor (used to convert "revolutions" to linear

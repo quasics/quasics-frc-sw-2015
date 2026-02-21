@@ -37,26 +37,38 @@ public class DriveForDistance extends Command {
 
   /**
    * Creates a new DriveForDistance, using our *other* constructor to do the work.
-   *
-   * @param drivebase    The drivebase to use.
-   * @param percentSpeed The speed to drive at, as a percentage of full speed
-   *                     (-1.0 to +1.0)
-   * @param meters       The distance to drive, in meters.
+   * (This will assume that we want to go at 50% speed.)
+   * 
+   * @param drivebase The drivebase to use.
+   * @param distance  The distance to drive.
+   * 
+   * @see #DriveForDistance(AbstractDrivebase, double, Distance)
    */
-  public DriveForDistance(AbstractDrivebase drivebase, double percentSpeed, double meters) {
-    this(drivebase, percentSpeed, Meters.of(meters));
-  }
-
   public DriveForDistance(AbstractDrivebase drivebase, Distance distance) {
     this(drivebase, .5, distance);
   }
 
   /**
+   * Creates a new DriveForDistance, using our *other* constructor to do the work.
+   *
+   * @param drivebase    The drivebase to use.
+   * @param percentSpeed The speed to drive at, as a percentage of full speed
+   *                     (-1.0 to +1.0)
+   * @param meters       The distance to drive, in meters.
+   * 
+   * @see #DriveForDistance(AbstractDrivebase, double, Distance)
+   */
+  public DriveForDistance(AbstractDrivebase drivebase, double percentSpeed, double meters) {
+    this(drivebase, percentSpeed, Meters.of(meters));
+  }
+
+  /**
    * Creates a new DriveForDistance.
    *
-   * Note that there's a bug in this constructor: it doesn't handle cases when the
-   * speed says "move forward", but the distance says "move backward" or vice
-   * versa. It would be good for someone to fix this.
+   * Note that there's potential for conflicting data, such as when the speed says
+   * "move forward", but the distance says "move backward" or vice versa. We'll
+   * handle this by ignoring the sign on the speed, and just let the distance
+   * determine "forward" vs. "backward".
    *
    * @param drivebase    The drivebase to use.
    * @param percentSpeed The speed to drive at, as a percentage of full speed

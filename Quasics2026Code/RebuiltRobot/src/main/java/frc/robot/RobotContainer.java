@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -18,6 +19,9 @@ import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.LinearSpeedCommand;
 import frc.robot.commands.RunIntakeExtension;
 import frc.robot.commands.RunShooterPID;
+import frc.robot.subsystems.interfaces.IIntake;
+import frc.robot.subsystems.interfaces.IDrivebase;
+import frc.robot.subsystems.interfaces.IIndexer;
 import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.subsystems.real.AbstractDrivebase;
 import frc.robot.subsystems.real.NovaDriveBase;
@@ -40,11 +44,11 @@ import java.util.function.Supplier;
  * commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  private final RealIntake m_intake = new RealIntake();
-  private final RealIndexer m_indexer = new RealIndexer();
+  private final IIntake m_intake = new RealIntake();
+  private final IIndexer m_indexer = new RealIndexer();
 
   // The robot's subsystems and commands are defined here...
-  private final AbstractDrivebase m_drivebase = Robot.isReal() ? new NovaDriveBase() : new SimulationDrivebase();
+  private final IDrivebase m_drivebase = Robot.isReal() ? new NovaDriveBase() : new SimulationDrivebase();
   private final IVision m_vision = (Robot.isReal()) ? new Vision() : new SimulatedVision();
   private final RealShooter m_shooter = new RealShooter();
 
@@ -94,8 +98,10 @@ public class RobotContainer {
   private void addButtonsToSmartDashboard() {
     SmartDashboard.putData("Run Indexer", new InstantCommand(() -> m_indexer.setIndexSpeed(0.1)));
     SmartDashboard.putData("Run Intake Rollers", new InstantCommand(() -> m_intake.setRollerSpeed(-.1)));
-    //SmartDashboard.putData("Extend Intake", new InstantCommand(() -> m_intake.setExtensionSpeed(0.5)));
-    //SmartDashboard.putData("Extend Intake", new InstantCommand(() -> m_intake.setExtensionSpeed(-0.5)));
+    // SmartDashboard.putData("Extend Intake", new InstantCommand(() ->
+    // m_intake.setExtensionSpeed(0.5)));
+    // SmartDashboard.putData("Extend Intake", new InstantCommand(() ->
+    // m_intake.setExtensionSpeed(-0.5)));
     SmartDashboard.putData("Run Flywheel @ 1200 RPM, Kicker @ 12.5% speed",
         new RunShooterPID(m_shooter, RPM.of(1200), .125));
     SmartDashboard.putData("Run Flywheel @ 3700 RPM, Kicker @ 38.7% speed",
@@ -115,7 +121,7 @@ public class RobotContainer {
         m_shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
     SmartDashboard.putData("Flywheel Dynamic Reverse",
         m_shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-        
+
   }
 
   /**
@@ -163,7 +169,7 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is
     // pressed, cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
-    m_drivebase.setDefaultCommand(new ArcadeDrive(
+    ((Subsystem) m_drivebase).setDefaultCommand(new ArcadeDrive(
         m_arcadeDriveLeftStick, m_arcadeDriveRightStick, m_drivebase));
     LinearSpeedCommand setLinearSpeed = new LinearSpeedCommand(m_drivebase);
     SmartDashboard.putData("LinearSpeedCommand", setLinearSpeed);

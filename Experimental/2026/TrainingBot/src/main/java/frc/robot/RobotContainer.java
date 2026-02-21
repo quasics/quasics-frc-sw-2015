@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Feet;
 import static edu.wpi.first.units.Units.Meters;
 
@@ -17,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.LogitechGamePad;
 import frc.robot.commands.DriveForDistance;
 import frc.robot.commands.TankDrive;
+import frc.robot.commands.TurnRobot;
 import frc.robot.subsystems.AbstractDrivebase;
 import frc.robot.subsystems.RealDrivebase;
 import frc.robot.subsystems.SimulatedDrivebase;
@@ -93,6 +95,9 @@ public class RobotContainer {
         new DriveForDistance(m_driveBase, 0.25, Feet.of(3)));
     SmartDashboard.putData("3 meters, 50%",
         new DriveForDistance(m_driveBase, 0.5, Meters.of(3)));
+
+    SmartDashboard.putData("Turn 90 at .1",
+        new TurnRobot(m_driveBase, .1, Degrees.of(90)));
   }
 
   /**

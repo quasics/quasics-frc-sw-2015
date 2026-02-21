@@ -34,7 +34,7 @@ public class RobotContainer {
   private final AbstractDrivebase m_driveBase;
 
   // Establish how we'll control the robot's movement under simulation.
-  private static final boolean USE_KEYBOARD_DRIVING_UNDER_SIMULATION = false;
+  private static final boolean USE_KEYBOARD_DRIVING_UNDER_SIMULATION = true;
 
   private static final boolean USING_REAL_CONTROLLER =
       // Assume we have a real controller available if either:

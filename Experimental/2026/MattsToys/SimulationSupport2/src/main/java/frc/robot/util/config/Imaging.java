@@ -17,5 +17,4 @@ import edu.wpi.first.units.measure.Angle;
  * @param fov    field of view (e.g., 100 degrees)
  * @param fps    frames per second produced by the video stream
  */
-public record Imaging(int width, int height, Angle fov, double fps) {
-}
+public record Imaging(int width, int height, Angle fov, double fps) {}

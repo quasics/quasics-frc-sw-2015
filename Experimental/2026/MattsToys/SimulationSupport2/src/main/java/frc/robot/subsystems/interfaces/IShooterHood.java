@@ -6,10 +6,9 @@ package frc.robot.subsystems.interfaces;
 
 import static edu.wpi.first.units.Units.Degrees;
 
-import java.io.IOException;
-
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import java.io.IOException;
 
 /**
  * Sample interface for a shooter hood subsystem, which controls the angle of
@@ -22,10 +21,11 @@ public interface IShooterHood extends ISubsystem {
   final static String SUBSYSTEM_NAME = "ShooterHood";
 
   /**
-   * Sets the target position for the shooter hood. The hood will then move to the
-   * target position under PID control.
-   * 
-   * @param targetAngle target angle for the shooter hood; this will be clamped to
+   * Sets the target position for the shooter hood. The hood will then move to
+   * the target position under PID control.
+   *
+   * @param targetAngle target angle for the shooter hood; this will be clamped
+   *     to
    *                    the range [kMinPosDegrees, kMaxPosDegrees] to prevent
    *                    mechanical issues.
    */

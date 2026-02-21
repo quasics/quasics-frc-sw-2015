@@ -16,4 +16,8 @@ public interface IIntake {
    * Spin rollers in both directions
    * Extend and retract the intake
    */
+
+   void setRollerSpeed(double speed);
+
+   void stopRoller();
 }

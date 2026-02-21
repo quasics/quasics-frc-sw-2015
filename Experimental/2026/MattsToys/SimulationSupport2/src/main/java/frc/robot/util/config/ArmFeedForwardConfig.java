@@ -12,8 +12,8 @@ import edu.wpi.first.units.measure.Voltage;
  * @param kV kV, in V/(m/s)
  * @param kA kA, in V/(m/s^2)
  */
-public record ArmFeedForwardConfig(
-    Voltage kS, Voltage kG, double kV, double kA) {
+public record
+    ArmFeedForwardConfig(Voltage kS, Voltage kG, double kV, double kA) {
   /**
    * Overloaded constructor (no kA).
    *

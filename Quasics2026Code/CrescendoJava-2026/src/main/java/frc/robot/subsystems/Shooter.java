@@ -13,15 +13,18 @@ import frc.robot.Constants.CanBusIds.SparkMaxIds;
 public class Shooter extends SubsystemBase {
   // left shooter wheel is leader
   // right shooter wheel is follower
-  // this is in case we fix it and want to go back to leader/follower instead of left right
+  // this is in case we fix it and want to go back to leader/follower instead of
+  // left right
 
   SparkMax m_leftShooterMotor;
   SparkMax m_rightShooterMotor;
   /** Creates a new Shooter. */
   public Shooter() {
     if (!ConditionalConstants.SALLY) {
-      m_leftShooterMotor = new SparkMax(SparkMaxIds.LEFT_SHOOTER_ID, MotorType.kBrushless);
-      m_rightShooterMotor = new SparkMax(SparkMaxIds.RIGHT_SHOOTER_ID, MotorType.kBrushless);
+      m_leftShooterMotor =
+          new SparkMax(SparkMaxIds.LEFT_SHOOTER_ID, MotorType.kBrushless);
+      m_rightShooterMotor =
+          new SparkMax(SparkMaxIds.RIGHT_SHOOTER_ID, MotorType.kBrushless);
       // m_rightShooterMotor.follow(m_leftShooterMotor);
     }
   }

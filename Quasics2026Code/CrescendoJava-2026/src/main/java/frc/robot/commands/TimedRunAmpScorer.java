@@ -13,8 +13,8 @@ public class TimedRunAmpScorer extends Command {
   Timer m_timer = new Timer();
   private final Time m_time;
   /** Creates a new RunAmpScorer. */
-  public TimedRunAmpScorer(
-      AmpScorer ampScorer, double ampScorerSpeed, Time time, boolean extending) {
+  public TimedRunAmpScorer(AmpScorer ampScorer, double ampScorerSpeed,
+      Time time, boolean extending) {
     m_ampScorer = ampScorer;
     m_time = time;
     if (extending) {

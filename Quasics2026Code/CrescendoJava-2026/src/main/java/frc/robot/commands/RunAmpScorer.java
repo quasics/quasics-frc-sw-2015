@@ -10,7 +10,8 @@ public class RunAmpScorer extends Command {
   private final AmpScorer m_ampScorer;
   private final double m_ampScorerSpeed;
   /** Creates a new RunAmpScorer. */
-  public RunAmpScorer(AmpScorer ampScorer, double ampScorerSpeed, boolean extending) {
+  public RunAmpScorer(
+      AmpScorer ampScorer, double ampScorerSpeed, boolean extending) {
     m_ampScorer = ampScorer;
     if (extending) {
       m_ampScorerSpeed = -Math.abs(ampScorerSpeed);

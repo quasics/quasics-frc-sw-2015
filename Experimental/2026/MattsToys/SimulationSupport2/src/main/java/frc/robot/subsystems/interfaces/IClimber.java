@@ -4,13 +4,12 @@
 
 package frc.robot.subsystems.interfaces;
 
-import java.io.IOException;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import java.io.IOException;
 
 /**
  * Lightweight interface to work with a climber.
- * 
+ *
  * Note: this interface is intentionally minimal and does not include any
  * methods for querying the climber's position or other state; this is because
  * the climber's exact position is not critical. However, it *is* assumed that
@@ -40,13 +39,13 @@ public interface IClimber extends ISubsystem {
     /** Fully extended position. */
     Extended,
     /**
-     * Position should be lifting the robot off the ground (if climbers are hooked
-     * into place on the rung).
+     * Position should be lifting the robot off the ground (if climbers are
+     * hooked into place on the rung).
      */
     PulledUp,
     /**
-     * Don't care about the position; used for manual control and for cases where we
-     * don't have a defined position to move to.
+     * Don't care about the position; used for manual control and for cases
+     * where we don't have a defined position to move to.
      */
     DontCare
   }

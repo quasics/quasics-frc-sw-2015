@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.IShooterHood;
 
 public class RealShooterHood extends SubsystemBase implements IShooterHood {
-
   /** Creates a new RealShooterHood. */
   public RealShooterHood() {
   }

@@ -4,14 +4,10 @@
 
 package frc.robot.commands;
 
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
-
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.real.AbstractDrivebase;
-
 import java.util.function.Supplier;
 
 /**
@@ -39,25 +35,24 @@ public class ArcadeDrive extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // FINDME(Robert): I don't think this is what you want to do. If the values
-    // are coming straight from the joystick, then the robot will never be able
-    // to move more than 1 m/s (or turn faster than 1 radian/sec), since the
-    // joysticks only provide values from -1.0 to +1.0.
-    //
-    // Suggestion: one option would be to take the values from the speed
-    // suppliers as a "% of top speed", and then multiply them by the top speeds
-    // that the team is comfortable setting for movement/turning, in the same
-    // way that you're doing for the LinearSpeedCommand. This will let you define
-    // maximum speeds someplace safely (e.g., in AbstractDrivebase), and then have
-    // the code work in terms of those values. It will also let you (easily) write
-    // code that checks the values, to make sure that someone doesn't specify
-    // something that's "overspeed" for the robot (e.g., the %age #s should always
-    // be between -1.0 and +1.0, and then you just use stuff like )
+    // Taking the values from the speed suppliers as a "% of top speed", and
+    // then multiply them by the top speeds that the team is comfortable setting
+    // for movement/turning. This lets us define maximum speeds someplace safely
+    // (e.g., in AbstractDrivebase), and then have the code work in terms of
+    // those values.
+
+    // FINDME(Robert): This also let us (easily) write code that checks the
+    // values, to make sure that someone doesn't specify something that's
+    // "overspeed" for the robot (e.g., the %age #s should always be between
+    // -1.0 and +1.0, and then you just use stuff like MathUtils.clamp() to
+    // ensure that the values are in that range).
 
     final double linearSpeedPercent = m_linearSpeedSupplier.get();
-    final LinearVelocity linearSpeed = AbstractDrivebase.getMaxMotorLinearSpeed().times(linearSpeedPercent);
+    final LinearVelocity linearSpeed =
+        AbstractDrivebase.getMaxMotorLinearSpeed().times(linearSpeedPercent);
     final double angularVelocityPercent = m_turnSpeedSupplier.get();
-    final AngularVelocity angularVelocity = AbstractDrivebase.getMaxMotorTurnSpeed().times(angularVelocityPercent);
+    final AngularVelocity angularVelocity =
+        AbstractDrivebase.getMaxMotorTurnSpeed().times(angularVelocityPercent);
 
     System.out.println("turnSpeedSupplier = " + linearSpeed);
     System.out.println("angularVelocity = " + angularVelocity);

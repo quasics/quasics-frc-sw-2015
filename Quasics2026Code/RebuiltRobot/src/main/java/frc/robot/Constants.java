@@ -177,5 +177,4 @@ public final class Constants {
     Unknown,
     SparkMax,
     ThriftyNova
-  }
-}
+  }}

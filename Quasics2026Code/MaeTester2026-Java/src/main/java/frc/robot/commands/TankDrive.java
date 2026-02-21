@@ -27,7 +27,8 @@ public class TankDrive extends Command {
 
   /** Updates the current drive settings. */
   private void updateSpeeds() {
-    m_drivebase.setMotorSpeed(m_leftPowerFunction.get(), m_rightPowerFunction.get());
+    m_drivebase.setMotorSpeed(
+        m_leftPowerFunction.get(), m_rightPowerFunction.get());
   }
 
   // Called when the command is initially scheduled.

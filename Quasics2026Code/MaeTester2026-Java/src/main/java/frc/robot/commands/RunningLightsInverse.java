@@ -21,7 +21,8 @@ public class RunningLightsInverse extends Command {
   private int m_lastPos;
 
   /** Creates a new RunningLightsInverse. */
-  public RunningLightsInverse(Lights lights, Time stepTime, int pulseSize, Color8Bit color) {
+  public RunningLightsInverse(
+      Lights lights, Time stepTime, int pulseSize, Color8Bit color) {
     m_lights = lights;
     m_stepTime = stepTime;
     m_pulseSize = pulseSize;
@@ -55,11 +56,13 @@ public class RunningLightsInverse extends Command {
 
     final int pulseStartPosition =
         (m_lastPos - 1 + m_lights.getStripLength()) % m_lights.getStripLength();
-    final int pulseEndPosition = (m_lastPos + 1 + m_pulseSize) % m_lights.getStripLength();
+    final int pulseEndPosition =
+        (m_lastPos + 1 + m_pulseSize) % m_lights.getStripLength();
     m_lights.setStripColor(position -> {
       if (pulseStartPosition <= pulseEndPosition) {
         // Simple case: turning on lights from [startPos,endPos)
-        if (position >= pulseStartPosition && position < (pulseStartPosition + this.m_pulseSize)) {
+        if (position >= pulseStartPosition
+            && position < (pulseStartPosition + this.m_pulseSize)) {
           return this.m_color;
         }
       } else {

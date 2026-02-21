@@ -28,13 +28,15 @@ import java.nio.file.Path;
 import java.util.List;
 
 public class Trajectorygenerator {
-  public static Command GetCommandForTrajectory(String fileToLoad, Drivebase drivebase) {
+  public static Command GetCommandForTrajectory(
+      String fileToLoad, Drivebase drivebase) {
     final Distance TRACK_WIDTH_METERS = Meters.of(0.5588);
     final DifferentialDriveKinematics kDriveKinematics =
         new DifferentialDriveKinematics(TRACK_WIDTH_METERS);
 
     final LinearVelocity kMaxSpeed = MetersPerSecond.of(3);
-    final LinearAcceleration kMaxAcceleration = MetersPerSecondPerSecond.of(3.0);
+    final LinearAcceleration kMaxAcceleration =
+        MetersPerSecondPerSecond.of(3.0);
 
     final double kRamseteB = 2;
     final double kRamseteZeta = 0.7;
@@ -44,22 +46,23 @@ public class Trajectorygenerator {
     // Create a voltage constraint to ensure we don't accelerate too fast
     if (ConditionalConstants.SALLY) {
       autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
-          new SimpleMotorFeedforward(PathWeaverConstantsSally.kS, PathWeaverConstantsSally.kV,
-              PathWeaverConstantsSally.kA),
+          new SimpleMotorFeedforward(PathWeaverConstantsSally.kS,
+              PathWeaverConstantsSally.kV, PathWeaverConstantsSally.kA),
           kDriveKinematics, 10);
     } else { // margeaert
       autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
-          new SimpleMotorFeedforward(PathWeaverConstantsMargaret.kS, PathWeaverConstantsMargaret.kV,
-              PathWeaverConstantsMargaret.kA),
+          new SimpleMotorFeedforward(PathWeaverConstantsMargaret.kS,
+              PathWeaverConstantsMargaret.kV, PathWeaverConstantsMargaret.kA),
           kDriveKinematics, 10);
     }
 
     // Create config for trajectory
-    TrajectoryConfig config = new TrajectoryConfig(kMaxSpeed, kMaxAcceleration)
-                                  // Add kinematics to ensure max speed is actually obeyed
-                                  .setKinematics(kDriveKinematics)
-                                  // Apply the voltage constraint
-                                  .addConstraint(autoVoltageConstraint);
+    TrajectoryConfig config =
+        new TrajectoryConfig(kMaxSpeed, kMaxAcceleration)
+            // Add kinematics to ensure max speed is actually obeyed
+            .setKinematics(kDriveKinematics)
+            // Apply the voltage constraint
+            .addConstraint(autoVoltageConstraint);
 
     config.setReversed(true);
 
@@ -69,7 +72,8 @@ public class Trajectorygenerator {
         TrajectoryGenerator.generateTrajectory(
             // Start at the origin facing the +X direction
             new Pose2d(0, 0, new Rotation2d(0)),
-            // Pass through these two interior waypoints, making an 's' curve path
+            // Pass through these two interior waypoints, making an 's' curve
+    path
             // TODO: Add the waypoints back in again.....
             List.of(),
             // End 3 meters straight ahead of where we started, facing forward
@@ -82,10 +86,12 @@ public class Trajectorygenerator {
     Trajectory trajectory = new Trajectory();
 
     try {
-      Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(pathName);
+      Path trajectoryPath =
+          Filesystem.getDeployDirectory().toPath().resolve(pathName);
       trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
     } catch (IOException ex) {
-      DriverStation.reportError("Unable to open trajectory: " + pathName, ex.getStackTrace());
+      DriverStation.reportError(
+          "Unable to open trajectory: " + pathName, ex.getStackTrace());
     }
 
     PrintTrajectoryStates(trajectory);
@@ -95,8 +101,8 @@ public class Trajectorygenerator {
     if (ConditionalConstants.SALLY) {
       ramseteCommand = new RamseteCommand(trajectory, drivebase::getPose,
           new RamseteController(kRamseteB, kRamseteZeta),
-          new SimpleMotorFeedforward(PathWeaverConstantsSally.kS, PathWeaverConstantsSally.kV,
-              PathWeaverConstantsSally.kA),
+          new SimpleMotorFeedforward(PathWeaverConstantsSally.kS,
+              PathWeaverConstantsSally.kV, PathWeaverConstantsSally.kA),
           kDriveKinematics, drivebase::getWheelSpeeds,
           new PIDController(PathWeaverConstantsSally.kP, 0, 0),
           new PIDController(PathWeaverConstantsSally.kP, 0, 0),
@@ -105,8 +111,8 @@ public class Trajectorygenerator {
     } else { // margaret
       ramseteCommand = new RamseteCommand(trajectory, drivebase::getPose,
           new RamseteController(kRamseteB, kRamseteZeta),
-          new SimpleMotorFeedforward(PathWeaverConstantsSally.kS, PathWeaverConstantsSally.kV,
-              PathWeaverConstantsSally.kA),
+          new SimpleMotorFeedforward(PathWeaverConstantsSally.kS,
+              PathWeaverConstantsSally.kV, PathWeaverConstantsSally.kA),
           kDriveKinematics, drivebase::getWheelSpeeds,
           new PIDController(PathWeaverConstantsSally.kP, 0, 0),
           new PIDController(PathWeaverConstantsSally.kP, 0, 0),
@@ -127,10 +133,12 @@ public class Trajectorygenerator {
     Trajectory trajectory = new Trajectory();
 
     try {
-      Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(pathName);
+      Path trajectoryPath =
+          Filesystem.getDeployDirectory().toPath().resolve(pathName);
       trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
     } catch (IOException ex) {
-      DriverStation.reportError("Unable to open trajectory: " + pathName, ex.getStackTrace());
+      DriverStation.reportError(
+          "Unable to open trajectory: " + pathName, ex.getStackTrace());
     }
 
     return trajectory.getInitialPose();
@@ -141,10 +149,12 @@ public class Trajectorygenerator {
     Trajectory trajectory = new Trajectory();
 
     try {
-      Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(pathName);
+      Path trajectoryPath =
+          Filesystem.getDeployDirectory().toPath().resolve(pathName);
       trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
     } catch (IOException ex) {
-      DriverStation.reportError("Unable to open trajectory: " + pathName, ex.getStackTrace());
+      DriverStation.reportError(
+          "Unable to open trajectory: " + pathName, ex.getStackTrace());
     }
 
     List<State> states = trajectory.getStates();

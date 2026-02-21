@@ -17,7 +17,8 @@ public class TimedRunIntake extends Command {
   Timer m_timer = new Timer();
   private final Time m_time;
   /** Creates a new TimedRunIntake. */
-  public TimedRunIntake(IntakeRoller intake, double intakeSpeed, Time time, boolean takingIn) {
+  public TimedRunIntake(
+      IntakeRoller intake, double intakeSpeed, Time time, boolean takingIn) {
     m_time = time;
     m_intake = intake;
     if (takingIn) {

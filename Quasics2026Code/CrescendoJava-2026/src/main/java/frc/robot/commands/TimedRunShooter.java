@@ -18,7 +18,8 @@ public class TimedRunShooter extends Command {
   private final Time m_time;
 
   /** Creates a new TimedRunShooter. */
-  public TimedRunShooter(Shooter shooter, double shooterSpeed, Time time, boolean shooting) {
+  public TimedRunShooter(
+      Shooter shooter, double shooterSpeed, Time time, boolean shooting) {
     m_shooter = shooter;
     m_time = time;
     if (shooting) {

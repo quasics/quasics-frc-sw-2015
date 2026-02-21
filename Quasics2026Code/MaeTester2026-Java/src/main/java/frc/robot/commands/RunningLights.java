@@ -21,7 +21,8 @@ public class RunningLights extends Command {
   Timer m_Timer = new Timer();
 
   /** Creates a new RunningLights. */
-  public RunningLights(Lights lights, Time stepTime, int pulseSize, Color8Bit color) {
+  public RunningLights(
+      Lights lights, Time stepTime, int pulseSize, Color8Bit color) {
     m_stepTime = stepTime;
     m_lights = lights;
     m_pulseSize = pulseSize;
@@ -53,11 +54,13 @@ public class RunningLights extends Command {
     }
 
     final int pulseStartPosition = (m_lastPos + 1) % m_lights.getStripLength();
-    final int pulseEndPosition = (m_lastPos + 1 + m_pulseSize) % m_lights.getStripLength();
+    final int pulseEndPosition =
+        (m_lastPos + 1 + m_pulseSize) % m_lights.getStripLength();
     m_lights.setStripColor(position -> {
       if (pulseStartPosition <= pulseEndPosition) {
         // Simple case: turning on lights from [startPos,endPos)
-        if (position >= pulseStartPosition && position < (pulseStartPosition + this.m_pulseSize)) {
+        if (position >= pulseStartPosition
+            && position < (pulseStartPosition + this.m_pulseSize)) {
           return this.m_color;
         }
       } else {

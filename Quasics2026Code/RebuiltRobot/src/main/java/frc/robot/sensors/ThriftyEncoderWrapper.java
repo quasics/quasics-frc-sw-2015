@@ -14,6 +14,7 @@ import com.thethriftybot.util.Conversion.PositionUnit;
 import com.thethriftybot.util.Conversion.VelocityUnit;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
+import java.io.IOException;
 
 /**
  * Convenience wrapper, allowing a ThriftyNova to be read in the same (general)
@@ -73,5 +74,11 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
   @Override
   public void reset() {
     m_motorController.setEncoderPosition(0);
+  }
+
+  @Override
+  public void close() throws IOException {
+    // No-op: ThriftyNova should be closed through the MotorController
+    // interface.
   }
 }

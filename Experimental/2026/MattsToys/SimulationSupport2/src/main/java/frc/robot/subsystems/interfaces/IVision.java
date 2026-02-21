@@ -27,8 +27,7 @@ public interface IVision extends ISubsystem {
    * @param angle yaw to the angle (negative values means that it's to left of
    *              camera center)
    */
-  record TargetData(int id, Angle angle, Distance distance) {
-  }
+  record TargetData(int id, Angle angle, Distance distance) {}
 
   /////////////////////////////////////////////////////////////////////////////
   // Abstract methods
@@ -51,11 +50,15 @@ public interface IVision extends ISubsystem {
   // --- Default implementations ---
 
   default boolean canSeeTargetWithId(Pose2d robotPose, int id) {
-    return getVisibleTargets(robotPose).stream().anyMatch(target -> target.id() == id);
+    return getVisibleTargets(robotPose).stream().anyMatch(
+        target -> target.id() == id);
   }
 
   default Optional<TargetData> getTargetWithId(Pose2d robotPose, int id) {
-    return getVisibleTargets(robotPose).stream().filter(target -> target.id() == id).findFirst();
+    return getVisibleTargets(robotPose)
+        .stream()
+        .filter(target -> target.id() == id)
+        .findFirst();
   }
 
   public class NullVision extends SubsystemBase implements IVision {

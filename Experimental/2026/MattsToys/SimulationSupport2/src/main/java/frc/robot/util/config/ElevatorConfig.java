@@ -10,6 +10,5 @@ package frc.robot.util.config;
  * @param pid         PID configuration settings for the elevator's motors
  * @param feedForward feedforward data for the elevator
  */
-public record ElevatorConfig(
-    PIDConfig pid, ElevatorFeedForwardConfig feedForward) {
-}
+public record
+    ElevatorConfig(PIDConfig pid, ElevatorFeedForwardConfig feedForward) {}

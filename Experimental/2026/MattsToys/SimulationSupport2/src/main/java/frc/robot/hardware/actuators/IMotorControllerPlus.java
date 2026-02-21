@@ -18,7 +18,7 @@ import java.util.function.Supplier;
  * This interface extends the standard WPILib MotorController type so that it
  * also supports additional functionality (e.g., retrieving the motor voltage
  * for use during characterization, closure, etc.).
- * 
+ *
  * Possible future additions to this interface include:
  * <ul>
  * <li>
@@ -68,9 +68,9 @@ public interface IMotorControllerPlus extends MotorController {
   static IMotorControllerPlus forPWMMotorController(
       PWMMotorController controller) {
     return new MotorControllerPlus(controller,
-        () -> Volts.of(controller.getVoltage()),
-        () -> controller.close(), false, (Boolean b) -> {
-        });
+        ()
+            -> Volts.of(controller.getVoltage()),
+        () -> controller.close(), false, (Boolean b) -> {});
   }
 
   /**

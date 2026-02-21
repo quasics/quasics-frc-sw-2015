@@ -16,8 +16,7 @@ import edu.wpi.first.units.measure.Distance;
  */
 public record DriveConfig(DriveType driveType, Distance wheelRadius,
     Distance trackWidth, double gearing, DriveOrientation orientation,
-    PIDConfig leftPid, PIDConfig rightPid,
-    DriveFeedForwardConfig feedForward) {
+    PIDConfig leftPid, PIDConfig rightPid, DriveFeedForwardConfig feedForward) {
   /**
    * Convenience constructor, using a single set of PID values for both left
    * and right.

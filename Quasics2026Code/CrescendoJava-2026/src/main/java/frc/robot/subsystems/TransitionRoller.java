@@ -19,7 +19,8 @@ public class TransitionRoller extends SubsystemBase {
   /** Creates a new TransitionRoller. */
   public TransitionRoller() {
     if (!ConditionalConstants.SALLY) {
-      m_transition = new SparkMax(SparkMaxIds.TRANSITION_MOTOR_ID, MotorType.kBrushless);
+      m_transition =
+          new SparkMax(SparkMaxIds.TRANSITION_MOTOR_ID, MotorType.kBrushless);
     }
   }
 

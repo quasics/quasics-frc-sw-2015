@@ -18,8 +18,8 @@ public class ArcadeDrive extends Command {
   private final Supplier<Double> m_turnFunction;
 
   /** Creates a new ArcadeDrive. */
-  public ArcadeDrive(
-      Drivebase drivebase, Supplier<Double> powerFunction, Supplier<Double> turnFunction) {
+  public ArcadeDrive(Drivebase drivebase, Supplier<Double> powerFunction,
+      Supplier<Double> turnFunction) {
     m_drivebase = drivebase;
     m_powerFunction = powerFunction;
     m_turnFunction = turnFunction;

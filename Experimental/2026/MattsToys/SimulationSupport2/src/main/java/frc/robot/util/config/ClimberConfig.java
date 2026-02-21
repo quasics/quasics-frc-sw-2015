@@ -6,6 +6,5 @@ package frc.robot.util.config;
  * @param pid         PID settings for the climber
  * @param feedForward feedforward settings for the climber
  */
-public record ClimberConfig(
-    PIDConfig pid, SimpleFeedForwardConfig feedForward) {
-}
+public record
+    ClimberConfig(PIDConfig pid, SimpleFeedForwardConfig feedForward) {}

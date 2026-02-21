@@ -15,7 +15,8 @@ public class AmpScorer extends SubsystemBase {
   /** Creates a new AmpScorer. */
   public AmpScorer() {
     if (!ConditionalConstants.SALLY) {
-      m_ampScorer = new SparkMax(SparkMaxIds.AMP_MOTOR_ID, MotorType.kBrushless);
+      m_ampScorer =
+          new SparkMax(SparkMaxIds.AMP_MOTOR_ID, MotorType.kBrushless);
     }
   }
 

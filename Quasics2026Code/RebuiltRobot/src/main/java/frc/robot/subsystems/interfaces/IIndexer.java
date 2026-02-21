@@ -16,4 +16,10 @@ public interface IIndexer {
   /*
    * Spin rollers in both directions (1 motor)
    */
+
+   void setIndexSpeed(double speed);
+
+   void stopIndex();
+
+
 }

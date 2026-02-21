@@ -7,7 +7,6 @@ package frc.robot.subsystems.live;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-
 import frc.robot.subsystems.bases.BaseFlywheel;
 import frc.robot.util.config.FlywheelConfig;
 
@@ -19,19 +18,22 @@ import frc.robot.util.config.FlywheelConfig;
  * experimentation. It may not be fully optimized or robust, but it should
  * provide a good starting point for understanding how to use feedforward
  * control with a TalonFX.
- * 
+ *
  * For information on how to use SysId to determine the feedforward constants,
  * see the CTRE Phoenix 6 documentation and the WPILib documentation on
  * feedforward control.
- * 
+ *
  * Note: the base class defines speeds and feedforward in terms of RPM, but the
  * TalonFX expects velocity in RPS. This class handles the conversion
  * internally, so you can work with RPM values when using the setRPM and
  * getCurrentRPM methods.
- * 
- * @see https://v6.docs.ctr-electronics.com/en/latest/docs/api-reference/wpilib-integration/sysid-integration/index.html
- * @see https://v6.docs.ctr-electronics.com/en/latest/docs/api-reference/wpilib-integration/sysid-integration/plumbing-and-running-sysid.html
- * @see https://v6.docs.ctr-electronics.com/en/latest/docs/tuner/tools/log-extractor.html
+ *
+ * @see
+ *     https://v6.docs.ctr-electronics.com/en/latest/docs/api-reference/wpilib-integration/sysid-integration/index.html
+ * @see
+ *     https://v6.docs.ctr-electronics.com/en/latest/docs/api-reference/wpilib-integration/sysid-integration/plumbing-and-running-sysid.html
+ * @see
+ *     https://v6.docs.ctr-electronics.com/en/latest/docs/tuner/tools/log-extractor.html
  */
 public class TalonFxFlywheel extends BaseFlywheel {
   private final TalonFX motor;
@@ -39,7 +41,7 @@ public class TalonFxFlywheel extends BaseFlywheel {
 
   /**
    * Creates a new TalonFxFlywheel subsystem.
-   * 
+   *
    * @param flywheelConfig the flywheel configuration to use.
    */
   public TalonFxFlywheel(FlywheelConfig flywheelConfig) {
@@ -63,7 +65,8 @@ public class TalonFxFlywheel extends BaseFlywheel {
 
     // Set the velocity request with the calculated feedforward voltage
     velocityRequest
-        .withVelocity(targetRPM * 60) // Convert RPM to RPS (TalonFX expects RPS)
+        .withVelocity(
+            targetRPM * 60) // Convert RPM to RPS (TalonFX expects RPS)
         .withFeedForward(ffVoltage);
 
     // Send the request to the TalonFX motor
@@ -72,7 +75,8 @@ public class TalonFxFlywheel extends BaseFlywheel {
 
   @Override
   public double getCurrentRPM() {
-    return motor.getVelocity().getValueAsDouble() * 60; // Convert RPS back to RPM
+    return motor.getVelocity().getValueAsDouble()
+        * 60; // Convert RPS back to RPM
   }
 
   @Override

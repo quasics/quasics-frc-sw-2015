@@ -34,7 +34,6 @@ import frc.robot.hardware.sensors.TrivialEncoder;
 import frc.robot.subsystems.interfaces.IDrivebasePlus;
 import frc.robot.util.BulletinBoard;
 import frc.robot.util.config.DriveConfig;
-
 import java.io.IOException;
 
 /**
@@ -76,9 +75,6 @@ public class DrivebaseBase extends SubsystemBase implements IDrivebasePlus {
   /** Gearing ratio from motor to wheel. */
   public static final double GEAR_RATIO = 8.45;
 
-  /** Track width (distance between left and right wheels) in meters. */
-  public static final Distance TRACK_WIDTH = Meters.of(0.5588); /* 22 inches (from 2024) */
-
   /** Zero linear velocity. (A potentially useful constant.) */
   public static final LinearVelocity ZERO_MPS = MetersPerSecond.of(0.0);
 
@@ -91,56 +87,22 @@ public class DrivebaseBase extends SubsystemBase implements IDrivebasePlus {
   /** Maximum rotational velocity for arcade drive. */
   public static final AngularVelocity MAX_ROTATION = DegreesPerSecond.of(360);
 
-  /** Kinematics calculator for the drivebase. */
-  public static final DifferentialDriveKinematics KINEMATICS = new DifferentialDriveKinematics(TRACK_WIDTH.in(Meters));
-
   /** Zero wheel speeds. (A potentially useful constant.) */
-  private static final DifferentialDriveWheelSpeeds ZERO_WHEEL_SPEEDS = new DifferentialDriveWheelSpeeds(0.0, 0.0);
-
-  /**
-   * Value for voltage required to overcome static friction (used in feedforward
-   * calculations; computed via SysID tool).
-   */
-  public static final double Ks = 0.014183;
-
-  /**
-   * Velocity gain (in volts/(m/s)) for linear movement at a given velocity
-   * (used in feedforward calculations; computed via SysID tool).
-   */
-  public static final double Kv = 1.9804;
-
-  /**
-   * Acceleration gain (in volts/(m/s^2)) for linear acceleration (used in
-   * feedforward calculations; computed via SysID tool).
-   */
-  public static final double Ka = 0.19169;
-
-  /**
-   * Velocity gain for angular/rotational movement at a given velocity (used in
-   * feedforward calculations; computed via SysID tool).
-   */
-  public static final double Kv_Angular = 2.6332;
-
-  /**
-   * Acceleration gain for angular acceleration (used in feedforward
-   * calculations; computed via SysID tool).
-   */
-  public static final double Ka_Angular = 0.5226;
-
-  /**
-   * Value for the "unit converter" from velocity error (m/s) to motor effort
-   * (Volts) under PID control, computed via SysID.
-   */
-  public static final double Kp = 1.6662;
-
-  /** Feedforward calculator for the drivebase. */
-  public static final SimpleMotorFeedforward FEEDFORWARD = new SimpleMotorFeedforward(Ks, Kv, Ka);
+  private static final DifferentialDriveWheelSpeeds ZERO_WHEEL_SPEEDS =
+      new DifferentialDriveWheelSpeeds(0.0, 0.0);
 
   //
   // Core definitions
   //
 
+  /** Drive configuration data. */
   protected final DriveConfig m_config;
+
+  /** Kinematics calculator for the drivebase. */
+  protected final DifferentialDriveKinematics m_kinematics;
+
+  /** Feedforward calculator for the drivebase. */
+  protected final SimpleMotorFeedforward m_feedforward;
 
   /** Left-side motor controller. */
   protected final IMotorControllerPlus m_leftController;
@@ -193,6 +155,14 @@ public class DrivebaseBase extends SubsystemBase implements IDrivebasePlus {
     setName(SUBSYSTEM_NAME);
     m_config = config;
 
+    m_feedforward = new SimpleMotorFeedforward(
+        m_config.feedForward().linear().kS().in(Volts),
+        m_config.feedForward().linear().kV().in(Volts),
+        m_config.feedForward().linear().kA());
+
+    m_kinematics =
+        new DifferentialDriveKinematics(config.trackWidth().in(Meters));
+
     m_leftController = leftController;
     m_rightController = rightController;
 
@@ -207,10 +177,11 @@ public class DrivebaseBase extends SubsystemBase implements IDrivebasePlus {
     m_rawGyro = gyro;
 
     /** Odometry calculator. */
-    m_odometry = new DifferentialDriveOdometry(new Rotation2d(m_rawGyro.getAngle()),
-        m_leftTrivialEncoder.getPosition().in(Meters),
-        m_rightTrivialEncoder.getPosition().in(Meters),
-        StartingPosition.DEFAULT_STARTING_POSE);
+    m_odometry =
+        new DifferentialDriveOdometry(new Rotation2d(m_rawGyro.getAngle()),
+            m_leftTrivialEncoder.getPosition().in(Meters),
+            m_rightTrivialEncoder.getPosition().in(Meters),
+            StartingPosition.DEFAULT_STARTING_POSE);
 
     /** PID controller for left side velocity control. */
     m_leftPID = new PIDController(m_config.leftPid().kP(),
@@ -219,37 +190,6 @@ public class DrivebaseBase extends SubsystemBase implements IDrivebasePlus {
     /** PID controller for right side velocity control. */
     m_rightPID = new PIDController(m_config.rightPid().kP(),
         m_config.rightPid().kI(), m_config.rightPid().kD());
-  }
-
-  /**
-   * Helper function to allocate/configure a WPILib Encoder.
-   *
-   * @param portId1  "A" port for the encoder
-   * @param portId2  "B" port for the encoder
-   * @param inverted indicates if the encoder is inverted
-   * @return a configured encoder
-   */
-  protected static Encoder getConfiguredEncoder(
-      int portId1, int portId2, boolean inverted) {
-    final Encoder encoder = new Encoder(portId1, portId2);
-    encoder.setReverseDirection(inverted);
-    configureEncoderForDistance(encoder, WHEEL_DIAMETER);
-    return encoder;
-  }
-
-  /**
-   * Updates a SparkMaxConfig to work with distance-based values (meters and
-   * meters/sec), rather than the native rotation-based units (rotations and
-   * RPM).
-   *
-   * @param encoder       the encoder being configured
-   * @param outerDiameter distance of the object (wheel, sprocket, etc.) being
-   *                      turned
-   */
-  protected static void configureEncoderForDistance(
-      Encoder encoder, Distance outerDiameter) {
-    encoder.setDistancePerPulse(
-        Math.PI * WHEEL_DIAMETER.in(Meters) / ENCODER_TICKS_PER_REVOLUTION);
   }
 
   /**
@@ -270,8 +210,10 @@ public class DrivebaseBase extends SubsystemBase implements IDrivebasePlus {
     }
 
     // Convert the wheel speeds to motor power levels.
-    final double leftOutput = speeds.leftMetersPerSecond / MAX_SPEED.in(MetersPerSecond);
-    final double rightOutput = speeds.rightMetersPerSecond / MAX_SPEED.in(MetersPerSecond);
+    final double leftOutput =
+        speeds.leftMetersPerSecond / MAX_SPEED.in(MetersPerSecond);
+    final double rightOutput =
+        speeds.rightMetersPerSecond / MAX_SPEED.in(MetersPerSecond);
 
     // Set the motor outputs.
     driveTank(leftOutput, rightOutput);
@@ -298,8 +240,8 @@ public class DrivebaseBase extends SubsystemBase implements IDrivebasePlus {
     }
 
     // Calculate the left and right wheel speeds based on the inputs.
-    final DifferentialDriveWheelSpeeds wheelSpeeds = KINEMATICS
-        .toWheelSpeeds(new ChassisSpeeds(speed, ZERO_MPS, rotation));
+    final DifferentialDriveWheelSpeeds wheelSpeeds = m_kinematics.toWheelSpeeds(
+        new ChassisSpeeds(speed, ZERO_MPS, rotation));
 
     // Set the speeds of the left and right sides of the drivetrain.
     setSpeeds(wheelSpeeds);
@@ -368,7 +310,7 @@ public class DrivebaseBase extends SubsystemBase implements IDrivebasePlus {
 
   @Override
   public DifferentialDriveKinematics getKinematics() {
-    return KINEMATICS;
+    return m_kinematics;
   }
 
   //
@@ -403,14 +345,16 @@ public class DrivebaseBase extends SubsystemBase implements IDrivebasePlus {
     // Convert speeds to m/s.
     DifferentialDriveWheelSpeeds wheelSpeeds;
     if (speeds != null) {
-      wheelSpeeds = KINEMATICS.toWheelSpeeds(speeds);
+      wheelSpeeds = m_kinematics.toWheelSpeeds(speeds);
     } else {
       wheelSpeeds = ZERO_WHEEL_SPEEDS;
     }
 
     // Calculate feedforward and PID outputs.
-    final double leftFeedforward = FEEDFORWARD.calculate(wheelSpeeds.leftMetersPerSecond);
-    final double rightFeedforward = FEEDFORWARD.calculate(wheelSpeeds.rightMetersPerSecond);
+    final double leftFeedforward =
+        m_feedforward.calculate(wheelSpeeds.leftMetersPerSecond);
+    final double rightFeedforward =
+        m_feedforward.calculate(wheelSpeeds.rightMetersPerSecond);
 
     final double leftOutput = m_leftPID.calculate(
         m_leftTrivialEncoder.getVelocity().in(MetersPerSecond),
@@ -426,7 +370,7 @@ public class DrivebaseBase extends SubsystemBase implements IDrivebasePlus {
 
   @Override
   public void setSpeeds(ChassisSpeeds speeds) {
-    setSpeeds(KINEMATICS.toWheelSpeeds(speeds));
+    setSpeeds(m_kinematics.toWheelSpeeds(speeds));
   }
 
   @Override

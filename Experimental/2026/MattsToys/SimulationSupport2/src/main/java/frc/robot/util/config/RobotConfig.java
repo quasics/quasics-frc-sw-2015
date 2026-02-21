@@ -21,30 +21,14 @@ import java.util.List;
  * @param hood     hood configuration (may be null)
  * @param power    power distribution configuration (may be null)
  */
-public record RobotConfig(
-    boolean isSimulated,
-    DriveConfig drive,
-    List<CameraConfig> cameras,
-    ElevatorConfig elevator,
-    ArmConfig arm,
-    LightingConfig lighting,
-    CandleConfig candle,
-    ClimberConfig climber,
-    FlywheelConfig flywheel,
-    HoodConfig hood,
-    PowerDistributor power) {
-  public RobotConfig(
-      boolean isSimulated,
-      DriveConfig drive,
-      List<CameraConfig> cameras,
-      ElevatorConfig elevator,
-      ArmConfig arm,
-      LightingConfig lighting,
-      CandleConfig candle,
-      ClimberConfig climber,
-      FlywheelConfig flywheel,
-      HoodConfig hood,
-      PowerDistributor power) {
+public record RobotConfig(boolean isSimulated, DriveConfig drive,
+    List<CameraConfig> cameras, ElevatorConfig elevator, ArmConfig arm,
+    LightingConfig lighting, CandleConfig candle, ClimberConfig climber,
+    FlywheelConfig flywheel, HoodConfig hood, PowerDistributor power) {
+  public RobotConfig(boolean isSimulated, DriveConfig drive,
+      List<CameraConfig> cameras, ElevatorConfig elevator, ArmConfig arm,
+      LightingConfig lighting, CandleConfig candle, ClimberConfig climber,
+      FlywheelConfig flywheel, HoodConfig hood, PowerDistributor power) {
     if (drive != null) {
       assert (isSimulated == (drive.driveType() == DriveType.Simulated))
           : "Simulation setting mismatch (robot vs. drive)";
@@ -80,18 +64,10 @@ public record RobotConfig(
    * @param hood     hood configuration (may be null)
    * @param power    power distribution configuration (may be null)
    */
-  public RobotConfig(
-      boolean isSimulated,
-      DriveConfig drive,
-      CameraConfig camera,
-      ElevatorConfig elevator,
-      ArmConfig arm,
-      LightingConfig lighting,
-      CandleConfig candle,
-      ClimberConfig climber,
-      FlywheelConfig flywheel,
-      HoodConfig hood,
-      PowerDistributor power) {
+  public RobotConfig(boolean isSimulated, DriveConfig drive,
+      CameraConfig camera, ElevatorConfig elevator, ArmConfig arm,
+      LightingConfig lighting, CandleConfig candle, ClimberConfig climber,
+      FlywheelConfig flywheel, HoodConfig hood, PowerDistributor power) {
     this(isSimulated, drive,
         camera != null ? Collections.singletonList(camera) : null, elevator,
         arm, lighting, candle, climber, flywheel, hood, power);

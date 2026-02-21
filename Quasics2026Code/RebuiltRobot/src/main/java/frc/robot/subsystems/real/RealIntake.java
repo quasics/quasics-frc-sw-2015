@@ -4,13 +4,44 @@
 
 package frc.robot.subsystems.real;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.CanBusIds.SparkMaxIds;
+import frc.robot.subsystems.SingleSparkMaxThing;
 import frc.robot.subsystems.interfaces.IIntake;
 
-public class RealIntake extends SubsystemBase implements IIntake {
+
+public class RealIntake extends SingleSparkMaxThing implements IIntake {
+
+
   /** Creates a new RealIntake. */
   public RealIntake() {
+
+    super(SparkMaxIds.INTAKE_ROLLERS_ID);
+
   }
+
+
+  @Override
+  public void setRollerSpeed(double speed){
+
+    setSpeed(speed);
+
+  }
+
+
+  @Override
+  public void stopRoller(){
+
+    stop();
+
+  }
+
+  public double getRollerSpeed(){
+
+    double speed = m_motor.get();
+    return speed;
+
+  }
+
 
   @Override
   public void periodic() {

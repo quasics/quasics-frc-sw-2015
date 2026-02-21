@@ -6,8 +6,8 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.CANBusIds.SparkMax.*;
 
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.PersistMode;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
@@ -18,17 +18,23 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Drivebase extends SubsystemBase {
-  static final double ANDYMARK_6IN_PLACTION_DIAMETER_METERS = Units.inchesToMeters(6.0);
-  static final double WHEEL_CIRCUMFERENCE_METERS = Math.PI * ANDYMARK_6IN_PLACTION_DIAMETER_METERS;
+  static final double ANDYMARK_6IN_PLACTION_DIAMETER_METERS =
+      Units.inchesToMeters(6.0);
+  static final double WHEEL_CIRCUMFERENCE_METERS =
+      Math.PI * ANDYMARK_6IN_PLACTION_DIAMETER_METERS;
   static final double DRIVEBASE_GEAR_RATIO = 10.71;
   static final double TICKS_PER_REV_FOR_NEO_MOTOR = 42;
 
   // TODO: We *really* need to replace the use of a motor controller group with
   // CAN-based "leader/follower" configuration.
-  final SparkMax m_leftLeader = new SparkMax(LEFT_LEADER_ID, MotorType.kBrushless);
-  final SparkMax m_leftFollower = new SparkMax(LEFT_FOLLOWER_ID, MotorType.kBrushless);
-  final SparkMax m_rightLeader = new SparkMax(RIGHT_LEADER_ID, MotorType.kBrushless);
-  final SparkMax m_rightFollower = new SparkMax(RIGHT_FOLLOWER_ID, MotorType.kBrushless);
+  final SparkMax m_leftLeader =
+      new SparkMax(LEFT_LEADER_ID, MotorType.kBrushless);
+  final SparkMax m_leftFollower =
+      new SparkMax(LEFT_FOLLOWER_ID, MotorType.kBrushless);
+  final SparkMax m_rightLeader =
+      new SparkMax(RIGHT_LEADER_ID, MotorType.kBrushless);
+  final SparkMax m_rightFollower =
+      new SparkMax(RIGHT_FOLLOWER_ID, MotorType.kBrushless);
 
   final SparkMaxConfig leftFollowerConfig = new SparkMaxConfig();
   final SparkMaxConfig rightFollowerConfig = new SparkMaxConfig();
@@ -47,16 +53,17 @@ public class Drivebase extends SubsystemBase {
     leftFollowerConfig.follow(LEFT_LEADER_ID);
     rightFollowerConfig.follow(RIGHT_LEADER_ID);
 
-    m_leftFollower.configure(
-        leftFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    m_rightFollower.configure(
-        rightFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_leftFollower.configure(leftFollowerConfig, ResetMode.kResetSafeParameters,
+        PersistMode.kPersistParameters);
+    m_rightFollower.configure(rightFollowerConfig,
+        ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    // Left Leader is effectively a no-op, no config changes, but for our sanity configure it along with the rest. 
-    m_leftLeader.configure(
-        leftLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    m_rightLeader.configure(
-        rightLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    // Left Leader is effectively a no-op, no config changes, but for our sanity
+    // configure it along with the rest.
+    m_leftLeader.configure(leftLeaderConfig, ResetMode.kResetSafeParameters,
+        PersistMode.kPersistParameters);
+    m_rightLeader.configure(rightLeaderConfig, ResetMode.kResetSafeParameters,
+        PersistMode.kPersistParameters);
 
     m_leftEncoder = m_leftLeader.getEncoder();
     m_rightEncoder = m_rightLeader.getEncoder();

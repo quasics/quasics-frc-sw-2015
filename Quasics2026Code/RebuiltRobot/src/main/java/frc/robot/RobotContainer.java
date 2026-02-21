@@ -18,9 +18,13 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.DriveteamConstants;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.LinearSpeedCommand;
+import frc.robot.subsystems.interfaces.IIndexer;
+import frc.robot.subsystems.interfaces.IIntake;
 import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.subsystems.real.AbstractDrivebase;
 import frc.robot.subsystems.real.RealDrivebase;
+import frc.robot.subsystems.real.RealIndexer;
+import frc.robot.subsystems.real.RealIntake;
 import frc.robot.subsystems.real.RealShooter;
 import frc.robot.subsystems.real.Vision;
 import frc.robot.subsystems.simulated.SimulatedVision;
@@ -34,6 +38,9 @@ import frc.robot.subsystems.simulated.SimulationDrivebase;
  * commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+  private final IIntake m_intakeSubsystem = new RealIntake();
+  private final IIndexer m_indexerSubsystem = new RealIndexer();
+
   // The robot's subsystems and commands are defined here...
   private final AbstractDrivebase m_drivebase = Robot.isReal() ? new RealDrivebase() : new SimulationDrivebase();
   private final IVision m_vision = (Robot.isReal()) ? new Vision() : new SimulatedVision();

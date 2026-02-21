@@ -16,7 +16,7 @@ import frc.robot.Constants.CanBusIds.SparkMaxIds;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
 
-public class RealDrivebase extends AbstractDrivebase {
+public class SparkDriveBase extends AbstractDrivebase {
   // TODO: add thriftynova support. (This might be done in a derived class, or
   // be based on some information about the robot's configuration. I'd recommend
   // the former approach.)
@@ -51,7 +51,7 @@ public class RealDrivebase extends AbstractDrivebase {
   }
 
   /** Creates a new RealDrivebase. */
-  public RealDrivebase() {
+  public SparkDriveBase() {
     super(new SparkMax(SparkMaxIds.LEFT_LEADER_ID, MotorType.kBrushless),
         new SparkMax(SparkMaxIds.RIGHT_LEADER_ID, MotorType.kBrushless));
 

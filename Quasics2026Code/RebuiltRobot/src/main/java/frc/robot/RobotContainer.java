@@ -20,7 +20,7 @@ import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.LinearSpeedCommand;
 import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.subsystems.real.AbstractDrivebase;
-import frc.robot.subsystems.real.RealDrivebase;
+import frc.robot.subsystems.real.SparkDriveBase;
 import frc.robot.subsystems.real.RealShooter;
 import frc.robot.subsystems.real.Vision;
 import frc.robot.subsystems.simulated.SimulatedVision;
@@ -35,7 +35,7 @@ import frc.robot.subsystems.simulated.SimulationDrivebase;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final AbstractDrivebase m_drivebase = Robot.isReal() ? new RealDrivebase() : new SimulationDrivebase();
+  private final AbstractDrivebase m_drivebase = Robot.isReal() ? new SparkDriveBase() : new SimulationDrivebase();
   private final IVision m_vision = (Robot.isReal()) ? new Vision() : new SimulatedVision();
   private final RealShooter m_shooter = new RealShooter();
 

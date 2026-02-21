@@ -18,8 +18,6 @@ import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.LinearSpeedCommand;
 import frc.robot.commands.RunIntakeExtension;
 import frc.robot.commands.RunShooterPID;
-import frc.robot.subsystems.interfaces.IIndexer;
-import frc.robot.subsystems.interfaces.IIntake;
 import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.subsystems.real.AbstractDrivebase;
 import frc.robot.subsystems.real.NovaDriveBase;
@@ -42,8 +40,8 @@ import java.util.function.Supplier;
  * commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  private final IIntake m_intake = new RealIntake();
-  private final IIndexer m_indexer = new RealIndexer();
+  private final RealIntake m_intake = new RealIntake();
+  private final RealIndexer m_indexer = new RealIndexer();
 
   // The robot's subsystems and commands are defined here...
   private final AbstractDrivebase m_drivebase = Robot.isReal() ? new NovaDriveBase() : new SimulationDrivebase();
@@ -96,14 +94,16 @@ public class RobotContainer {
   private void addButtonsToSmartDashboard() {
     SmartDashboard.putData("Run Indexer", new InstantCommand(() -> m_indexer.setIndexSpeed(0.1)));
     SmartDashboard.putData("Run Intake Rollers", new InstantCommand(() -> m_intake.setRollerSpeed(-.1)));
+    //SmartDashboard.putData("Extend Intake", new InstantCommand(() -> m_intake.setExtensionSpeed(0.5)));
+    //SmartDashboard.putData("Extend Intake", new InstantCommand(() -> m_intake.setExtensionSpeed(-0.5)));
     SmartDashboard.putData("Run Flywheel @ 1200 RPM, Kicker @ 12.5% speed",
         new RunShooterPID(m_shooter, RPM.of(1200), .125));
     SmartDashboard.putData("Run Flywheel @ 3700 RPM, Kicker @ 38.7% speed",
         new RunShooterPID(m_shooter, RPM.of(3700), .387));
     SmartDashboard.putData("Extend Intake",
-        new RunIntakeExtension(m_intake, 0.10, true));
+        new RunIntakeExtension(m_intake, 0.50, false));
     SmartDashboard.putData("Retract Intake",
-        new RunIntakeExtension(m_intake, 0.10, false));
+        new RunIntakeExtension(m_intake, 0.50, true));
   }
 
   private void addSysIdButtonsToSmartDashboard() {

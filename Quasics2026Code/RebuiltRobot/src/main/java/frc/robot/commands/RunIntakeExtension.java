@@ -5,27 +5,26 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.interfaces.IIntake;
+import frc.robot.subsystems.real.RealIntake;
 
 //TODO: set postitions for intake because of lack of limit switch and set an isFinished method.
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class RunIntakeExtension extends Command {
 
-  private IIntake m_intakeExtenders;
+  private RealIntake m_intakeExtenders;
   private double m_extensionSpeed;
   private boolean m_forward;
 
 
   /** Creates a new RunIntakeExtension. */
-  public RunIntakeExtension(IIntake intakeExtenders, double extensionSpeed, boolean forward) {
+  public RunIntakeExtension(RealIntake intakeExtenders, double extensionSpeed, boolean forward) {
     
     m_intakeExtenders = intakeExtenders;
     m_extensionSpeed = extensionSpeed;
     m_forward = forward;
     
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements((SubsystemBase)intakeExtenders);
+    addRequirements(intakeExtenders);
   }
 
   // Called when the command is initially scheduled.

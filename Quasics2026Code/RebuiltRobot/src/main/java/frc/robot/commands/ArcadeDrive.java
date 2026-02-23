@@ -34,6 +34,9 @@ public class ArcadeDrive extends Command {
   public void initialize() {
   }
 
+  /**
+   * Used to disable logging from execute() as needed (since this gets *noisy*).
+   */
   static final boolean LOG_DATA = false;
 
   // Called every time the scheduler runs while the command is scheduled.

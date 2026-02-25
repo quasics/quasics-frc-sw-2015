@@ -74,9 +74,19 @@ public class SimulatedVision extends Vision {
     //
 
     // Where is the camera located, relative to the center of the robot's base?
+    //
+    // FINDME(Rylie): This should ideally match the "robotToCameraTr"
+    // translation being used in the base ("Vision") subsystem class's code, or else
+    // the simulator will generate incorrect data.
     Translation3d robotToCameraTr = new Translation3d(0.0762, -0.17145, 0.53975);
+
     // What is the angling of the camera, relative to the drive base?
+    //
+    // FINDME(Rylie): This is currently not actually set. It should reflect any
+    // actual "robotToCamera" rotation being used in the base ("Vision")
+    // subsystem class's code, or else the simulator will generate incorrect data.
     Rotation3d robotToCameraRot = new Rotation3d();
+
     // Create the overall transformation used to convert data from the robot's
     // perspective to the camera's.
     //

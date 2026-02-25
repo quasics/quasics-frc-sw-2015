@@ -14,10 +14,15 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.DriveteamConstants;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.LinearSpeedCommand;
+import frc.robot.commands.RunIndexer;
 import frc.robot.commands.RunIntakeExtension;
+import frc.robot.commands.RunIntakeRollers;
+import frc.robot.commands.RunShooter;
+import frc.robot.commands.RunShooterForTime;
 import frc.robot.commands.RunShooterPID;
 import frc.robot.subsystems.interfaces.IIntake;
 import frc.robot.subsystems.interfaces.IDrivebase;
@@ -96,8 +101,8 @@ public class RobotContainer {
   }
 
   private void addButtonsToSmartDashboard() {
-    SmartDashboard.putData("Run Indexer", new InstantCommand(() -> m_indexer.setIndexSpeed(0.1)));
-    SmartDashboard.putData("Run Intake Rollers", new InstantCommand(() -> m_intake.setRollerSpeed(-.1)));
+    SmartDashboard.putData("Run Intake Rollers", new RunIntakeRollers(m_intake, 0.1, true));
+    SmartDashboard.putData("Run Indexer", new RunIndexer(m_indexer, 0.1, true));
     // SmartDashboard.putData("Extend Intake", new InstantCommand(() ->
     // m_intake.setExtensionSpeed(0.5)));
     // SmartDashboard.putData("Extend Intake", new InstantCommand(() ->
@@ -110,6 +115,9 @@ public class RobotContainer {
         new RunIntakeExtension(m_intake, 0.50, false));
     SmartDashboard.putData("Retract Intake",
         new RunIntakeExtension(m_intake, 0.50, true));
+    SmartDashboard.putData("Run Flywheel @ 15% speed, Kicker @ 50% speed", new RunShooter(m_shooter, 0.15, .50, true));
+    SmartDashboard.putData("Jam", runKickerReverse());
+    SmartDashboard.putData("Reverse Indexer", new RunIndexer(m_indexer, 0.1, false));
   }
 
   private void addSysIdButtonsToSmartDashboard() {
@@ -122,6 +130,11 @@ public class RobotContainer {
     SmartDashboard.putData("Flywheel Dynamic Reverse",
         m_shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
+  }
+
+  public Command runKickerReverse() {
+    return Commands.sequence(new RunShooterForTime(m_shooter, 0, 0.75, false, 2), new WaitCommand(0.5),
+        new RunShooter(m_shooter, .15, .50, true));
   }
 
   /**

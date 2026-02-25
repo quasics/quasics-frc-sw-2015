@@ -104,7 +104,8 @@ public class NovaDriveBase extends AbstractDrivebase {
   }
 
   /**
-   * Configures a follower SparkMax motor controller to follow a leader SparkMax
+   * Configures a follower ThriftyNova motor controller to follow a leader
+   * ThriftyNova
    * motor controller.
    *
    * Note that this is important to do in code (instead of just setting the
@@ -114,9 +115,9 @@ public class NovaDriveBase extends AbstractDrivebase {
    * to be replaced, or if we need to swap a controller from one side of the
    * drivebase to the other for some reason, etc.).
    *
-   * @param leader   leader SparkMax motor controller that the follower should
+   * @param leader   leader ThriftyNova motor controller that the follower should
    *                 follow
-   * @param follower SparkMax motor controller that should be configured to
+   * @param follower ThriftyNova motor controller that should be configured to
    *                 follow
    *                 the leader
    */

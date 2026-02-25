@@ -21,13 +21,17 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.logging.Logger;
 import frc.robot.logging.Logger.Verbosity;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
 import frc.robot.subsystems.interfaces.IDrivebase;
+
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public abstract class AbstractDrivebase
@@ -52,6 +56,11 @@ public abstract class AbstractDrivebase
   private final DifferentialDriveOdometry m_odometry;
   private final DifferentialDrivePoseEstimator m_poseEstimator;
 
+  // TODO: Log motors
+  SysIdRoutine routine = new SysIdRoutine(
+      new SysIdRoutine.Config(),
+      new SysIdRoutine.Mechanism((volts) -> this.setVoltages(volts, volts), null, this));
+
   // Thoughts on this from Robert: Might be helpful for driveteam to have a
   // backup of being able to see the field display sometimes, so leave field
   // implemented for all cases
@@ -70,6 +79,10 @@ public abstract class AbstractDrivebase
     m_poseEstimator = new DifferentialDrivePoseEstimator(
         m_kinematics, new Rotation2d(), 0, 0, new Pose2d());
     SmartDashboard.putData("Field", m_field);
+  }
+
+  private void logMotor(SysIdRoutineLog log) {
+    // log.motor("Drivebase").voltage();
   }
 
   public static LinearVelocity getMaxMotorLinearSpeed() {

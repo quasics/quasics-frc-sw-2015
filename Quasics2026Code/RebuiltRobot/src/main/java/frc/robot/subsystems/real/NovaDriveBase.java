@@ -81,24 +81,37 @@ public class NovaDriveBase extends AbstractDrivebase {
     configureMotorControllersForFollowing(
         ThriftyNovaIds.RIGHT_LEADER_ID, rightfollower);
 
-    // Configure the encoders.
+    //
+    // Configure the motors.
+    //
+
+    // Configure the encoder type. (Note that only the leaders need to know this,
+    // since we won't read encoder data from the followers.)
     ThriftyNovaConfig config = new ThriftyNovaConfig();
     config.encoderType = EncoderType.INTERNAL;
-    leftfollower.applyConfig(config);
-    rightfollower.applyConfig(config);
 
-    // TODO: Configure the leader so that it is *not* a follower of anything.
+    // TODO: Configure the leaders so that they are *not* a follower of anything.
     //
     // FINDME(Robert): This is important to do to ensure that the leader motor
     // controllers are correctly configured even if they get swapped out. It can be
-    // done with 1-2 lines of code.
+    // done with ~1 line of code per motor.
 
+    // Apply the configuration settings to the motors.
+    leftController.applyConfig(config);
+    rightController.applyConfig(config);
+
+    //
+    // Set up the TrivialEncoders we'll use to handle accessing the data from the
+    // motors.
+    //
     final Distance wheelDiam = Meters.of(2.0 * Constants.wheelRadius.in(Meters));
     m_leftEncoder = new ThriftyEncoderWrapper(leftController, wheelDiam);
     m_rightEncoder = new ThriftyEncoderWrapper(leftController, wheelDiam);
 
-    // Configure the gyro.
     //
+    // Set up the gyro.
+    //
+
     // TODO: Switch this to use the gyro that we're actually going to be using
     // on the real robot.
     //

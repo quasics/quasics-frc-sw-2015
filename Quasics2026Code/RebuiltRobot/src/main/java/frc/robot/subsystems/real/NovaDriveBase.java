@@ -73,13 +73,10 @@ public class NovaDriveBase extends AbstractDrivebase {
     super(leftController, rightController);
 
     // Configure followers to follow the leaders.
-    final ThriftyNova leftfollower = new ThriftyNova(ThriftyNovaIds.LEFT_FOLLOWER_ID);
-    final ThriftyNova rightfollower = new ThriftyNova(ThriftyNovaIds.RIGHT_FOLLOWER_ID);
-
     configureMotorControllersForFollowing(
-        ThriftyNovaIds.LEFT_LEADER_ID, leftfollower);
+        ThriftyNovaIds.LEFT_LEADER_ID, ThriftyNovaIds.LEFT_FOLLOWER_ID);
     configureMotorControllersForFollowing(
-        ThriftyNovaIds.RIGHT_LEADER_ID, rightfollower);
+        ThriftyNovaIds.RIGHT_LEADER_ID, ThriftyNovaIds.RIGHT_FOLLOWER_ID);
 
     //
     // Configure the motors.
@@ -134,17 +131,22 @@ public class NovaDriveBase extends AbstractDrivebase {
    * to be replaced, or if we need to swap a controller from one side of the
    * drivebase to the other for some reason, etc.).
    *
-   * @param leader   leader ThriftyNova motor controller that the follower should
-   *                 follow
-   * @param follower ThriftyNova motor controller that should be configured to
-   *                 follow
-   *                 the leader
+   * @param leaderId   CAN ID of the leader ThriftyNova motor controller
+   * @param followerId CAN ID of the ThriftyNova motor controller that should be
+   *                   configured to follow the leader
    */
   private void configureMotorControllersForFollowing(
-      int leader, ThriftyNova follower) {
-    // Configure the motor to follow the leader
-    // Pass second parameter of 'true' to invert the direction
-    follower.follow(leader);
+      int leaderId, int followerId) {
+    try (ThriftyNova follower = new ThriftyNova(followerId)) {
+      // Configure the motor to follow the leader
+      //
+      // Pass second parameter of 'true' to invert the direction (i.e., to run in the
+      // opposite direction as the leader): this isn't wanted for the drive base.
+      follower.follow(leaderId);
+    } catch (Exception e) {
+      // Something went wrong when releasing the follower: log the error.
+      e.printStackTrace();
+    }
   }
 
   // We've removed @Override periodic, but be sure to use super.periodic if we

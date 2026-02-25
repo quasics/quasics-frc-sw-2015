@@ -57,10 +57,11 @@ public class Vision extends SubsystemBase implements IVision {
 
     photonEstimator = new PhotonPoseEstimator(tagLayout,
         // FINDME(Rylie): This should ideally match the "robotToCamera"
-        // configuration being used under simulation. FINDME(Rylie): This should
-        // ideally be coming from a robot configuration data block, to give us a
-        // well-defined place to swap stuff around. (Doesn't *have* to, but it's
-        // a good idea....)
+        // configuration being used under simulation.
+        //
+        // FINDME(Rylie): This should ideally be coming from a robot configuration data
+        // block, to give us a well-defined place to swap stuff around. (Doesn't *have*
+        // to, but it's a good idea....)
         robotToCamera); // SALLY'S MEASUREMENT AS OF RIGHT NOW
     m_tagLayout = tagLayout;
   }

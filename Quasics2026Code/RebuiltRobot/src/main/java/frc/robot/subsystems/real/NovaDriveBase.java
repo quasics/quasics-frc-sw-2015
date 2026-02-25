@@ -87,6 +87,12 @@ public class NovaDriveBase extends AbstractDrivebase {
     leftfollower.applyConfig(config);
     rightfollower.applyConfig(config);
 
+    // TODO: Configure the leader so that it is *not* a follower of anything.
+    //
+    // FINDME(Robert): This is important to do to ensure that the leader motor
+    // controllers are correctly configured even if they get swapped out. It can be
+    // done with 1-2 lines of code.
+
     final Distance wheelDiam = Meters.of(2.0 * Constants.wheelRadius.in(Meters));
     m_leftEncoder = new ThriftyEncoderWrapper(leftController, wheelDiam);
     m_rightEncoder = new ThriftyEncoderWrapper(leftController, wheelDiam);

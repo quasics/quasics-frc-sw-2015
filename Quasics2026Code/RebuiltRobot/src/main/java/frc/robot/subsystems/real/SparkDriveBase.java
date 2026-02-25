@@ -67,8 +67,8 @@ public class SparkDriveBase extends AbstractDrivebase {
     // TODO: Switch this to use the gyro that we're actually going to be using
     // on the test bed (Sally).
     //
-    // FINDME(Robert): This needs to be updated, since we're Sally has a Pigeon2,
-    // not an AnalogGyro.
+    // FINDME(Robert): This needs to be updated, since Sally has a Pigeon2, not an
+    // AnalogGyro.
     AnalogGyro gyro = new AnalogGyro(0);
     m_gryo = IGyro.wrapGyro(gyro);
   }

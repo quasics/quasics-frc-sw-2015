@@ -112,9 +112,9 @@ public class RobotContainer {
     SmartDashboard.putData("Run Flywheel @ 3700 RPM, Kicker @ 38.7% speed",
         new RunShooterPID(m_shooter, RPM.of(3700), .387));
     SmartDashboard.putData("Extend Intake",
-        new RunIntakeExtension(m_intake, 0.50, false));
+        new RunIntakeExtension(m_intake, 0.10, false));
     SmartDashboard.putData("Retract Intake",
-        new RunIntakeExtension(m_intake, 0.50, true));
+        new RunIntakeExtension(m_intake, 0.10, true));
     SmartDashboard.putData("Run Flywheel @ 15% speed, Kicker @ 50% speed", new RunShooter(m_shooter, 0.15, .50, true));
     SmartDashboard.putData("Jam", runKickerReverse());
     SmartDashboard.putData("Reverse Indexer", new RunIndexer(m_indexer, 0.1, false));

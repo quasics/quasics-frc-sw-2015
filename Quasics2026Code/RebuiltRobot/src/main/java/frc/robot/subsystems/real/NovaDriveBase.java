@@ -79,7 +79,7 @@ public class NovaDriveBase extends AbstractDrivebase {
         ThriftyNovaIds.RIGHT_LEADER_ID, ThriftyNovaIds.RIGHT_FOLLOWER_ID);
 
     //
-    // Configure the motors.
+    // Configure the leading motors.
     //
 
     // Configure the encoder type. (Note that only the leaders need to know this,

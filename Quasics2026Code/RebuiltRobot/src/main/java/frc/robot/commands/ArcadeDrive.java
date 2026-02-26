@@ -7,6 +7,8 @@ package frc.robot.commands;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.real.AbstractDrivebase;
 import java.util.function.Supplier;
 
@@ -14,23 +16,28 @@ import java.util.function.Supplier;
  * Implements "arcade drive" support for the drivebase.
  */
 public class ArcadeDrive extends Command {
-  AbstractDrivebase m_drivebase;
+  IDrivebase m_drivebase;
   private final Supplier<Double> m_linearSpeedSupplier;
   private final Supplier<Double> m_turnSpeedSupplier;
 
   /** Creates a new ArcadeDrive. */
   public ArcadeDrive(Supplier<Double> linearSpeedSupplier,
-      Supplier<Double> turnSpeedSupplier, AbstractDrivebase drivebase) {
+      Supplier<Double> turnSpeedSupplier, IDrivebase drivebase) {
     m_drivebase = drivebase;
     m_linearSpeedSupplier = linearSpeedSupplier;
     m_turnSpeedSupplier = turnSpeedSupplier;
-    addRequirements(drivebase);
+    addRequirements((Subsystem) drivebase);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
   }
+
+  /**
+   * Used to disable logging from execute() as needed (since this gets *noisy*).
+   */
+  static final boolean LOG_DATA = false;
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -52,8 +59,10 @@ public class ArcadeDrive extends Command {
     final double angularVelocityPercent = m_turnSpeedSupplier.get();
     final AngularVelocity angularVelocity = AbstractDrivebase.getMaxMotorTurnSpeed().times(angularVelocityPercent);
 
-    System.out.println("turnSpeedSupplier = " + linearSpeed);
-    System.out.println("angularVelocity = " + angularVelocity);
+    if (LOG_DATA) {
+      System.out.println("turnSpeedSupplier = " + linearSpeed);
+      System.out.println("angularVelocity = " + angularVelocity);
+    }
     m_drivebase.arcadeDrive(linearSpeed, angularVelocity);
   }
 

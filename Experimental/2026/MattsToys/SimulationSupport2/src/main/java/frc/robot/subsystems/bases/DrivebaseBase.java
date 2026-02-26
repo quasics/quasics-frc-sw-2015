@@ -25,7 +25,6 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.games.StartingPosition;
 import frc.robot.hardware.actuators.IMotorControllerPlus;
@@ -88,8 +87,7 @@ public class DrivebaseBase extends SubsystemBase implements IDrivebasePlus {
   public static final AngularVelocity MAX_ROTATION = DegreesPerSecond.of(360);
 
   /** Zero wheel speeds. (A potentially useful constant.) */
-  private static final DifferentialDriveWheelSpeeds ZERO_WHEEL_SPEEDS =
-      new DifferentialDriveWheelSpeeds(0.0, 0.0);
+  private static final DifferentialDriveWheelSpeeds ZERO_WHEEL_SPEEDS = new DifferentialDriveWheelSpeeds(0.0, 0.0);
 
   //
   // Core definitions
@@ -160,8 +158,7 @@ public class DrivebaseBase extends SubsystemBase implements IDrivebasePlus {
         m_config.feedForward().linear().kV().in(Volts),
         m_config.feedForward().linear().kA());
 
-    m_kinematics =
-        new DifferentialDriveKinematics(config.trackWidth().in(Meters));
+    m_kinematics = new DifferentialDriveKinematics(config.trackWidth().in(Meters));
 
     m_leftController = leftController;
     m_rightController = rightController;
@@ -177,11 +174,10 @@ public class DrivebaseBase extends SubsystemBase implements IDrivebasePlus {
     m_rawGyro = gyro;
 
     /** Odometry calculator. */
-    m_odometry =
-        new DifferentialDriveOdometry(new Rotation2d(m_rawGyro.getAngle()),
-            m_leftTrivialEncoder.getPosition().in(Meters),
-            m_rightTrivialEncoder.getPosition().in(Meters),
-            StartingPosition.DEFAULT_STARTING_POSE);
+    m_odometry = new DifferentialDriveOdometry(new Rotation2d(m_rawGyro.getAngle()),
+        m_leftTrivialEncoder.getPosition().in(Meters),
+        m_rightTrivialEncoder.getPosition().in(Meters),
+        StartingPosition.DEFAULT_STARTING_POSE);
 
     /** PID controller for left side velocity control. */
     m_leftPID = new PIDController(m_config.leftPid().kP(),
@@ -210,10 +206,8 @@ public class DrivebaseBase extends SubsystemBase implements IDrivebasePlus {
     }
 
     // Convert the wheel speeds to motor power levels.
-    final double leftOutput =
-        speeds.leftMetersPerSecond / MAX_SPEED.in(MetersPerSecond);
-    final double rightOutput =
-        speeds.rightMetersPerSecond / MAX_SPEED.in(MetersPerSecond);
+    final double leftOutput = speeds.leftMetersPerSecond / MAX_SPEED.in(MetersPerSecond);
+    final double rightOutput = speeds.rightMetersPerSecond / MAX_SPEED.in(MetersPerSecond);
 
     // Set the motor outputs.
     driveTank(leftOutput, rightOutput);
@@ -351,10 +345,8 @@ public class DrivebaseBase extends SubsystemBase implements IDrivebasePlus {
     }
 
     // Calculate feedforward and PID outputs.
-    final double leftFeedforward =
-        m_feedforward.calculate(wheelSpeeds.leftMetersPerSecond);
-    final double rightFeedforward =
-        m_feedforward.calculate(wheelSpeeds.rightMetersPerSecond);
+    final double leftFeedforward = m_feedforward.calculate(wheelSpeeds.leftMetersPerSecond);
+    final double rightFeedforward = m_feedforward.calculate(wheelSpeeds.rightMetersPerSecond);
 
     final double leftOutput = m_leftPID.calculate(
         m_leftTrivialEncoder.getVelocity().in(MetersPerSecond),

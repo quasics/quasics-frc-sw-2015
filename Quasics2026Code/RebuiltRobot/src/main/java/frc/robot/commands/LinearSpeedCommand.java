@@ -5,11 +5,12 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.real.AbstractDrivebase;
+import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.subsystems.interfaces.IDrivebase;
 
 /** A simple command to test the drivebase (by driving forward). */
 public class LinearSpeedCommand extends Command {
-  private final AbstractDrivebase m_drivebase;
+  private final IDrivebase m_drivebase;
   private final double m_percentSpeed;
 
   public final static double DEFAULT_SPEED_PERCENT = 0.2;
@@ -20,7 +21,7 @@ public class LinearSpeedCommand extends Command {
    *
    * @param drivebase The subsystem used by this command.
    */
-  public LinearSpeedCommand(AbstractDrivebase drivebase) {
+  public LinearSpeedCommand(IDrivebase drivebase) {
     this(drivebase, DEFAULT_SPEED_PERCENT);
   }
 
@@ -33,10 +34,10 @@ public class LinearSpeedCommand extends Command {
    * @param drivebase    The subsystem used by this command.
    * @param percentSpeed How fast this command should move.
    */
-  public LinearSpeedCommand(AbstractDrivebase drivebase, double percentSpeed) {
+  public LinearSpeedCommand(IDrivebase drivebase, double percentSpeed) {
     m_drivebase = drivebase;
     m_percentSpeed = percentSpeed;
-    addRequirements(drivebase);
+    addRequirements((Subsystem) drivebase);
   }
 
   @Override

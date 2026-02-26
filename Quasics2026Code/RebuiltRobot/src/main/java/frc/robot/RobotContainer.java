@@ -17,6 +17,7 @@ import frc.robot.Constants.DriveteamConstants;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.LinearSpeedCommand;
 import frc.robot.commands.RunIntakeExtension;
+import frc.robot.commands.RunIntakeRollers;
 import frc.robot.commands.RunShooterPID;
 import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.subsystems.real.AbstractDrivebase;
@@ -104,6 +105,8 @@ public class RobotContainer {
         new RunIntakeExtension(m_intake, 0.50, false));
     SmartDashboard.putData("Retract Intake",
         new RunIntakeExtension(m_intake, 0.50, true));
+    SmartDashboard.putData("Run Intake Rollers",
+        new RunIntakeRollers(m_intake, 0.90, false));
   }
 
   private void addSysIdButtonsToSmartDashboard() {

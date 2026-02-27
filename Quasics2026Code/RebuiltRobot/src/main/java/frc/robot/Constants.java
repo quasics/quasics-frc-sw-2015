@@ -23,6 +23,14 @@ import edu.wpi.first.units.measure.Distance;
 public final class Constants {
   public static final Distance wheelRadius = Meters.of(0.0508);
 
+  public static final int LIGHTING_TOTAL_LENGTH = 80;
+
+  public static class PwmPortIds {
+    public static final int SIMULATED_LEFT_MOTOR_CHANNEL = 0;
+    public static final int SIMULATED_RIGHT_MOTOR_CHANNEL = 1;
+    public static final int LIGHTING_ID = 2;
+  }
+
   public static class CanBusIds {
     public static class SparkMaxIds {
       // Note: Drive base motor IDs are based on those Quasics has used over the
@@ -177,4 +185,5 @@ public final class Constants {
     Unknown,
     SparkMax,
     ThriftyNova
-  }}
+  }
+}

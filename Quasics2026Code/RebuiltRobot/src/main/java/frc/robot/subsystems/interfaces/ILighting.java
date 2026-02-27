@@ -5,13 +5,17 @@
 package frc.robot.subsystems.interfaces;
 
 import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import java.io.Closeable;
 import java.io.IOException;
 
 /**
  * Basic interface to a lighting subsystem.
  */
-public interface ILighting extends ISubsystem {
+public interface ILighting extends Closeable {
   public static final String SUBSYSTEM_NAME = "Lighting";
 
   //////////////////////////////////////////////////////////////////////
@@ -223,6 +227,12 @@ public interface ILighting extends ISubsystem {
 
     // Uses the lambda to set the color for the full strip.
     setStripColor(function);
+  }
+
+  // Can't name the "setDefaultCommand" because that gives rise to confusion
+  // between the version from this interface and the version from Subsystem.
+  public default void setAsDefaultCommand(Command command) {
+    ((Subsystem) this).setDefaultCommand(command);
   }
 
   /**

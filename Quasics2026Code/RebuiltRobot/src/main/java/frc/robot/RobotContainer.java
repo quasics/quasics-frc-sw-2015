@@ -121,15 +121,18 @@ public class RobotContainer {
   }
 
   private void addSysIdButtonsToSmartDashboard() {
-    SmartDashboard.putData("Flywheel Quasistatic Forward",
+    SmartDashboard.putData("Flywheel QF",
         m_shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    SmartDashboard.putData("Flywheel Quasistatic Reverse",
+    SmartDashboard.putData("Flywheel QR",
         m_shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    SmartDashboard.putData("Flywheel Dynamic Forward",
+    SmartDashboard.putData("Flywheel DF",
         m_shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    SmartDashboard.putData("Flywheel Dynamic Reverse",
+    SmartDashboard.putData("Flywheel DR",
         m_shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-
+    SmartDashboard.putData("Drivebase QF", m_drivebase.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    SmartDashboard.putData("Drivebase QR", m_drivebase.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    SmartDashboard.putData("Drivebase DF", m_drivebase.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    SmartDashboard.putData("Drivebase DR", m_drivebase.sysIdDynamic(SysIdRoutine.Direction.kReverse));
   }
 
   public Command runKickerReverse() {

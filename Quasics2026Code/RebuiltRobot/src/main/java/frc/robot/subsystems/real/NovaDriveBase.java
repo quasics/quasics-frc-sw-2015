@@ -13,6 +13,7 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import frc.robot.Constants;
 import frc.robot.Constants.CanBusIds.ThriftyNovaIds;
+import frc.robot.hardware.ThriftyNovaMotorControllerPlus;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.ThriftyEncoderWrapper;
 import frc.robot.sensors.TrivialEncoder;
@@ -70,7 +71,9 @@ public class NovaDriveBase extends AbstractDrivebase {
    */
   public NovaDriveBase(
       ThriftyNova leftController, ThriftyNova rightController) {
-    super(leftController, rightController);
+    super(
+        new ThriftyNovaMotorControllerPlus(leftController),
+        new ThriftyNovaMotorControllerPlus(rightController));
 
     // Configure followers to follow the leaders.
     configureMotorControllersForFollowing(

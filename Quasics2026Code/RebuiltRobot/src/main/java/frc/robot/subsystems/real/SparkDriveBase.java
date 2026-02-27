@@ -9,9 +9,11 @@ import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
+
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Encoder;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
+import frc.robot.hardware.SparkMaxMotorControllerPlus;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
 
@@ -38,8 +40,13 @@ public class SparkDriveBase extends AbstractDrivebase {
 
   /** Creates a new RealDrivebase. */
   public SparkDriveBase() {
-    super(new SparkMax(SparkMaxIds.LEFT_LEADER_ID, MotorType.kBrushless),
+    this(new SparkMax(SparkMaxIds.LEFT_LEADER_ID, MotorType.kBrushless),
         new SparkMax(SparkMaxIds.RIGHT_LEADER_ID, MotorType.kBrushless));
+  }
+
+  public SparkDriveBase(SparkMax leftController, SparkMax rightController) {
+    super(new SparkMaxMotorControllerPlus(leftController),
+        new SparkMaxMotorControllerPlus(rightController));
 
     // Configure followers to follow the leaders.
     final SparkMax leftfollower = new SparkMax(SparkMaxIds.LEFT_FOLLOWER_ID, MotorType.kBrushless);

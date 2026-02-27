@@ -16,8 +16,10 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.DriveteamConstants;
+import frc.robot.Constants.PwmPortIds;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.LinearSpeedCommand;
+import frc.robot.commands.RainbowLighting;
 import frc.robot.commands.RunIndexer;
 import frc.robot.commands.RunIntakeExtension;
 import frc.robot.commands.RunIntakeRollers;
@@ -25,9 +27,12 @@ import frc.robot.commands.RunShooter;
 import frc.robot.commands.RunShooterForTime;
 import frc.robot.commands.RunShooterPID;
 import frc.robot.subsystems.interfaces.IIntake;
+import frc.robot.subsystems.interfaces.ILighting;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.IIndexer;
 import frc.robot.subsystems.interfaces.IVision;
+import frc.robot.subsystems.real.Lighting;
+import frc.robot.subsystems.real.LightingBuffer;
 import frc.robot.subsystems.real.NovaDriveBase;
 import frc.robot.subsystems.real.RealIndexer;
 import frc.robot.subsystems.real.RealIntake;
@@ -38,6 +43,7 @@ import frc.robot.subsystems.simulated.SimulationDrivebase;
 
 import static edu.wpi.first.units.Units.RPM;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 /**
@@ -48,6 +54,8 @@ import java.util.function.Supplier;
  * commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+  private static final int SIDE_LIGHTING_LENGTH = Constants.LIGHTING_TOTAL_LENGTH / 2;
+
   private final IIntake m_intake = new RealIntake();
   private final IIndexer m_indexer = new RealIndexer();
 
@@ -55,6 +63,10 @@ public class RobotContainer {
   private final IDrivebase m_drivebase = Robot.isReal() ? new NovaDriveBase() : new SimulationDrivebase();
   private final IVision m_vision = (Robot.isReal()) ? new Vision() : new SimulatedVision();
   private final RealShooter m_shooter = new RealShooter();
+
+  private final ILighting m_primaryLighting;
+  private final ILighting m_leftSideLighting;
+  private final ILighting m_rightSideLighting;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final Joystick m_driverController = new Joystick(DriveteamConstants.DRIVER_JOYSTICK_ID);
@@ -74,6 +86,13 @@ public class RobotContainer {
    * commands.
    */
   public RobotContainer() {
+    m_primaryLighting = allocatePrimaryLighting();
+    m_leftSideLighting = allocateSideLighting(true);
+    m_rightSideLighting = allocateSideLighting(false);
+
+    m_leftSideLighting.setAsDefaultCommand(new RainbowLighting(m_leftSideLighting));
+    m_rightSideLighting.setAsDefaultCommand(new RainbowLighting(m_rightSideLighting));
+
     // Connect cross-subsystem suppliers (so that the systems don't know about
     // each other directly)
     addButtonsToSmartDashboard();
@@ -99,6 +118,29 @@ public class RobotContainer {
     configureBindings();
   }
 
+  private ILighting allocatePrimaryLighting() {
+    return new Lighting(
+        PwmPortIds.LIGHTING_ID,
+        Constants.LIGHTING_TOTAL_LENGTH,
+        List.of(SIDE_LIGHTING_LENGTH, SIDE_LIGHTING_LENGTH));
+  }
+
+  private ILighting allocateSideLighting(boolean isLeftSide) {
+    if (!(m_primaryLighting instanceof Lighting)) {
+      // Won't be able to pull subviews for side-specific lighting.
+      return new ILighting.NullLighting();
+    }
+
+    final Lighting realLighting = (Lighting) m_primaryLighting;
+    final int targetIndex = (isLeftSide ? 0 : 1);
+    if (realLighting.getSubViews().size() <= targetIndex) {
+      // Can't get a subsystem that's mapped for that side
+      return new ILighting.NullLighting();
+    }
+
+    return new LightingBuffer(realLighting.getSubViews().get(targetIndex), isLeftSide);
+  }
+
   private void addButtonsToSmartDashboard() {
     SmartDashboard.putData("Run Intake Rollers", new RunIntakeRollers(m_intake, 0.1, true));
     SmartDashboard.putData("Run Indexer", new RunIndexer(m_indexer, 0.1, true));
@@ -117,8 +159,8 @@ public class RobotContainer {
     SmartDashboard.putData("Run Flywheel @ 15% speed, Kicker @ 50% speed", new RunShooter(m_shooter, 0.15, .50, true));
     SmartDashboard.putData("Jam", runKickerReverse());
     SmartDashboard.putData("Reverse Indexer", new RunIndexer(m_indexer, 0.1, false));
-    //TODO: Index Jam Prevention Sequence Low Priority
-    //SmartDashboard.putData("Index Jam Prevention", runIndexerUnjam());
+    // TODO: Index Jam Prevention Sequence Low Priority
+    // SmartDashboard.putData("Index Jam Prevention", runIndexerUnjam());
   }
 
   private void addSysIdButtonsToSmartDashboard() {
@@ -141,13 +183,11 @@ public class RobotContainer {
         new RunShooter(m_shooter, .15, .50, true));
   }
 
+  // public Command runIndexerUnjam(){
 
-  //public Command runIndexerUnjam(){
+  // return Commands.sequence(new)
 
-    //return Commands.sequence(new)
-
-  //}
-
+  // }
 
   /**
    * Use this method to define your trigger->command mappings. Triggers can be

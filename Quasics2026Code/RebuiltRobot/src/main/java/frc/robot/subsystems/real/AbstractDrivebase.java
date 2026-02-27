@@ -31,7 +31,6 @@ import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
 import frc.robot.subsystems.interfaces.IDrivebase;
 
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public abstract class AbstractDrivebase

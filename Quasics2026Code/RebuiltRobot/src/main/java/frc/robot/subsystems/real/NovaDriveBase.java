@@ -73,26 +73,42 @@ public class NovaDriveBase extends AbstractDrivebase {
     super(leftController, rightController);
 
     // Configure followers to follow the leaders.
-    final ThriftyNova leftfollower = new ThriftyNova(ThriftyNovaIds.LEFT_FOLLOWER_ID);
-    final ThriftyNova rightfollower = new ThriftyNova(ThriftyNovaIds.RIGHT_FOLLOWER_ID);
-
     configureMotorControllersForFollowing(
-        ThriftyNovaIds.LEFT_LEADER_ID, leftfollower);
+        ThriftyNovaIds.LEFT_LEADER_ID, ThriftyNovaIds.LEFT_FOLLOWER_ID);
     configureMotorControllersForFollowing(
-        ThriftyNovaIds.RIGHT_LEADER_ID, rightfollower);
+        ThriftyNovaIds.RIGHT_LEADER_ID, ThriftyNovaIds.RIGHT_FOLLOWER_ID);
 
-    // Configure the encoders.
+    //
+    // Configure the leading motors.
+    //
+
+    // Configure the encoder type. (Note that only the leaders need to know this,
+    // since we won't read encoder data from the followers.)
     ThriftyNovaConfig config = new ThriftyNovaConfig();
     config.encoderType = EncoderType.INTERNAL;
-    leftfollower.applyConfig(config);
-    rightfollower.applyConfig(config);
 
+    // TODO: Configure the leaders so that they are *not* a follower of anything.
+    //
+    // FINDME(Robert): This is important to do to ensure that the leader motor
+    // controllers are correctly configured even if they get swapped out. It can be
+    // done with ~1 line of code per motor.
+
+    // Apply the configuration settings to the motors.
+    leftController.applyConfig(config);
+    rightController.applyConfig(config);
+
+    //
+    // Set up the TrivialEncoders we'll use to handle accessing the data from the
+    // motors.
+    //
     final Distance wheelDiam = Meters.of(2.0 * Constants.wheelRadius.in(Meters));
     m_leftEncoder = new ThriftyEncoderWrapper(leftController, wheelDiam);
     m_rightEncoder = new ThriftyEncoderWrapper(leftController, wheelDiam);
 
-    // Configure the gyro.
     //
+    // Set up the gyro.
+    //
+
     // TODO: Switch this to use the gyro that we're actually going to be using
     // on the real robot.
     //
@@ -104,7 +120,8 @@ public class NovaDriveBase extends AbstractDrivebase {
   }
 
   /**
-   * Configures a follower SparkMax motor controller to follow a leader SparkMax
+   * Configures a follower ThriftyNova motor controller to follow a leader
+   * ThriftyNova
    * motor controller.
    *
    * Note that this is important to do in code (instead of just setting the
@@ -114,17 +131,22 @@ public class NovaDriveBase extends AbstractDrivebase {
    * to be replaced, or if we need to swap a controller from one side of the
    * drivebase to the other for some reason, etc.).
    *
-   * @param leader   leader SparkMax motor controller that the follower should
-   *                 follow
-   * @param follower SparkMax motor controller that should be configured to
-   *                 follow
-   *                 the leader
+   * @param leaderId   CAN ID of the leader ThriftyNova motor controller
+   * @param followerId CAN ID of the ThriftyNova motor controller that should be
+   *                   configured to follow the leader
    */
   private void configureMotorControllersForFollowing(
-      int leader, ThriftyNova follower) {
-    // Configure the motor to follow the leader
-    // Pass second parameter of 'true' to invert the direction
-    follower.follow(leader);
+      int leaderId, int followerId) {
+    try (ThriftyNova follower = new ThriftyNova(followerId)) {
+      // Configure the motor to follow the leader
+      //
+      // Pass second parameter of 'true' to invert the direction (i.e., to run in the
+      // opposite direction as the leader): this isn't wanted for the drive base.
+      follower.follow(leaderId);
+    } catch (Exception e) {
+      // Something went wrong when releasing the follower: log the error.
+      e.printStackTrace();
+    }
   }
 
   // We've removed @Override periodic, but be sure to use super.periodic if we

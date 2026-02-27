@@ -32,4 +32,12 @@ public interface IShooterHood {
    *
    */
   // TODO: Add methods for controlling the hood (and then implement them).
+
+  /*
+  void setHoodPivotSpeed();
+
+  void setPivotAngle();
+
+  void stopHood();
+  */
 }

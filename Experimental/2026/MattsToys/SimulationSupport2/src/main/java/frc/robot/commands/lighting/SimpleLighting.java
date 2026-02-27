@@ -45,6 +45,6 @@ public class SimpleLighting extends Command {
   @Override
   public void execute() {
     // Do it every time, just in case the lights aren't plugged in @ start.
-    m_subsystem.SetStripColor(color);
+    m_subsystem.setStripColor(color);
   }
 }

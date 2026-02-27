@@ -118,6 +118,8 @@ public class RobotContainer {
     SmartDashboard.putData("Run Flywheel @ 15% speed, Kicker @ 50% speed", new RunShooter(m_shooter, 0.15, .50, true));
     SmartDashboard.putData("Jam", runKickerReverse());
     SmartDashboard.putData("Reverse Indexer", new RunIndexer(m_indexer, 0.1, false));
+    //TODO: Index Jam Prevention Sequence Low Priority
+    //SmartDashboard.putData("Index Jam Prevention", runIndexerUnjam());
   }
 
   private void addSysIdButtonsToSmartDashboard() {
@@ -136,6 +138,14 @@ public class RobotContainer {
     return Commands.sequence(new RunShooterForTime(m_shooter, 0, 0.75, false, 2), new WaitCommand(0.5),
         new RunShooter(m_shooter, .15, .50, true));
   }
+
+
+  //public Command runIndexerUnjam(){
+
+    //return Commands.sequence(new)
+
+  //}
+
 
   /**
    * Use this method to define your trigger->command mappings. Triggers can be

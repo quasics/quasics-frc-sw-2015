@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.TurnRobot;
 
 /**
  * An implementation of the drivebase subsystem that uses simulated hardware.
@@ -88,6 +89,9 @@ public class SimulatedDrivebase extends AbstractDrivebase {
 
     // Add the simulated field to the smart dashboard
     SmartDashboard.putData("Field", m_fieldSim);
+    
+    SmartDashboard.putData( 
+      new TurnRobot(drivebase.get(), 50, 90)); //What is drivebase?? How to get??
   }
 
   @Override

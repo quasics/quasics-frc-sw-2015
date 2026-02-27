@@ -165,10 +165,10 @@ public class Lighting extends SubsystemBase implements ILighting {
     // Start-up lighting for main (local) view.
     if (START_CHECKERBOARDED) {
       // On start-up, turn every other pixel on (white).
-      SetAlternatingColors(StockColor.White, StockColor.Black);
+      setAlternatingColors(StockColor.White, StockColor.Black);
     } else {
       // On start-up, set to solid (Quasics) green.
-      SetStripColor(StockColor.Green.toWpiColor());
+      setStripColor(StockColor.Green.toWpiColor());
     }
 
     // Initialize the other views.
@@ -209,15 +209,15 @@ public class Lighting extends SubsystemBase implements ILighting {
   /////////////////////////////////////////////////////////////////
 
   @Override
-  public void SetStripColor(ColorSupplier function) {
+  public void setStripColor(ColorSupplier function) {
     if (m_lightingBuffer == null) {
       return;
     }
-    m_lightingBuffer.SetStripColor(function);
+    m_lightingBuffer.setStripColor(function);
   }
 
   @Override
-  public void SetDisabledSupplier(ColorSupplier function) {
+  public void setDisabledSupplier(ColorSupplier function) {
     m_disabledColorSupplier = function;
   }
 
@@ -239,13 +239,13 @@ public class Lighting extends SubsystemBase implements ILighting {
   public void periodic() {
     if (DriverStation.isDisabled()) {
       if (m_disabledColorSupplier != null) {
-        SetStripColor(m_disabledColorSupplier);
+        setStripColor(m_disabledColorSupplier);
       } else {
-        SetStripColor(StockColor.Green);
+        setStripColor(StockColor.Green);
       }
     } else if (DriverStation.isEStopped()) {
       // If we're e-stopped, reflect that....
-      SetAlternatingColors(StockColor.Red, StockColor.Blue);
+      setAlternatingColors(StockColor.Red, StockColor.Blue);
     }
 
     forceUpdate();

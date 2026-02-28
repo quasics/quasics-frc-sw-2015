@@ -44,7 +44,7 @@ public abstract class AbstractDrivebase
   // TODO: this should come from a robot config
   private static final LinearVelocity m_maxMotorSpeedMPS = MetersPerSecond.of(3);
 
-  private static final AngularVelocity m_maxTurningSpeed = DegreesPerSecond.of(180);
+  private static final AngularVelocity m_maxTurningSpeed = RadiansPerSecond.of(6.5);
 
   /** Track width (distance between left and right wheels) in meters. */
   // TODO: this should come from a robot config
@@ -96,7 +96,7 @@ public abstract class AbstractDrivebase
   }
 
   public static AngularVelocity getMaxMotorTurnSpeed() {
-    return RadiansPerSecond.of(6.5);
+    return m_maxTurningSpeed;
   }
 
   /*

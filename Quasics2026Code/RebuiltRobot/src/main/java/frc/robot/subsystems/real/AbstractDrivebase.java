@@ -4,10 +4,12 @@
 
 package frc.robot.subsystems.real;
 
+import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -147,6 +149,23 @@ public abstract class AbstractDrivebase
   @Override
   public Command sysIdDynamic(IDrivebase drivebase, IDrivebase.Mode mode, SysIdRoutine.Direction direction) {
     return getSysIdRoutine(drivebase, mode).dynamic(direction);
+  }
+
+  protected static AngularVelocity getCappedTurnSpeed(AngularVelocity turnSpeed) {
+    return DegreesPerSecond.of(
+        MathUtil.clamp(
+            turnSpeed.in(DegreesPerSecond),
+            -m_maxTurningSpeed.in(DegreesPerSecond),
+            m_maxTurningSpeed.in(DegreesPerSecond)));
+  }
+
+  protected static LinearVelocity getCappedLinearSpeed(LinearVelocity linearSpeed) {
+    return MetersPerSecond.of(
+        MathUtil.clamp(
+            linearSpeed.in(MetersPerSecond),
+            -m_maxMotorSpeedMPS.in(
+                MetersPerSecond),
+            m_maxMotorSpeedMPS.in(MetersPerSecond)));
   }
 
   @Override

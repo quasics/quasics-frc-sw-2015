@@ -4,8 +4,14 @@
 
 package frc.robot.subsystems.real;
 
+import static edu.wpi.first.units.Units.Degrees;
+
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.AbsoluteEncoderConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -21,6 +27,7 @@ public class RealShooterHood extends SubsystemBase implements IShooterHood {
   public RealShooterHood() {
 
     m_hood = new SparkMax(SparkMaxIds.HOOD_ID, MotorType.kBrushless);
+
     m_throughBoreEncoder = m_hood.getAbsoluteEncoder();
 
   }

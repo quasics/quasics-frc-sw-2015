@@ -167,7 +167,7 @@ public class RobotContainer {
     SmartDashboard.putData("Jam", runKickerReverse());
     SmartDashboard.putData("Reverse Indexer", new RunIndexer(m_indexer, 0.1, false));
     SmartDashboard.putData("Move Hood to 15 degrees",
-        new PivotHoodToPosition(m_hood, 0.05, 15, true));
+        new PivotHoodToPosition(m_hood, 0.10, 15, true));
     // TODO: Index Jam Prevention Sequence Low Priority
   }
 
@@ -264,9 +264,9 @@ public class RobotContainer {
 
   private void configureDriverButtons() {
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.LeftTrigger))
-        .whileTrue(new RunIntakeRollers(m_intake, 0.9, true));
-    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.RightTrigger))
         .whileTrue(new RunIntakeRollers(m_intake, 0.9, false));
+    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.RightTrigger))
+        .whileTrue(new RunIntakeRollers(m_intake, 0.9, true));
 
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.StartButton))
         .whileTrue(new RunIntakeExtension(m_intake, 0.1, true));

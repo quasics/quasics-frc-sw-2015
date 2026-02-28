@@ -89,8 +89,13 @@ public class NovaDriveBase extends AbstractDrivebase {
 
     // Configure the encoder type. (Note that only the leaders need to know this,
     // since we won't read encoder data from the followers.)
-    ThriftyNovaConfig config = new ThriftyNovaConfig();
-    config.encoderType = EncoderType.INTERNAL;
+    ThriftyNovaConfig configLeft = new ThriftyNovaConfig();
+    configLeft.encoderType = EncoderType.INTERNAL;
+    configLeft.inverted = false;
+
+    ThriftyNovaConfig configRight = new ThriftyNovaConfig();
+    configRight.encoderType = EncoderType.INTERNAL;
+    configRight.inverted = true;
 
     // TODO: Configure the leaders so that they are *not* a follower of anything.
     //
@@ -99,8 +104,8 @@ public class NovaDriveBase extends AbstractDrivebase {
     // done with ~1 line of code per motor.
 
     // Apply the configuration settings to the motors.
-    leftController.applyConfig(config);
-    rightController.applyConfig(config);
+    leftController.applyConfig(configLeft);
+    rightController.applyConfig(configRight);
 
     //
     // Set up the TrivialEncoders we'll use to handle accessing the data from the

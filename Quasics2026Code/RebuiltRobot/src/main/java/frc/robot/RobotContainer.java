@@ -122,6 +122,7 @@ public class RobotContainer {
 
     // Configure the trigger bindings
     configureBindings();
+    configureDriverButtons();
   }
 
   private ILighting allocatePrimaryLighting() {
@@ -259,6 +260,18 @@ public class RobotContainer {
         m_arcadeDriveLeftStick, m_arcadeDriveRightStick, m_drivebase));
     LinearSpeedCommand setLinearSpeed = new LinearSpeedCommand(m_drivebase);
     SmartDashboard.putData("LinearSpeedCommand", setLinearSpeed);
+  }
+
+  private void configureDriverButtons() {
+    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.LeftTrigger))
+        .whileTrue(new RunIntakeRollers(m_intake, 0.9, true));
+    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.RightTrigger))
+        .whileTrue(new RunIntakeRollers(m_intake, 0.9, false));
+
+    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.StartButton))
+        .whileTrue(new RunIntakeExtension(m_intake, 0.1, true));
+    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.BackButton))
+        .whileTrue(new RunIntakeExtension(m_intake, 0.1, false));
   }
 
   private double getDriveSpeedScalingFactor() {

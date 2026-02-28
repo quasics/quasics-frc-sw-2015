@@ -42,6 +42,7 @@ import frc.robot.subsystems.real.RealIndexer;
 import frc.robot.subsystems.real.RealIntake;
 import frc.robot.subsystems.real.RealShooter;
 import frc.robot.subsystems.real.RealShooterHood;
+import frc.robot.subsystems.real.SparkDriveBase;
 import frc.robot.subsystems.real.Vision;
 import frc.robot.subsystems.simulated.SimulatedVision;
 import frc.robot.subsystems.simulated.SimulationDrivebase;
@@ -75,7 +76,11 @@ public class RobotContainer {
   private final IShooter m_shooter = (ROBOT_NAME == RobotName.Lizzie) ? new RealShooter() : null;
 
   // The robot's subsystems and commands are defined here...
-  private final IDrivebase m_drivebase = Robot.isReal() ? new NovaDriveBase() : new SimulationDrivebase();
+  private final IDrivebase m_drivebase = switch (ROBOT_NAME) {
+    case Sally -> new SparkDriveBase();
+    case Simulated -> new SimulationDrivebase();
+    case Lizzie -> new NovaDriveBase();
+  };
   private final IVision m_vision = (Robot.isReal()) ? new Vision() : new SimulatedVision();
 
   private final ILighting m_primaryLighting;

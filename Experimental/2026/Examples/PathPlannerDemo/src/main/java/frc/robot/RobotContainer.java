@@ -4,13 +4,13 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Seconds;
 
 import choreo.auto.AutoFactory;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
@@ -31,7 +31,6 @@ import frc.robot.commands.MoveArmToAngle;
 import frc.robot.commands.MoveElevatorToPosition;
 import frc.robot.commands.RainbowLighting;
 import frc.robot.commands.SimpleElevatorMover;
-import frc.robot.commands.TrajectoryHacking;
 import frc.robot.commands.TurnToTarget;
 import frc.robot.subsystems.interfaces.ICandle;
 import frc.robot.subsystems.interfaces.IElevator;
@@ -62,15 +61,16 @@ import frc.robot.utils.logging.EventLogger;
 import frc.robot.utils.logging.StringEventLogger;
 import java.util.function.Supplier;
 
+
 /**
  * This class serves as the central hub for the declarative setup of our
  * "command-based" robot project, under the standard WPILib definition for this
  * construct.
- * 
- * @see https://docs.wpilib.org/en/stable/docs/software/commandbased/structuring-command-based-project.html#robotcontainer
+ *
+ * @see
+ *     https://docs.wpilib.org/en/stable/docs/software/commandbased/structuring-command-based-project.html#robotcontainer
  */
 public class RobotContainer {
-
   /** Iff true, allow Choreo to handle flipping any paths used with it. */
   static final private boolean CHOREO_SHOULD_HANDLE_PATH_FLIPPING = false;
 
@@ -87,7 +87,8 @@ public class RobotContainer {
     /** Move forward and raise the elevator in auto mode. */
     eMoveAndRaise,
     /**
-     * Follow a Choreo-based trajectory in auto mode, based on starting position.
+     * Follow a Choreo-based trajectory in auto mode, based on starting
+     * position.
      */
     eChoreo,
   }
@@ -122,14 +123,15 @@ public class RobotContainer {
 
   /** Camera simulation injector (if running in simulation mode). */
   @SuppressWarnings("unused") // Camera simulator is pure data injection
-  final private CameraSimulator m_cameraSimulator = maybeAllocateCameraSimulator(m_robotConfig, m_vision);
+  final private CameraSimulator m_cameraSimulator =
+      maybeAllocateCameraSimulator(m_robotConfig, m_vision);
 
   /** Primary logger. */
   final EventLogger m_eventLogger = new StringEventLogger();
 
   /**
    * Controller for the drive base.
-   * 
+   *
    * Note that we can also consider using CommandJoystick class instead of
    * Joystick. This would allow explicitly bind specific channels for X/Y (e.g.,
    * possibly simplifying live vs simulation handling by not requiring custom
@@ -138,18 +140,22 @@ public class RobotContainer {
    *
    * Note also that live joysticks generally follow a different
    * orientation/coordinate system than the one used for the robot.
-   * 
-   * @see https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html#joystick-and-controller-coordinate-system
+   *
+   * @see
+   *     https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html#joystick-and-controller-coordinate-system
    */
-  private final Joystick m_driveController = new Joystick(Constants.DriveTeam.DRIVER_JOYSTICK_ID);
+  private final Joystick m_driveController =
+      new Joystick(Constants.DriveTeam.DRIVER_JOYSTICK_ID);
 
   /** Factory object for Choreo trajectories. */
-  private final AutoFactory m_autoFactory = (m_drivebase instanceof IDrivebasePlus)
+  private final AutoFactory m_autoFactory =
+      (m_drivebase instanceof IDrivebasePlus)
       ? new AutoFactory(((IDrivebasePlus) m_drivebase)::getPose,
-          ((IDrivebasePlus) m_drivebase)::resetPose,
-          ((IDrivebasePlus) m_drivebase)::followTrajectory,
-          CHOREO_SHOULD_HANDLE_PATH_FLIPPING, // If alliance flipping should be enabled
-          m_drivebase.asSubsystem())
+            ((IDrivebasePlus) m_drivebase)::resetPose,
+            ((IDrivebasePlus) m_drivebase)::followTrajectory,
+            CHOREO_SHOULD_HANDLE_PATH_FLIPPING, // If alliance flipping should
+                                                // be enabled
+            m_drivebase.asSubsystem())
       : null;
 
   /** Normal cycle time on command-handling (50 Hz). */
@@ -173,19 +179,20 @@ public class RobotContainer {
     m_lighting.asSubsystem().setDefaultCommand(new RainbowLighting(m_lighting));
 
     if (CANDL_SHOWS_SHOOTING_READY) {
-      m_candle.asSubsystem().setDefaultCommand(new DriveTeamShootingSupport(m_candle));
+      m_candle.asSubsystem().setDefaultCommand(
+          new DriveTeamShootingSupport(m_candle));
     }
   }
 
   /**
-   * Configure anything that we want to have happen on a recurring process, which
-   * isn't bound to a specific subsystem (or command).
-   * 
+   * Configure anything that we want to have happen on a recurring process,
+   * which isn't bound to a specific subsystem (or command).
+   *
    * @param robot the robot whose overall scheduling is being hooked into
    */
   private void configurePeriodicOperations(TimedRobot robot) {
-    // Once per cycle (under simulation), update the battery voltage based on the
-    // current draw.
+    // Once per cycle (under simulation), update the battery voltage based on
+    // the current draw.
     if (Robot.isSimulation()) {
       robot.addPeriodic(() -> {
         SimulationUxSupport.instance.updateBatteryVoltageFromDraws();
@@ -196,21 +203,20 @@ public class RobotContainer {
     if (m_eventLogger != null && m_eventLogger instanceof StringEventLogger) {
       final StateChangeExecutor executor = new StateChangeExecutor(
           // State supplier
-          () -> {
-            return DriverStation.isDisabled();
-          },
+          ()
+              -> { return DriverStation.isDisabled(); },
           // Assumed initial state (i.e., assume we're disabled on startup)
           true,
           // Action
-          () -> {
+          ()
+              -> {
             System.err.println("Dumping event log:");
-            System.err.println(((StringEventLogger) m_eventLogger).getContents());
+            System.err.println(
+                ((StringEventLogger) m_eventLogger).getContents());
           },
           // Triggering mode
           StateChangeExecutor.Mode.GoesTrue);
-      robot.addPeriodic(() -> {
-        executor.check();
-      }, COMMAND_CYCLE_PERIOD);
+      robot.addPeriodic(() -> { executor.check(); }, COMMAND_CYCLE_PERIOD);
     }
   }
 
@@ -219,35 +225,40 @@ public class RobotContainer {
    * characterization.
    */
   private void addSysIdControlsToDashboard() {
-    // SysId commands for linear motion of the drive base. (Basic speed control.)
+    // SysId commands for linear motion of the drive base. (Basic speed
+    // control.)
     SmartDashboard.putData("Drive SysID: Quasistatic(fwd)",
-        SysIdGenerator.sysIdQuasistatic(
-            m_drivebase, SysIdGenerator.DrivebaseProfilingMode.Linear, Direction.kForward));
+        SysIdGenerator.sysIdQuasistatic(m_drivebase,
+            SysIdGenerator.DrivebaseProfilingMode.Linear, Direction.kForward));
     SmartDashboard.putData("Drive SysID: Quasistatic(rev)",
-        SysIdGenerator.sysIdQuasistatic(
-            m_drivebase, SysIdGenerator.DrivebaseProfilingMode.Linear, Direction.kReverse));
+        SysIdGenerator.sysIdQuasistatic(m_drivebase,
+            SysIdGenerator.DrivebaseProfilingMode.Linear, Direction.kReverse));
     SmartDashboard.putData("Drive SysID: Dynamic(fwd)",
-        SysIdGenerator.sysIdDynamic(
-            m_drivebase, SysIdGenerator.DrivebaseProfilingMode.Linear, Direction.kForward));
+        SysIdGenerator.sysIdDynamic(m_drivebase,
+            SysIdGenerator.DrivebaseProfilingMode.Linear, Direction.kForward));
     SmartDashboard.putData("Drive SysID: Dynamic(rev)",
-        SysIdGenerator.sysIdDynamic(
-            m_drivebase, SysIdGenerator.DrivebaseProfilingMode.Linear, Direction.kReverse));
+        SysIdGenerator.sysIdDynamic(m_drivebase,
+            SysIdGenerator.DrivebaseProfilingMode.Linear, Direction.kReverse));
 
-    // SysId commands for rotational actions (used to calculate kA-angular), for use
-    // in estimating the moment of inertia (MOI).
-    // See: https://choreo.autos/usage/estimating-moi/
+    // SysId commands for rotational actions (used to calculate kA-angular), for
+    // use in estimating the moment of inertia (MOI). See:
+    // https://choreo.autos/usage/estimating-moi/
     SmartDashboard.putData("Drive SysID(rot): Quasistatic(fwd)",
-        SysIdGenerator.sysIdQuasistatic(
-            m_drivebase, SysIdGenerator.DrivebaseProfilingMode.Rotating, Direction.kForward));
+        SysIdGenerator.sysIdQuasistatic(m_drivebase,
+            SysIdGenerator.DrivebaseProfilingMode.Rotating,
+            Direction.kForward));
     SmartDashboard.putData("Drive SysID(rot): Quasistatic(rev)",
-        SysIdGenerator.sysIdQuasistatic(
-            m_drivebase, SysIdGenerator.DrivebaseProfilingMode.Rotating, Direction.kReverse));
+        SysIdGenerator.sysIdQuasistatic(m_drivebase,
+            SysIdGenerator.DrivebaseProfilingMode.Rotating,
+            Direction.kReverse));
     SmartDashboard.putData("Drive SysID(rot): Dynamic(fwd)",
-        SysIdGenerator.sysIdDynamic(
-            m_drivebase, SysIdGenerator.DrivebaseProfilingMode.Rotating, Direction.kForward));
+        SysIdGenerator.sysIdDynamic(m_drivebase,
+            SysIdGenerator.DrivebaseProfilingMode.Rotating,
+            Direction.kForward));
     SmartDashboard.putData("Drive SysID(rot): Dynamic(rev)",
-        SysIdGenerator.sysIdDynamic(
-            m_drivebase, SysIdGenerator.DrivebaseProfilingMode.Rotating, Direction.kReverse));
+        SysIdGenerator.sysIdDynamic(m_drivebase,
+            SysIdGenerator.DrivebaseProfilingMode.Rotating,
+            Direction.kReverse));
 
     // SysId commands for linear motion of the elevator. (Basic speed control.)
     SmartDashboard.putData("Elevator SysID: Quasistatic(fwd)",
@@ -275,16 +286,15 @@ public class RobotContainer {
     SmartDashboard.putData("Turn & Drive to target " + targetId,
         new SequentialCommandGroup(
             // First, turn until it's in view...
-            new TurnToTarget(
-                visionPlus, m_drivebase,
-                targetId, TurnToTarget.OpMode.TargetInView, false),
+            new TurnToTarget(visionPlus, m_drivebase, targetId,
+                TurnToTarget.OpMode.TargetInView, false),
             // ...and then drive to it.
             new DriveToTarget(visionPlus, m_drivebase, targetId, true)));
   }
 
   /**
-   * Add commands to the dashboard for testing some commands I'm hacking together
-   * (if they can be supported).
+   * Add commands to the dashboard for testing some commands I'm hacking
+   * together (if they can be supported).
    */
   private void maybeAddHackingCommandsToDashboard() {
     if (!(m_drivebase instanceof IDrivebasePlus)) {
@@ -292,7 +302,6 @@ public class RobotContainer {
     }
 
     final IDrivebasePlus drivebasePlus = ((IDrivebasePlus) m_drivebase);
-    SmartDashboard.putData("TrajHacking", new TrajectoryHacking(drivebasePlus, m_robotConfig));
   }
 
   /**
@@ -304,53 +313,69 @@ public class RobotContainer {
     maybeAddHackingCommandsToDashboard();
 
     SmartDashboard.putData("Wave arm", new ArmWaveCommand(m_arm));
-    SmartDashboard.putData("Arm out", new MoveArmToAngle(m_arm, m_arm.getArmOutAngle()));
-    SmartDashboard.putData("Arm up", new MoveArmToAngle(m_arm, m_arm.getArmUpAngle()));
+    SmartDashboard.putData(
+        "Arm out", new MoveArmToAngle(m_arm, m_arm.getArmOutAngle()));
+    SmartDashboard.putData(
+        "Arm up", new MoveArmToAngle(m_arm, m_arm.getArmUpAngle()));
     SmartDashboard.putData("Raise elevator (wait)",
-        new MoveElevatorToPosition(m_elevator, IElevator.TargetPosition.Top, true));
+        new MoveElevatorToPosition(
+            m_elevator, IElevator.TargetPosition.Top, true));
     SmartDashboard.putData("Raise elevator (nowait)",
-        new MoveElevatorToPosition(m_elevator, IElevator.TargetPosition.Top, false));
+        new MoveElevatorToPosition(
+            m_elevator, IElevator.TargetPosition.Top, false));
 
-    SmartDashboard.putData(
-        "Elevator up", new SimpleElevatorMover(m_elevator, SimpleElevatorMover.Direction.UP));
-    SmartDashboard.putData(
-        "Elevator down", new SimpleElevatorMover(m_elevator, SimpleElevatorMover.Direction.DOWN));
+    SmartDashboard.putData("Elevator up",
+        new SimpleElevatorMover(m_elevator, SimpleElevatorMover.Direction.UP));
+    SmartDashboard.putData("Elevator down",
+        new SimpleElevatorMover(
+            m_elevator, SimpleElevatorMover.Direction.DOWN));
 
     // Trajectory commands
-    SmartDashboard.putData("Demo path", generateCommandForChoreoTrajectory("Demo path"));
+    SmartDashboard.putData(
+        "Demo path", generateCommandForChoreoTrajectory("Demo path"));
   }
 
   /** Sets "arcade drive" as the default operation for the drivebase. */
   private void configureArcadeDrive() {
-    final DeadbandEnforcer deadbandEnforcer = new DeadbandEnforcer(Constants.DriveTeam.DRIVER_DEADBAND);
+    final DeadbandEnforcer deadbandEnforcer =
+        new DeadbandEnforcer(Constants.DriveTeam.DRIVER_DEADBAND);
     Supplier<Double> forwardSupplier;
     Supplier<Double> rotationSupplier;
 
-    // Limiting the rate-of-change for velocity (i.e., acceleration) to constrain us
-    // from getting to
-    // 100% in anything less than 1/MAX_SLEW_RATE seconds.
-    SlewRateLimiter forwardSlewRateLimiter = new SlewRateLimiter(Constants.Driving.MAX_SLEW_RATE);
-    SlewRateLimiter rotationSlewRateLimiter = new SlewRateLimiter(Constants.Driving.MAX_SLEW_RATE);
+    // Limiting the rate-of-change for velocity (i.e., acceleration) to
+    // constrain us from getting to 100% in anything less than 1/MAX_SLEW_RATE
+    // seconds.
+    SlewRateLimiter forwardSlewRateLimiter =
+        new SlewRateLimiter(Constants.Driving.MAX_SLEW_RATE);
+    SlewRateLimiter rotationSlewRateLimiter =
+        new SlewRateLimiter(Constants.Driving.MAX_SLEW_RATE);
 
     if (Robot.isReal()) {
       // Configure the real robot.
       //
       // Note that we're inverting the values because Xbox controllers return
       // negative values when we push forward.
-      forwardSupplier = () -> -forwardSlewRateLimiter.calculate(
-          deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechDualshock.LeftYAxis)));
-      rotationSupplier = () -> -rotationSlewRateLimiter.calculate(
-          deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechDualshock.RightXAxis)));
+      forwardSupplier = ()
+          ->
+          - forwardSlewRateLimiter.calculate(deadbandEnforcer.limit(
+              m_driveController.getRawAxis(LogitechDualshock.LeftYAxis)));
+      rotationSupplier = ()
+          ->
+          - rotationSlewRateLimiter.calculate(deadbandEnforcer.limit(
+              m_driveController.getRawAxis(LogitechDualshock.RightXAxis)));
     } else {
       // Configure the simulated robot
       //
       // Note that we're assuming a keyboard-based controller is actually being
       // used in the simulation environment (for now), and thus we want to use
       // axis 0&1 (from the "Keyboard 0" configuration).
-      forwardSupplier = () -> forwardSlewRateLimiter.calculate(
-          deadbandEnforcer.limit(m_driveController.getRawAxis(0)));
-      rotationSupplier = () -> -rotationSlewRateLimiter.calculate(
-          deadbandEnforcer.limit(m_driveController.getRawAxis(1)));
+      forwardSupplier = ()
+          -> forwardSlewRateLimiter.calculate(
+              deadbandEnforcer.limit(m_driveController.getRawAxis(0)));
+      rotationSupplier = ()
+          ->
+          - rotationSlewRateLimiter.calculate(
+              deadbandEnforcer.limit(m_driveController.getRawAxis(1)));
     }
 
     m_drivebase.asSubsystem().setDefaultCommand(
@@ -376,7 +401,8 @@ public class RobotContainer {
    * reset of odometry and explicit "stop" at the end.
    *
    * @param trajectoryName name of the trajectory being loaded
-   * @return a command for the trajectory, or a no-op if it couldn't be found (in
+   * @return a command for the trajectory, or a no-op if it couldn't be found
+   *     (in
    *         which case, a message is printed to stderr)
    *
    * @see #generateCommandForChoreoTrajectory(String, boolean)
@@ -393,7 +419,8 @@ public class RobotContainer {
    * @param resetOdometry  if true, reset the robot's pose before running the
    *                       trajectory, based on the starting point in the
    *                       trajectory's data
-   * @return a command for the trajectory, or a no-op if it couldn't be found (in
+   * @return a command for the trajectory, or a no-op if it couldn't be found
+   *     (in
    *         which case, a message is printed to stderr)
    *
    * @see <a href="https://choreo.autos/choreolib/getting-started/">Choreo
@@ -402,7 +429,8 @@ public class RobotContainer {
    */
   protected Command generateCommandForChoreoTrajectory(
       String trajectoryName, boolean resetOdometry) {
-    return generateCommandForChoreoTrajectory(trajectoryName, resetOdometry, true);
+    return generateCommandForChoreoTrajectory(
+        trajectoryName, resetOdometry, true);
   }
 
   /**
@@ -414,7 +442,8 @@ public class RobotContainer {
    *                       trajectory's data
    * @param stopAtEnd      if true, explicitly stop the robot at the end of the
    *                       trajectory
-   * @return a command for the trajectory, or a no-op if it couldn't be found (in
+   * @return a command for the trajectory, or a no-op if it couldn't be found
+   *     (in
    *         which case, a message is printed to stderr)
    *
    * @see <a href="https://choreo.autos/choreolib/getting-started/">Choreo
@@ -424,14 +453,15 @@ public class RobotContainer {
   protected Command generateCommandForChoreoTrajectory(
       String trajectoryName, boolean resetOdometry, boolean stopAtEnd) {
     // Per https://choreo.autos/choreolib/auto-factory/
-    final Command startCommand = (resetOdometry ? m_autoFactory.resetOdometry(trajectoryName) : Commands.none());
+    final Command startCommand =
+        (resetOdometry ? m_autoFactory.resetOdometry(trajectoryName)
+                       : Commands.none());
 
-    // Don't let the drive base continue moving after the trajectory is done (e.g.,
-    // due to PID settings being left in place).
+    // Don't let the drive base continue moving after the trajectory is done
+    // (e.g., due to PID settings being left in place).
     final Command endCommand = (stopAtEnd ? new InstantCommand(() -> {
       m_drivebase.stop();
-    }, m_drivebase.asSubsystem())
-        : Commands.none());
+    }, m_drivebase.asSubsystem()) : Commands.none());
 
     // Generate the actual trajectory-following command.
     try {
@@ -443,7 +473,8 @@ public class RobotContainer {
           // And finally, any "on end" actions
           endCommand);
     } catch (Exception e) {
-      System.err.println("ERROR: Failed to load Choreo trajectory '" + trajectoryName + "'");
+      System.err.println(
+          "ERROR: Failed to load Choreo trajectory '" + trajectoryName + "'");
       e.printStackTrace();
       return Commands.none();
     }
@@ -452,30 +483,36 @@ public class RobotContainer {
   /**
    * Generates a command for the specified PathPlanner trajectory.
    *
-   * NOTE: THIS IS NOT YET FULLY IMPLEMENTED, AS CONFIGURATION OF THE AutoBuilder
-   * FACTORY IS NOT YET BEING DONE.
+   * NOTE: THIS IS NOT YET FULLY IMPLEMENTED, AS CONFIGURATION OF THE
+   * AutoBuilder FACTORY IS NOT YET BEING DONE.
    *
    * @param trajectoryName name of the trajectory being loaded
    * @return a command for the trajectory, or a no-op if it couldn't be found
    *
-   * @see <a href="https://pathplanner.dev/pplib-getting-started.html">PathPlanner
+   * @see <a
+   *     href="https://pathplanner.dev/pplib-getting-started.html">PathPlanner
    *      'Getting Started'</a>
    */
-  protected static Command generateCommandForPathPlannerTrajectory(String trajectoryName) {
+  protected static Command generateCommandForPathPlannerTrajectory(
+      String trajectoryName) {
     try {
       // Load the path you want to follow using its name in the GUI
-      PathPlannerPath path = PathPlannerPath.fromChoreoTrajectory(trajectoryName);
+      PathPlannerPath path =
+          PathPlannerPath.fromChoreoTrajectory(trajectoryName);
 
-      // Create a path following command using AutoBuilder. This will also trigger
-      // event markers.
+      // Create a path following command using AutoBuilder. This will also
+      // trigger event markers.
       //
-      // Note: the AutoBuilder would need to be configured first, based on auto files
-      // created in the PathPlanner GUI app. (This would normally be done in the
-      // constructor for the RobotContainer, prior to this function being invoked.)
+      // Note: the AutoBuilder would need to be configured first, based on auto
+      // files created in the PathPlanner GUI app. (This would normally be done
+      // in the constructor for the RobotContainer, prior to this function being
+      // invoked.)
       return AutoBuilder.followPath(path);
     } catch (Exception e) {
-      // DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
-      System.err.println("Failed to load PathPlanner trajectory: " + trajectoryName);
+      // DriverStation.reportError("Big oops: " + e.getMessage(),
+      // e.getStackTrace());
+      System.err.println(
+          "Failed to load PathPlanner trajectory: " + trajectoryName);
       e.printStackTrace();
       return Commands.none();
     }
@@ -502,33 +539,40 @@ public class RobotContainer {
       System.out.println("WARNING: Can't get position!");
       return Commands.none();
     }
-    System.out.println("INFO: OK, we're " + allianceOpt.get() + "-" + positionOpt.getAsInt());
+    System.out.println(
+        "INFO: OK, we're " + allianceOpt.get() + "-" + positionOpt.getAsInt());
 
-    // Simple matrix of choices: we know how to get to precisely 1 algae from each
-    // of the red/blue starting points, and we'll assume that our position on the
-    // field is directly mapping to our driver station location.
+    // Simple matrix of choices: we know how to get to precisely 1 algae from
+    // each of the red/blue starting points, and we'll assume that our position
+    // on the field is directly mapping to our driver station location.
 
     switch (allianceOpt.get()) {
       case Blue:
         switch (positionOpt.getAsInt()) {
           case 1:
-            return generateCommandForChoreoTrajectory("BStart-outside-to-south-algae");
+            return generateCommandForChoreoTrajectory(
+                "BStart-outside-to-south-algae");
           case 2:
-            return generateCommandForChoreoTrajectory("BStart-center-to-center-algae");
+            return generateCommandForChoreoTrajectory(
+                "BStart-center-to-center-algae");
           case 3:
-            return generateCommandForChoreoTrajectory("BStart-inside-to-north-algae");
+            return generateCommandForChoreoTrajectory(
+                "BStart-inside-to-north-algae");
         }
         break;
 
       case Red:
         switch (positionOpt.getAsInt()) {
           case 1:
-            return generateCommandForChoreoTrajectory("RStart-outside-to-south-algae");
+            return generateCommandForChoreoTrajectory(
+                "RStart-outside-to-south-algae");
           case 2:
-            return generateCommandForChoreoTrajectory("RStart-center-to-center-algae");
+            return generateCommandForChoreoTrajectory(
+                "RStart-center-to-center-algae");
           case 3:
             // "North" end, so the cage to field center
-            return generateCommandForChoreoTrajectory("RStart-inside-to-north-algae");
+            return generateCommandForChoreoTrajectory(
+                "RStart-inside-to-north-algae");
         }
     }
 
@@ -548,8 +592,8 @@ public class RobotContainer {
       case eDoNothing -> Commands.print("No autonomous command configured");
       case eChoreo -> generateChoreoAutoCommand();
       case eMoveAndRaise ->
-        new ParallelCommandGroup(
-            new frc.robot.commands.DriveForDistance(m_drivebase, .50, Units.Meters.of(3)),
+        new ParallelCommandGroup(new frc.robot.commands.DriveForDistance(
+                                     m_drivebase, .50, Meters.of(3)),
             new frc.robot.commands.MoveElevatorToExtreme(m_elevator, true));
     };
   }
@@ -583,7 +627,9 @@ public class RobotContainer {
    */
   private static CameraSimulator maybeAllocateCameraSimulator(
       RobotConfigs.RobotConfig config, IVision vision) {
-    assert vision != null : "Vision subsystem must be allocated before camera simulation setup";
+    assert vision
+        != null
+        : "Vision subsystem must be allocated before camera simulation setup";
     if (vision == null) {
       throw new IllegalArgumentException(
           "Vision subsystem must be allocated before camera simulation setup");
@@ -607,8 +653,9 @@ public class RobotContainer {
       return new IVision.NullVision();
     }
 
-    // TODO: Consider adding code to switch between SimpleVision and BetterVision
-    // instances, depending on the number of cameras, so that both can be tested.
+    // TODO: Consider adding code to switch between SimpleVision and
+    // BetterVision instances, depending on the number of cameras, so that both
+    // can be tested.
     return new BetterVision(config);
   }
 
@@ -618,7 +665,8 @@ public class RobotContainer {
    * @param config the target robot's configuration
    * @return a drive base subsystem for this robot (may be trivial)
    */
-  private static IDrivebasePlus allocateDrivebase(RobotConfigs.RobotConfig config) {
+  private static IDrivebasePlus allocateDrivebase(
+      RobotConfigs.RobotConfig config) {
     if (!config.hasDrive()) {
       return new IDrivebasePlus.NullDrivebase();
     }
@@ -668,7 +716,8 @@ public class RobotContainer {
    * @param config the target robot's configuration
    * @return an ICandle subsystem for this robot (may be trivial)
    */
-  private static ICandle allocateCandle(RobotConfigs.RobotConfig config, ILighting lighting) {
+  private static ICandle allocateCandle(
+      RobotConfigs.RobotConfig config, ILighting lighting) {
     if (!config.hasCandle()) {
       return new ICandle.NullCandle();
     }

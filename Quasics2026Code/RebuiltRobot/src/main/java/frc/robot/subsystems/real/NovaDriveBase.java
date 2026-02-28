@@ -4,14 +4,11 @@
 
 package frc.robot.subsystems.real;
 
-import static edu.wpi.first.units.Units.Meters;
-
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.thethriftybot.devices.ThriftyNova;
 import com.thethriftybot.devices.ThriftyNova.EncoderType;
 import com.thethriftybot.devices.ThriftyNova.ThriftyNovaConfig;
 import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.wpilibj.AnalogGyro;
 import frc.robot.Constants;
 import frc.robot.Constants.CanBusIds.ThriftyNovaIds;
 import frc.robot.hardware.ThriftyNovaMotorControllerPlus;

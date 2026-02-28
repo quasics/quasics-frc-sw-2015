@@ -37,7 +37,7 @@ public class ArcadeDrive extends Command {
   /**
    * Used to disable logging from execute() as needed (since this gets *noisy*).
    */
-  static final boolean LOG_DATA = false;
+  static final boolean LOG_DATA = true;
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -60,8 +60,7 @@ public class ArcadeDrive extends Command {
     final AngularVelocity angularVelocity = AbstractDrivebase.getMaxMotorTurnSpeed().times(angularVelocityPercent);
 
     if (LOG_DATA) {
-      System.out.println("turnSpeedSupplier = " + linearSpeed);
-      System.out.println("angularVelocity = " + angularVelocity);
+      System.out.println("turnSpeedSupplier = " + linearSpeed + ", angularVelocity = " + angularVelocity);
     }
     m_drivebase.arcadeDrive(linearSpeed, angularVelocity);
   }

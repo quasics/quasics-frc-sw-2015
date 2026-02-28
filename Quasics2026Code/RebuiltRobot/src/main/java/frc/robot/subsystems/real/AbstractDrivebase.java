@@ -122,8 +122,7 @@ public abstract class AbstractDrivebase
    * }
    */
 
-  @Override
-  public SysIdRoutine getSysIdRoutine(IDrivebase drivebase, Mode mode) {
+  protected SysIdRoutine getSysIdRoutine(IDrivebase drivebase, Mode mode) {
     return new SysIdRoutine(
         new SysIdRoutine.Config(),
         new SysIdRoutine.Mechanism((volts) -> this.setVoltages(volts, volts.times(mode == Mode.Linear ? 1 : -1)),

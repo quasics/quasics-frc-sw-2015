@@ -11,7 +11,10 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import java.util.function.Supplier;
 
@@ -84,8 +87,6 @@ public interface IDrivebase {
 
   void setReferencePositionSupplier(Supplier<Pose2d> supplier);
 
-  SysIdRoutine getSysIdRoutine(IDrivebase drivebase, Mode mode);
-
   Command sysIdQuasistatic(IDrivebase drivebase, Mode mode, SysIdRoutine.Direction direction);
 
   Command sysIdDynamic(IDrivebase drivebase, Mode mode, SysIdRoutine.Direction direction);
@@ -93,5 +94,69 @@ public interface IDrivebase {
   public enum Mode {
     Linear,
     Angular
+  }
+
+  /**
+   * Trivial implementation of IDrivebase, for use when we're on a robot without
+   * one. (As if this will ever happen?)
+   */
+  public class NullDrivebase extends SubsystemBase implements IDrivebase {
+    public NullDrivebase() {
+    }
+
+    @Override
+    public void arcadeDrive(LinearVelocity forwardspeed, AngularVelocity turnspeed) {
+      // No-op.
+    }
+
+    @Override
+    public void setSpeeds(LinearVelocity leftSpeed, LinearVelocity rightSpeed) {
+      // No-op.
+    }
+
+    @Override
+    public void setPercent(double leftPercent, double rightPercent) {
+      // No-op.
+    }
+
+    @Override
+    public void setVoltages(Voltage leftVoltage, Voltage rightVoltage) {
+      // No-op.
+    }
+
+    @Override
+    public double mpsToPercent(LinearVelocity speed) {
+      return 0;
+    }
+
+    @Override
+    public Pose2d getOdometryPose() {
+      return new Pose2d();
+    }
+
+    @Override
+    public Pose2d getEstimatedPose() {
+      return new Pose2d();
+    }
+
+    @Override
+    public void resetOdometry(Pose2d pose) {
+      // No-op.
+    }
+
+    @Override
+    public void setReferencePositionSupplier(Supplier<Pose2d> supplier) {
+      // No-op.
+    }
+
+    @Override
+    public Command sysIdQuasistatic(IDrivebase drivebase, Mode mode, Direction direction) {
+      return Commands.print("Can't perform characterization on a NullDrivebase");
+    }
+
+    @Override
+    public Command sysIdDynamic(IDrivebase drivebase, Mode mode, Direction direction) {
+      return Commands.print("Can't perform characterization on a NullDrivebase");
+    }
   }
 }

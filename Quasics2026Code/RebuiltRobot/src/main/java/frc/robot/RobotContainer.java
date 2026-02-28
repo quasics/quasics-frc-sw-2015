@@ -62,18 +62,41 @@ import java.util.function.Supplier;
 public class RobotContainer {
   private static final int SIDE_LIGHTING_LENGTH = Constants.LIGHTING_TOTAL_LENGTH / 2;
 
+  /**
+   * Names of Quasics robots on which this code might be executed.
+   * 
+   * Note that this is effectively providing a limited mechanism for per-robot
+   * configuration.
+   */
   enum RobotName {
     Simulated,
     Lizzie,
     Sally
   }
 
-  private static final RobotName ROBOT_NAME = RobotName.Lizzie;
+  /**
+   * Identifies the default robot that we'll assume is in use when we're not under
+   * simulation.
+   * 
+   * Note that this is effectively providing a limited mechanism for per-robot
+   * configuration.
+   */
+  private static final RobotName DEFAULT_ROBOT_NAME = RobotName.Lizzie;
 
-  private final IIntake m_intake = (ROBOT_NAME == RobotName.Lizzie) ? new RealIntake() : null;
-  private final IIndexer m_indexer = (ROBOT_NAME == RobotName.Lizzie) ? new RealIndexer() : null;
-  private final IShooterHood m_hood = (ROBOT_NAME == RobotName.Lizzie) ? new RealShooterHood() : null;
-  private final IShooter m_shooter = (ROBOT_NAME == RobotName.Lizzie) ? new RealShooter() : null;
+  /**
+   * The robot name we'll actually use while executing (which will account for
+   * simulation).
+   * 
+   * Note that this is effectively providing a limited mechanism for per-robot
+   * configuration.
+   */
+  private static final RobotName ROBOT_NAME = Robot.isReal() ? DEFAULT_ROBOT_NAME : RobotName.Simulated;
+
+  private final IIntake m_intake = (ROBOT_NAME == RobotName.Lizzie) ? new RealIntake() : new IIntake.NullIntake();
+  private final IIndexer m_indexer = (ROBOT_NAME == RobotName.Lizzie) ? new RealIndexer() : new IIndexer.NullIndexer();
+  private final IShooterHood m_hood = (ROBOT_NAME == RobotName.Lizzie) ? new RealShooterHood()
+      : new IShooterHood.NullShooterHood();
+  private final IShooter m_shooter = (ROBOT_NAME == RobotName.Lizzie) ? new RealShooter() : new IShooter.NullShooter();
 
   // The robot's subsystems and commands are defined here...
   private final IDrivebase m_drivebase = switch (ROBOT_NAME) {

@@ -5,18 +5,21 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.subsystems.interfaces.IShooter;
 import frc.robot.subsystems.real.RealShooter;
 
 /* You should consider using the more terse Command factories API instead
  * https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands
  */
 public class RunShooter extends Command {
-  RealShooter m_shooter;
+  IShooter m_shooter;
   private double m_shooterSpeed;
   private double m_kickerSpeed;
 
   /** Creates a new RunShooter. */
-  public RunShooter(RealShooter shooter, double shooterSpeed,
+  public RunShooter(
+      IShooter shooter, double shooterSpeed,
       double kickerSpeed, boolean shooting) {
     m_shooter = shooter;
     m_shooterSpeed = shooterSpeed;
@@ -30,7 +33,7 @@ public class RunShooter extends Command {
     }
 
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(shooter);
+    addRequirements((Subsystem) shooter);
   }
 
   // Called when the command is initially scheduled.

@@ -31,6 +31,7 @@ import frc.robot.commands.RunShooterPID;
 import frc.robot.subsystems.interfaces.IIntake;
 import frc.robot.subsystems.interfaces.IShooterHood;
 import frc.robot.subsystems.interfaces.ILighting;
+import frc.robot.subsystems.interfaces.IShooter;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.IIndexer;
 import frc.robot.subsystems.interfaces.IVision;
@@ -67,7 +68,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final IDrivebase m_drivebase = Robot.isReal() ? new NovaDriveBase() : new SimulationDrivebase();
   private final IVision m_vision = (Robot.isReal()) ? new Vision() : new SimulatedVision();
-  private final RealShooter m_shooter = new RealShooter();
+  private final IShooter m_shooter = new RealShooter();
 
   private final ILighting m_primaryLighting;
   private final ILighting m_leftSideLighting;

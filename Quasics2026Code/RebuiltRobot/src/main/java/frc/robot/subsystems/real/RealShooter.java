@@ -65,6 +65,7 @@ public class RealShooter extends SubsystemBase implements IShooter {
     m_kicker.set(speed);
   }
 
+  @Override
   public void setFlywheelSpeed(double speed) {
     m_kraken.set(speed);
   }
@@ -92,10 +93,12 @@ public class RealShooter extends SubsystemBase implements IShooter {
           (volts) -> m_kraken.setControl(m_sysIdControl.withOutput(volts)),
           null, this));
 
+  @Override
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
     return m_sysIdRoutine.quasistatic(direction);
   }
 
+  @Override
   public Command sysIdDynamic(SysIdRoutine.Direction direction) {
     return m_sysIdRoutine.dynamic(direction);
   }

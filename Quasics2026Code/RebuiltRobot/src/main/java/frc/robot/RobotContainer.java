@@ -32,12 +32,14 @@ import frc.robot.subsystems.interfaces.IIntake;
 import frc.robot.subsystems.interfaces.IShooterHood;
 import frc.robot.subsystems.interfaces.ILighting;
 import frc.robot.subsystems.interfaces.IShooter;
+import frc.robot.subsystems.interfaces.IClimber;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.IIndexer;
 import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.subsystems.real.Lighting;
 import frc.robot.subsystems.real.LightingBuffer;
 import frc.robot.subsystems.real.NovaDriveBase;
+import frc.robot.subsystems.real.RealClimber;
 import frc.robot.subsystems.real.RealIndexer;
 import frc.robot.subsystems.real.RealIntake;
 import frc.robot.subsystems.real.RealShooter;
@@ -96,7 +98,9 @@ public class RobotContainer {
   private final IIndexer m_indexer = (ROBOT_NAME == RobotName.Lizzie) ? new RealIndexer() : new IIndexer.NullIndexer();
   private final IShooterHood m_hood = (ROBOT_NAME == RobotName.Lizzie) ? new RealShooterHood()
       : new IShooterHood.NullShooterHood();
-  private final IShooter m_shooter = (ROBOT_NAME == RobotName.Lizzie) ? new RealShooter() : new IShooter.NullShooter();
+  private final IShooter m_shooter = (ROBOT_NAME == RobotName.Lizzie) ? new RealShooter()
+      : new IShooter.NullShooter();
+  private final IClimber m_climber = (ROBOT_NAME == RobotName.Lizzie) ? new RealClimber() : new IClimber.NullClimber();
 
   // The robot's subsystems and commands are defined here...
   private final IDrivebase m_drivebase = switch (ROBOT_NAME) {

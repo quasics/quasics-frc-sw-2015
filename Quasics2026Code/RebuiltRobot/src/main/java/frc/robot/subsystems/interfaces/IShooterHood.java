@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.interfaces;
 
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 public interface IShooterHood {
   /*
    * (1 motor for hood angle; rotary (absolute) encoder for hood position)
@@ -32,6 +34,9 @@ public interface IShooterHood {
    *
    */
 
+  // FINDME(Daniel): This should return a WPILib "Angle" object (from the Units
+  // library), rather than a "naked value" (which could be degrees, radians,
+  // etc.).
   double getCurrentAngle();
 
   void moveOut(double speed);
@@ -40,4 +45,29 @@ public interface IShooterHood {
 
   void stop();
 
+  /**
+   * Null implementation of IShooterHood, for use on robots that don't have a
+   * hood.
+   */
+  public class NullShooterHood extends SubsystemBase implements IShooterHood {
+    @Override
+    public double getCurrentAngle() {
+      return 0;
+    }
+
+    @Override
+    public void moveOut(double speed) {
+      // No-op.
+    }
+
+    @Override
+    public void moveIn(double speed) {
+      // No-op.
+    }
+
+    @Override
+    public void stop() {
+      // No-op.
+    }
+  }
 }

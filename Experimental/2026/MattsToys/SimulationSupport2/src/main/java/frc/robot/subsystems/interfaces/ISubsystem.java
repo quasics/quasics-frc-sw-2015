@@ -1,4 +1,4 @@
-// Copyright (c) 2025, Matthew J. Healy and other Quasics contributors.
+// Copyright (c) 2025-2026, Matthew J. Healy and other Quasics contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -16,6 +16,10 @@ import java.io.Closeable;
  * define wrapper types that can add functionality to existing subsystems
  * without modifying their core behavior, and without requiring a direct
  * inheritance relationship.
+ * 
+ * Note that I'd *like* to inherit from Subsystem (WPILib interface), but then I
+ * can't require "Closeable" compatibility, which is higher-priority for me
+ * (personally).
  */
 public interface ISubsystem extends Closeable {
   /** Returns a Subsystem instance for this interface. */

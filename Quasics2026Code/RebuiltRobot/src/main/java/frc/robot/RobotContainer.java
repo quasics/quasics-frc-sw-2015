@@ -61,14 +61,22 @@ import java.util.function.Supplier;
 public class RobotContainer {
   private static final int SIDE_LIGHTING_LENGTH = Constants.LIGHTING_TOTAL_LENGTH / 2;
 
-  private final IIntake m_intake = new RealIntake();
-  private final IIndexer m_indexer = new RealIndexer();
-  private final IShooterHood m_hood = new RealShooterHood();
+  enum RobotName {
+    Simulated,
+    Lizzie,
+    Sally
+  }
+
+  private static final RobotName ROBOT_NAME = RobotName.Lizzie;
+
+  private final IIntake m_intake = (ROBOT_NAME == RobotName.Lizzie) ? new RealIntake() : null;
+  private final IIndexer m_indexer = (ROBOT_NAME == RobotName.Lizzie) ? new RealIndexer() : null;
+  private final IShooterHood m_hood = (ROBOT_NAME == RobotName.Lizzie) ? new RealShooterHood() : null;
+  private final IShooter m_shooter = (ROBOT_NAME == RobotName.Lizzie) ? new RealShooter() : null;
 
   // The robot's subsystems and commands are defined here...
   private final IDrivebase m_drivebase = Robot.isReal() ? new NovaDriveBase() : new SimulationDrivebase();
   private final IVision m_vision = (Robot.isReal()) ? new Vision() : new SimulatedVision();
-  private final IShooter m_shooter = new RealShooter();
 
   private final ILighting m_primaryLighting;
   private final ILighting m_leftSideLighting;
@@ -149,37 +157,54 @@ public class RobotContainer {
   }
 
   private void addButtonsToSmartDashboard() {
-    SmartDashboard.putData("Run Intake Rollers", new RunIntakeRollers(m_intake, 0.1, true));
-    SmartDashboard.putData("Run Indexer", new RunIndexer(m_indexer, 0.1, true));
-    // SmartDashboard.putData("Extend Intake", new InstantCommand(() ->
-    // m_intake.setExtensionSpeed(0.5)));
-    // SmartDashboard.putData("Extend Intake", new InstantCommand(() ->
-    // m_intake.setExtensionSpeed(-0.5)));
-    SmartDashboard.putData("Run Flywheel @ 1200 RPM, Kicker @ 12.5% speed",
-        new RunShooterPID(m_shooter, RPM.of(1200), .125));
-    SmartDashboard.putData("Run Flywheel @ 3700 RPM, Kicker @ 38.7% speed",
-        new RunShooterPID(m_shooter, RPM.of(3700), .387));
-    SmartDashboard.putData("Extend Intake",
-        new RunIntakeExtension(m_intake, 0.10, false));
-    SmartDashboard.putData("Retract Intake",
-        new RunIntakeExtension(m_intake, 0.10, true));
-    SmartDashboard.putData("Run Flywheel @ 15% speed, Kicker @ 50% speed", new RunShooter(m_shooter, 0.15, .50, true));
-    SmartDashboard.putData("Jam", runKickerReverse());
-    SmartDashboard.putData("Reverse Indexer", new RunIndexer(m_indexer, 0.1, false));
-    SmartDashboard.putData("Move Hood to 15 degrees",
-        new PivotHoodToPosition(m_hood, 0.10, 15, true));
+    if (m_intake != null) {
+      SmartDashboard.putData("Run Intake Rollers", new RunIntakeRollers(m_intake, 0.1, true));
+      SmartDashboard.putData("Run Indexer", new RunIndexer(m_indexer, 0.1, true));
+      // SmartDashboard.putData("Extend Intake", new InstantCommand(() ->
+      // m_intake.setExtensionSpeed(0.5)));
+      // SmartDashboard.putData("Extend Intake", new InstantCommand(() ->
+      // m_intake.setExtensionSpeed(-0.5)));
+    }
+
+    if (m_shooter != null) {
+      SmartDashboard.putData("Run Flywheel @ 1200 RPM, Kicker @ 12.5% speed",
+          new RunShooterPID(m_shooter, RPM.of(1200), .125));
+      SmartDashboard.putData("Run Flywheel @ 3700 RPM, Kicker @ 38.7% speed",
+          new RunShooterPID(m_shooter, RPM.of(3700), .387));
+      SmartDashboard.putData("Run Flywheel @ 15% speed, Kicker @ 50% speed",
+          new RunShooter(m_shooter, 0.15, .50, true));
+      SmartDashboard.putData("Jam", runKickerReverse());
+    }
+
+    if (m_intake != null) {
+      SmartDashboard.putData("Extend Intake",
+          new RunIntakeExtension(m_intake, 0.10, false));
+      SmartDashboard.putData("Retract Intake",
+          new RunIntakeExtension(m_intake, 0.10, true));
+    }
+
+    if (m_indexer != null) {
+      SmartDashboard.putData("Reverse Indexer", new RunIndexer(m_indexer, 0.1, false));
+    }
+
+    if (m_hood != null) {
+      SmartDashboard.putData("Move Hood to 15 degrees",
+          new PivotHoodToPosition(m_hood, 0.10, 15, true));
+    }
     // TODO: Index Jam Prevention Sequence Low Priority
   }
 
   private void addSysIdButtonsToSmartDashboard() {
-    SmartDashboard.putData("Flywheel QF",
-        m_shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    SmartDashboard.putData("Flywheel QR",
-        m_shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    SmartDashboard.putData("Flywheel DF",
-        m_shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    SmartDashboard.putData("Flywheel DR",
-        m_shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    if (m_shooter != null) {
+      SmartDashboard.putData("Flywheel QF",
+          m_shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+      SmartDashboard.putData("Flywheel QR",
+          m_shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+      SmartDashboard.putData("Flywheel DF",
+          m_shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
+      SmartDashboard.putData("Flywheel DR",
+          m_shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    }
 
     SmartDashboard.putData("(LIN) Drivebase QF", m_drivebase.sysIdQuasistatic(m_drivebase, IDrivebase.Mode.Linear,
         Direction.kForward));
@@ -263,15 +288,17 @@ public class RobotContainer {
   }
 
   private void configureDriverButtons() {
-    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.LeftTrigger))
-        .whileTrue(new RunIntakeRollers(m_intake, 0.9, false));
-    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.RightTrigger))
-        .whileTrue(new RunIntakeRollers(m_intake, 0.9, true));
+    if (m_intake != null) {
+      new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.LeftTrigger))
+          .whileTrue(new RunIntakeRollers(m_intake, 0.9, false));
+      new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.RightTrigger))
+          .whileTrue(new RunIntakeRollers(m_intake, 0.9, true));
 
-    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.StartButton))
-        .whileTrue(new RunIntakeExtension(m_intake, 0.1, true));
-    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.BackButton))
-        .whileTrue(new RunIntakeExtension(m_intake, 0.1, false));
+      new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.StartButton))
+          .whileTrue(new RunIntakeExtension(m_intake, 0.1, true));
+      new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.BackButton))
+          .whileTrue(new RunIntakeExtension(m_intake, 0.1, false));
+    }
   }
 
   private double getDriveSpeedScalingFactor() {

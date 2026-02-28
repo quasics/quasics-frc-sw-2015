@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.DriveteamConstants;
 import frc.robot.Constants.PwmPortIds;
@@ -30,6 +31,7 @@ import frc.robot.commands.RunShooterPID;
 import frc.robot.subsystems.interfaces.IIntake;
 import frc.robot.subsystems.interfaces.IShooterHood;
 import frc.robot.subsystems.interfaces.ILighting;
+import frc.robot.subsystems.interfaces.IShooter;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.IIndexer;
 import frc.robot.subsystems.interfaces.IVision;
@@ -66,7 +68,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final IDrivebase m_drivebase = Robot.isReal() ? new NovaDriveBase() : new SimulationDrivebase();
   private final IVision m_vision = (Robot.isReal()) ? new Vision() : new SimulatedVision();
-  private final RealShooter m_shooter = new RealShooter();
+  private final IShooter m_shooter = new RealShooter();
 
   private final ILighting m_primaryLighting;
   private final ILighting m_leftSideLighting;
@@ -120,6 +122,7 @@ public class RobotContainer {
 
     // Configure the trigger bindings
     configureBindings();
+    configureDriverButtons();
   }
 
   private ILighting allocatePrimaryLighting() {
@@ -177,10 +180,24 @@ public class RobotContainer {
         m_shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
     SmartDashboard.putData("Flywheel DR",
         m_shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-    SmartDashboard.putData("Drivebase QF", m_drivebase.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    SmartDashboard.putData("Drivebase QR", m_drivebase.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    SmartDashboard.putData("Drivebase DF", m_drivebase.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    SmartDashboard.putData("Drivebase DR", m_drivebase.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+
+    SmartDashboard.putData("(LIN) Drivebase QF", m_drivebase.sysIdQuasistatic(m_drivebase, IDrivebase.Mode.Linear,
+        Direction.kForward));
+    SmartDashboard.putData("(LIN) Drivebase QR", m_drivebase.sysIdQuasistatic(m_drivebase, IDrivebase.Mode.Linear,
+        Direction.kReverse));
+    SmartDashboard.putData("(LIN) Drivebase DF", m_drivebase.sysIdDynamic(m_drivebase, IDrivebase.Mode.Linear,
+        Direction.kForward));
+    SmartDashboard.putData("(LIN) Drivebase DR", m_drivebase.sysIdDynamic(m_drivebase, IDrivebase.Mode.Linear,
+        Direction.kReverse));
+
+    SmartDashboard.putData("(ANG) Drivebase QF",
+        m_drivebase.sysIdQuasistatic(m_drivebase, IDrivebase.Mode.Angular, Direction.kForward));
+    SmartDashboard.putData("(ANG) Drivebase QR",
+        m_drivebase.sysIdQuasistatic(m_drivebase, IDrivebase.Mode.Angular, Direction.kReverse));
+    SmartDashboard.putData("(ANG) Drivebase DF", m_drivebase.sysIdDynamic(m_drivebase, IDrivebase.Mode.Angular,
+        Direction.kForward));
+    SmartDashboard.putData("(ANG) Drivebase DR", m_drivebase.sysIdDynamic(m_drivebase, IDrivebase.Mode.Angular,
+        Direction.kReverse));
   }
 
   public Command runKickerReverse() {
@@ -243,6 +260,18 @@ public class RobotContainer {
         m_arcadeDriveLeftStick, m_arcadeDriveRightStick, m_drivebase));
     LinearSpeedCommand setLinearSpeed = new LinearSpeedCommand(m_drivebase);
     SmartDashboard.putData("LinearSpeedCommand", setLinearSpeed);
+  }
+
+  private void configureDriverButtons() {
+    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.LeftTrigger))
+        .whileTrue(new RunIntakeRollers(m_intake, 0.9, true));
+    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.RightTrigger))
+        .whileTrue(new RunIntakeRollers(m_intake, 0.9, false));
+
+    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.StartButton))
+        .whileTrue(new RunIntakeExtension(m_intake, 0.1, true));
+    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.BackButton))
+        .whileTrue(new RunIntakeExtension(m_intake, 0.1, false));
   }
 
   private double getDriveSpeedScalingFactor() {

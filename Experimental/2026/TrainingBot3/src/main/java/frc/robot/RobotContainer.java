@@ -99,6 +99,10 @@ public class RobotContainer {
     SmartDashboard.putData("1m @ 10%", new DriveForDistance(m_driveBase, 0.10, Meters.of(1)));
     SmartDashboard.putData("-1m @ 10%", new DriveForDistance(m_driveBase, 0.10, Meters.of(-1)));
 
+    SmartDashboard.putData(
+        "5m @ 100%",
+        new DriveForDistance(m_driveBase, 1.0, Meters.of(5)));
+
     // Another example, using a separate function to create/return the command
     // (sequence) to be added behind a dashboard button.
     SmartDashboard.putData("Move forward then backward", moveForwardThenBackward(m_driveBase));

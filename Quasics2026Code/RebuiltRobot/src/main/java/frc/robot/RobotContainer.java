@@ -167,7 +167,7 @@ public class RobotContainer {
     SmartDashboard.putData("Jam", runKickerReverse());
     SmartDashboard.putData("Reverse Indexer", new RunIndexer(m_indexer, 0.1, false));
     SmartDashboard.putData("Move Hood to 15 degrees",
-        new PivotHoodToPosition(m_hood, 0.05, 15, true));
+        new PivotHoodToPosition(m_hood, 0.25, 15, true));
     // TODO: Index Jam Prevention Sequence Low Priority
   }
 

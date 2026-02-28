@@ -6,6 +6,7 @@ package frc.robot.hardware.sensors;
 
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.thethriftybot.devices.ThriftyNova;
 import com.thethriftybot.devices.ThriftyNova.EncoderType;
@@ -63,7 +64,9 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
   @Override
   public LinearVelocity getVelocity() {
     final double currentRPM = m_speedConverter.fromMotor(m_motorController.getVelocity());
-    final double revsPerSec = currentRPM * 60;
+    // (revs/min) / 60 (secs/min) --> (revs/sec)
+    // (revs/sec) * (pi * diameterInMeters/rev) --> (meters/sec)
+    final double revsPerSec = currentRPM / 60;
     return MetersPerSecond.of(m_rotationDistance.in(Meters) * revsPerSec);
   }
 

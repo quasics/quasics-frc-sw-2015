@@ -6,7 +6,7 @@ package frc.robot.utils;
 
 import static edu.wpi.first.units.Units.*;
 
-import edu.wpi.first.units.measure.Units;
+
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Voltage;
@@ -498,7 +498,7 @@ public class RobotConfigs {
 
   private static RobotConfig generateSingleCameraSimulationConfig() {
     return new RobotConfig(new DriveConfig(Inches.of(3), // Wheel radius
-                               Units.Meters.of(0.381 * 2), // Trackwidth
+                               Meters.of(0.381 * 2), // Trackwidth
                                8.0, // Gearing
                                new PIDConfig(1.3973), // Left: 1.683 angular, 1.3973 linear
                                new PIDConfig(1.3974), // Right: 1.683 angular, 1.3974 linear
@@ -540,7 +540,7 @@ public class RobotConfigs {
 
   private static RobotConfig generateTwoCameraSimulationConfig() {
     return new RobotConfig(new DriveConfig(Inches.of(3), // Wheel radius
-                               Units.Meters.of(0.381 * 2), // Trackwidth
+                               Meters.of(0.381 * 2), // Trackwidth
                                8.0, // Gearing
                                new PIDConfig(1.3973), // Left: 1.683 angular, 1.3973 linear
                                new PIDConfig(1.3974), // Right: 1.683 angular, 1.3974 linear

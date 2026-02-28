@@ -10,7 +10,6 @@ import choreo.auto.AutoFactory;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.units.measure.Units;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
@@ -549,7 +548,7 @@ public class RobotContainer {
       case eChoreo -> generateChoreoAutoCommand();
       case eMoveAndRaise ->
         new ParallelCommandGroup(
-            new frc.robot.commands.DriveForDistance(m_drivebase, .50, Units.Meters.of(3)),
+            new frc.robot.commands.DriveForDistance(m_drivebase, .50, Meters.of(3)),
             new frc.robot.commands.MoveElevatorToExtreme(m_elevator, true));
     };
   }

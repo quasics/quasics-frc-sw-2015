@@ -4,15 +4,18 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.units.measure.Units;
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.DegreesPerSecond;
+
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.interfaces.drivebase.IDrivebase;
 
+
 /**
  * Simple command to turn the robot by a specified number of degrees.
- * 
+ *
  * Note: This might be a good place to consider using the "OffsetGyro" type
  * written in previous years.
  */
@@ -29,7 +32,8 @@ public class TurnCommand extends Command {
    * @param rotationInDegrees the degrees to turn
    * @param rotationalSpeed   the speed to use while turning
    */
-  public TurnCommand(IDrivebase drivebase, double rotationInDegrees, double rotationalSpeed) {
+  public TurnCommand(
+      IDrivebase drivebase, double rotationInDegrees, double rotationalSpeed) {
     m_drivebase = drivebase;
     m_rotationInDegrees = rotationInDegrees;
     m_rotationalSpeed = rotationalSpeed;
@@ -41,10 +45,11 @@ public class TurnCommand extends Command {
   public void initialize() {
     // Figure out when to stop (before we start moving).
     Angle startingDirection = m_drivebase.getHeading();
-    Angle rotationAngle = Units.Degrees.of(m_rotationInDegrees);
+    Angle rotationAngle = Degrees.of(m_rotationInDegrees);
     m_stopAngle = startingDirection.plus(rotationAngle);
     m_drivebase.arcadeDrive(IDrivebase.ZERO_MPS,
-        AngularVelocity.ofBaseUnits(m_rotationInDegrees, Units.DegreesPerSecond));
+        AngularVelocity.ofBaseUnits(
+            m_rotationInDegrees, DegreesPerSecond));
   }
 
   @Override
@@ -54,9 +59,9 @@ public class TurnCommand extends Command {
 
   @Override
   public boolean isFinished() {
-    // Note that "isEquivalent" includes a tolerence value in its computations. If
-    // this is insufficient, we can switch to using the "isNear()" method, and use a
-    // custom tolerance.
+    // Note that "isEquivalent" includes a tolerence value in its computations.
+    // If this is insufficient, we can switch to using the "isNear()" method,
+    // and use a custom tolerance.
     if (m_drivebase.getHeading().isEquivalent(m_stopAngle)) {
       return true;
     } else {

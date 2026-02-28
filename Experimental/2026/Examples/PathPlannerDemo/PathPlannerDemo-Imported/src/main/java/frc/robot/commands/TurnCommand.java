@@ -4,7 +4,7 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.units.measure.Units;
+
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -41,10 +41,10 @@ public class TurnCommand extends Command {
   public void initialize() {
     // Figure out when to stop (before we start moving).
     Angle startingDirection = m_drivebase.getHeading();
-    Angle rotationAngle = Units.Degrees.of(m_rotationInDegrees);
+    Angle rotationAngle = Degrees.of(m_rotationInDegrees);
     m_stopAngle = startingDirection.plus(rotationAngle);
     m_drivebase.arcadeDrive(IDrivebase.ZERO_MPS,
-        AngularVelocity.ofBaseUnits(m_rotationInDegrees, Units.DegreesPerSecond));
+        AngularVelocity.ofBaseUnits(m_rotationInDegrees, DegreesPerSecond));
   }
 
   @Override

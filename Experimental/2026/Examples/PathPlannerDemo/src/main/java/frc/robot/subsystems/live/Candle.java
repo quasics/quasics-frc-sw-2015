@@ -4,14 +4,16 @@
 
 package frc.robot.subsystems.live;
 
+import static com.ctre.phoenix.led.CANdle.LEDStripType;
+
 import com.ctre.phoenix.led.CANdle;
-import com.ctre.phoenix.led.CANdle.LEDStripType;
 import com.ctre.phoenix.led.CANdleConfiguration;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.ICandle;
 import frc.robot.subsystems.interfaces.ILighting.StockColor;
 import frc.robot.utils.RobotConfigs.RobotConfig;
+
 
 /**
  * Implementation of the ICandle interface, using a CANdle device.

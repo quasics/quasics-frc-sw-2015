@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.DriveteamConstants;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.LinearSpeedCommand;
+import frc.robot.commands.PivotHoodToPosition;
 import frc.robot.commands.RunIndexer;
 import frc.robot.commands.RunIntakeExtension;
 import frc.robot.commands.RunIntakeRollers;
@@ -25,6 +26,7 @@ import frc.robot.commands.RunShooter;
 import frc.robot.commands.RunShooterForTime;
 import frc.robot.commands.RunShooterPID;
 import frc.robot.subsystems.interfaces.IIntake;
+import frc.robot.subsystems.interfaces.IShooterHood;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.IIndexer;
 import frc.robot.subsystems.interfaces.IVision;
@@ -33,6 +35,7 @@ import frc.robot.subsystems.real.NovaDriveBase;
 import frc.robot.subsystems.real.RealIndexer;
 import frc.robot.subsystems.real.RealIntake;
 import frc.robot.subsystems.real.RealShooter;
+import frc.robot.subsystems.real.RealShooterHood;
 import frc.robot.subsystems.real.Vision;
 import frc.robot.subsystems.simulated.SimulatedVision;
 import frc.robot.subsystems.simulated.SimulationDrivebase;
@@ -51,6 +54,7 @@ import java.util.function.Supplier;
 public class RobotContainer {
   private final IIntake m_intake = new RealIntake();
   private final IIndexer m_indexer = new RealIndexer();
+  private final IShooterHood m_hood = new RealShooterHood();
 
   // The robot's subsystems and commands are defined here...
   private final IDrivebase m_drivebase = Robot.isReal() ? new NovaDriveBase() : new SimulationDrivebase();
@@ -118,6 +122,8 @@ public class RobotContainer {
     SmartDashboard.putData("Run Flywheel @ 15% speed, Kicker @ 50% speed", new RunShooter(m_shooter, 0.15, .50, true));
     SmartDashboard.putData("Jam", runKickerReverse());
     SmartDashboard.putData("Reverse Indexer", new RunIndexer(m_indexer, 0.1, false));
+    SmartDashboard.putData("Move Hood to 15 degrees",
+        new PivotHoodToPosition(m_hood, 0.05, 15, true));
   }
 
   private void addSysIdButtonsToSmartDashboard() {

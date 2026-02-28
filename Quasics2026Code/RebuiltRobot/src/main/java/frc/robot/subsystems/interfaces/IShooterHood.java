@@ -31,5 +31,13 @@ public interface IShooterHood {
    * https://docs.revrobotics.com/revlib/spark/closed-loop
    *
    */
-  // TODO: Add methods for controlling the hood (and then implement them).
+
+  double getCurrentAngle();
+
+  void moveOut(double speed);
+
+  void moveIn(double speed);
+
+  void stop();
+
 }

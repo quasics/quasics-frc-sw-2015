@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.real;
 
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
@@ -13,20 +14,53 @@ import frc.robot.subsystems.interfaces.IShooterHood;
 
 public class RealShooterHood extends SubsystemBase implements IShooterHood {
 
-  // private final Encoder m_encoder;
-  // private final SparkMax m_hoodAngleAdjuster;
+  private final SparkMax m_hood;
+  private final AbsoluteEncoder m_throughBoreEncoder;
 
   /** Creates a new RealShooterHood. */
   public RealShooterHood() {
 
-    // m_hoodAngleAdjuster = new SparkMax(SparkMaxIds.HOOD_ID,
-    // MotorType.kBrushless);
-    // m_encoder = new Encoder()
+    m_hood = new SparkMax(SparkMaxIds.HOOD_ID, MotorType.kBrushless);
+    m_throughBoreEncoder = m_hood.getAbsoluteEncoder();
+
+  }
+
+  @Override
+  public double getCurrentAngle() {
+
+    double m_currentAngleDegrees = m_throughBoreEncoder.getPosition() * 360;
+
+    return m_currentAngleDegrees;
+
+  }
+
+  @Override
+  public void moveOut(double speed) {
+
+    m_hood.set(Math.abs(speed));
+
+  }
+
+  @Override
+  public void moveIn(double speed) {
+
+    m_hood.set(-Math.abs(speed));
+
+  }
+
+  @Override
+  public void stop() {
+
+    m_hood.set(0);
 
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    System.out.println("Current Angle: " + getCurrentAngle());
+
   }
+
 }

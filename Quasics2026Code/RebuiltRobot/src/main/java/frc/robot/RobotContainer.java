@@ -14,11 +14,13 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.DriveteamConstants;
 import frc.robot.Constants.PwmPortIds;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.LinearSpeedCommand;
+import frc.robot.commands.PivotHoodToPosition;
 import frc.robot.commands.RainbowLighting;
 import frc.robot.commands.RunIndexer;
 import frc.robot.commands.RunIntakeExtension;
@@ -27,6 +29,7 @@ import frc.robot.commands.RunShooter;
 import frc.robot.commands.RunShooterForTime;
 import frc.robot.commands.RunShooterPID;
 import frc.robot.subsystems.interfaces.IIntake;
+import frc.robot.subsystems.interfaces.IShooterHood;
 import frc.robot.subsystems.interfaces.ILighting;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.IIndexer;
@@ -37,6 +40,7 @@ import frc.robot.subsystems.real.NovaDriveBase;
 import frc.robot.subsystems.real.RealIndexer;
 import frc.robot.subsystems.real.RealIntake;
 import frc.robot.subsystems.real.RealShooter;
+import frc.robot.subsystems.real.RealShooterHood;
 import frc.robot.subsystems.real.Vision;
 import frc.robot.subsystems.simulated.SimulatedVision;
 import frc.robot.subsystems.simulated.SimulationDrivebase;
@@ -58,6 +62,7 @@ public class RobotContainer {
 
   private final IIntake m_intake = new RealIntake();
   private final IIndexer m_indexer = new RealIndexer();
+  private final IShooterHood m_hood = new RealShooterHood();
 
   // The robot's subsystems and commands are defined here...
   private final IDrivebase m_drivebase = Robot.isReal() ? new NovaDriveBase() : new SimulationDrivebase();
@@ -159,8 +164,9 @@ public class RobotContainer {
     SmartDashboard.putData("Run Flywheel @ 15% speed, Kicker @ 50% speed", new RunShooter(m_shooter, 0.15, .50, true));
     SmartDashboard.putData("Jam", runKickerReverse());
     SmartDashboard.putData("Reverse Indexer", new RunIndexer(m_indexer, 0.1, false));
+    SmartDashboard.putData("Move Hood to 15 degrees",
+        new PivotHoodToPosition(m_hood, 0.05, 15, true));
     // TODO: Index Jam Prevention Sequence Low Priority
-    // SmartDashboard.putData("Index Jam Prevention", runIndexerUnjam());
   }
 
   private void addSysIdButtonsToSmartDashboard() {
@@ -172,10 +178,24 @@ public class RobotContainer {
         m_shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
     SmartDashboard.putData("Flywheel DR",
         m_shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-    SmartDashboard.putData("Drivebase QF", m_drivebase.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    SmartDashboard.putData("Drivebase QR", m_drivebase.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    SmartDashboard.putData("Drivebase DF", m_drivebase.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    SmartDashboard.putData("Drivebase DR", m_drivebase.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+
+    SmartDashboard.putData("(LIN) Drivebase QF", m_drivebase.sysIdQuasistatic(m_drivebase, IDrivebase.Mode.Linear,
+        Direction.kForward));
+    SmartDashboard.putData("(LIN) Drivebase QR", m_drivebase.sysIdQuasistatic(m_drivebase, IDrivebase.Mode.Linear,
+        Direction.kReverse));
+    SmartDashboard.putData("(LIN) Drivebase DF", m_drivebase.sysIdDynamic(m_drivebase, IDrivebase.Mode.Linear,
+        Direction.kForward));
+    SmartDashboard.putData("(LIN) Drivebase DR", m_drivebase.sysIdDynamic(m_drivebase, IDrivebase.Mode.Linear,
+        Direction.kReverse));
+
+    SmartDashboard.putData("(ANG) Drivebase QF",
+        m_drivebase.sysIdQuasistatic(m_drivebase, IDrivebase.Mode.Angular, Direction.kForward));
+    SmartDashboard.putData("(ANG) Drivebase QR",
+        m_drivebase.sysIdQuasistatic(m_drivebase, IDrivebase.Mode.Angular, Direction.kReverse));
+    SmartDashboard.putData("(ANG) Drivebase DF", m_drivebase.sysIdDynamic(m_drivebase, IDrivebase.Mode.Angular,
+        Direction.kForward));
+    SmartDashboard.putData("(ANG) Drivebase DR", m_drivebase.sysIdDynamic(m_drivebase, IDrivebase.Mode.Angular,
+        Direction.kReverse));
   }
 
   public Command runKickerReverse() {

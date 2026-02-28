@@ -67,6 +67,14 @@ public final class Constants {
     public static final double kP = 0.17735;
   }
 
+  public static class Tolerances {
+    public static final double ANGLETOLERANCE = 1;
+  }
+
+  public static class Ratios {
+    public static final double ENCODERTOHOODRATIO = 9;
+  }
+
   /**
    * Defines constants for the different controls on a Logitech gamepad when
    * used in "Dualshock" mode.

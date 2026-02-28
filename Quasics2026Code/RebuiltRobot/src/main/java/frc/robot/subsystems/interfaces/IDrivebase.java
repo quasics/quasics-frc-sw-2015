@@ -84,7 +84,14 @@ public interface IDrivebase {
 
   void setReferencePositionSupplier(Supplier<Pose2d> supplier);
 
-  Command sysIdQuasistatic(SysIdRoutine.Direction direction);
+  SysIdRoutine getSysIdRoutine(IDrivebase drivebase, Mode mode);
 
-  Command sysIdDynamic(SysIdRoutine.Direction direction);
+  Command sysIdQuasistatic(IDrivebase drivebase, Mode mode, SysIdRoutine.Direction direction);
+
+  Command sysIdDynamic(IDrivebase drivebase, Mode mode, SysIdRoutine.Direction direction);
+
+  public enum Mode {
+    Linear,
+    Angular
+  }
 }

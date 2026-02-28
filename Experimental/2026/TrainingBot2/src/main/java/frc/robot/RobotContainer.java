@@ -24,6 +24,7 @@ import frc.robot.subsystems.RealDrivebase;
 import frc.robot.subsystems.SimulatedDrivebase;
 import java.util.function.Supplier;
 
+
 /**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a "declarative" paradigm, very little robot logic should
@@ -94,14 +95,19 @@ public class RobotContainer {
     // Examples of putting a button on the SmartDashboard to run a command.
     SmartDashboard.putData("3 feet, 25%",
         new DriveForDistance(m_driveBase, 0.25, Feet.of(3)));
-    SmartDashboard.putData("3 meters, 50%",
-        new DriveForDistance(m_driveBase, 0.5, Meters.of(3)));
+
 
     SmartDashboard.putData("1m @ 10%", new DriveForDistance(m_driveBase, 0.10, Meters.of(1)));
     SmartDashboard.putData("-1m @ 10%", new DriveForDistance(m_driveBase, 0.10, Meters.of(-1)));
 
-    SmartDashboard.putData("Turn 90 @ 50%",
-        new TurnRobot(m_driveBase, 0.5, Degrees.of(90)));
+    SmartDashboard.putData("Turn 180 @ 4%",
+        new TurnRobot(m_driveBase, 0.04, Degrees.of(180)));
+     SmartDashboard.putData("Turn -180 @ 4%",
+        new TurnRobot(m_driveBase, 0.04, Degrees.of(-180)));
+        SmartDashboard.putData("Turn 90 @ 3",
+        new TurnRobot(m_driveBase, 0.03, Degrees.of(90)));
+    SmartDashboard.putData("Turn -90 @ 3",
+        new TurnRobot(m_driveBase, (0.03), Degrees.of(-90)));
 
     // Another example, using a separate function to create/return the command
     // (sequence) to be added behind a dashboard button.

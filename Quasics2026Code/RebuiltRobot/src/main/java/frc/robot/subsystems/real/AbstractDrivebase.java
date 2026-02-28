@@ -7,6 +7,8 @@ package frc.robot.subsystems.real;
 import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -38,6 +40,7 @@ public abstract class AbstractDrivebase
     extends SubsystemBase implements IDrivebase {
   // TODO: this should come from a robot config
   private static final double m_maxMotorSpeedMPS = 3;
+  private static final double m_maxMotorSpeedRPS = 6.5;
 
   /** Track width (distance between left and right wheels) in meters. */
   // TODO: this should come from a robot config
@@ -81,7 +84,7 @@ public abstract class AbstractDrivebase
   }
 
   public static AngularVelocity getMaxMotorTurnSpeed() {
-    return DegreesPerSecond.of(m_maxMotorSpeedMPS);
+    return RadiansPerSecond.of(m_maxMotorSpeedRPS);
   }
 
   @Override

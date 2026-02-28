@@ -55,12 +55,15 @@ public class RealShooterHood extends SubsystemBase implements IShooterHood {
 
   }
 
+  private static final boolean NOISY = false;
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
 
-    System.out.println("Current Angle: " + getCurrentAngle());
-
+    if (NOISY) {
+      System.out.println("Current Angle: " + getCurrentAngle());
+    }
   }
 
 }

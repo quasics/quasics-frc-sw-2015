@@ -16,9 +16,11 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.DriveteamConstants;
+import frc.robot.Constants.PwmPortIds;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.LinearSpeedCommand;
 import frc.robot.commands.PivotHoodToPosition;
+import frc.robot.commands.RainbowLighting;
 import frc.robot.commands.RunIndexer;
 import frc.robot.commands.RunIntakeExtension;
 import frc.robot.commands.RunIntakeRollers;
@@ -27,10 +29,12 @@ import frc.robot.commands.RunShooterForTime;
 import frc.robot.commands.RunShooterPID;
 import frc.robot.subsystems.interfaces.IIntake;
 import frc.robot.subsystems.interfaces.IShooterHood;
+import frc.robot.subsystems.interfaces.ILighting;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.IIndexer;
 import frc.robot.subsystems.interfaces.IVision;
-import frc.robot.subsystems.real.AbstractDrivebase;
+import frc.robot.subsystems.real.Lighting;
+import frc.robot.subsystems.real.LightingBuffer;
 import frc.robot.subsystems.real.NovaDriveBase;
 import frc.robot.subsystems.real.RealIndexer;
 import frc.robot.subsystems.real.RealIntake;
@@ -42,6 +46,7 @@ import frc.robot.subsystems.simulated.SimulationDrivebase;
 
 import static edu.wpi.first.units.Units.RPM;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 /**
@@ -52,6 +57,8 @@ import java.util.function.Supplier;
  * commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+  private static final int SIDE_LIGHTING_LENGTH = Constants.LIGHTING_TOTAL_LENGTH / 2;
+
   private final IIntake m_intake = new RealIntake();
   private final IIndexer m_indexer = new RealIndexer();
   private final IShooterHood m_hood = new RealShooterHood();
@@ -60,6 +67,10 @@ public class RobotContainer {
   private final IDrivebase m_drivebase = Robot.isReal() ? new NovaDriveBase() : new SimulationDrivebase();
   private final IVision m_vision = (Robot.isReal()) ? new Vision() : new SimulatedVision();
   private final RealShooter m_shooter = new RealShooter();
+
+  private final ILighting m_primaryLighting;
+  private final ILighting m_leftSideLighting;
+  private final ILighting m_rightSideLighting;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final Joystick m_driverController = new Joystick(DriveteamConstants.DRIVER_JOYSTICK_ID);
@@ -79,6 +90,13 @@ public class RobotContainer {
    * commands.
    */
   public RobotContainer() {
+    m_primaryLighting = allocatePrimaryLighting();
+    m_leftSideLighting = allocateSideLighting(true);
+    m_rightSideLighting = allocateSideLighting(false);
+
+    m_leftSideLighting.setAsDefaultCommand(new RainbowLighting(m_leftSideLighting));
+    m_rightSideLighting.setAsDefaultCommand(new RainbowLighting(m_rightSideLighting));
+
     // Connect cross-subsystem suppliers (so that the systems don't know about
     // each other directly)
     addButtonsToSmartDashboard();
@@ -104,6 +122,29 @@ public class RobotContainer {
     configureBindings();
   }
 
+  private ILighting allocatePrimaryLighting() {
+    return new Lighting(
+        PwmPortIds.LIGHTING_ID,
+        Constants.LIGHTING_TOTAL_LENGTH,
+        List.of(SIDE_LIGHTING_LENGTH, SIDE_LIGHTING_LENGTH));
+  }
+
+  private ILighting allocateSideLighting(boolean isLeftSide) {
+    if (!(m_primaryLighting instanceof Lighting)) {
+      // Won't be able to pull subviews for side-specific lighting.
+      return new ILighting.NullLighting();
+    }
+
+    final Lighting realLighting = (Lighting) m_primaryLighting;
+    final int targetIndex = (isLeftSide ? 0 : 1);
+    if (realLighting.getSubViews().size() <= targetIndex) {
+      // Can't get a subsystem that's mapped for that side
+      return new ILighting.NullLighting();
+    }
+
+    return new LightingBuffer(realLighting.getSubViews().get(targetIndex), isLeftSide);
+  }
+
   private void addButtonsToSmartDashboard() {
     SmartDashboard.putData("Run Intake Rollers", new RunIntakeRollers(m_intake, 0.1, true));
     SmartDashboard.putData("Run Indexer", new RunIndexer(m_indexer, 0.1, true));
@@ -116,32 +157,42 @@ public class RobotContainer {
     SmartDashboard.putData("Run Flywheel @ 3700 RPM, Kicker @ 38.7% speed",
         new RunShooterPID(m_shooter, RPM.of(3700), .387));
     SmartDashboard.putData("Extend Intake",
-        new RunIntakeExtension(m_intake, 0.50, false));
+        new RunIntakeExtension(m_intake, 0.10, false));
     SmartDashboard.putData("Retract Intake",
-        new RunIntakeExtension(m_intake, 0.50, true));
+        new RunIntakeExtension(m_intake, 0.10, true));
     SmartDashboard.putData("Run Flywheel @ 15% speed, Kicker @ 50% speed", new RunShooter(m_shooter, 0.15, .50, true));
     SmartDashboard.putData("Jam", runKickerReverse());
     SmartDashboard.putData("Reverse Indexer", new RunIndexer(m_indexer, 0.1, false));
     SmartDashboard.putData("Move Hood to 15 degrees",
         new PivotHoodToPosition(m_hood, 0.05, 15, true));
+    // TODO: Index Jam Prevention Sequence Low Priority
   }
 
   private void addSysIdButtonsToSmartDashboard() {
-    SmartDashboard.putData("Flywheel Quasistatic Forward",
+    SmartDashboard.putData("Flywheel QF",
         m_shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    SmartDashboard.putData("Flywheel Quasistatic Reverse",
+    SmartDashboard.putData("Flywheel QR",
         m_shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    SmartDashboard.putData("Flywheel Dynamic Forward",
+    SmartDashboard.putData("Flywheel DF",
         m_shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    SmartDashboard.putData("Flywheel Dynamic Reverse",
+    SmartDashboard.putData("Flywheel DR",
         m_shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-
+    SmartDashboard.putData("Drivebase QF", m_drivebase.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    SmartDashboard.putData("Drivebase QR", m_drivebase.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    SmartDashboard.putData("Drivebase DF", m_drivebase.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    SmartDashboard.putData("Drivebase DR", m_drivebase.sysIdDynamic(SysIdRoutine.Direction.kReverse));
   }
 
   public Command runKickerReverse() {
     return Commands.sequence(new RunShooterForTime(m_shooter, 0, 0.75, false, 2), new WaitCommand(0.5),
         new RunShooter(m_shooter, .15, .50, true));
   }
+
+  // public Command runIndexerUnjam(){
+
+  // return Commands.sequence(new)
+
+  // }
 
   /**
    * Use this method to define your trigger->command mappings. Triggers can be

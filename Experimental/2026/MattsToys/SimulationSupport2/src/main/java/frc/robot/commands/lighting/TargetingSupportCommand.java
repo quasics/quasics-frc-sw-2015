@@ -101,12 +101,11 @@ public class TargetingSupportCommand extends Command {
         IVisionPlus.ESTIMATED_POSE_KEY, IVisionPlus.EstimatedPoseData.class);
     if (positionOpt.isEmpty()) {
       // Don't know where we are: no status.
-      m_lighting.SetStripColor(StockColor.Black);
+      m_lighting.setStripColor(StockColor.Black);
       return;
     }
 
-    final var robotPose =
-        ((IVisionPlus.EstimatedPoseData) positionOpt.get()).pose();
+    final var robotPose = ((IVisionPlus.EstimatedPoseData) positionOpt.get()).pose();
 
     // Note: native pose heading is treating flat-left as 0 (in -180 to +180),
     // while angleToTarget is computing that as 180 (in 0 to 360). As a result,
@@ -116,14 +115,12 @@ public class TargetingSupportCommand extends Command {
     final double robotAngleDegrees = robotPose.getRotation().getDegrees() + 180;
 
     // Compute how far off we are.
-    final Angle angle =
-        PoseHelpers.computeAngleToTarget(robotPose, m_targetPos);
-    final double angleDeltaDegrees = angle.in(Degrees) -robotAngleDegrees;
+    final Angle angle = PoseHelpers.computeAngleToTarget(robotPose, m_targetPos);
+    final double angleDeltaDegrees = angle.in(Degrees) - robotAngleDegrees;
     final double angleDeltaDegreesAbs = Math.abs(angleDeltaDegrees);
 
     // How far away from the target are we?
-    Distance distance =
-        PoseHelpers.computeDistanceToTarget(robotPose, m_targetPos);
+    Distance distance = PoseHelpers.computeDistanceToTarget(robotPose, m_targetPos);
 
     if (NOISY) {
       System.out.println("Distance: " + distance.in(Meters) + ", heading: "
@@ -137,16 +134,15 @@ public class TargetingSupportCommand extends Command {
     // for deployment on the field at an event, but it works as an (overly)
     // simple example of what can be done.
     final boolean angleOK = angleDeltaDegreesAbs <= m_angleRange.in(Degrees);
-    final boolean distanceOK =
-        distance.lte(m_maxRange) && distance.gte(m_minRange);
+    final boolean distanceOK = distance.lte(m_maxRange) && distance.gte(m_minRange);
     if (angleOK && distanceOK) {
-      m_lighting.SetStripColor(StockColor.Green);
+      m_lighting.setStripColor(StockColor.Green);
     } else if (angleOK) {
-      m_lighting.SetStripColor(StockColor.Purple);
+      m_lighting.setStripColor(StockColor.Purple);
     } else if (distanceOK) {
-      m_lighting.SetStripColor(StockColor.Orange);
+      m_lighting.setStripColor(StockColor.Orange);
     } else {
-      m_lighting.SetStripColor(StockColor.Red);
+      m_lighting.setStripColor(StockColor.Red);
     }
   }
 
@@ -157,7 +153,7 @@ public class TargetingSupportCommand extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    m_lighting.SetStripColor(StockColor.Black);
+    m_lighting.setStripColor(StockColor.Black);
   }
 
   @Override

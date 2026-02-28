@@ -2,13 +2,6 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-
-
-
-
-
-
-
 package frc.robot.commands;
 
 import static edu.wpi.first.units.Units.Degrees;
@@ -16,15 +9,7 @@ import static edu.wpi.first.units.Units.Degrees;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AbstractDrivebase;
-import frc.robot.subsystems.SimulatedDrivebase;
 import java.lang.Math;
-
-
-
-
-
-
-
 
 /**
  * Makes the robot turn by a certain angle (degrees, radians, whatever), at a
@@ -37,13 +22,6 @@ public class TurnRobot extends Command {
    // final Angle m_finalAngle;   get outta here
   Angle notfinalAngle;
   final Angle m_beginningAngle;
-
-
-
-
-
-
-
 
   /**
    * Creates a new TurnRobot.

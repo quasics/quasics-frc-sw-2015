@@ -228,10 +228,6 @@ public class RobotContainer {
             new InstantCommand(() -> {
               m_switchDrive = !m_switchDrive;
             }));
-
-    // Could we define some constants for how fast we want these things to move?
-    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.XButton))
-        .whileTrue(new setFlywheelRPM(AngularVelocity rpm));
     // Syntax for speed suppliers:
     // () -> m_driverController.getRawAxis(0)
 

@@ -53,9 +53,9 @@ public class SparkDriveBase extends AbstractDrivebase {
     final SparkMax rightfollower = new SparkMax(SparkMaxIds.RIGHT_FOLLOWER_ID, MotorType.kBrushless);
 
     configureMotorControllersForFollowing(
-        (SparkMax) getLeftLeader(), leftfollower);
+        leftController, leftfollower);
     configureMotorControllersForFollowing(
-        (SparkMax) getRightLeader(), rightfollower);
+        rightController, rightfollower);
 
     // Configure the encoders.
     Encoder leftEncoder = new Encoder(1, 2);

@@ -21,6 +21,7 @@ public class RealShooterHood extends SubsystemBase implements IShooterHood {
   public RealShooterHood() {
 
     m_hood = new SparkMax(SparkMaxIds.HOOD_ID, MotorType.kBrushless);
+
     m_throughBoreEncoder = m_hood.getAbsoluteEncoder();
 
   }

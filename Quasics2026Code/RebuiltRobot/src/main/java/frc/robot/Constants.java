@@ -32,6 +32,8 @@ public final class Constants {
   }
 
   public static class CanBusIds {
+    public static final int PIGEON2_CAN_ID = 1;
+
     public static class SparkMaxIds {
       // Note: Drive base motor IDs are based on those Quasics has used over the
       // last couple of years.

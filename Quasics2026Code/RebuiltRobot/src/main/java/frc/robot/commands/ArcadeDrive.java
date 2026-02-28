@@ -60,8 +60,7 @@ public class ArcadeDrive extends Command {
     final AngularVelocity angularVelocity = AbstractDrivebase.getMaxMotorTurnSpeed().times(angularVelocityPercent);
 
     if (LOG_DATA) {
-      System.out.println("turnSpeedSupplier = " + linearSpeed);
-      System.out.println("angularVelocity = " + angularVelocity);
+      System.out.println("turnSpeedSupplier = " + linearSpeed + ", angularVelocity = " + angularVelocity);
     }
     m_drivebase.arcadeDrive(linearSpeed, angularVelocity);
   }

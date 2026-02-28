@@ -83,7 +83,7 @@ public class PivotHoodToPosition extends Command {
   public boolean isFinished() {
 
     return (m_hood.getCurrentAngle() < m_endAngle + Tolerances.ANGLETOLERANCE &&
-        m_hood.getCurrentAngle() > m_endAngle + Tolerances.ANGLETOLERANCE);
+        m_hood.getCurrentAngle() > m_endAngle - Tolerances.ANGLETOLERANCE);
 
   }
 }

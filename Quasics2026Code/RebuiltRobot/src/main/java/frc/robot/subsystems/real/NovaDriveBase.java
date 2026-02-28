@@ -6,6 +6,7 @@ package frc.robot.subsystems.real;
 
 import static edu.wpi.first.units.Units.Meters;
 
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.thethriftybot.devices.ThriftyNova;
 import com.thethriftybot.devices.ThriftyNova.EncoderType;
 import com.thethriftybot.devices.ThriftyNova.ThriftyNovaConfig;
@@ -15,6 +16,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.CanBusIds.ThriftyNovaIds;
 import frc.robot.hardware.ThriftyNovaMotorControllerPlus;
 import frc.robot.sensors.IGyro;
+import frc.robot.sensors.Pigeon2Wrapper;
 import frc.robot.sensors.ThriftyEncoderWrapper;
 import frc.robot.sensors.TrivialEncoder;
 
@@ -111,15 +113,8 @@ public class NovaDriveBase extends AbstractDrivebase {
     //
     // Set up the gyro.
     //
-
-    // TODO: Switch this to use the gyro that we're actually going to be using
-    // on the real robot.
-    //
-    // FINDME(Robert): This needs to be updated, since we're not actually going
-    // to be using an AnalogGyro for the real robot. (We'll probably be using a
-    // Pigeon2.)
-    AnalogGyro gyro = new AnalogGyro(0);
-    m_gryo = IGyro.wrapGyro(gyro);
+    Pigeon2 pigeon = new Pigeon2(Constants.CanBusIds.PIGEON2_CAN_ID);
+    m_gryo = new Pigeon2Wrapper(pigeon);
   }
 
   /**

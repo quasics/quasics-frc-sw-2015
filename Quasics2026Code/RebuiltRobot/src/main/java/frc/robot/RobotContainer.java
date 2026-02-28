@@ -194,7 +194,7 @@ public class RobotContainer {
 
     if (m_hood != null) {
       SmartDashboard.putData("Move Hood to 15 degrees",
-          new PivotHoodToPosition(m_hood, 0.10, 15, true));
+          new PivotHoodToPosition(m_hood, 0.10, 15, false));
     }
     // TODO: Index Jam Prevention Sequence Low Priority
   }

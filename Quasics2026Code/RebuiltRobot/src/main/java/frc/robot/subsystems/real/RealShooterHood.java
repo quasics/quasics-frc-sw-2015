@@ -65,6 +65,7 @@ public class RealShooterHood extends SubsystemBase implements IShooterHood {
     if (NOISY) {
       System.out.println("Current Angle: " + getCurrentAngle());
     }
+
   }
 
 }

@@ -79,11 +79,6 @@ public class RealShooter extends SubsystemBase implements IShooter {
     m_kicker.set(0);
   }
 
-  public void stop() {
-    stopFlywheel();
-    stopKicker();
-  }
-
   public AngularVelocity getFlywheelVelocity() {
     StatusSignal<AngularVelocity> signalVelocity = m_kraken.getVelocity();
     AngularVelocity velocity = signalVelocity.getValue();

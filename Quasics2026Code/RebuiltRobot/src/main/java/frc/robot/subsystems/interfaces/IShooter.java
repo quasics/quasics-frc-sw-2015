@@ -49,4 +49,15 @@ public interface IShooter {
   void stopFlywheel();
 
   void stopKicker();
+
+  //
+  // Convenience functions
+  //
+
+  /** Stop both the flywheel and kicker. */
+  default void stop() {
+    stopFlywheel();
+    stopKicker();
+  }
+
 }

@@ -87,28 +87,33 @@ public abstract class AbstractDrivebase
     return RadiansPerSecond.of(m_maxMotorSpeedRPS);
   }
 
-  private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
-      new SysIdRoutine.Config(),
-      new SysIdRoutine.Mechanism((volts) -> this.setVoltages(volts, volts), log -> {
-        final var leftVoltage = getLeftVoltage();
-        final var leftPosition = getLeftEncoder().getPosition();
-        final var leftVelocity = getLeftEncoder().getVelocity();
-        final var rightVoltage = getRightVoltage();
-        final var rightPosition = getRightEncoder().getPosition();
-        final var rightVelocity = getRightEncoder().getVelocity();
-
-        log.motor("drive-left").voltage(leftVoltage).linearPosition(leftPosition).linearVelocity(leftVelocity);
-        log.motor("drive-right").voltage(rightVoltage).linearPosition(rightPosition).linearVelocity(rightVelocity);
-      }, this));
-
   @Override
-  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-    return m_sysIdRoutine.quasistatic(direction);
+  public SysIdRoutine getSysIdRoutine(IDrivebase drivebase, Mode mode) {
+    return new SysIdRoutine(
+        new SysIdRoutine.Config(),
+        new SysIdRoutine.Mechanism((volts) -> this.setVoltages(volts, volts.times(mode == Mode.Linear ? 1 : -1)),
+            log -> {
+              final var leftVoltage = getLeftVoltage();
+              final var leftPosition = getLeftEncoder().getPosition();
+              final var leftVelocity = getLeftEncoder().getVelocity();
+              final var rightVoltage = getRightVoltage();
+              final var rightPosition = getRightEncoder().getPosition();
+              final var rightVelocity = getRightEncoder().getVelocity();
+
+              log.motor("drive-left").voltage(leftVoltage).linearPosition(leftPosition).linearVelocity(leftVelocity);
+              log.motor("drive-right").voltage(rightVoltage).linearPosition(rightPosition)
+                  .linearVelocity(rightVelocity);
+            }, this));
   }
 
   @Override
-  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-    return m_sysIdRoutine.dynamic(direction);
+  public Command sysIdQuasistatic(IDrivebase drivebase, Mode mode, SysIdRoutine.Direction direction) {
+    return getSysIdRoutine(drivebase, mode).quasistatic(direction);
+  }
+
+  @Override
+  public Command sysIdDynamic(IDrivebase drivebase, IDrivebase.Mode mode, SysIdRoutine.Direction direction) {
+    return getSysIdRoutine(drivebase, mode).dynamic(direction);
   }
 
   @Override

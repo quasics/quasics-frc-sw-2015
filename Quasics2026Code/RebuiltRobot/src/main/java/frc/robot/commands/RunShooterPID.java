@@ -6,23 +6,24 @@ package frc.robot.commands;
 
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.real.RealShooter;
+import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.subsystems.interfaces.IShooter;
 
 /* You should consider using the more terse Command factories API instead
  * https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands
  */
 public class RunShooterPID extends Command {
-  RealShooter m_shooter;
+  IShooter m_shooter;
   private AngularVelocity m_velocityRPM;
   private double m_kickSpeed;
 
   /** Creates a new RunShooter. */
-  public RunShooterPID(RealShooter shooter, AngularVelocity velocity, double kickSpeed) {
+  public RunShooterPID(IShooter shooter, AngularVelocity velocity, double kickSpeed) {
     m_shooter = shooter;
     m_velocityRPM = velocity;
     m_kickSpeed = kickSpeed;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(shooter);
+    addRequirements((Subsystem) shooter);
   }
 
   // Called when the command is initially scheduled.

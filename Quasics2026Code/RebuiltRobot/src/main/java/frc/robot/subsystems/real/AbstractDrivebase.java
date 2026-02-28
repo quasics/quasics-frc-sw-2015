@@ -7,6 +7,8 @@ package frc.robot.subsystems.real;
 import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -21,23 +23,24 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
+import frc.robot.hardware.IMotorControllerPlus;
 import frc.robot.logging.Logger;
 import frc.robot.logging.Logger.Verbosity;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
 import frc.robot.subsystems.interfaces.IDrivebase;
 
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public abstract class AbstractDrivebase
     extends SubsystemBase implements IDrivebase {
   // TODO: this should come from a robot config
   private static final double m_maxMotorSpeedMPS = 3;
+  private static final double m_maxMotorSpeedRPS = 6.5;
 
   /** Track width (distance between left and right wheels) in meters. */
   // TODO: this should come from a robot config
@@ -48,18 +51,13 @@ public abstract class AbstractDrivebase
 
   // Abstract only cares about Leaders
   // subclasses will do the configuration
-  private final MotorController m_leftMotor;
-  private final MotorController m_rightMotor;
+  private final IMotorControllerPlus m_leftMotor;
+  private final IMotorControllerPlus m_rightMotor;
 
   private final DifferentialDrive m_robotDrive;
 
   private final DifferentialDriveOdometry m_odometry;
   private final DifferentialDrivePoseEstimator m_poseEstimator;
-
-  // TODO: Log motors
-  SysIdRoutine routine = new SysIdRoutine(
-      new SysIdRoutine.Config(),
-      new SysIdRoutine.Mechanism((volts) -> this.setVoltages(volts, volts), null, this));
 
   // Thoughts on this from Robert: Might be helpful for driveteam to have a
   // backup of being able to see the field display sometimes, so leave field
@@ -70,7 +68,7 @@ public abstract class AbstractDrivebase
 
   /** Creates a new AbstractDrivebase. */
   public AbstractDrivebase(
-      MotorController leftController, MotorController rightController) {
+      IMotorControllerPlus leftController, IMotorControllerPlus rightController) {
     m_kinematics = new DifferentialDriveKinematics(TRACK_WIDTH.in(Meters));
     m_leftMotor = leftController;
     m_rightMotor = rightController;
@@ -81,16 +79,41 @@ public abstract class AbstractDrivebase
     SmartDashboard.putData("Field", m_field);
   }
 
-  private void logMotor(SysIdRoutineLog log) {
-    // log.motor("Drivebase").voltage();
-  }
-
   public static LinearVelocity getMaxMotorLinearSpeed() {
     return MetersPerSecond.of(m_maxMotorSpeedMPS);
   }
 
   public static AngularVelocity getMaxMotorTurnSpeed() {
-    return DegreesPerSecond.of(m_maxMotorSpeedMPS);
+    return RadiansPerSecond.of(m_maxMotorSpeedRPS);
+  }
+
+  @Override
+  public SysIdRoutine getSysIdRoutine(IDrivebase drivebase, Mode mode) {
+    return new SysIdRoutine(
+        new SysIdRoutine.Config(),
+        new SysIdRoutine.Mechanism((volts) -> this.setVoltages(volts, volts.times(mode == Mode.Linear ? 1 : -1)),
+            log -> {
+              final var leftVoltage = getLeftVoltage();
+              final var leftPosition = getLeftEncoder().getPosition();
+              final var leftVelocity = getLeftEncoder().getVelocity();
+              final var rightVoltage = getRightVoltage();
+              final var rightPosition = getRightEncoder().getPosition();
+              final var rightVelocity = getRightEncoder().getVelocity();
+
+              log.motor("drive-left").voltage(leftVoltage).linearPosition(leftPosition).linearVelocity(leftVelocity);
+              log.motor("drive-right").voltage(rightVoltage).linearPosition(rightPosition)
+                  .linearVelocity(rightVelocity);
+            }, this));
+  }
+
+  @Override
+  public Command sysIdQuasistatic(IDrivebase drivebase, Mode mode, SysIdRoutine.Direction direction) {
+    return getSysIdRoutine(drivebase, mode).quasistatic(direction);
+  }
+
+  @Override
+  public Command sysIdDynamic(IDrivebase drivebase, IDrivebase.Mode mode, SysIdRoutine.Direction direction) {
+    return getSysIdRoutine(drivebase, mode).dynamic(direction);
   }
 
   @Override
@@ -115,6 +138,14 @@ public abstract class AbstractDrivebase
     m_rightMotor.set(rightPercent);
 
     m_robotDrive.feed();
+  }
+
+  protected Voltage getLeftVoltage() {
+    return m_leftMotor.getVoltage();
+  }
+
+  protected Voltage getRightVoltage() {
+    return m_rightMotor.getVoltage();
   }
 
   @Override

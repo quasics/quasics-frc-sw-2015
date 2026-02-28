@@ -10,6 +10,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+
 import java.util.function.Supplier;
 
 public interface IDrivebase {
@@ -36,7 +39,7 @@ public interface IDrivebase {
    * @param leftSpeed  the speed for the left side of the drivebase (positive is
    *                   forward, negative is backward)
    * @param rightSpeed the speed for the right side of the drivebase (positive
-   *     is
+   *                   is
    *                   forward, negative is backward)
    */
   void setSpeeds(LinearVelocity leftSpeed, LinearVelocity rightSpeed);
@@ -80,4 +83,15 @@ public interface IDrivebase {
   void resetOdometry(Pose2d pose);
 
   void setReferencePositionSupplier(Supplier<Pose2d> supplier);
+
+  SysIdRoutine getSysIdRoutine(IDrivebase drivebase, Mode mode);
+
+  Command sysIdQuasistatic(IDrivebase drivebase, Mode mode, SysIdRoutine.Direction direction);
+
+  Command sysIdDynamic(IDrivebase drivebase, Mode mode, SysIdRoutine.Direction direction);
+
+  public enum Mode {
+    Linear,
+    Angular
+  }
 }

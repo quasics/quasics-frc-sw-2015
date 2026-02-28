@@ -104,7 +104,7 @@ public class NovaDriveBase extends AbstractDrivebase {
     // Set up the TrivialEncoders we'll use to handle accessing the data from the
     // motors.
     //
-    final Distance wheelDiam = Meters.of(2.0 * Constants.wheelRadius.in(Meters));
+    final Distance wheelDiam = Constants.wheelRadius.times(2);
     m_leftEncoder = new ThriftyEncoderWrapper(leftController, wheelDiam);
     m_rightEncoder = new ThriftyEncoderWrapper(leftController, wheelDiam);
 

@@ -37,9 +37,10 @@ import java.util.function.Supplier;
 
 public abstract class AbstractDrivebase
     extends SubsystemBase implements IDrivebase {
-  // TODO: this should come from a robot config
+  // TODO: this should (probably) come from a robot config
   private static final LinearVelocity m_maxMotorSpeedMPS = MetersPerSecond.of(3);
 
+  // TODO: this should (probably) come from a robot config
   private static final AngularVelocity m_maxTurningSpeed = RadiansPerSecond.of(6.5);
 
   /** Track width (distance between left and right wheels) in meters. */

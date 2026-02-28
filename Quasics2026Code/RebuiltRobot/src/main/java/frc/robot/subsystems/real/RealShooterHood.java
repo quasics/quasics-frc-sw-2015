@@ -13,8 +13,46 @@ import frc.robot.Constants.CanBusIds.SparkMaxIds;
 import frc.robot.subsystems.interfaces.IShooterHood;
 
 public class RealShooterHood extends SubsystemBase implements IShooterHood {
+
+  private final SparkMax m_hood;
+  private final AbsoluteEncoder m_throughBoreEncoder;
+
   /** Creates a new RealShooterHood. */
   public RealShooterHood() {
+
+    m_hood = new SparkMax(SparkMaxIds.HOOD_ID, MotorType.kBrushless);
+    m_throughBoreEncoder = m_hood.getAbsoluteEncoder();
+
+  }
+
+  @Override
+  public double getCurrentAngle() {
+
+    double m_currentAngleDegrees = m_throughBoreEncoder.getPosition() * 360;
+
+    return m_currentAngleDegrees;
+
+  }
+
+  @Override
+  public void moveOut(double speed) {
+
+    m_hood.set(Math.abs(speed));
+
+  }
+
+  @Override
+  public void moveIn(double speed) {
+
+    m_hood.set(-Math.abs(speed));
+
+  }
+
+  @Override
+  public void stop() {
+
+    m_hood.set(0);
+
   }
 
   @Override

@@ -25,7 +25,7 @@ public class SupportFunctions {
    *
    * @return true iff x is between a and b, inclusive.
    */
-  public static <T extends Unit> boolean isBetween(T x, T a, T b) {
+  public static <T extends Measure> boolean isBetween(T x, T a, T b) {
     return (x.gte(a) && x.lte(b)) || (x.gte(b) && x.lte(a));
   }
 }

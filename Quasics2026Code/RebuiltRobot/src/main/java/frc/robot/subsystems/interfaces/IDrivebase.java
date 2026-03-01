@@ -97,6 +97,10 @@ public interface IDrivebase {
 
   Distance getRightDistance();
 
+  LinearVelocity getLeftVelocity();
+
+  LinearVelocity getRightVelocity();
+
   public enum Mode {
     Linear,
     Angular
@@ -173,6 +177,16 @@ public interface IDrivebase {
     @Override
     public Distance getRightDistance() {
       return Meters.of(0);
+    }
+
+    @Override
+    public LinearVelocity getLeftVelocity() {
+      return MetersPerSecond.of(0);
+    }
+
+    @Override
+    public LinearVelocity getRightVelocity() {
+      return MetersPerSecond.of(0);
     }
   }
 }

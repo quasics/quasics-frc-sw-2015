@@ -250,6 +250,16 @@ public abstract class AbstractDrivebase
     return getRightEncoder().getPosition();
   }
 
+  @Override
+  public LinearVelocity getLeftVelocity() {
+    return getLeftEncoder().getVelocity();
+  }
+
+  @Override
+  public LinearVelocity getRightVelocity() {
+    return getRightEncoder().getVelocity();
+  }
+
   private Supplier<Pose2d> m_referencePositionSupplier = null;
 
   @Override

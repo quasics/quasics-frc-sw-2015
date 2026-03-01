@@ -28,6 +28,7 @@ import frc.robot.commands.RunIntakeRollers;
 import frc.robot.commands.RunShooter;
 import frc.robot.commands.RunShooterForTime;
 import frc.robot.commands.RunShooterPID;
+import frc.robot.commands.testing.DriveForDistance;
 import frc.robot.subsystems.interfaces.IIntake;
 import frc.robot.subsystems.interfaces.IShooterHood;
 import frc.robot.subsystems.interfaces.ILighting;
@@ -49,6 +50,7 @@ import frc.robot.subsystems.real.Vision;
 import frc.robot.subsystems.simulated.SimulatedVision;
 import frc.robot.subsystems.simulated.SimulationDrivebase;
 
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
 
 import java.util.List;
@@ -132,6 +134,10 @@ public class RobotContainer {
    * commands.
    */
   public RobotContainer() {
+    System.out.println(
+        "******************\n" +
+            "Setting up robot for " + ROBOT_NAME + "\n" +
+            "******************\n");
     m_primaryLighting = allocatePrimaryLighting();
     m_leftSideLighting = allocateSideLighting(true);
     m_rightSideLighting = allocateSideLighting(false);
@@ -233,6 +239,15 @@ public class RobotContainer {
         new PivotHoodToPosition(m_hood, 0.10, 15, true));
   }
 
+  private void addDrivebaseTestCommandsToSmartDashboard() {
+    if (m_drivebase == null) {
+      return;
+    }
+    SmartDashboard.putData("LinearSpeedCommand", new LinearSpeedCommand(m_drivebase));
+    SmartDashboard.putData("CMD: Testing encoders",
+        Commands.sequence(new DriveForDistance(m_drivebase, .25, Meters.of(2))));
+  }
+
   private void addSysIdButtonsToSmartDashboard() {
     if (m_shooter != null) {
       SmartDashboard.putData("Flywheel QF",
@@ -262,13 +277,6 @@ public class RobotContainer {
         Direction.kForward));
     SmartDashboard.putData("(ANG) Drivebase DR", m_drivebase.sysIdDynamic(m_drivebase, IDrivebase.Mode.Angular,
         Direction.kReverse));
-  }
-
-  private void addDrivebaseTestCommandsToSmartDashboard() {
-    if (m_drivebase == null) {
-      return;
-    }
-    SmartDashboard.putData("LinearSpeedCommand", new LinearSpeedCommand(m_drivebase));
   }
 
   private void addButtonsToSmartDashboard() {

@@ -146,6 +146,9 @@ public class RobotContainer {
         "******************\n" +
             "Setting up robot for " + ROBOT_NAME + "\n" +
             "******************\n");
+    //
+    // Finish allocating our subsystems and setting them up.
+    //
     m_primaryLighting = allocatePrimaryLighting();
     m_leftSideLighting = allocateSideLighting(true);
     m_rightSideLighting = allocateSideLighting(false);
@@ -155,8 +158,6 @@ public class RobotContainer {
 
     // Connect cross-subsystem suppliers (so that the systems don't know about
     // each other directly)
-    addButtonsToSmartDashboard();
-
     m_vision.setReferencePositionSupplier(() -> {
       if (m_drivebase != null) {
         return m_drivebase.getEstimatedPose();
@@ -173,7 +174,10 @@ public class RobotContainer {
       }
     });
 
-    // Configure the trigger bindings
+    // Populate the smart dashboard.
+    addButtonsToSmartDashboard();
+
+    // Configure the trigger bindings, etc.
     configureBindings();
     configureArcadeDriving();
     configureDriverButtons();

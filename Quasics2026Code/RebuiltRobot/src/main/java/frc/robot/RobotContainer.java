@@ -66,11 +66,13 @@ import java.util.function.Supplier;
 public class RobotContainer {
   private static final int SIDE_LIGHTING_LENGTH = Constants.LIGHTING_TOTAL_LENGTH / 2;
 
+  //
+  // Support for a limited mechanism of establishing per-robot configuration
+  // control.
+  //
+
   /**
    * Names of Quasics robots on which this code might be executed.
-   * 
-   * Note that this is effectively providing a limited mechanism for per-robot
-   * configuration.
    */
   enum RobotName {
     Simulated,
@@ -81,18 +83,12 @@ public class RobotContainer {
   /**
    * Identifies the default robot that we'll assume is in use when we're not under
    * simulation.
-   * 
-   * Note that this is effectively providing a limited mechanism for per-robot
-   * configuration.
    */
   private static final RobotName DEFAULT_ROBOT_NAME = RobotName.Lizzie;
 
   /**
-   * The robot name we'll actually use while executing (which will account for
+   * The robot name we'll *actually* use while executing (which will account for
    * simulation).
-   * 
-   * Note that this is effectively providing a limited mechanism for per-robot
-   * configuration.
    */
   private static final RobotName ROBOT_NAME = Robot.isReal() ? DEFAULT_ROBOT_NAME : RobotName.Simulated;
 

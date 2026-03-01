@@ -96,6 +96,10 @@ public class RobotContainer {
    */
   private static final RobotName ROBOT_NAME = Robot.isReal() ? DEFAULT_ROBOT_NAME : RobotName.Simulated;
 
+  //
+  // The robot's subystems are listed here.
+  //
+
   private final IIntake m_intake = (ROBOT_NAME == RobotName.Lizzie) ? new RealIntake() : new IIntake.NullIntake();
   private final IIndexer m_indexer = (ROBOT_NAME == RobotName.Lizzie) ? new RealIndexer() : new IIndexer.NullIndexer();
   private final IShooterHood m_hood = (ROBOT_NAME == RobotName.Lizzie) ? new RealShooterHood()
@@ -104,7 +108,6 @@ public class RobotContainer {
       : new IShooter.NullShooter();
   private final IClimber m_climber = (ROBOT_NAME == RobotName.Lizzie) ? new RealClimber() : new IClimber.NullClimber();
 
-  // The robot's subsystems and commands are defined here...
   private final IDrivebase m_drivebase = switch (ROBOT_NAME) {
     case Sally -> new SparkDriveBase();
     case Simulated -> new SimulationDrivebase();
@@ -116,14 +119,25 @@ public class RobotContainer {
   private final ILighting m_leftSideLighting;
   private final ILighting m_rightSideLighting;
 
+  //
+  // Operator control definitions.
+  //
+
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final Joystick m_driverController = new Joystick(DriveteamConstants.DRIVER_JOYSTICK_ID);
   private final Joystick m_operatorController = new Joystick(DriveteamConstants.OPERATOR_JOYSTICK_ID);
 
+  /** Deadband range for reading data from driver/operator controllers. */
   private final double DEADBAND_CONSTANT = 0.08;
+
+  /* Slew rate limits for driving controls. */
   private final SlewRateLimiter m_speedSlewRateLimiter = new SlewRateLimiter(1);
   private final SlewRateLimiter m_rotSlewRateLimiter = new SlewRateLimiter(1);
 
+  /**
+   * Iff true, switch drive is active (i.e., logical forward/backward for driving
+   * the robot are swapped).
+   */
   private boolean m_switchDrive = false;
 
   /**

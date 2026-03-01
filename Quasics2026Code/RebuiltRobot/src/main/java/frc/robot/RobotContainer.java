@@ -111,8 +111,13 @@ public class RobotContainer {
   };
   private final IVision m_vision = (Robot.isReal()) ? new Vision() : new SimulatedVision();
 
+  /** Primary lighting control (owns the LED strip and will partition it out). */
   private final ILighting m_primaryLighting;
+
+  /** Subset of lighting targeted for the left side of the robot. */
   private final ILighting m_leftSideLighting;
+
+  /** Subset of lighting targeted for the right side of the robot. */
   private final ILighting m_rightSideLighting;
 
   //

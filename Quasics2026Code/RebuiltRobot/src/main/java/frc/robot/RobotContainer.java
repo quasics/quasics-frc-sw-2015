@@ -130,10 +130,6 @@ public class RobotContainer {
   /** Deadband range for reading data from driver/operator controllers. */
   private final double DEADBAND_CONSTANT = 0.08;
 
-  /* Slew rate limits for driving controls. */
-  private final SlewRateLimiter m_speedSlewRateLimiter = new SlewRateLimiter(1);
-  private final SlewRateLimiter m_rotSlewRateLimiter = new SlewRateLimiter(1);
-
   /**
    * Iff true, switch drive is active (i.e., logical forward/backward for driving
    * the robot are swapped).
@@ -305,27 +301,36 @@ public class RobotContainer {
   }
 
   private void configureArcadeDriving() {
+    // Slew rate limits for driving controls.
+    final SlewRateLimiter speedSlewRateLimiter = new SlewRateLimiter(1);
+    final SlewRateLimiter rotationSlewRateLimiter = new SlewRateLimiter(1);
+
+    // Set up speed suppliers for arcade driving
+    //
     // Syntax for speed suppliers:
     // () -> m_driverController.getRawAxis(0)
+
     Supplier<Double> linearDrivingStick = () -> {
       double scaling = getDriveSpeedScalingFactor();
       double axis = getDriverAxis(Constants.LogitechDualshock.LeftYAxis);
       if (m_switchDrive) {
         double joystickPercent = axis * scaling;
-        return m_speedSlewRateLimiter.calculate(joystickPercent);
+        return speedSlewRateLimiter.calculate(joystickPercent);
       } else {
         double joystickPercent = -axis * scaling;
-        return m_speedSlewRateLimiter.calculate(joystickPercent);
+        return speedSlewRateLimiter.calculate(joystickPercent);
       }
     };
     Supplier<Double> rotationDrivingStick = () -> {
       double scaling = getDriveSpeedScalingFactor();
       double axis = getDriverAxis(Constants.LogitechDualshock.RightXAxis);
       double joystickPercent = -axis * scaling;
-      return m_rotSlewRateLimiter.calculate(joystickPercent);
+      return rotationSlewRateLimiter.calculate(joystickPercent);
     };
-    ((Subsystem) m_drivebase).setDefaultCommand(new ArcadeDrive(
-        linearDrivingStick, rotationDrivingStick, m_drivebase));
+
+    // Set up arcade driving as the default command for the drivebase.
+    ((Subsystem) m_drivebase).setDefaultCommand(
+        new ArcadeDrive(linearDrivingStick, rotationDrivingStick, m_drivebase));
   }
 
   /**

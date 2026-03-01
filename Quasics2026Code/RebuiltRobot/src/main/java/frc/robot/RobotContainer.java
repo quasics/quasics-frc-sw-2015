@@ -261,6 +261,7 @@ public class RobotContainer {
   }
 
   private void addSysIdButtonsToSmartDashboard() {
+    // Shooter characterization support
     if (m_shooter != null) {
       SmartDashboard.putData("Flywheel QF",
           m_shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
@@ -272,23 +273,26 @@ public class RobotContainer {
           m_shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
     }
 
-    SmartDashboard.putData("(LIN) Drivebase QF", m_drivebase.sysIdQuasistatic(m_drivebase, IDrivebase.Mode.Linear,
-        Direction.kForward));
-    SmartDashboard.putData("(LIN) Drivebase QR", m_drivebase.sysIdQuasistatic(m_drivebase, IDrivebase.Mode.Linear,
-        Direction.kReverse));
-    SmartDashboard.putData("(LIN) Drivebase DF", m_drivebase.sysIdDynamic(m_drivebase, IDrivebase.Mode.Linear,
-        Direction.kForward));
-    SmartDashboard.putData("(LIN) Drivebase DR", m_drivebase.sysIdDynamic(m_drivebase, IDrivebase.Mode.Linear,
-        Direction.kReverse));
+    // Drivebase characterization support
+    if (m_drivebase != null) {
+      SmartDashboard.putData("(LIN) Drivebase QF", m_drivebase.sysIdQuasistatic(m_drivebase, IDrivebase.Mode.Linear,
+          Direction.kForward));
+      SmartDashboard.putData("(LIN) Drivebase QR", m_drivebase.sysIdQuasistatic(m_drivebase, IDrivebase.Mode.Linear,
+          Direction.kReverse));
+      SmartDashboard.putData("(LIN) Drivebase DF", m_drivebase.sysIdDynamic(m_drivebase, IDrivebase.Mode.Linear,
+          Direction.kForward));
+      SmartDashboard.putData("(LIN) Drivebase DR", m_drivebase.sysIdDynamic(m_drivebase, IDrivebase.Mode.Linear,
+          Direction.kReverse));
 
-    SmartDashboard.putData("(ANG) Drivebase QF",
-        m_drivebase.sysIdQuasistatic(m_drivebase, IDrivebase.Mode.Angular, Direction.kForward));
-    SmartDashboard.putData("(ANG) Drivebase QR",
-        m_drivebase.sysIdQuasistatic(m_drivebase, IDrivebase.Mode.Angular, Direction.kReverse));
-    SmartDashboard.putData("(ANG) Drivebase DF", m_drivebase.sysIdDynamic(m_drivebase, IDrivebase.Mode.Angular,
-        Direction.kForward));
-    SmartDashboard.putData("(ANG) Drivebase DR", m_drivebase.sysIdDynamic(m_drivebase, IDrivebase.Mode.Angular,
-        Direction.kReverse));
+      SmartDashboard.putData("(ANG) Drivebase QF",
+          m_drivebase.sysIdQuasistatic(m_drivebase, IDrivebase.Mode.Angular, Direction.kForward));
+      SmartDashboard.putData("(ANG) Drivebase QR",
+          m_drivebase.sysIdQuasistatic(m_drivebase, IDrivebase.Mode.Angular, Direction.kReverse));
+      SmartDashboard.putData("(ANG) Drivebase DF", m_drivebase.sysIdDynamic(m_drivebase, IDrivebase.Mode.Angular,
+          Direction.kForward));
+      SmartDashboard.putData("(ANG) Drivebase DR", m_drivebase.sysIdDynamic(m_drivebase, IDrivebase.Mode.Angular,
+          Direction.kReverse));
+    }
   }
 
   private void addButtonsToSmartDashboard() {

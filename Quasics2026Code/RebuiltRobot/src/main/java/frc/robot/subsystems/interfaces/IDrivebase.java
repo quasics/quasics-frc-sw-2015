@@ -4,10 +4,12 @@
 
 package frc.robot.subsystems.interfaces;
 
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -91,6 +93,10 @@ public interface IDrivebase {
 
   Command sysIdDynamic(IDrivebase drivebase, Mode mode, SysIdRoutine.Direction direction);
 
+  Distance getLeftDistance();
+
+  Distance getRightDistance();
+
   public enum Mode {
     Linear,
     Angular
@@ -157,6 +163,16 @@ public interface IDrivebase {
     @Override
     public Command sysIdDynamic(IDrivebase drivebase, Mode mode, Direction direction) {
       return Commands.print("Can't perform characterization on a NullDrivebase");
+    }
+
+    @Override
+    public Distance getLeftDistance() {
+      return Meters.of(0);
+    }
+
+    @Override
+    public Distance getRightDistance() {
+      return Meters.of(0);
     }
   }
 }

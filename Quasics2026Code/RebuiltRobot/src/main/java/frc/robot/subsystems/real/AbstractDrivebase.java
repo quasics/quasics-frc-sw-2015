@@ -240,6 +240,16 @@ public abstract class AbstractDrivebase
         getRightEncoder().getPosition().in(Meters), pose);
   }
 
+  @Override
+  public Distance getLeftDistance() {
+    return getLeftEncoder().getPosition();
+  }
+
+  @Override
+  public Distance getRightDistance() {
+    return getRightEncoder().getPosition();
+  }
+
   private Supplier<Pose2d> m_referencePositionSupplier = null;
 
   @Override

@@ -126,9 +126,6 @@ public class RobotContainer {
 
   private boolean m_switchDrive = false;
 
-  Supplier<Double> m_arcadeDriveLeftStick;
-  Supplier<Double> m_arcadeDriveRightStick;
-
   /**
    * The container for the robot. Contains subsystems, OI devices, and
    * commands.
@@ -296,7 +293,7 @@ public class RobotContainer {
   private void configureArcadeDriving() {
     // Syntax for speed suppliers:
     // () -> m_driverController.getRawAxis(0)
-    m_arcadeDriveLeftStick = () -> {
+    Supplier<Double> linearDrivingStick = () -> {
       double scaling = getDriveSpeedScalingFactor();
       double axis = getDriverAxis(Constants.LogitechDualshock.LeftYAxis);
       if (m_switchDrive) {
@@ -307,14 +304,14 @@ public class RobotContainer {
         return m_speedSlewRateLimiter.calculate(joystickPercent);
       }
     };
-    m_arcadeDriveRightStick = () -> {
+    Supplier<Double> rotationDrivingStick = () -> {
       double scaling = getDriveSpeedScalingFactor();
       double axis = getDriverAxis(Constants.LogitechDualshock.RightXAxis);
       double joystickPercent = -axis * scaling;
       return m_rotSlewRateLimiter.calculate(joystickPercent);
     };
     ((Subsystem) m_drivebase).setDefaultCommand(new ArcadeDrive(
-        m_arcadeDriveLeftStick, m_arcadeDriveRightStick, m_drivebase));
+        linearDrivingStick, rotationDrivingStick, m_drivebase));
   }
 
   /**

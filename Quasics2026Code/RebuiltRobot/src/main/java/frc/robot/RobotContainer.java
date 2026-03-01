@@ -142,7 +142,6 @@ public class RobotContainer {
     // Connect cross-subsystem suppliers (so that the systems don't know about
     // each other directly)
     addButtonsToSmartDashboard();
-    addSysIdButtonsToSmartDashboard();
 
     m_vision.setReferencePositionSupplier(() -> {
       if (m_drivebase != null) {
@@ -162,6 +161,7 @@ public class RobotContainer {
 
     // Configure the trigger bindings
     configureBindings();
+    configureArcadeDriving();
     configureDriverButtons();
   }
 
@@ -188,42 +188,49 @@ public class RobotContainer {
     return new LightingBuffer(realLighting.getSubViews().get(targetIndex), isLeftSide);
   }
 
-  private void addButtonsToSmartDashboard() {
-    if (m_intake != null) {
-      SmartDashboard.putData("Run Intake Rollers", new RunIntakeRollers(m_intake, 0.1, true));
-      SmartDashboard.putData("Run Indexer", new RunIndexer(m_indexer, 0.1, true));
-      // SmartDashboard.putData("Extend Intake", new InstantCommand(() ->
-      // m_intake.setExtensionSpeed(0.5)));
-      // SmartDashboard.putData("Extend Intake", new InstantCommand(() ->
-      // m_intake.setExtensionSpeed(-0.5)));
+  private void addShooterTestCommandsToSmartDashboard() {
+    if (m_shooter == null) {
+      return;
     }
+    SmartDashboard.putData("Run Flywheel @ 1200 RPM, Kicker @ 12.5% speed",
+        new RunShooterPID(m_shooter, RPM.of(1200), .125));
+    SmartDashboard.putData("Run Flywheel @ 3700 RPM, Kicker @ 38.7% speed",
+        new RunShooterPID(m_shooter, RPM.of(3700), .387));
+    SmartDashboard.putData("Run Flywheel @ 15% speed, Kicker @ 50% speed",
+        new RunShooter(m_shooter, 0.15, .50, true));
+    SmartDashboard.putData("Jam", runKickerReverse());
+  }
 
-    if (m_shooter != null) {
-      SmartDashboard.putData("Run Flywheel @ 1200 RPM, Kicker @ 12.5% speed",
-          new RunShooterPID(m_shooter, RPM.of(1200), .125));
-      SmartDashboard.putData("Run Flywheel @ 3700 RPM, Kicker @ 38.7% speed",
-          new RunShooterPID(m_shooter, RPM.of(3700), .387));
-      SmartDashboard.putData("Run Flywheel @ 15% speed, Kicker @ 50% speed",
-          new RunShooter(m_shooter, 0.15, .50, true));
-      SmartDashboard.putData("Jam", runKickerReverse());
+  private void addIntakeTestCommandsToSmartDashboard() {
+    if (m_intake == null) {
+      return;
     }
+    SmartDashboard.putData("Run Intake Rollers", new RunIntakeRollers(m_intake, 0.1, true));
+    SmartDashboard.putData("Run Indexer", new RunIndexer(m_indexer, 0.1, true));
+    // SmartDashboard.putData("Extend Intake", new InstantCommand(() ->
+    // m_intake.setExtensionSpeed(0.5)));
+    // SmartDashboard.putData("Extend Intake", new InstantCommand(() ->
+    // m_intake.setExtensionSpeed(-0.5)));
+    SmartDashboard.putData("Extend Intake",
+        new RunIntakeExtension(m_intake, 0.10, false));
+    SmartDashboard.putData("Retract Intake",
+        new RunIntakeExtension(m_intake, 0.10, true));
+  }
 
-    if (m_intake != null) {
-      SmartDashboard.putData("Extend Intake",
-          new RunIntakeExtension(m_intake, 0.10, false));
-      SmartDashboard.putData("Retract Intake",
-          new RunIntakeExtension(m_intake, 0.10, true));
+  private void addIndexerTestCommandsToSmartDashboard() {
+    if (m_indexer == null) {
+      return;
     }
-
-    if (m_indexer != null) {
-      SmartDashboard.putData("Reverse Indexer", new RunIndexer(m_indexer, 0.1, false));
-    }
-
-    if (m_hood != null) {
-      SmartDashboard.putData("Move Hood to 15 degrees",
-          new PivotHoodToPosition(m_hood, 0.10, 15, true));
-    }
+    SmartDashboard.putData("Reverse Indexer", new RunIndexer(m_indexer, 0.1, false));
     // TODO: Index Jam Prevention Sequence Low Priority
+  }
+
+  private void addHoodTestCommandsToSmartDashboard() {
+    if (m_hood == null) {
+      return;
+    }
+    SmartDashboard.putData("Move Hood to 15 degrees",
+        new PivotHoodToPosition(m_hood, 0.10, 15, true));
   }
 
   private void addSysIdButtonsToSmartDashboard() {
@@ -257,32 +264,30 @@ public class RobotContainer {
         Direction.kReverse));
   }
 
-  public Command runKickerReverse() {
+  private void addDrivebaseTestCommandsToSmartDashboard() {
+    if (m_drivebase == null) {
+      return;
+    }
+    SmartDashboard.putData("LinearSpeedCommand", new LinearSpeedCommand(m_drivebase));
+  }
+
+  private void addButtonsToSmartDashboard() {
+    addShooterTestCommandsToSmartDashboard();
+    addIntakeTestCommandsToSmartDashboard();
+    addIndexerTestCommandsToSmartDashboard();
+    addHoodTestCommandsToSmartDashboard();
+    addDrivebaseTestCommandsToSmartDashboard();
+    addSysIdButtonsToSmartDashboard();
+  }
+
+  private Command runKickerReverse() {
     return Commands.sequence(new RunShooterForTime(m_shooter, 0, 0.75, false, 2), new WaitCommand(0.5),
         new RunShooter(m_shooter, .15, .50, true));
   }
 
-  // public Command runIndexerUnjam(){
-
-  // return Commands.sequence(new)
-
-  // }
-
-  /**
-   * Use this method to define your trigger->command mappings. Triggers can be
-   * created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor
-   * with an arbitrary predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for
-   * {@link CommandXboxController Xbox}/{@link
-   * edu.wpi.first.wpilibj2.command.button.CommandPS4Controller PS4} controllers
-   * or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
-   */
-
-  Trigger switchDriveTrigger;
-
-  private void configureBindings() {
+  private void configureArcadeDriving() {
+    // Syntax for speed suppliers:
+    // () -> m_driverController.getRawAxis(0)
     m_arcadeDriveLeftStick = () -> {
       double scaling = getDriveSpeedScalingFactor();
       double axis = getDriverAxis(Constants.LogitechDualshock.LeftYAxis);
@@ -300,23 +305,34 @@ public class RobotContainer {
       double joystickPercent = -axis * scaling;
       return m_rotSlewRateLimiter.calculate(joystickPercent);
     };
+    ((Subsystem) m_drivebase).setDefaultCommand(new ArcadeDrive(
+        m_arcadeDriveLeftStick, m_arcadeDriveRightStick, m_drivebase));
+  }
 
-    switchDriveTrigger = new Trigger(() -> m_driverController.getRawButton(
+  /**
+   * Use this method to define your trigger->command mappings. Triggers can be
+   * created via the
+   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor
+   * with an arbitrary predicate, or via the named factories in {@link
+   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for
+   * {@link CommandXboxController Xbox}/{@link
+   * edu.wpi.first.wpilibj2.command.button.CommandPS4Controller PS4} controllers
+   * or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
+   * joysticks}.
+   */
+  private void configureBindings() {
+    // Note that we're not saving the trigger in a variable. That's fine: this is a
+    // "just set it up and let it do its thing" sort of thing....
+    new Trigger(() -> m_driverController.getRawButton(
         Constants.LogitechDualshock.BButton))
         .onTrue(
             new InstantCommand(() -> {
               m_switchDrive = !m_switchDrive;
             }));
-    // Syntax for speed suppliers:
-    // () -> m_driverController.getRawAxis(0)
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is
     // pressed, cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
-    ((Subsystem) m_drivebase).setDefaultCommand(new ArcadeDrive(
-        m_arcadeDriveLeftStick, m_arcadeDriveRightStick, m_drivebase));
-    LinearSpeedCommand setLinearSpeed = new LinearSpeedCommand(m_drivebase);
-    SmartDashboard.putData("LinearSpeedCommand", setLinearSpeed);
   }
 
   private void configureDriverButtons() {

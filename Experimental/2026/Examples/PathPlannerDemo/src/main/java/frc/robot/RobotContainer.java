@@ -15,6 +15,7 @@ import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -32,6 +33,7 @@ import frc.robot.commands.MoveElevatorToPosition;
 import frc.robot.commands.RainbowLighting;
 import frc.robot.commands.SimpleElevatorMover;
 import frc.robot.commands.TurnToTarget;
+import frc.robot.subsystems.abstracts.AbstractDrivebase;
 import frc.robot.subsystems.interfaces.ICandle;
 import frc.robot.subsystems.interfaces.IElevator;
 import frc.robot.subsystems.interfaces.ILighting;
@@ -53,6 +55,7 @@ import frc.robot.subsystems.simulations.SimulatedElevator;
 import frc.robot.subsystems.simulations.SimulatedSingleJointArm;
 import frc.robot.subsystems.simulations.SimulationUxSupport;
 import frc.robot.utils.DeadbandEnforcer;
+import frc.robot.utils.PathPlannerHelper;
 import frc.robot.utils.RobotConfigs;
 import frc.robot.utils.RobotConfigs.RobotConfig;
 import frc.robot.utils.StateChangeExecutor;
@@ -71,6 +74,16 @@ import java.util.function.Supplier;
  *     https://docs.wpilib.org/en/stable/docs/software/commandbased/structuring-command-based-project.html#robotcontainer
  */
 public class RobotContainer {
+//   private final SendableChooser<Command> autoChooser;
+//   public RobotContainer() {
+//    autoChooser = AutoBuilder.buildAutoChooser();
+//    SmartDashboard.putData("Auto Chooser", autoChooser);
+//   }
+
+   //getPathPlannerAuto is listed in the PathPlanner docs as getAutonomousCommand, but we already have something named this.
+//   public Command getPathPlannerAuto() {
+//    return autoChooser.getSelected();
+//   }
   /** Iff true, allow Choreo to handle flipping any paths used with it. */
   static final private boolean CHOREO_SHOULD_HANDLE_PATH_FLIPPING = false;
 
@@ -91,10 +104,13 @@ public class RobotContainer {
      * position.
      */
     eChoreo,
+    ePPMoveForward1
   }
 
+  
+
   /** Option to be used for auto mode actions. */
-  static final AutoModeOperation AUTO_MODE_OPTION = AutoModeOperation.eChoreo;
+  static final AutoModeOperation AUTO_MODE_OPTION = AutoModeOperation.ePPMoveForward1;
 
   /** Indicates the robot we are going to target. */
   final RobotConfigs.Robot DEPLOYED_ON = RobotConfigs.Robot.Simulation;
@@ -588,15 +604,19 @@ public class RobotContainer {
    * @see #AUTO_MODE_OPTION
    */
   public Command getAutonomousCommand() {
-    return switch (AUTO_MODE_OPTION) {
-      case eDoNothing -> Commands.print("No autonomous command configured");
-      case eChoreo -> generateChoreoAutoCommand();
-      case eMoveAndRaise ->
-        new ParallelCommandGroup(new frc.robot.commands.DriveForDistance(
+    switch (AUTO_MODE_OPTION) {  
+      case eChoreo: return generateChoreoAutoCommand();
+      case ePPMoveForward1: return PathPlannerHelper.getAutonomousCommand((AbstractDrivebase)m_drivebase);
+      case eMoveAndRaise:
+        return new ParallelCommandGroup(new frc.robot.commands.DriveForDistance(
                                      m_drivebase, .50, Meters.of(3)),
             new frc.robot.commands.MoveElevatorToExtreme(m_elevator, true));
-    };
-  }
+      case eDoNothing: 
+      default:
+        System.out.println("No autonomous command configured");
+        return null;
+      }
+    }
 
   ////////////////////////////////////////////////////////////////////////////////
   //
@@ -667,6 +687,7 @@ public class RobotContainer {
    */
   private static IDrivebasePlus allocateDrivebase(
       RobotConfigs.RobotConfig config) {
+        System.out.println("Allocating our DB!");
     if (!config.hasDrive()) {
       return new IDrivebasePlus.NullDrivebase();
     }

@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.interfaces;
 
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 /**
  * Interface for controlling the climbing hardware.
  *
@@ -16,4 +18,13 @@ public interface IClimber {
    *
    * Need to talk to folks about limit switches, etc.
    */
+
+  /**
+   * Trivial implementation of IClimber, for use when we're on a robot without
+   * one.
+   */
+  public class NullClimber extends SubsystemBase implements IClimber {
+    public NullClimber() {
+    }
+  }
 }

@@ -6,21 +6,29 @@ package frc.robot.utils;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.subsystems.abstracts.AbstractDrivebase;
+import frc.robot.subsystems.interfaces.drivebase.IDrivebase;
 import frc.robot.subsystems.interfaces.drivebase.IDrivebasePlus;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.controllers.PPLTVController;
 
 
 /** Add your docs here. */
 public class PathPlannerHelper {
-private AbstractDrivebase m_abstractDrivebase;
 
-  public PathPlannerHelper(AbstractDrivebase abstractDrivebase) {
+  public PathPlannerHelper() throws IllegalAccessException {
+    throw new IllegalAccessException("Don't do that!! :(");
+  } 
+
+  public static Command getAutonomousCommand(AbstractDrivebase abstractDrivebase) {
     com.pathplanner.lib.config.RobotConfig config = null;
     try{
       config = com.pathplanner.lib.config.RobotConfig.fromGUISettings();
     } catch (Exception e) {
+      System.out.println("Hey! Listen!");
       e.printStackTrace();
     }
 
@@ -40,5 +48,7 @@ private AbstractDrivebase m_abstractDrivebase;
       },
       abstractDrivebase
     );
-  } 
+    return new PathPlannerAuto("MoveForward1");
+  }
+
 }

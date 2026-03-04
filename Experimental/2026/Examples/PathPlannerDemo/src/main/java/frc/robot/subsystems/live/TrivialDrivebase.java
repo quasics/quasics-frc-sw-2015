@@ -32,6 +32,7 @@ public class TrivialDrivebase extends SubsystemBase implements ITrivialDrivebase
 
   /** Creates a new TrivialDrivebase. */
   public TrivialDrivebase() {
+    System.out.println("Trivial Created!");
   }
 
   @Override

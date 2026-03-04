@@ -15,27 +15,30 @@ import java.lang.Math;
  * Makes the robot turn by a certain angle (degrees, radians, whatever), at a
  * given speed.
  */
-public class TurnRobot extends Command {
+public class Turn_TO_Robot
+ extends Command {
   final AbstractDrivebase m_drivebase;
   final double m_percentSpeed;
   final Angle m_turnAngle;
-   // final Angle m_finalAngle;   get outta here
-  Angle notfinalAngle;
+  // final Angle m_finalAngle;   get outta here
   final Angle m_beginningAngle;
+  boolean cc;
 
   /**
-   * Creates a new TurnRobot.
+   * Creates a new Turn_TO_Robot
+   * .
    *
    * Note that we need to make sure that we handle cases where (for instance) the
    * speed is negative, but the angle is positive (or vice versa). This is left as
    * an exercise for the student....
    */
-  public TurnRobot(AbstractDrivebase drivebase, double percentSpeed, Angle turnAngle) {
+  public Turn_TO_Robot
+  (AbstractDrivebase drivebase, double percentSpeed, Angle turnAngle) {
     m_drivebase = drivebase;
    
     Angle negative5 = Degrees.of(-5);
     Angle positive5 = Degrees.of(5);
-    if(turnAngle.in(Degrees) >= 0){
+    if(turnAngle.in(Degrees) >= m_drivebase.getHeadingInDegrees()){
       m_turnAngle = turnAngle.plus(negative5);
     }
      else{
@@ -65,17 +68,16 @@ public class TurnRobot extends Command {
   @Override
   public void initialize() {
    
-    notfinalAngle = Degrees.of(m_drivebase.getHeadingInDegrees()).plus(m_turnAngle);
      System.out.println();
-    System.out.println("**************                      notfinalAngle is " + notfinalAngle.in(Degrees));
 
 
     double mInOoSpercentSpeed = m_percentSpeed * -1;
-    if (m_turnAngle.in(Degrees) > 0) {
+    if (m_turnAngle.in(Degrees) > m_drivebase.getHeadingInDegrees()) {
       m_drivebase.tankDrive(m_percentSpeed, mInOoSpercentSpeed);
+      cc = true;
     } else {
       m_drivebase.tankDrive(mInOoSpercentSpeed, m_percentSpeed);
-
+      cc = false;
 
 
 
@@ -115,12 +117,12 @@ public class TurnRobot extends Command {
   @Override
   public boolean isFinished() {
    
-    if(0 <= m_turnAngle.in(Degrees) && notfinalAngle.in(Degrees) <= m_drivebase.getHeadingInDegrees()){
-       System.out.println("**************                         we stop, nfA / heading ::  " + notfinalAngle.in(Degrees) + " / " + m_drivebase.getHeadingInDegrees());
+    if(cc == true && m_turnAngle.in(Degrees) <= m_drivebase.getHeadingInDegrees()){
+      System.out.println("**************                         we stop, nfA / heading ::  " + m_turnAngle.in(Degrees) + " / " + m_drivebase.getHeadingInDegrees());
        return true;
     }
-if(0 >= m_turnAngle.in(Degrees) && notfinalAngle.in(Degrees) >= m_drivebase.getHeadingInDegrees()){
-      System.out.println("**************                         we stop, nfA / heading ::  " + notfinalAngle.in(Degrees) + " / " + m_drivebase.getHeadingInDegrees());    
+if(cc == false && m_turnAngle.in(Degrees) <= m_drivebase.getHeadingInDegrees()){
+  System.out.println("**************                         we stop, nfA / heading ::  " + m_turnAngle.in(Degrees) + " / " + m_drivebase.getHeadingInDegrees());
       return true;
     }
 

@@ -91,12 +91,14 @@ public class Vision extends SubsystemBase implements IVision {
     // simulator if you just run the "LinearSpeedCommand" from the default starting
     // position. You'll see the vision-based pose update as the robot moves, and
     // mostly follow along with the robot, then suddenly lock in place as the robot
-    // continues to move away from it. The problem is that you're not handling the
-    // case when you *don't* have any data from the pipeline (e.g., because there's
-    // no targets in view): when this happens, you stop updating the estimate, but
-    // you don't "forget" the last one that you computed, based on when you *did*
-    // have data. This could lead to some significant errors when you're trying to
-    // use that as a part of a fused (i.e., combined odometry+vision) pose estimate.
+    // continues to move away from it.
+    //
+    // The problem is that you're not handling the case when you *don't* have any
+    // data from the pipeline (e.g., because there's no targets in view): when this
+    // happens, you stop updating the estimate, but you don't "forget" the last one
+    // that you computed, based on when you *did* have data. This could lead to some
+    // significant errors when you're trying to use that as a part of a fused (i.e.,
+    // combined odometry+vision) pose estimate.
     if (result != null) {
       visionEstimate = photonEstimator.estimateCoprocMultiTagPose(result);
       if (visionEstimate.isEmpty()) {

@@ -48,7 +48,7 @@ public class PathPlannerHelper {
       },
       abstractDrivebase
     );
-    return new PathPlannerAuto("MoveForward");
+    return new PathPlannerAuto("MoveForward1");
   }
 
 }

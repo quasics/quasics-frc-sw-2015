@@ -71,6 +71,7 @@ public class Drivebase extends AbstractDrivebase {
    */
   public Drivebase(RobotConfig config) {
     super(config);
+    System.out.println("DB Created!");
 
     final var driveConfig = config.drive();
 

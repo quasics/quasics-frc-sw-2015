@@ -104,13 +104,13 @@ public class RobotContainer {
      * position.
      */
     eChoreo,
-    ePPMoveForward
+    ePPMoveForward1
   }
 
   
 
   /** Option to be used for auto mode actions. */
-  static final AutoModeOperation AUTO_MODE_OPTION = AutoModeOperation.ePPMoveForward;
+  static final AutoModeOperation AUTO_MODE_OPTION = AutoModeOperation.ePPMoveForward1;
 
   /** Indicates the robot we are going to target. */
   final RobotConfigs.Robot DEPLOYED_ON = RobotConfigs.Robot.Simulation;
@@ -606,7 +606,7 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     switch (AUTO_MODE_OPTION) {  
       case eChoreo: return generateChoreoAutoCommand();
-      case ePPMoveForward: return PathPlannerHelper.getAutonomousCommand((AbstractDrivebase)m_drivebase);
+      case ePPMoveForward1: return PathPlannerHelper.getAutonomousCommand((AbstractDrivebase)m_drivebase);
       case eMoveAndRaise:
         return new ParallelCommandGroup(new frc.robot.commands.DriveForDistance(
                                      m_drivebase, .50, Meters.of(3)),
@@ -687,6 +687,7 @@ public class RobotContainer {
    */
   private static IDrivebasePlus allocateDrivebase(
       RobotConfigs.RobotConfig config) {
+        System.out.println("Allocating our DB!");
     if (!config.hasDrive()) {
       return new IDrivebasePlus.NullDrivebase();
     }

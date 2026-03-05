@@ -21,6 +21,18 @@ import java.io.IOException;
  * way as a normal WPLib Encoder.
  */
 public class ThriftyEncoderWrapper implements TrivialEncoder {
+  /**
+   * Thrifty conversion object, used to translate native velocity units to
+   * rotations/sec.
+   */
+  final static Conversion m_speedConverter = new Conversion(VelocityUnit.ROTATIONS_PER_SEC, EncoderType.INTERNAL);
+
+  /**
+   * Thrifty conversion object, used to translate native positional units to
+   * rotations.
+   */
+  final static Conversion m_distanceConverter = new Conversion(PositionUnit.ROTATIONS, EncoderType.INTERNAL);
+
   /** Wrapped Thrifty Nova controller, providing access to encoder data. */
   final ThriftyNova m_motorController;
 
@@ -29,18 +41,6 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
    * distance.)
    */
   final Distance m_wheelDiameter;
-
-  /**
-   * Thrifty conversion object, used to translate native velocity units to
-   * rotations/sec.
-   */
-  final Conversion m_speedConverter = new Conversion(VelocityUnit.ROTATIONS_PER_SEC, EncoderType.INTERNAL);
-
-  /**
-   * Thrifty conversion object, used to translate native positional units to
-   * rotations.
-   */
-  final Conversion m_distanceConverter = new Conversion(PositionUnit.ROTATIONS, EncoderType.INTERNAL);
 
   /**
    * Constructor.

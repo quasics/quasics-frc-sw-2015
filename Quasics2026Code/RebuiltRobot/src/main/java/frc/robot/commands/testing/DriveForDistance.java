@@ -67,7 +67,7 @@ public class DriveForDistance extends Command {
       final Distance movementSinceLastSample = currentDistance.minus(m_lastReportedDistance);
       final LinearVelocity sampleVelocity = movementSinceLastSample.div(sampleTime);
       System.out.format(
-          "Reported left distance: %.4f m (delta: %.4f, raw: %.4f), velocity: %.4f m/s (sampled: %.2f)\n",
+          "Reported left distance: %.4f m (delta: %.4f m, raw: %.4f units), velocity: %.4f m/s (sampled: %.2f)\n",
           currentDistance.in(Meters),
           movementSinceLastSample.in(Meters),
           m_drivebase.getLeftRawDistance(),

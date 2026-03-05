@@ -42,8 +42,11 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
    */
   final Distance m_wheelDiameter;
 
+  final double m_gearing;
+
   /**
-   * Constructor.
+   * Constructor. (This assumes that the motor is directly connected to the wheel,
+   * or effectively having 1:1 gearing).
    *
    * @param motorController    ThriftyNova object being wrapped for "normal" use
    * @param wheelOuterDiameter outer diameter of the wheel being turned by the
@@ -51,23 +54,38 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
    */
   public ThriftyEncoderWrapper(
       ThriftyNova motorController, Distance wheelOuterDiameter) {
-    m_wheelDiameter = wheelOuterDiameter;
+    this(motorController, wheelOuterDiameter, 1.0);
+  }
+
+  /**
+   * Constructor.
+   *
+   * @param motorController    ThriftyNova object being wrapped for "normal" use
+   * @param wheelOuterDiameter outer diameter of the wheel being turned by the
+   *                           motor
+   * @param gearing            gearing ratio from the motor to the wheel (e.g.,
+   *                           8.45)
+   */
+  public ThriftyEncoderWrapper(
+      ThriftyNova motorController, Distance wheelOuterDiameter, double gearing) {
     m_motorController = motorController;
+    m_wheelDiameter = wheelOuterDiameter;
+    m_gearing = gearing;
   }
 
   @Override
   public Distance getPosition() {
     final double currentRevolutions = m_distanceConverter.fromMotor(m_motorController.getPosition());
-    // revolutions * (diameter * PI)/revolution --> distance
-    return m_wheelDiameter.times(Math.PI * currentRevolutions);
+    // revolutions * (diameter * PI)/revolution * gearingRatio --> distance
+    return m_wheelDiameter.times(Math.PI * currentRevolutions * m_gearing);
   }
 
   @Override
   public LinearVelocity getVelocity() {
     final double currentRotationsPerSecond = m_speedConverter.fromMotor(m_motorController.getVelocity());
-    // (revs/sec) * (pi * diameterInMeters/rev) --> (meters/sec)
+    // (revs/sec) * (pi * diameterInMeters)/rev * gearingRatio) --> (meters/sec)
     final double metersPerRotation = m_wheelDiameter.in(Meters) * Math.PI;
-    return MetersPerSecond.of(metersPerRotation * currentRotationsPerSecond);
+    return MetersPerSecond.of(metersPerRotation * currentRotationsPerSecond * m_gearing);
   }
 
   @Override

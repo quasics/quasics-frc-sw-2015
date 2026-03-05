@@ -10,12 +10,12 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
@@ -69,14 +69,6 @@ public abstract class AbstractDrivebase
 
   private final Logger m_logger = new Logger(Logger.Verbosity.Info, "AbstractDriveBase");
 
-  // sim bot
-  final protected PIDController m_leftPidController = new PIDController(0.0,
-      0.0, 0.0);
-  final protected PIDController m_rightPidController = new PIDController(0.0,
-      0.0, 0.0);
-  // final protected DifferentialDriveFeedforward m_feedforward = new
-  // DifferentialDriveFeedforward(3.5375, 0.19759, 0.0, 0.0);
-
   /** Creates a new AbstractDrivebase. */
   public AbstractDrivebase(
       IMotorControllerPlus leftController, IMotorControllerPlus rightController) {
@@ -98,31 +90,7 @@ public abstract class AbstractDrivebase
     return m_maxTurningSpeed;
   }
 
-  /*
-   * public void drivePID(ChassisSpeeds chassisSpeeds) {
-   * DifferentialDriveWheelSpeeds speeds =
-   * m_kinematics.toWheelSpeeds(chassisSpeeds);
-   * double leftPidOutput =
-   * m_leftPidController.calculate(getLeftEncoder().getVelocity().in(
-   * MetersPerSecond),
-   * speeds.leftMetersPerSecond);
-   * double rightPidOutput =
-   * m_leftPidController.calculate(getRightEncoder().getVelocity().in(
-   * MetersPerSecond),
-   * speeds.rightMetersPerSecond);
-   * var feedforward =
-   * m_feedforward.calculate(getLeftEncoder().getVelocity().in(MetersPerSecond),
-   * speeds.leftMetersPerSecond,
-   * getRightEncoder().getVelocity().in(MetersPerSecond),
-   * speeds.rightMetersPerSecond,
-   * 0.02);
-   * 
-   * setVoltages(leftPidOutput + feedforward.left, rightPidOutput +
-   * feedforward.right);
-   * }
-   */
-
-  protected SysIdRoutine getSysIdRoutine(IDrivebase drivebase, Mode mode) {
+  public SysIdRoutine getSysIdRoutine(IDrivebase drivebase, Mode mode) {
     return new SysIdRoutine(
         new SysIdRoutine.Config(),
         new SysIdRoutine.Mechanism((volts) -> this.setVoltages(volts, volts.times(mode == Mode.Linear ? 1 : -1)),
@@ -219,6 +187,16 @@ public abstract class AbstractDrivebase
     // Probably print a warning too so that we can fix whatever is commanding us
     // too high.
     return speed.in(MetersPerSecond) / m_maxMotorSpeedMPS.in(MetersPerSecond);
+  }
+
+  @Override
+  public double getHeading() {
+    return getGyro().getRotation2d().getDegrees();
+  }
+
+  @Override
+  public AngularVelocity getTurnRate() {
+    return getGyro().getRate();
   }
 
   @Override

@@ -380,6 +380,10 @@ public class RobotContainer {
       new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.BackButton))
           .whileTrue(new RunIntakeExtension(m_intake, 0.1, false));
     }
+    if (m_shooter != null) {
+      new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.XButton))
+          .whileTrue(new RunShooterPID(m_shooter, RPM.of(3700), .387));
+    }
   }
 
   private double getDriveSpeedScalingFactor() {

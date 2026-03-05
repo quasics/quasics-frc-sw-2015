@@ -6,8 +6,10 @@ package frc.robot.subsystems.interfaces;
 
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
@@ -81,6 +83,10 @@ public interface IDrivebase {
 
   double mpsToPercent(LinearVelocity speed);
 
+  double getHeading();
+
+  AngularVelocity getTurnRate();
+
   Pose2d getOdometryPose();
 
   Pose2d getEstimatedPose();
@@ -141,6 +147,16 @@ public interface IDrivebase {
     @Override
     public double mpsToPercent(LinearVelocity speed) {
       return 0;
+    }
+
+    @Override
+    public double getHeading() {
+      return new Rotation2d().getDegrees();
+    }
+
+    @Override
+    public AngularVelocity getTurnRate() {
+      return RadiansPerSecond.of(0);
     }
 
     @Override

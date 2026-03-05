@@ -31,7 +31,8 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
   final Distance m_wheelDiameter;
 
   /**
-   * Thrifty conversion object, used to translate native velocity units to RPMs.
+   * Thrifty conversion object, used to translate native velocity units to
+   * rotations/sec.
    */
   final Conversion m_speedConverter = new Conversion(VelocityUnit.ROTATIONS_PER_SEC, EncoderType.INTERNAL);
 

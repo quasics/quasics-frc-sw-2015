@@ -56,6 +56,11 @@ public class TalonEncoderWrapper implements TrivialEncoder {
   //
 
   @Override
+  public double getRawPosition() {
+    return m_motorController.getPosition().getValueAsDouble();
+  }
+
+  @Override
   public Distance getPosition() {
     double rotations = m_motorController.getPosition().getValueAsDouble();
     return m_outerCircumference.times(rotations);

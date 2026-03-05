@@ -21,25 +21,26 @@ import java.io.IOException;
  * way as a normal WPLib Encoder.
  */
 public class ThriftyEncoderWrapper implements TrivialEncoder {
-  /** Wrapped Thrifty Nova controller, providing access to encoder data. */
-  final ThriftyNova m_motorController;
-
   /**
-   * Distance travelled per turn of the outer wheel. (Used to convert
-   * "revolutions" to linear distance.)
+   * Thrifty conversion object, used to translate native velocity units to
+   * rotations/sec.
    */
-  final Distance m_rotationDistance;
-
-  /**
-   * Thrifty conversion object, used to translate native velocity units to RPMs.
-   */
-  final Conversion m_speedConverter = new Conversion(VelocityUnit.ROTATIONS_PER_MIN, EncoderType.INTERNAL);
+  final static Conversion m_speedConverter = new Conversion(VelocityUnit.ROTATIONS_PER_SEC, EncoderType.INTERNAL);
 
   /**
    * Thrifty conversion object, used to translate native positional units to
    * rotations.
    */
-  final Conversion m_distanceConverter = new Conversion(PositionUnit.ROTATIONS, EncoderType.INTERNAL);
+  final static Conversion m_distanceConverter = new Conversion(PositionUnit.ROTATIONS, EncoderType.INTERNAL);
+
+  /** Wrapped Thrifty Nova controller, providing access to encoder data. */
+  final ThriftyNova m_motorController;
+
+  /**
+   * Outer diameter of the wheel. (Used to convert "revolutions" to linear
+   * distance.)
+   */
+  final Distance m_wheelDiameter;
 
   /**
    * Constructor.
@@ -50,23 +51,23 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
    */
   public ThriftyEncoderWrapper(
       ThriftyNova motorController, Distance wheelOuterDiameter) {
-    m_rotationDistance = wheelOuterDiameter.times(Math.PI);
+    m_wheelDiameter = wheelOuterDiameter;
     m_motorController = motorController;
   }
 
   @Override
   public Distance getPosition() {
     final double currentRevolutions = m_distanceConverter.fromMotor(m_motorController.getPosition());
-    return m_rotationDistance.times(currentRevolutions);
+    // revolutions * (diameter * PI)/revolution --> distance
+    return m_wheelDiameter.times(Math.PI * currentRevolutions);
   }
 
   @Override
   public LinearVelocity getVelocity() {
-    final double currentRPM = m_speedConverter.fromMotor(m_motorController.getVelocity());
-    // (revs/min) / 60 (secs/min) --> (revs/sec)
+    final double currentRotationsPerSecond = m_speedConverter.fromMotor(m_motorController.getVelocity());
     // (revs/sec) * (pi * diameterInMeters/rev) --> (meters/sec)
-    final double revsPerSec = currentRPM / 60;
-    return MetersPerSecond.of(m_rotationDistance.in(Meters) * revsPerSec);
+    final double metersPerRotation = m_wheelDiameter.in(Meters) * Math.PI;
+    return MetersPerSecond.of(metersPerRotation * currentRotationsPerSecond);
   }
 
   @Override
@@ -78,5 +79,10 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
   public void close() throws IOException {
     // No-op: ThriftyNova should be closed through the MotorController
     // interface.
+  }
+
+  @Override
+  public double getRawPosition() {
+    return m_motorController.getPosition();
   }
 }

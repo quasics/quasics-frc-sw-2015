@@ -2,11 +2,12 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.hardware;
+package frc.robot.hardware.actuators;
 
 import static edu.wpi.first.units.Units.Volts;
 
 import com.thethriftybot.devices.ThriftyNova;
+
 import java.io.Closeable;
 import java.io.IOException;
 

@@ -15,11 +15,11 @@ import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotMotor;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotWheelSize;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import frc.robot.Constants.PwmPortIds;
-import frc.robot.hardware.IMotorControllerPlus;
+import frc.robot.hardware.actuators.IMotorControllerPlus;
+import frc.robot.hardware.sensors.IGyro;
+import frc.robot.hardware.sensors.TrivialEncoder;
 import frc.robot.logging.Logger;
 import frc.robot.logging.Logger.Verbosity;
-import frc.robot.sensors.IGyro;
-import frc.robot.sensors.TrivialEncoder;
 import frc.robot.subsystems.real.AbstractDrivebase;
 
 public class SimulationDrivebase extends AbstractDrivebase {

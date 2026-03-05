@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.sensors;
+package frc.robot.hardware.sensors;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -104,7 +104,9 @@ public interface IGyro extends Closeable {
         // Most functions are passed through to the gyro being wrapped...
         g::calibrate, g::getAngle, g::getRate, g::getRotation2d,
         // ...but reset() is replaced with a no-op.
-        () -> {}, () -> {});
+        () -> {
+        }, () -> {
+        });
   }
 
   /**
@@ -186,10 +188,8 @@ public interface IGyro extends Closeable {
    */
   static IGyro wrapGyro(AnalogGyro g) {
     return new FunctionalGyro(g::calibrate,
-        ()
-            -> Degrees.of(g.getAngle()),
-        ()
-            -> DegreesPerSecond.of(g.getRate()),
+        () -> Degrees.of(g.getAngle()),
+        () -> DegreesPerSecond.of(g.getRate()),
         g::getRotation2d, g::reset, g::close);
   }
 

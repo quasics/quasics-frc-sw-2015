@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.sensors;
+package frc.robot.hardware.sensors;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.DegreesPerSecond;
@@ -23,25 +23,24 @@ public class Pigeon2Wrapper extends IGyro.FunctionalGyro {
    */
   public Pigeon2Wrapper(Pigeon2 pigeon2) {
     super(
-        ()
-            -> { System.out.println(">>> Null-op: Pigeon2 auto-calibrates."); },
+        () -> {
+          System.out.println(">>> Null-op: Pigeon2 auto-calibrates.");
+        },
         // Per docs, "getAngle()" (CW+) has been replaced by "getYaw()" (CCW+).
-        ()
-            -> Degrees.of(pigeon2.getYaw().getValueAsDouble()),
+        () -> Degrees.of(pigeon2.getYaw().getValueAsDouble()),
         // Per docs, "getRate()" (CW+) has been replaced by
         // "getAngularVelocityZWorld()" (CCW+).
-        ()
-            -> DegreesPerSecond.of(
-                pigeon2.getAngularVelocityZWorld().getValueAsDouble()),
-        ()
-            -> pigeon2.getRotation2d().unaryMinus(),
-        ()
-            -> {
+        () -> DegreesPerSecond.of(
+            pigeon2.getAngularVelocityZWorld().getValueAsDouble()),
+        () -> pigeon2.getRotation2d().unaryMinus(),
+        () -> {
           // Note that this will reset *all* axes for the Pigeon2. May want
           // to wrap further in an OffsetGyro.
           pigeon2.reset();
         },
-        () -> { pigeon2.close(); });
+        () -> {
+          pigeon2.close();
+        });
   }
 
   /**

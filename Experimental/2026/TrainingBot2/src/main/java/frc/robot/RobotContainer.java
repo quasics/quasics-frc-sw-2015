@@ -17,8 +17,10 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.LogitechGamePad;
 import frc.robot.commands.DriveForDistance;
+import frc.robot.commands.SI_DriveForDistance;
 import frc.robot.commands.TankDrive;
 import frc.robot.commands.TurnRobot;
+import frc.robot.commands.Turn_TO_Robot;
 import frc.robot.subsystems.AbstractDrivebase;
 import frc.robot.subsystems.RealDrivebase;
 import frc.robot.subsystems.SimulatedDrivebase;
@@ -109,9 +111,22 @@ public class RobotContainer {
     SmartDashboard.putData("Turn -90 @ 3",
         new TurnRobot(m_driveBase, (0.03), Degrees.of(-90)));
 
+      SmartDashboard.putData("Turn to 90 degrees",
+        new Turn_TO_Robot(m_driveBase, .03, Degrees.of(90)));
+
+    SmartDashboard.putData("3 feet, 25%",
+        new SI_DriveForDistance(m_driveBase, 0.25, 50, Feet.of(10)));
+
+        SmartDashboard.putData("Circle test",
+         new SI_DriveForDistance(m_driveBase, 0.25, 0.30, Meters.of(2.05)));
+
     // Another example, using a separate function to create/return the command
     // (sequence) to be added behind a dashboard button.
     SmartDashboard.putData("Move forward then backward", moveForwardThenBackward(m_driveBase));
+    
+    SmartDashboard.putData("Go to Center", GoToMiddle(m_driveBase));
+    SmartDashboard.putData("Figure Eight", FigureEight(m_driveBase));
+    SmartDashboard.putData("FULL Figure Eight", FULL_FigureEight(m_driveBase));
   }
 
   /**
@@ -130,6 +145,51 @@ public class RobotContainer {
     return Commands.sequence(
         new DriveForDistance(drivebase, 0.30, 1), new DriveForDistance(drivebase, 0.30, -1));
   }
+
+public static Command GoToMiddle(AbstractDrivebase drivebase) {
+    return Commands.sequence(
+        new DriveForDistance(drivebase, 0.15, 8.15),    new TurnRobot(drivebase, 0.03, Degrees.of(90)),    new DriveForDistance(drivebase, 0.30, 4.1));
+  }
+
+
+  public static Command FigureEight(AbstractDrivebase drivebase) {
+    return Commands.sequence(
+        new TurnRobot(drivebase, 0.02, Degrees.of(-45)),
+        new DriveForDistance(drivebase, 0.30, 1.524), //5 feet
+        new TurnRobot(drivebase, 0.025, Degrees.of(-90)),
+        new SI_DriveForDistance(drivebase, 0.25, 0.30, Meters.of(2.1)), // this is pretty wonky
+        new TurnRobot(drivebase, 0.02, Degrees.of(-125)),
+        new DriveForDistance(drivebase, 0.30, 4.45),
+        new TurnRobot(drivebase, 0.02, Degrees.of(90)),
+        new SI_DriveForDistance(drivebase, 0.30, 0.25, Meters.of(2.675)),
+        new TurnRobot(drivebase, 0.02, Degrees.of(108)),
+        new DriveForDistance(drivebase, 0.3, 2.3),
+        new TurnRobot(drivebase, 0.02, Degrees.of(60)))
+
+        
+        
+        
+        
+        ;
+        
+  }
+
+  public static Command FULL_FigureEight(AbstractDrivebase drivebase) {
+    return Commands.sequence(
+         new DriveForDistance(drivebase, 0.15, 8.15),    new TurnRobot(drivebase, 0.03, Degrees.of(90)),    new DriveForDistance(drivebase, 0.30, 4.1), //Center
+        new TurnRobot(drivebase, 0.02, Degrees.of(-45)),             /*             fig.-8                 */
+        new DriveForDistance(drivebase, 0.30, 1.524), //5 feet
+        new TurnRobot(drivebase, 0.025, Degrees.of(-90)),
+        new SI_DriveForDistance(drivebase, 0.25, 0.30, Meters.of(2.1)), // this is pretty wonky
+        new TurnRobot(drivebase, 0.02, Degrees.of(-125)),
+        new DriveForDistance(drivebase, 0.30, 4.45),
+        new TurnRobot(drivebase, 0.02, Degrees.of(90)),
+        new SI_DriveForDistance(drivebase, 0.30, 0.25, Meters.of(2.675)),
+        new TurnRobot(drivebase, 0.02, Degrees.of(108)),
+        new DriveForDistance(drivebase, 0.3, 2.3),
+        new TurnRobot(drivebase, 0.02, Degrees.of(60)));
+  }
+    
 
   /**
    * Use this method to define your trigger->command mappings.

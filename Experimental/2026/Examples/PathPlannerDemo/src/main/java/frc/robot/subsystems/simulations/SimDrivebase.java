@@ -104,6 +104,7 @@ public class SimDrivebase extends AbstractDrivebase {
    */
   public SimDrivebase(RobotConfig config) {
     super(config);
+    System.out.println("Sim Created!");
 
     final var driveConfig = config.drive();
 

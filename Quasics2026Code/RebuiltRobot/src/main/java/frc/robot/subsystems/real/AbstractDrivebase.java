@@ -28,11 +28,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
-import frc.robot.hardware.IMotorControllerPlus;
+import frc.robot.hardware.actuators.IMotorControllerPlus;
+import frc.robot.hardware.sensors.IGyro;
+import frc.robot.hardware.sensors.TrivialEncoder;
 import frc.robot.logging.Logger;
 import frc.robot.logging.Logger.Verbosity;
-import frc.robot.sensors.IGyro;
-import frc.robot.sensors.TrivialEncoder;
 import frc.robot.subsystems.interfaces.IDrivebase;
 
 import java.util.function.Supplier;
@@ -226,6 +226,16 @@ public abstract class AbstractDrivebase
   @Override
   public Distance getRightDistance() {
     return getRightEncoder().getPosition();
+  }
+
+  @Override
+  public double getLeftRawDistance() {
+    return getLeftEncoder().getRawPosition();
+  }
+
+  @Override
+  public double getRightRawDistance() {
+    return getRightEncoder().getRawPosition();
   }
 
   @Override

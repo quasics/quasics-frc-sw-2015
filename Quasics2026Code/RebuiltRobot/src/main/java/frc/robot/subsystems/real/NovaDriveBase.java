@@ -11,11 +11,11 @@ import com.thethriftybot.devices.ThriftyNova.ThriftyNovaConfig;
 import edu.wpi.first.units.measure.Distance;
 import frc.robot.Constants;
 import frc.robot.Constants.CanBusIds.ThriftyNovaIds;
-import frc.robot.hardware.ThriftyNovaMotorControllerPlus;
-import frc.robot.sensors.IGyro;
-import frc.robot.sensors.Pigeon2Wrapper;
-import frc.robot.sensors.ThriftyEncoderWrapper;
-import frc.robot.sensors.TrivialEncoder;
+import frc.robot.hardware.actuators.ThriftyNovaMotorControllerPlus;
+import frc.robot.hardware.sensors.IGyro;
+import frc.robot.hardware.sensors.Pigeon2Wrapper;
+import frc.robot.hardware.sensors.ThriftyEncoderWrapper;
+import frc.robot.hardware.sensors.TrivialEncoder;
 
 public class NovaDriveBase extends AbstractDrivebase {
   private final TrivialEncoder m_leftEncoder;

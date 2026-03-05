@@ -103,6 +103,10 @@ public interface IDrivebase {
 
   Distance getRightDistance();
 
+  double getLeftRawDistance();
+
+  double getRightRawDistance();
+
   LinearVelocity getLeftVelocity();
 
   LinearVelocity getRightVelocity();
@@ -203,6 +207,16 @@ public interface IDrivebase {
     @Override
     public LinearVelocity getRightVelocity() {
       return MetersPerSecond.of(0);
+    }
+
+    @Override
+    public double getLeftRawDistance() {
+      return 0;
+    }
+
+    @Override
+    public double getRightRawDistance() {
+      return 0;
     }
   }
 }

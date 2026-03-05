@@ -79,4 +79,9 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
     // No-op: ThriftyNova should be closed through the MotorController
     // interface.
   }
+
+  @Override
+  public double getRawPosition() {
+    return m_motorController.getPosition();
+  }
 }

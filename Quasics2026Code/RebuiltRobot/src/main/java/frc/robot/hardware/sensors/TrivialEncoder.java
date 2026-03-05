@@ -75,6 +75,8 @@ import java.io.IOException;
  *      pattern</a>
  */
 public interface TrivialEncoder extends Closeable {
+  double getRawPosition();
+
   /**
    * Returns the distance recorded by the encoder.
    *
@@ -124,6 +126,11 @@ public interface TrivialEncoder extends Closeable {
       public void close() throws IOException {
         encoder.close();
       }
+
+      @Override
+      public double getRawPosition() {
+        return encoder.getDistance();
+      }
     };
   }
 
@@ -166,6 +173,11 @@ public interface TrivialEncoder extends Closeable {
       public void close() throws IOException {
         encoder.close();
       }
+
+      @Override
+      public double getRawPosition() {
+        return encoder.getDistance();
+      }
     };
   }
 
@@ -192,6 +204,11 @@ public interface TrivialEncoder extends Closeable {
 
     @Override
     public void close() throws IOException {
+    }
+
+    @Override
+    public double getRawPosition() {
+      return 0;
     }
   }
 }

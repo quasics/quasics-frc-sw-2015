@@ -53,4 +53,9 @@ public class TalonEncoderWrapper implements TrivialEncoder {
   public void reset() {
     m_motorController.setPosition(0);
   }
+
+  @Override
+  public double getRawPosition() {
+    return m_motorController.getPosition().getValueAsDouble();
+  }
 }

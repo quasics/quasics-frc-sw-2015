@@ -251,6 +251,16 @@ public abstract class AbstractDrivebase
   }
 
   @Override
+  public double getLeftRawDistance() {
+    return getLeftEncoder().getRawPosition();
+  }
+
+  @Override
+  public double getRightRawDistance() {
+    return getRightEncoder().getRawPosition();
+  }
+
+  @Override
   public LinearVelocity getLeftVelocity() {
     return getLeftEncoder().getVelocity();
   }

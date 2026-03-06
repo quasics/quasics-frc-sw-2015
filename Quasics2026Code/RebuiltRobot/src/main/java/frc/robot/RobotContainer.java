@@ -19,7 +19,6 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.DriveteamConstants;
 import frc.robot.Constants.PwmPortIds;
 import frc.robot.commands.ArcadeDrive;
-import frc.robot.commands.LinearSpeedCommand;
 import frc.robot.commands.PivotHoodToPosition;
 import frc.robot.commands.RainbowLighting;
 import frc.robot.commands.RunIndexer;
@@ -29,6 +28,7 @@ import frc.robot.commands.RunShooter;
 import frc.robot.commands.RunShooterForTime;
 import frc.robot.commands.RunShooterPID;
 import frc.robot.commands.testing.DriveForDistance;
+import frc.robot.commands.testing.LinearSpeedCommand;
 import frc.robot.subsystems.interfaces.IIntake;
 import frc.robot.subsystems.interfaces.IShooterHood;
 import frc.robot.subsystems.interfaces.ILighting;
@@ -383,6 +383,10 @@ public class RobotContainer {
           .whileTrue(new RunIntakeExtension(m_intake, 0.1, true));
       new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.BackButton))
           .whileTrue(new RunIntakeExtension(m_intake, 0.1, false));
+    }
+    if (m_shooter != null) {
+      new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.XButton))
+          .whileTrue(new RunShooterPID(m_shooter, RPM.of(3700), .387));
     }
   }
 

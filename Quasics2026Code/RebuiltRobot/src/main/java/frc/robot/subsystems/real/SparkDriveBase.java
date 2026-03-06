@@ -13,9 +13,9 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Encoder;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
-import frc.robot.hardware.SparkMaxMotorControllerPlus;
-import frc.robot.sensors.IGyro;
-import frc.robot.sensors.TrivialEncoder;
+import frc.robot.hardware.actuators.SparkMaxMotorControllerPlus;
+import frc.robot.hardware.sensors.IGyro;
+import frc.robot.hardware.sensors.TrivialEncoder;
 
 public class SparkDriveBase extends AbstractDrivebase {
   private final TrivialEncoder m_leftEncoder;

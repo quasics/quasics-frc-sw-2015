@@ -10,7 +10,6 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -28,11 +27,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
-import frc.robot.hardware.IMotorControllerPlus;
+import frc.robot.hardware.actuators.IMotorControllerPlus;
+import frc.robot.hardware.sensors.IGyro;
+import frc.robot.hardware.sensors.TrivialEncoder;
 import frc.robot.logging.Logger;
 import frc.robot.logging.Logger.Verbosity;
-import frc.robot.sensors.IGyro;
-import frc.robot.sensors.TrivialEncoder;
 import frc.robot.subsystems.interfaces.IDrivebase;
 
 import java.util.function.Supplier;
@@ -69,14 +68,6 @@ public abstract class AbstractDrivebase
 
   private final Logger m_logger = new Logger(Logger.Verbosity.Info, "AbstractDriveBase");
 
-  // sim bot
-  final protected PIDController m_leftPidController = new PIDController(0.0,
-      0.0, 0.0);
-  final protected PIDController m_rightPidController = new PIDController(0.0,
-      0.0, 0.0);
-  // final protected DifferentialDriveFeedforward m_feedforward = new
-  // DifferentialDriveFeedforward(3.5375, 0.19759, 0.0, 0.0);
-
   /** Creates a new AbstractDrivebase. */
   public AbstractDrivebase(
       IMotorControllerPlus leftController, IMotorControllerPlus rightController) {
@@ -98,31 +89,7 @@ public abstract class AbstractDrivebase
     return m_maxTurningSpeed;
   }
 
-  /*
-   * public void drivePID(ChassisSpeeds chassisSpeeds) {
-   * DifferentialDriveWheelSpeeds speeds =
-   * m_kinematics.toWheelSpeeds(chassisSpeeds);
-   * double leftPidOutput =
-   * m_leftPidController.calculate(getLeftEncoder().getVelocity().in(
-   * MetersPerSecond),
-   * speeds.leftMetersPerSecond);
-   * double rightPidOutput =
-   * m_leftPidController.calculate(getRightEncoder().getVelocity().in(
-   * MetersPerSecond),
-   * speeds.rightMetersPerSecond);
-   * var feedforward =
-   * m_feedforward.calculate(getLeftEncoder().getVelocity().in(MetersPerSecond),
-   * speeds.leftMetersPerSecond,
-   * getRightEncoder().getVelocity().in(MetersPerSecond),
-   * speeds.rightMetersPerSecond,
-   * 0.02);
-   * 
-   * setVoltages(leftPidOutput + feedforward.left, rightPidOutput +
-   * feedforward.right);
-   * }
-   */
-
-  protected SysIdRoutine getSysIdRoutine(IDrivebase drivebase, Mode mode) {
+  public SysIdRoutine getSysIdRoutine(IDrivebase drivebase, Mode mode) {
     return new SysIdRoutine(
         new SysIdRoutine.Config(),
         new SysIdRoutine.Mechanism((volts) -> this.setVoltages(volts, volts.times(mode == Mode.Linear ? 1 : -1)),
@@ -222,6 +189,16 @@ public abstract class AbstractDrivebase
   }
 
   @Override
+  public double getHeading() {
+    return getGyro().getRotation2d().getDegrees();
+  }
+
+  @Override
+  public AngularVelocity getTurnRate() {
+    return getGyro().getRate();
+  }
+
+  @Override
   public Pose2d getOdometryPose() {
     return m_odometry.getPoseMeters();
   }
@@ -248,6 +225,16 @@ public abstract class AbstractDrivebase
   @Override
   public Distance getRightDistance() {
     return getRightEncoder().getPosition();
+  }
+
+  @Override
+  public double getLeftRawDistance() {
+    return getLeftEncoder().getRawPosition();
+  }
+
+  @Override
+  public double getRightRawDistance() {
+    return getRightEncoder().getRawPosition();
   }
 
   @Override

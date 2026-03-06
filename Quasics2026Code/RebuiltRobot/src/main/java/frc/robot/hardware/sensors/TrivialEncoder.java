@@ -75,10 +75,6 @@ import java.io.IOException;
  *      pattern</a>
  */
 public interface TrivialEncoder extends Closeable {
-  /**
-   * Returns the raw position/distabce value from the encoder, in order to support
-   * debugging, etc.
-   */
   double getRawPosition();
 
   /**
@@ -112,11 +108,6 @@ public interface TrivialEncoder extends Closeable {
 
     return new TrivialEncoder() {
       @Override
-      public double getRawPosition() {
-        return encoder.getDistance();
-      }
-
-      @Override
       public Distance getPosition() {
         return Meters.of(encoder.getDistance());
       }
@@ -134,6 +125,11 @@ public interface TrivialEncoder extends Closeable {
       @Override
       public void close() throws IOException {
         encoder.close();
+      }
+
+      @Override
+      public double getRawPosition() {
+        return encoder.getDistance();
       }
     };
   }
@@ -158,11 +154,6 @@ public interface TrivialEncoder extends Closeable {
 
     return new TrivialEncoder() {
       @Override
-      public double getRawPosition() {
-        return encoder.getDistance();
-      }
-
-      @Override
       public Distance getPosition() {
         return Meters.of(encoder.getDistance());
       }
@@ -182,6 +173,11 @@ public interface TrivialEncoder extends Closeable {
       public void close() throws IOException {
         encoder.close();
       }
+
+      @Override
+      public double getRawPosition() {
+        return encoder.getDistance();
+      }
     };
   }
 
@@ -190,11 +186,6 @@ public interface TrivialEncoder extends Closeable {
     /** Constructor. */
     public NullEncoder() {
       System.out.println("INFO: allocating NullEncoder");
-    }
-
-    @Override
-    public double getRawPosition() {
-      return 0;
     }
 
     @Override
@@ -213,6 +204,11 @@ public interface TrivialEncoder extends Closeable {
 
     @Override
     public void close() throws IOException {
+    }
+
+    @Override
+    public double getRawPosition() {
+      return 0;
     }
   }
 }

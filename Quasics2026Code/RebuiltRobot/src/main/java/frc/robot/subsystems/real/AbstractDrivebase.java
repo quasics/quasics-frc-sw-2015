@@ -15,7 +15,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
-import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
@@ -278,12 +277,23 @@ public abstract class AbstractDrivebase
   // Slight code design complexity:
   // AbstractDrivebase is going to maintain
   // complete control over leaders
-  protected MotorController getLeftLeader() {
+  protected IMotorControllerPlus getLeftLeader() {
     return m_leftMotor;
   }
 
-  protected MotorController getRightLeader() {
+  protected IMotorControllerPlus getRightLeader() {
     return m_rightMotor;
+  }
+
+  @Override
+  public boolean setBreakingMode(boolean enable) {
+    if (getLeftLeader().canSetBrakeMode() && getRightLeader().canSetBrakeMode()) {
+      getLeftLeader().setBrakeMode(enable);
+      getRightLeader().setBrakeMode(enable);
+      return true;
+    } else {
+      return false;
+    }
   }
 
   protected abstract TrivialEncoder getLeftEncoder();

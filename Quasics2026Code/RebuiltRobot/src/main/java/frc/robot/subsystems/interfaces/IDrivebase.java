@@ -111,6 +111,17 @@ public interface IDrivebase {
 
   LinearVelocity getRightVelocity();
 
+  /**
+   * Tries to enable/disable breaking mode, if supported by the underlying
+   * hardware.
+   * 
+   * @param enable if true, breaking mode should be enabled; if false, "coast
+   *               mode" should be enabled
+   * @return true if we were able to apply the mode to the hardware; false if the
+   *         operation isn't supported for this drivebase
+   */
+  boolean setBreakingMode(boolean enable);
+
   public enum Mode {
     Linear,
     Angular
@@ -217,6 +228,11 @@ public interface IDrivebase {
     @Override
     public double getRightRawDistance() {
       return 0;
+    }
+
+    @Override
+    public boolean setBreakingMode(boolean enable) {
+      return false; // Not supported
     }
   }
 }

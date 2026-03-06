@@ -16,18 +16,15 @@ public class PivotHoodToPosition extends Command {
   IShooterHood m_hood;
   private double m_speed;
   private double m_endAngle;
-  private boolean m_forward;
 
   /** Creates a new PivotHoodToPosition. */
-  public PivotHoodToPosition(IShooterHood hood, double speed, double endAngle, boolean forward) {
+  public PivotHoodToPosition(IShooterHood hood, double speed, double endAngle) {
 
     m_hood = hood;
 
     m_speed = speed;
 
     m_endAngle = endAngle * Ratios.ENCODERTOHOODRATIO;
-
-    m_forward = forward;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements((SubsystemBase) hood);
@@ -39,27 +36,11 @@ public class PivotHoodToPosition extends Command {
 
     if (m_hood.getCurrentAngle() > (m_endAngle - Tolerances.ANGLETOLERANCE)) {
 
-      if (m_forward) {
-
-        m_hood.moveIn(m_speed);
-
-      } else {
-
-        m_hood.moveOut(m_speed);
-
-      }
+      m_hood.moveDown(m_speed);
 
     } else if (m_hood.getCurrentAngle() < (m_endAngle + Tolerances.ANGLETOLERANCE)) {
 
-      if (m_forward) {
-
-        m_hood.moveOut(m_speed);
-
-      } else {
-
-        m_hood.moveIn(m_speed);
-
-      }
+      m_hood.moveUp(m_speed);
 
     }
 

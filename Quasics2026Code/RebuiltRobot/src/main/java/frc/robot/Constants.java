@@ -4,7 +4,7 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.Inches;
 
 import edu.wpi.first.units.measure.Distance;
 
@@ -21,7 +21,8 @@ import edu.wpi.first.units.measure.Distance;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static final Distance wheelRadius = Meters.of(0.0508);
+  public static final Distance wheelRadius = Inches.of(3);
+  public static final double drivebaseGearRatio = 8.45;
 
   public static final int LIGHTING_TOTAL_LENGTH = 80;
 
@@ -70,7 +71,7 @@ public final class Constants {
   }
 
   public static class Tolerances {
-    public static final double ANGLETOLERANCE = 1;
+    public static final double ANGLETOLERANCE = 8;
   }
 
   public static class Ratios {

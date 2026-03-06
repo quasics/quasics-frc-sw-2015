@@ -31,19 +31,25 @@ public class RealShooterHood extends SubsystemBase implements IShooterHood {
 
     double m_currentAngleDegrees = m_throughBoreEncoder.getPosition() * 360;
 
+    if (m_currentAngleDegrees > 300) {
+
+      m_currentAngleDegrees = 0;
+
+    }
+
     return m_currentAngleDegrees;
 
   }
 
   @Override
-  public void moveOut(double speed) {
+  public void moveDown(double speed) {
 
     m_hood.set(Math.abs(speed));
 
   }
 
   @Override
-  public void moveIn(double speed) {
+  public void moveUp(double speed) {
 
     m_hood.set(-Math.abs(speed));
 
@@ -56,7 +62,7 @@ public class RealShooterHood extends SubsystemBase implements IShooterHood {
 
   }
 
-  private static final boolean NOISY = false;
+  private static final boolean NOISY = true;
 
   @Override
   public void periodic() {

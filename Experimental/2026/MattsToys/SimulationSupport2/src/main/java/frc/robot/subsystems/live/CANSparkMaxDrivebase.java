@@ -84,7 +84,7 @@ public class CANSparkMaxDrivebase extends DrivebaseBase {
     rightLeader.configure(rightLeaderConfig, ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
 
-    // Configure the other motors to follow their leader
+    // Configure the other motors to follow their respective leaders.
     configureMotorToFollow(QuasicsDrivebaseCanIds.LEFT_FOLLOWER_ID, leftLeader);
     configureMotorToFollow(
         QuasicsDrivebaseCanIds.RIGHT_FOLLOWER_ID, rightLeader);

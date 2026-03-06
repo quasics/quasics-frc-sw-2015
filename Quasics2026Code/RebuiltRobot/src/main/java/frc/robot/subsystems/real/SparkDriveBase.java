@@ -4,17 +4,23 @@
 
 package frc.robot.subsystems.real;
 
+import static edu.wpi.first.units.Units.Meters;
+
 import com.revrobotics.PersistMode;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Encoder;
+import frc.robot.Constants;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
 import frc.robot.hardware.actuators.SparkMaxMotorControllerPlus;
 import frc.robot.hardware.sensors.IGyro;
+import frc.robot.hardware.sensors.SparkMaxEncoderWrapper;
 import frc.robot.hardware.sensors.TrivialEncoder;
 
 public class SparkDriveBase extends AbstractDrivebase {
@@ -57,29 +63,53 @@ public class SparkDriveBase extends AbstractDrivebase {
     super(new SparkMaxMotorControllerPlus(leftLeader),
         new SparkMaxMotorControllerPlus(rightLeader));
 
+    // Conversion factor from units in rotations (or RPM) to meters (or m/s).
+    final Distance wheelCircumference = Constants.wheelRadius.times(2 * Math.PI);
+    final double distanceScalingFactorForGearing = wheelCircumference.div(Constants.drivebaseGearRatio).in(Meters);
+    final double velocityScalingFactor = distanceScalingFactorForGearing / 60;
+    System.out.println("Wheel circumference: " + Constants.drivebaseGearRatio);
+    System.out.println("Using gear ratio: " + Constants.drivebaseGearRatio);
+    System.out.println("Adjustment for gearing (m/rotation): " + distanceScalingFactorForGearing);
+    System.out.println("Velocity adj.: " + velocityScalingFactor);
+
+    // Configure the leader motors
+    final SparkMaxConfig leftConfig = new SparkMaxConfig();
+    final SparkMaxConfig rightConfig = new SparkMaxConfig();
+
+    leftConfig.encoder.positionConversionFactor(distanceScalingFactorForGearing);
+    leftConfig.encoder.velocityConversionFactor(velocityScalingFactor);
+    leftConfig.inverted(false);
+
+    rightConfig.encoder.positionConversionFactor(distanceScalingFactorForGearing);
+    rightConfig.encoder.velocityConversionFactor(velocityScalingFactor);
+    rightConfig.inverted(true);
+
+    leftLeader.configure(
+        leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    rightLeader.configure(
+        rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
     // Configure followers to follow the leaders.
     final SparkMax leftfollower = new SparkMax(SparkMaxIds.LEFT_FOLLOWER_ID, MotorType.kBrushless);
     final SparkMax rightfollower = new SparkMax(SparkMaxIds.RIGHT_FOLLOWER_ID, MotorType.kBrushless);
-
     configureMotorControllersForLeadingAndFollowing(
         leftLeader, leftfollower);
     configureMotorControllersForLeadingAndFollowing(
         rightLeader, rightfollower);
 
-    // Configure the encoders.
-    // FINDME(Rylie, Robert): The SparkMax motors don't use WPILib Encoder objects.
-    // They use the RelativeEncoders that are specific to the Sparks. As a result,
-    // this whole section of the code is unfortunately just *wrong*.
-    Encoder leftEncoder = new Encoder(1, 2);
-    Encoder rightEncoder = new Encoder(3, 4);
+    // // Configure the encoders.
+    // // FINDME(Rylie, Robert): The SparkMax motors don't use WPILib Encoder
+    // objects.
+    // // They use the RelativeEncoders that are specific to the Sparks. As a
+    // result,
+    // // this whole section of the code is unfortunately just *wrong*.
+    // Encoder leftEncoder = new Encoder(1, 2);
+    // Encoder rightEncoder = new Encoder(3, 4);
+    // leftEncoder.setDistancePerPulse(getDistancePerPulse());
+    // rightEncoder.setDistancePerPulse(getDistancePerPulse());
 
-    leftEncoder.setDistancePerPulse(getDistancePerPulse());
-    rightEncoder.setDistancePerPulse(getDistancePerPulse());
-
-    // TODO(DISCUSS): What about our encoders are missing information here...
-
-    m_leftEncoder = TrivialEncoder.forWpiLibEncoder(leftEncoder);
-    m_rightEncoder = TrivialEncoder.forWpiLibEncoder(rightEncoder);
+    m_leftEncoder = new SparkMaxEncoderWrapper(leftLeader.getEncoder());
+    m_rightEncoder = new SparkMaxEncoderWrapper(rightLeader.getEncoder());
 
     // Configure the gyro.
     //

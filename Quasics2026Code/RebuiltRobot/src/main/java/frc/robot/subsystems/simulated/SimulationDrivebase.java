@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.simulated;
 
+import edu.wpi.first.units.DistanceUnit;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotController;
@@ -28,6 +29,7 @@ public class SimulationDrivebase extends AbstractDrivebase {
   private static final int LEFT_ENCODER_CHANNEL_B = 2;
   private static final int RIGHT_ENCODER_CHANNEL_A = 3;
   private static final int RIGHT_ENCODER_CHANNEL_B = 4;
+  private static final DistanceUnit Meters = null;
 
   private final Logger m_logger = new Logger(Logger.Verbosity.Info, "SimulatedDriveBase");
 
@@ -65,6 +67,10 @@ public class SimulationDrivebase extends AbstractDrivebase {
     m_rightEncoderSim = new EncoderSim(rightEncoder);
     m_leftEncoder = TrivialEncoder.forWpiLibEncoder(leftEncoder, m_leftEncoderSim);
     m_rightEncoder = TrivialEncoder.forWpiLibEncoder(rightEncoder, m_rightEncoderSim);
+  }
+
+  protected static double getDistancePerPulse() {
+    return 2.0 * Math.PI * Constants.wheelRadius.in(Meters) / -4096.0;
   }
 
   @Override

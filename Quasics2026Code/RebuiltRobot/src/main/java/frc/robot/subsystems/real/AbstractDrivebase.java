@@ -272,10 +272,6 @@ public abstract class AbstractDrivebase
     }
   }
 
-  protected static double getDistancePerPulse() {
-    return 2.0 * Math.PI * Constants.wheelRadius.in(Meters) / -4096.0;
-  }
-
   protected final DifferentialDriveKinematics getKinematics() {
     return m_kinematics;
   }

@@ -55,6 +55,9 @@ public class DriveForDistance extends Command {
     m_drivebase.setPercent(m_percent, m_percent);
     m_timer.restart();
     m_lastReportedTime = m_timer.get();
+
+    System.out.println(
+        "Starting driving at " + m_percent + " power, from " + m_lastReportedDistance + " to " + m_targetDistance);
   }
 
   @Override

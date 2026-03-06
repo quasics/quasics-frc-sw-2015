@@ -10,12 +10,15 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
+import frc.robot.logging.Logger;
+import frc.robot.logging.Logger.Verbosity;
 import frc.robot.subsystems.interfaces.IShooterHood;
 
 public class RealShooterHood extends SubsystemBase implements IShooterHood {
 
   private final SparkMax m_hood;
   private final AbsoluteEncoder m_throughBoreEncoder;
+  private final Logger m_logger = new Logger(Verbosity.Info, "RealShooterHood");
 
   /** Creates a new RealShooterHood. */
   public RealShooterHood() {
@@ -62,16 +65,11 @@ public class RealShooterHood extends SubsystemBase implements IShooterHood {
 
   }
 
-  private static final boolean NOISY = true;
-
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
 
-    if (NOISY) {
-      System.out.println("Current Angle: " + getCurrentAngle());
-    }
-
+    m_logger.log("Current Angle: " + getCurrentAngle(), Verbosity.Debug);
   }
 
 }

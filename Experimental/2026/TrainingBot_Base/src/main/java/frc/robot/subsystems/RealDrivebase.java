@@ -72,10 +72,11 @@ public class RealDrivebase extends AbstractDrivebase {
     leftConfig.follow(0);
     leftConfig.encoder.positionConversionFactor(distanceScalingFactorForGearing);
     leftConfig.encoder.velocityConversionFactor(velocityScalingFactor);
+    leftConfig.inverted(false);
+
     rightConfig.follow(0);
     rightConfig.encoder.positionConversionFactor(distanceScalingFactorForGearing);
     rightConfig.encoder.velocityConversionFactor(velocityScalingFactor);
-
     rightConfig.inverted(true);
 
     m_leftLeader.configure(

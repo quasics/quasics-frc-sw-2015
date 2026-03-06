@@ -129,6 +129,10 @@ public class SimulatedVision extends Vision {
     }
 
     final var debugField = m_visionSim.getDebugField();
-    debugField.getObject("VisionEstimate").setPoses(estimatedPoses);
+    if (estimatedPoses != null) {
+      debugField.getObject("VisionEstimate").setPoses(estimatedPoses);
+    } else {
+      debugField.getObject("VisionEstimate").setPoses(Collections.emptyList());
+    }
   }
 }

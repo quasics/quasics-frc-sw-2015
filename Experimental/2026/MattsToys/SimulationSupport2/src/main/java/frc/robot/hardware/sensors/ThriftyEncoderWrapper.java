@@ -40,7 +40,7 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
    * Outer diameter of the wheel. (Used to convert "revolutions" to linear
    * distance.)
    */
-  final Distance m_wheelDiameter;
+  final Distance m_wheelCircumference;
 
   final double m_gearing;
 
@@ -69,24 +69,23 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
   public ThriftyEncoderWrapper(
       ThriftyNova motorController, Distance wheelOuterDiameter, double gearing) {
     m_motorController = motorController;
-    m_wheelDiameter = wheelOuterDiameter;
+    m_wheelCircumference = wheelOuterDiameter.times(Math.PI);
     m_gearing = gearing;
   }
 
   @Override
   public Distance getPosition() {
     final double currentRevolutions = m_distanceConverter.fromMotor(m_motorController.getPosition());
-    // revolutions * (diameter * PI)/revolution / gearingRatio --> distance
-    final Distance distancePerRotation = m_wheelDiameter.times(Math.PI);
-    return distancePerRotation.times(currentRevolutions / m_gearing);
+    // revolutions * circumferenceTraveled/revolution / gearingRatio --> distance
+    return m_wheelCircumference.times(currentRevolutions / m_gearing);
   }
 
   @Override
   public LinearVelocity getVelocity() {
     final double currentRotationsPerSecond = m_speedConverter.fromMotor(m_motorController.getVelocity());
-    // (revs/sec) * (pi * diameterInMeters)/rev * gearingRatio) --> (meters/sec)
-    final double metersPerRotation = m_wheelDiameter.in(Meters) * Math.PI;
-    return MetersPerSecond.of(metersPerRotation * currentRotationsPerSecond * m_gearing);
+    // (revs/sec) * circumferenceTraveled/rev / gearingRatio) --> (meters/sec)
+    final double metersPerRotation = m_wheelCircumference.in(Meters);
+    return MetersPerSecond.of(currentRotationsPerSecond * metersPerRotation / m_gearing);
   }
 
   @Override

@@ -5,8 +5,13 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotGearing;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -22,9 +27,15 @@ import edu.wpi.first.units.measure.Distance;
  */
 public final class Constants {
   public static final Distance wheelRadius = Inches.of(3);
-  public static final double drivebaseGearRatio = 8.45;
-
+  // 8.45: if this changes, set up our simulation without kitbot helpers
+  public static final KitbotGearing gearing = KitbotGearing.k8p45;
+  public static final double drivebaseGearRatio = gearing.value;
+  public static final LinearVelocity maxLinearDriveSpeed = MetersPerSecond.of(3);
+  public static final AngularVelocity maxRotationalSpeed = RadiansPerSecond.of(6.5);
   public static final int LIGHTING_TOTAL_LENGTH = 80;
+
+  // TODO: Calculate https://www.chiefdelphi.com/t/coefficient-of-friction/467778
+  // TODO: mass, moi, CoF, current draw, track width for auto
 
   public static class PwmPortIds {
     public static final int SIMULATED_LEFT_MOTOR_CHANNEL = 0;
@@ -197,4 +208,7 @@ public final class Constants {
     SparkMax,
     ThriftyNova
   }
+
+  // TODO: Make a com.pathplanner.lib.config.RobotConfig per robot we want to run
+  // auto on
 }

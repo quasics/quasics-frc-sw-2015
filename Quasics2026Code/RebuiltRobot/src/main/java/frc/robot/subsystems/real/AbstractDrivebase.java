@@ -7,14 +7,16 @@ package frc.robot.subsystems.real;
 import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
@@ -38,11 +40,6 @@ import java.util.function.Supplier;
 
 public abstract class AbstractDrivebase
     extends SubsystemBase implements IDrivebase {
-  // TODO: this should (probably) come from a robot config
-  private static final LinearVelocity m_maxMotorSpeedMPS = MetersPerSecond.of(3);
-
-  // TODO: this should (probably) come from a robot config
-  private static final AngularVelocity m_maxTurningSpeed = RadiansPerSecond.of(6.5);
 
   /** Track width (distance between left and right wheels) in meters. */
   // TODO: this should come from a robot config
@@ -82,11 +79,11 @@ public abstract class AbstractDrivebase
   }
 
   public static LinearVelocity getMaxMotorLinearSpeed() {
-    return m_maxMotorSpeedMPS;
+    return Constants.maxLinearDriveSpeed;
   }
 
   public static AngularVelocity getMaxMotorTurnSpeed() {
-    return m_maxTurningSpeed;
+    return Constants.maxRotationalSpeed;
   }
 
   public SysIdRoutine getSysIdRoutine(IDrivebase drivebase, Mode mode) {
@@ -121,17 +118,17 @@ public abstract class AbstractDrivebase
     return DegreesPerSecond.of(
         MathUtil.clamp(
             turnSpeed.in(DegreesPerSecond),
-            -m_maxTurningSpeed.in(DegreesPerSecond),
-            m_maxTurningSpeed.in(DegreesPerSecond)));
+            -Constants.maxRotationalSpeed.in(DegreesPerSecond),
+            Constants.maxRotationalSpeed.in(DegreesPerSecond)));
   }
 
   protected static LinearVelocity getCappedLinearSpeed(LinearVelocity linearSpeed) {
     return MetersPerSecond.of(
         MathUtil.clamp(
             linearSpeed.in(MetersPerSecond),
-            -m_maxMotorSpeedMPS.in(
+            -Constants.maxLinearDriveSpeed.in(
                 MetersPerSecond),
-            m_maxMotorSpeedMPS.in(MetersPerSecond)));
+            Constants.maxLinearDriveSpeed.in(MetersPerSecond)));
   }
 
   @Override
@@ -170,14 +167,15 @@ public abstract class AbstractDrivebase
   public void setVoltages(Voltage leftVoltage, Voltage rightVoltage) {
     m_leftMotor.setVoltage(leftVoltage);
     m_rightMotor.setVoltage(rightVoltage);
-    // TODO(Robert): Implement this method (and then use it for
-    // characterization, trajectory following, etc.). (It should be pretty
-    // straightforward, doable with 2 lines of code.)
+
+    m_robotDrive.feed();
   }
 
   public void setVoltages(double leftVoltage, double rightVoltage) {
     m_leftMotor.setVoltage(leftVoltage);
     m_rightMotor.setVoltage(rightVoltage);
+
+    m_robotDrive.feed();
   }
 
   @Override
@@ -185,7 +183,7 @@ public abstract class AbstractDrivebase
     // TODO(ROBERT): Cap this - it shouldn't be greater than max speed.
     // Probably print a warning too so that we can fix whatever is commanding us
     // too high.
-    return speed.in(MetersPerSecond) / m_maxMotorSpeedMPS.in(MetersPerSecond);
+    return speed.in(MetersPerSecond) / Constants.maxLinearDriveSpeed.in(MetersPerSecond);
   }
 
   @Override
@@ -252,6 +250,18 @@ public abstract class AbstractDrivebase
   @Override
   public void setReferencePositionSupplier(Supplier<Pose2d> supplier) {
     m_referencePositionSupplier = supplier;
+  }
+
+  @Override
+  public ChassisSpeeds getSpeed() {
+    // TODO: Use kinematics to get the current chassis speed of the robot
+    return new ChassisSpeeds();
+  }
+
+  @Override
+  public void setSpeed(ChassisSpeeds speed) {
+    // TODO: Use reverse kinematics to calculate motor speeds based on
+    m_logger.log("SetSpeed not yet implemented", Verbosity.Warn);
   }
 
   protected Pose2d getVisionPose() {

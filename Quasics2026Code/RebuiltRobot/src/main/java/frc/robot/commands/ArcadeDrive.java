@@ -8,6 +8,8 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.logging.Logger;
+import frc.robot.logging.Logger.Verbosity;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.real.AbstractDrivebase;
 import java.util.function.Supplier;
@@ -19,6 +21,7 @@ public class ArcadeDrive extends Command {
   IDrivebase m_drivebase;
   private final Supplier<Double> m_linearSpeedSupplier;
   private final Supplier<Double> m_turnSpeedSupplier;
+  private final Logger m_logger = new Logger(Logger.Verbosity.Info, "ArcadeDrive");
 
   /** Creates a new ArcadeDrive. */
   public ArcadeDrive(Supplier<Double> linearSpeedSupplier,
@@ -33,11 +36,6 @@ public class ArcadeDrive extends Command {
   @Override
   public void initialize() {
   }
-
-  /**
-   * Used to disable logging from execute() as needed (since this gets *noisy*).
-   */
-  static final boolean LOG_DATA = false;
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -59,9 +57,8 @@ public class ArcadeDrive extends Command {
     final double angularVelocityPercent = m_turnSpeedSupplier.get();
     final AngularVelocity angularVelocity = AbstractDrivebase.getMaxMotorTurnSpeed().times(angularVelocityPercent);
 
-    if (LOG_DATA) {
-      System.out.println("turnSpeedSupplier = " + linearSpeed + ", angularVelocity = " + angularVelocity);
-    }
+    m_logger.log("turnSpeedSupplier = " + linearSpeed + ", angularVelocity = " + angularVelocity, Verbosity.Debug);
+
     m_drivebase.arcadeDrive(linearSpeed, angularVelocity);
   }
 

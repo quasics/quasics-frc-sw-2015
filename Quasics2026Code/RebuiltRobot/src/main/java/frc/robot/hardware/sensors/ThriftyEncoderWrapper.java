@@ -76,8 +76,9 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
   @Override
   public Distance getPosition() {
     final double currentRevolutions = m_distanceConverter.fromMotor(m_motorController.getPosition());
-    // revolutions * (diameter * PI)/revolution * gearingRatio --> distance
-    return m_wheelDiameter.times(Math.PI * currentRevolutions * m_gearing);
+    // revolutions * (diameter * PI)/revolution / gearingRatio --> distance
+    final Distance distancePerRotation = m_wheelDiameter.times(Math.PI);
+    return distancePerRotation.times(currentRevolutions / m_gearing);
   }
 
   @Override

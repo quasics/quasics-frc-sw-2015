@@ -52,9 +52,9 @@ public class SparkDriveBase extends AbstractDrivebase {
     final SparkMax leftfollower = new SparkMax(SparkMaxIds.LEFT_FOLLOWER_ID, MotorType.kBrushless);
     final SparkMax rightfollower = new SparkMax(SparkMaxIds.RIGHT_FOLLOWER_ID, MotorType.kBrushless);
 
-    configureMotorControllersForFollowing(
+    configureMotorControllersForLeadingAndFollowing(
         leftController, leftfollower);
-    configureMotorControllersForFollowing(
+    configureMotorControllersForLeadingAndFollowing(
         rightController, rightfollower);
 
     // Configure the encoders.
@@ -91,13 +91,12 @@ public class SparkDriveBase extends AbstractDrivebase {
    * to be replaced, or if we need to swap a controller from one side of the
    * drivebase to the other for some reason, etc.).
    *
-   * @param leader   leader SparkMax motor controller that the follower should
-   *                 follow
+   * @param leader   leader SparkMax motor controller (which the follower should
+   *                 follow)
    * @param follower SparkMax motor controller that should be configured to
-   *                 follow
-   *                 the leader
+   *                 follow the leader
    */
-  private void configureMotorControllersForFollowing(
+  private void configureMotorControllersForLeadingAndFollowing(
       SparkMax leader, SparkMax follower) {
     SparkMaxConfig followerConfig = new SparkMaxConfig();
 
@@ -109,11 +108,13 @@ public class SparkDriveBase extends AbstractDrivebase {
     follower.configure(followerConfig, ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
 
-    // TODO: Configure the leader so that it is *not* a follower of anything.
-    //
-    // FINDME(Robert): This is important to do to ensure that the leader motor
-    // controllers are correctly configured even if they get swapped out. It can be
-    // done with 1-2 lines of code.
+    // Configure the leader so that it is *not* a follower of anything (in case we
+    // swap motor controllers around, and fail to set this up with the configuration
+    // tool).
+    SparkMaxConfig leaderConfig = new SparkMaxConfig();
+    leaderConfig.follow(0);
+    leader.configure(leaderConfig, ResetMode.kResetSafeParameters,
+        PersistMode.kPersistParameters);
   }
 
   // We've removed @Override periodic, but be sure to use super.periodic if we

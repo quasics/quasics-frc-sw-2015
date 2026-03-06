@@ -10,6 +10,7 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
@@ -122,6 +123,14 @@ public interface IDrivebase {
    */
   boolean setBreakingMode(boolean enable);
 
+  //////////////////////////////////////////////
+  // Auto utilities
+  ChassisSpeeds getSpeed();
+
+  void setSpeed(ChassisSpeeds speed);
+
+  //////////////////////////////////////////////
+
   public enum Mode {
     Linear,
     Angular
@@ -233,6 +242,16 @@ public interface IDrivebase {
     @Override
     public boolean setBreakingMode(boolean enable) {
       return false; // Not supported
+    }
+
+    @Override
+    public ChassisSpeeds getSpeed() {
+      return new ChassisSpeeds();
+    }
+
+    @Override
+    public void setSpeed(ChassisSpeeds speed) {
+      // Intentionally empty
     }
   }
 }

@@ -38,12 +38,21 @@ public class SparkDriveBase extends AbstractDrivebase {
     return m_rightEncoder;
   }
 
-  /** Creates a new RealDrivebase. */
+  /**
+   * Creates a new SparkDriveBase, using default CAN IDs for the left/right
+   * leaders.
+   */
   public SparkDriveBase() {
     this(new SparkMax(SparkMaxIds.LEFT_LEADER_ID, MotorType.kBrushless),
         new SparkMax(SparkMaxIds.RIGHT_LEADER_ID, MotorType.kBrushless));
   }
 
+  /**
+   * Constructor.
+   * 
+   * @param leftLeader  left leader motor
+   * @param rightLeader right leader motor
+   */
   public SparkDriveBase(SparkMax leftLeader, SparkMax rightLeader) {
     super(new SparkMaxMotorControllerPlus(leftLeader),
         new SparkMaxMotorControllerPlus(rightLeader));

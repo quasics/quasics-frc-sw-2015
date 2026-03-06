@@ -69,8 +69,10 @@ public class RealDrivebase extends AbstractDrivebase {
     final SparkMaxConfig leftConfig = new SparkMaxConfig();
     final SparkMaxConfig rightConfig = new SparkMaxConfig();
 
+    leftConfig.follow(0);
     leftConfig.encoder.positionConversionFactor(distanceScalingFactorForGearing);
     leftConfig.encoder.velocityConversionFactor(velocityScalingFactor);
+    rightConfig.follow(0);
     rightConfig.encoder.positionConversionFactor(distanceScalingFactorForGearing);
     rightConfig.encoder.velocityConversionFactor(velocityScalingFactor);
 

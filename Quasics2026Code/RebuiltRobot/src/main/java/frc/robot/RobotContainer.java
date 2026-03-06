@@ -247,8 +247,12 @@ public class RobotContainer {
     if (m_hood == null) {
       return;
     }
-    SmartDashboard.putData("Move Hood to 15 degrees",
-        new PivotHoodToPosition(m_hood, 0.10, 15, true));
+    SmartDashboard.putData("Move Hood to 15 degrees (60 degrees)",
+        new PivotHoodToPosition(m_hood, 0.15, 15));
+    SmartDashboard.putData("Move Hood to 5 degrees (70 degrees)",
+        new PivotHoodToPosition(m_hood, 0.15, 5));
+    SmartDashboard.putData("Move Hood to 25 degrees (50 degrees)",
+        new PivotHoodToPosition(m_hood, 0.15, 25));
   }
 
   private void addDrivebaseTestCommandsToSmartDashboard() {

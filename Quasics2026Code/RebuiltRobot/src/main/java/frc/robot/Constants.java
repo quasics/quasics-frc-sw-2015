@@ -70,7 +70,7 @@ public final class Constants {
   }
 
   public static class Tolerances {
-    public static final double ANGLETOLERANCE = 1;
+    public static final double ANGLETOLERANCE = 8;
   }
 
   public static class Ratios {

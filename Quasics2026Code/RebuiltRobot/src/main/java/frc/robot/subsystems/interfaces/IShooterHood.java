@@ -39,9 +39,9 @@ public interface IShooterHood {
   // etc.).
   double getCurrentAngle();
 
-  void moveOut(double speed);
+  void moveDown(double speed);
 
-  void moveIn(double speed);
+  void moveUp(double speed);
 
   void stop();
 
@@ -56,12 +56,12 @@ public interface IShooterHood {
     }
 
     @Override
-    public void moveOut(double speed) {
+    public void moveDown(double speed) {
       // No-op.
     }
 
     @Override
-    public void moveIn(double speed) {
+    public void moveUp(double speed) {
       // No-op.
     }
 

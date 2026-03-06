@@ -44,18 +44,18 @@ public class SparkDriveBase extends AbstractDrivebase {
         new SparkMax(SparkMaxIds.RIGHT_LEADER_ID, MotorType.kBrushless));
   }
 
-  public SparkDriveBase(SparkMax leftController, SparkMax rightController) {
-    super(new SparkMaxMotorControllerPlus(leftController),
-        new SparkMaxMotorControllerPlus(rightController));
+  public SparkDriveBase(SparkMax leftLeader, SparkMax rightLeader) {
+    super(new SparkMaxMotorControllerPlus(leftLeader),
+        new SparkMaxMotorControllerPlus(rightLeader));
 
     // Configure followers to follow the leaders.
     final SparkMax leftfollower = new SparkMax(SparkMaxIds.LEFT_FOLLOWER_ID, MotorType.kBrushless);
     final SparkMax rightfollower = new SparkMax(SparkMaxIds.RIGHT_FOLLOWER_ID, MotorType.kBrushless);
 
     configureMotorControllersForLeadingAndFollowing(
-        leftController, leftfollower);
+        leftLeader, leftfollower);
     configureMotorControllersForLeadingAndFollowing(
-        rightController, rightfollower);
+        rightLeader, rightfollower);
 
     // Configure the encoders.
     Encoder leftEncoder = new Encoder(1, 2);

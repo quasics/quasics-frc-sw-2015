@@ -62,20 +62,21 @@ public final class RebuiltConstants {
   /** Width (y) of the trench. */
   public static final Distance TRENCH_WIDTH = Inches.of(65.65);
 
+  /** Distance (x) from the alliance walls to the center of the hub. */
+  public static final Distance HUB_CENTER_DISTANCE_TO_ALLIANCE_WALL = DRIVER_WALL_TO_BUMP_CENTER;
+
   /** Distance (x) from the alliance walls to the closest side of the hub. */
   public static final Distance HUB_DISTANCE_TO_ALLIANCE_WALL = Inches.of(158.6);
 
   /**
    * Distance (x) from the origin corner to the Blue alliance's starting line.
    */
-  public static final Distance BLUE_STARTING_LINE =
-      HUB_DISTANCE_TO_ALLIANCE_WALL;
+  public static final Distance BLUE_STARTING_LINE = HUB_DISTANCE_TO_ALLIANCE_WALL;
 
   /**
    * Distance (x) from the origin corner to the Red alliance's starting line.
    */
-  public static final Distance RED_STARTING_LINE =
-      FIELD_LENGTH.minus(HUB_DISTANCE_TO_ALLIANCE_WALL);
+  public static final Distance RED_STARTING_LINE = FIELD_LENGTH.minus(HUB_DISTANCE_TO_ALLIANCE_WALL);
 
   /** Length (x) of the depot. */
   public static final Distance DEPOT_LENGTH = Inches.of(27.0);
@@ -93,13 +94,11 @@ public final class RebuiltConstants {
    * Y-position of the mid-point on the lower bumps on the blue/red sides of the
    * field.
    */
-  public static final Distance MID_BUMP1_Y =
-      FIELD_WIDTH.div(2).minus(HUB_DEPTH.plus(BUMP_WIDTH).div(2));
+  public static final Distance MID_BUMP1_Y = FIELD_WIDTH.div(2).minus(HUB_DEPTH.plus(BUMP_WIDTH).div(2));
 
   /**
    * Y-position of the mid-point on the upper bumps on the blue/red sides of the
    * field.
    */
-  public static final Distance MID_BUMP2_Y =
-      FIELD_WIDTH.div(2).plus(HUB_DEPTH.plus(BUMP_WIDTH).div(2));
+  public static final Distance MID_BUMP2_Y = FIELD_WIDTH.div(2).plus(HUB_DEPTH.plus(BUMP_WIDTH).div(2));
 }

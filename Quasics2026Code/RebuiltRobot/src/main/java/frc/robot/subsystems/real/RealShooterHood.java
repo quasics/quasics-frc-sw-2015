@@ -25,16 +25,12 @@ public class RealShooterHood extends SubsystemBase implements IShooterHood {
 
   /** Creates a new RealShooterHood. */
   public RealShooterHood() {
-
     m_hood = new SparkMax(SparkMaxIds.HOOD_ID, MotorType.kBrushless);
-
     m_throughBoreEncoder = m_hood.getAbsoluteEncoder();
-
   }
 
   @Override
   public Angle getCurrentAngle() {
-
     double currentAngleDegrees = m_throughBoreEncoder.getPosition() * 360;
 
     // FINDME(Daniel): Why are you making anything over 300 ==> 0?
@@ -45,31 +41,35 @@ public class RealShooterHood extends SubsystemBase implements IShooterHood {
     return Degrees.of(currentAngleDegrees);
   }
 
+  /*
+   * Note: this doesn't currently handle running into a limit/hard stop (which
+   * should probably be looked for in periodic()).
+   * 
+   * FINDME(Daniel): we should really ensure that the "hard stop" case is covered.
+   */
   @Override
   public void moveDown(double speed) {
-
     m_hood.set(Math.abs(speed));
-
   }
 
+  /*
+   * Note: this doesn't currently handle running into a limit/hard stop (which
+   * should probably be looked for in periodic()).
+   * 
+   * FINDME(Daniel): we should really ensure that the "hard stop" case is covered.
+   */
   @Override
   public void moveUp(double speed) {
-
     m_hood.set(-Math.abs(speed));
-
   }
 
   @Override
   public void stop() {
-
     m_hood.set(0);
-
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
-
     m_logger.log("Current Angle: " + getCurrentAngle(), Verbosity.Debug);
   }
 

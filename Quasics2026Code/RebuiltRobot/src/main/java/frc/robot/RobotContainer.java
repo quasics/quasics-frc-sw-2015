@@ -21,6 +21,7 @@ import frc.robot.Constants.PwmPortIds;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.PivotHoodToPosition;
 import frc.robot.commands.RainbowLighting;
+import frc.robot.commands.RunClimber;
 import frc.robot.commands.RunIndexer;
 import frc.robot.commands.RunIntakeExtension;
 import frc.robot.commands.RunIntakeRollers;
@@ -255,6 +256,16 @@ public class RobotContainer {
         new PivotHoodToPosition(m_hood, 0.15, 25));
   }
 
+  private void addClimberTestCommandsToSmartDashboard() {
+    if (m_climber == null) {
+      return;
+    }
+    SmartDashboard.putData("Run climber @ 2.5%",
+        new RunClimber(m_climber, .025));
+    SmartDashboard.putData("Run climber @ - 2.5%",
+        new RunClimber(m_climber, .025));
+  }
+
   private void addDrivebaseTestCommandsToSmartDashboard() {
     if (m_drivebase == null) {
       return;
@@ -304,6 +315,7 @@ public class RobotContainer {
     addIntakeTestCommandsToSmartDashboard();
     addIndexerTestCommandsToSmartDashboard();
     addHoodTestCommandsToSmartDashboard();
+    addClimberTestCommandsToSmartDashboard();
     addDrivebaseTestCommandsToSmartDashboard();
     addSysIdButtonsToSmartDashboard();
   }

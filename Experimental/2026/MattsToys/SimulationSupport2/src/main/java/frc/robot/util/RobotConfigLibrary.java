@@ -10,9 +10,11 @@ import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Volts;
 
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import frc.robot.constants.robots.QuasicsSparkMaxConstants;
 import frc.robot.constants.robots.RebuiltRobotConstants;
 import frc.robot.constants.robots.SimulationPorts;
 import frc.robot.util.config.ArmConfig;
+import frc.robot.util.config.ArmFeedForwardConfig;
 import frc.robot.util.config.CameraConfig;
 import frc.robot.util.config.CandleConfig;
 import frc.robot.util.config.ClimberConfig;
@@ -54,7 +56,7 @@ public final class RobotConfigLibrary {
     /** "Naked" drivebase used by the coding sub-team */
     Sally,
     // /** 2025 ("Reefscape") robot */
-    // Amelia,
+    Amelia,
     // /** 2026 ("Rebuilt") robot */
     Lizzie, // 20.25" trackwidth (roughly)
   }
@@ -156,10 +158,15 @@ public final class RobotConfigLibrary {
    */
   static private Map<Robot, RobotConfig> createMap() {
     var map = new HashMap<Robot, RobotConfig>();
+
+    // Simulated robot configurations
     map.put(Robot.Simulation, generateSingleCameraSimulationConfig());
     map.put(
         Robot.SimulationWithTwoCameras, generateTwoCameraSimulationConfig());
+
+    // Real robot hardware
     map.put(Robot.Sally, generateSallyConfig());
+    map.put(Robot.Amelia, generateAmeliaConfig());
     map.put(Robot.Lizzie, generate2026Config());
 
     //
@@ -301,6 +308,34 @@ public final class RobotConfigLibrary {
                 Volts.of(0.19529), 0.01) // Angular data (FAKE)
         ),
         NO_CAMERA, NO_ELEVATOR, NO_ARM, NO_LIGHTING, NO_CANDLE, NO_CLIMBER,
+        NO_FLYWHEEL, NO_HOOD, power);
+  }
+
+  private static RobotConfig generateAmeliaConfig() {
+    final DriveConfig drive = new DriveConfig(DriveType.CanSparkMax,
+        Inches.of(3), // Wheel radius
+        Meters.of(0.5628) /* 22 in (from 27Feb2025) */,
+        10.71, // Gearing (from 15Mar2025)
+        DriveOrientation.RightInverted,
+        new PIDConfig(0.046218), // Left (from 27Feb2025)
+        new PIDConfig(0.066374), // Right (from 27Feb2025)
+        new DriveFeedForwardConfig(Volts.of(0.1884), 0.033803, // Linear data (from 27Feb2025)
+            Volts.of(0.20183), 0.02384) // Angular data (from 27Feb2025)
+    );
+    final ElevatorConfig elevator = new ElevatorConfig(
+        // Note: PID and FF values are based on the Reefscape code base as of 11Mar2025.
+        new PIDConfig(0.25, 0.00, 0.00), new ElevatorFeedForwardConfig(0.0, 0.5, 0.0, 0.0));
+    final ArmConfig arm = new ArmConfig(
+        // Note: PID and FF values are based on the Reefscape code base as of 15Mar2025.
+        new PIDConfig(10.0, 0.00, 0.00), new ArmFeedForwardConfig(0.2, 0.25, 0));
+    PowerDistributor power = new PowerDistributor(ModuleType.kRev);
+
+    return new RobotConfig(false,
+        drive,
+        NO_CAMERA,
+        elevator, arm, NO_LIGHTING, new CandleConfig(
+            QuasicsSparkMaxConstants.OtherCanIds.CANDLE_ID),
+        NO_CLIMBER,
         NO_FLYWHEEL, NO_HOOD, power);
   }
 

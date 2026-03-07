@@ -8,10 +8,6 @@ import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
 import com.thethriftybot.devices.ThriftyNova;
-import com.thethriftybot.devices.ThriftyNova.EncoderType;
-import com.thethriftybot.util.Conversion;
-import com.thethriftybot.util.Conversion.PositionUnit;
-import com.thethriftybot.util.Conversion.VelocityUnit;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import java.io.IOException;

@@ -93,6 +93,11 @@ public class RobotContainer {
    */
   private static final RobotName ROBOT_NAME = Robot.isReal() ? DEFAULT_ROBOT_NAME : RobotName.Simulated;
 
+  private static final boolean ENABLE_SHOOTER_TEST_CMDS = true;
+  private static final boolean ENABLE_INDEXER_TEST_CMDS = true;
+  private static final boolean ENABLE_HOOD_TEST_CMDS = true;
+  private static final boolean ENABLE_INTAKE_TEST_CMDS = true;
+
   //
   // The robot's subystems are listed here.
   //
@@ -219,7 +224,7 @@ public class RobotContainer {
   }
 
   private void addShooterTestCommandsToSmartDashboard() {
-    if (m_shooter == null) {
+    if (m_shooter == null || !ENABLE_SHOOTER_TEST_CMDS) {
       return;
     }
     SmartDashboard.putData("Run Flywheel @ 1200 RPM, Kicker @ 12.5% speed",
@@ -232,9 +237,10 @@ public class RobotContainer {
   }
 
   private void addIntakeTestCommandsToSmartDashboard() {
-    if (m_intake == null) {
+    if (m_intake == null || !ENABLE_INTAKE_TEST_CMDS) {
       return;
     }
+
     SmartDashboard.putData("Run Intake Rollers", new RunIntakeRollers(m_intake, 0.1, true));
     SmartDashboard.putData("Run Indexer", new RunIndexer(m_indexer, 0.1, true));
     // SmartDashboard.putData("Extend Intake", new InstantCommand(() ->
@@ -248,7 +254,7 @@ public class RobotContainer {
   }
 
   private void addIndexerTestCommandsToSmartDashboard() {
-    if (m_indexer == null) {
+    if (m_indexer == null || !ENABLE_INDEXER_TEST_CMDS) {
       return;
     }
     SmartDashboard.putData("Reverse Indexer", new RunIndexer(m_indexer, 0.1, false));
@@ -256,7 +262,7 @@ public class RobotContainer {
   }
 
   private void addHoodTestCommandsToSmartDashboard() {
-    if (m_hood == null) {
+    if (m_hood == null || !ENABLE_HOOD_TEST_CMDS) {
       return;
     }
     SmartDashboard.putData("Move Hood to 15 degrees (60 degrees)",

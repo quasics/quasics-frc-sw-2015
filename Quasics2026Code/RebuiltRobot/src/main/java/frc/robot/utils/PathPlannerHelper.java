@@ -46,7 +46,7 @@ public class PathPlannerHelper {
 
     AutoBuilder.configure(
       abstractDrivebase::getOdometryPose,
-      abstractDrivebase::resetPose,
+      abstractDrivebase::resetOdometry,
       abstractDrivebase::getSpeed,
       (speeds, feedforwards) -> abstractDrivebase.driveWithPid(speeds),
       new PPLTVController(0.02),

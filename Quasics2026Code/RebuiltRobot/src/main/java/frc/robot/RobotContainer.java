@@ -387,10 +387,11 @@ public class RobotContainer {
         return speedSlewRateLimiter.calculate(joystickPercent);
       }
     };
+    final double ROTATION_FIXED_SCALING = 0.5;
     Supplier<Double> rotationDrivingStick = () -> {
       double scaling = getDriveSpeedScalingFactor();
       double axis = getDriverAxis(Constants.LogitechDualshock.RightXAxis);
-      double joystickPercent = -axis * scaling;
+      double joystickPercent = -axis * scaling * ROTATION_FIXED_SCALING;
       return rotationSlewRateLimiter.calculate(joystickPercent);
     };
 

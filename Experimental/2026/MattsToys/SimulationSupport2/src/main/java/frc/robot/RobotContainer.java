@@ -33,6 +33,7 @@ import frc.robot.commands.driving.FollowTrajectoryCommand;
 import frc.robot.commands.driving.PushbuttonTrajectory;
 import frc.robot.commands.driving.TankDrive;
 import frc.robot.commands.driving.TurnToHeading;
+import frc.robot.commands.driving.TurnToHub;
 import frc.robot.commands.driving.TurnUntilTargetInView;
 import frc.robot.commands.lighting.RainbowLighting;
 import frc.robot.commands.lighting.TargetingSupportCommand;
@@ -327,8 +328,12 @@ public class RobotContainer {
   }
 
   private void configureDrivingCommands() {
+    SmartDashboard.putData("Drive: Turn to 180", new TurnToHeading(m_drivebase, Rotation2d.fromDegrees(180.0)));
     SmartDashboard.putData("Drive: Turn to 90", new TurnToHeading(m_drivebase, Rotation2d.fromDegrees(90.0)));
-    SmartDashboard.putData("Drive: Turn to 90", new TurnToHeading(m_drivebase, Rotation2d.fromDegrees(90.0)));
+    SmartDashboard.putData("Drive: Turn to -90", new TurnToHeading(m_drivebase, Rotation2d.fromDegrees(-90.0)));
+    SmartDashboard.putData("Drive: Turn to 45", new TurnToHeading(m_drivebase, Rotation2d.fromDegrees(45)));
+    SmartDashboard.putData("Drive: Turn to 225", new TurnToHeading(m_drivebase, Rotation2d.fromDegrees(225)));
+    SmartDashboard.putData("Drive: Turn to Hub", new TurnToHub(m_drivebase));
 
     Pose2d targetPose = new Pose2d(RebuiltConstants.BLUE_STARTING_LINE.minus(Meters.of(1)),
         RebuiltConstants.FIELD_WIDTH.div(2),

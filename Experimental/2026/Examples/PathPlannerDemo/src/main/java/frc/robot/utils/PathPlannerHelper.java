@@ -27,6 +27,17 @@ public class PathPlannerHelper {
     com.pathplanner.lib.config.RobotConfig config = null;
     try{
       config = com.pathplanner.lib.config.RobotConfig.fromGUISettings();
+      System.out.println("Auto Config settings");
+      System.out.println("Holonomic:" + config.isHolonomic);
+      System.out.println("Mass (Kg):" + config.massKG);
+      System.out.println("Moment of Inertia:" + config.MOI);
+      System.out.println("Wheel Radius:" + config.moduleConfig.wheelRadiusMeters);
+      System.out.println("Gearing:" + config.moduleConfig.driveMotor);
+      System.out.println("Max Speed:" + config.moduleConfig.maxDriveVelocityMPS);
+      System.out.println("Wheel COF:" + config.moduleConfig.wheelCOF);
+      System.out.println("Drive Motor:" + config.moduleConfig.driveMotor);
+      System.out.println("Drive Current Limit:" + config.moduleConfig.driveCurrentLimit);
+      
     } catch (Exception e) {
       System.out.println("Hey! Listen!");
       e.printStackTrace();

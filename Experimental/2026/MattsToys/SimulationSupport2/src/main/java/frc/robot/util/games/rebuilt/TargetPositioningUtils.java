@@ -24,7 +24,7 @@ public class TargetPositioningUtils {
    * 
    * @return the location (in field-based coordinates) of the hub
    */
-  public Translation2d getHubCenterLocation() {
+  public static Translation2d getHubCenterLocation() {
     Optional<Alliance> optAlliance = DriverStation.getAlliance();
     if (optAlliance.isEmpty()) {
       return new Translation2d();
@@ -39,7 +39,7 @@ public class TargetPositioningUtils {
    * @param alliance the alliance whose hub we care about
    * @return the location (in field-based coordinates) of the hub
    */
-  public Translation2d getHubCenterLocation(Alliance alliance) {
+  public static Translation2d getHubCenterLocation(Alliance alliance) {
     Distance x = switch (alliance) {
       case Red -> RebuiltConstants.FIELD_LENGTH.minus(RebuiltConstants.HUB_CENTER_DISTANCE_TO_ALLIANCE_WALL);
       case Blue -> RebuiltConstants.HUB_CENTER_DISTANCE_TO_ALLIANCE_WALL;
@@ -57,7 +57,7 @@ public class TargetPositioningUtils {
    * @param robotPose robot's current pose
    * @return distance to the center of the team's hub
    */
-  public double getDistanceToHubCenter(Translation2d robotPosition) {
+  public static double getDistanceToHubCenter(Translation2d robotPosition) {
     Translation2d hubCenter = getHubCenterLocation();
     return robotPosition.getDistance(hubCenter);
   }
@@ -69,7 +69,7 @@ public class TargetPositioningUtils {
    * @param robotPose robot's current pose
    * @return distance to the center of the team's hub
    */
-  public double getDistanceToHubCenter(Pose2d robotPose) {
+  public static double getDistanceToHubCenter(Pose2d robotPose) {
     return getDistanceToHubCenter(robotPose.getTranslation());
   }
 
@@ -84,7 +84,7 @@ public class TargetPositioningUtils {
    * @return approximate speed needed to hit the alliance's hub center from the
    *         specified position
    */
-  public double getShooterSpeedForHubCenter(Pose2d robotPose, LinearInterpolator speedInterpolator) {
+  public static double getShooterSpeedForHubCenter(Pose2d robotPose, LinearInterpolator speedInterpolator) {
     final double distance = getDistanceToHubCenter(robotPose);
     return speedInterpolator.getTargetApproximationForKey(distance);
   }

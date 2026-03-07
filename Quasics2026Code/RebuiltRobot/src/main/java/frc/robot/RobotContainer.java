@@ -400,10 +400,11 @@ public class RobotContainer {
         return speedSlewRateLimiter.calculate(joystickPercent);
       }
     };
+    final double ROTATION_FIXED_SCALING = 0.5;
     Supplier<Double> rotationDrivingStick = () -> {
       double scaling = getDriveSpeedScalingFactor();
       double axis = getDriverAxis(Constants.LogitechDualshock.RightXAxis);
-      double joystickPercent = -axis * scaling;
+      double joystickPercent = -axis * scaling * ROTATION_FIXED_SCALING;
       return rotationSlewRateLimiter.calculate(joystickPercent);
     };
 
@@ -450,12 +451,12 @@ public class RobotContainer {
       new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.LeftTrigger))
           .whileTrue(new RunIntakeRollers(m_intake, 0.9, false));
       new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.RightTrigger))
-          .whileTrue(new RunIndexer(m_indexer, 0.5, true));
+          .whileTrue(new RunIntakeRollers(m_intake, 0.9, true));
 
       new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.XButton))
-          .whileTrue(new RunIntakeExtension(m_intake, 0.1, true));
+          .whileTrue(new RunIntakeExtension(m_intake, 0.2, false));
       new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.BButton))
-          .whileTrue(new RunIntakeExtension(m_intake, 0.1, false));
+          .whileTrue(new RunIntakeExtension(m_intake, 0.1, true));
     }
   }
 

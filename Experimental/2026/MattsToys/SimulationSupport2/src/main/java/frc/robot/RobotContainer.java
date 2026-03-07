@@ -32,6 +32,8 @@ import frc.robot.commands.driving.BaseChoreoTrajectoryCommand;
 import frc.robot.commands.driving.FollowTrajectoryCommand;
 import frc.robot.commands.driving.PushbuttonTrajectory;
 import frc.robot.commands.driving.TankDrive;
+import frc.robot.commands.driving.TurnToHeading;
+import frc.robot.commands.driving.TurnToHub;
 import frc.robot.commands.driving.TurnUntilTargetInView;
 import frc.robot.commands.lighting.RainbowLighting;
 import frc.robot.commands.lighting.TargetingSupportCommand;
@@ -167,6 +169,7 @@ public class RobotContainer {
     System.out.println("***\n*** Setting up for " + m_robotSelection + "\n***");
     configureDriving();
     setupAutonomousChooser();
+    configureDrivingCommands();
     configureSysIdCommands();
     configureElevatorCommands();
     configureArmCommands();
@@ -189,7 +192,7 @@ public class RobotContainer {
   }
 
   private void configureVisionCommands() {
-    SmartDashboard.putData("Cmd: Get target 26 in view",
+    SmartDashboard.putData("Vision: Get target 26 in view",
         new TurnUntilTargetInView(m_vision, m_drivebase, 26));
   }
 
@@ -198,16 +201,16 @@ public class RobotContainer {
       return;
     }
 
-    SmartDashboard.putData("Cmd: Climber - Extended",
+    SmartDashboard.putData("Climb: Extend",
         new MoveClimberToPositionCommand(
             m_climber, IClimber.Position.Extended, false));
-    SmartDashboard.putData("Cmd: Climber - Retracted",
+    SmartDashboard.putData("Climb: Retract",
         new MoveClimberToPositionCommand(
             m_climber, IClimber.Position.Retracted, false));
-    SmartDashboard.putData("Cmd: Climber - Pulled up",
+    SmartDashboard.putData("Climb: Pull up",
         new MoveClimberToPositionCommand(
             m_climber, IClimber.Position.PulledUp, true));
-    SmartDashboard.putData("Cmd: Climber - Stop",
+    SmartDashboard.putData("Climb: Stop",
         new MoveClimberToPositionCommand(
             m_climber, IClimber.Position.DontCare, true));
   }
@@ -311,30 +314,45 @@ public class RobotContainer {
         // Wait for some motion
         new WaitCommand(2))
         .repeatedly();
-    SmartDashboard.putData("Cmd: Arm out", new InstantCommand(() -> {
+    SmartDashboard.putData("Arm: Out", new InstantCommand(() -> {
       m_arm.setTargetPosition(m_arm.getArmOutAngle());
     }, m_arm.asSubsystem()));
-    SmartDashboard.putData("Cmd: Arm up", new InstantCommand(() -> {
+    SmartDashboard.putData("Arm: Up", new InstantCommand(() -> {
       m_arm.setTargetPosition(m_arm.getArmUpAngle());
     }, m_arm.asSubsystem()));
-    SmartDashboard.putData("Cmd: Arm wave", waveCommand);
-    SmartDashboard.putData("Cmd: Arm stop",
+    SmartDashboard.putData("Arm: Wave", waveCommand);
+    SmartDashboard.putData("Arm: Stop",
         new InstantCommand(() -> {
           m_arm.stop();
         }, m_arm.asSubsystem()));
+  }
+
+  private void configureDrivingCommands() {
+    SmartDashboard.putData("Drive: Turn to 180", new TurnToHeading(m_drivebase, Rotation2d.fromDegrees(180.0)));
+    SmartDashboard.putData("Drive: Turn to 90", new TurnToHeading(m_drivebase, Rotation2d.fromDegrees(90.0)));
+    SmartDashboard.putData("Drive: Turn to -90", new TurnToHeading(m_drivebase, Rotation2d.fromDegrees(-90.0)));
+    SmartDashboard.putData("Drive: Turn to 45", new TurnToHeading(m_drivebase, Rotation2d.fromDegrees(45)));
+    SmartDashboard.putData("Drive: Turn to 225", new TurnToHeading(m_drivebase, Rotation2d.fromDegrees(225)));
+    SmartDashboard.putData("Drive: Turn to Hub", new TurnToHub(m_drivebase));
+
+    Pose2d targetPose = new Pose2d(RebuiltConstants.BLUE_STARTING_LINE.minus(Meters.of(1)),
+        RebuiltConstants.FIELD_WIDTH.div(2),
+        new Rotation2d(RebuiltConstants.FACING_RED));
+    SmartDashboard.putData("Drive: Pushbutton trajectory",
+        new PushbuttonTrajectory(m_drivebase, m_trajectoryConfig, targetPose));
   }
 
   /**
    * Adds various sample commands for controlling the elevator to the dashboard.
    */
   private void configureElevatorCommands() {
-    SmartDashboard.putData("Cmd: Elevator up", new InstantCommand(() -> {
+    SmartDashboard.putData("Elevator: Up", new InstantCommand(() -> {
       m_elevator.setTargetPosition(ElevatorPosition.HIGH);
     }, m_elevator.asSubsystem()));
-    SmartDashboard.putData("Cmd: Elevator down", new InstantCommand(() -> {
+    SmartDashboard.putData("Elevator: Down", new InstantCommand(() -> {
       m_elevator.setTargetPosition(ElevatorPosition.BOTTOM);
     }, m_elevator.asSubsystem()));
-    SmartDashboard.putData("Cmd: Elevator stop", new InstantCommand(() -> {
+    SmartDashboard.putData("Elevator: Stop", new InstantCommand(() -> {
       m_elevator.stop();
     }, m_elevator.asSubsystem()));
   }
@@ -387,30 +405,30 @@ public class RobotContainer {
   /** Adds commands for profiling the drive base to the dashboard. */
   private void configureSysIdCommands() {
     // Dynamic and quasistatic commands for linear drivebase profiling
-    SmartDashboard.putData("Cmd: DynamicFwd",
+    SmartDashboard.putData("SysId: DynamicFwd",
         SysIdGenerator.sysIdDynamic(
             m_drivebase, DrivebaseProfilingMode.Linear, Direction.kForward));
-    SmartDashboard.putData("Cmd: DynamicRev",
+    SmartDashboard.putData("SysId: DynamicRev",
         SysIdGenerator.sysIdDynamic(
             m_drivebase, DrivebaseProfilingMode.Linear, Direction.kReverse));
-    SmartDashboard.putData("Cmd: QStaticFwd",
+    SmartDashboard.putData("SysId: QStaticFwd",
         SysIdGenerator.sysIdQuasistatic(
             m_drivebase, DrivebaseProfilingMode.Linear, Direction.kForward));
-    SmartDashboard.putData("Cmd: QStaticRev",
+    SmartDashboard.putData("SysId: QStaticRev",
         SysIdGenerator.sysIdQuasistatic(
             m_drivebase, DrivebaseProfilingMode.Linear, Direction.kReverse));
 
     // Dynamic and quasistatic commands for angular drivebase profiling
-    SmartDashboard.putData("Cmd: DynamicFwd - Angular",
+    SmartDashboard.putData("SysId: DynamicFwd - Angular",
         SysIdGenerator.sysIdDynamic(
             m_drivebase, DrivebaseProfilingMode.Angular, Direction.kForward));
-    SmartDashboard.putData("Cmd: DynamicRev - Angular",
+    SmartDashboard.putData("SysId: DynamicRev - Angular",
         SysIdGenerator.sysIdDynamic(
             m_drivebase, DrivebaseProfilingMode.Angular, Direction.kReverse));
-    SmartDashboard.putData("Cmd: QStaticFwd - Angular",
+    SmartDashboard.putData("SysId: QStaticFwd - Angular",
         SysIdGenerator.sysIdQuasistatic(
             m_drivebase, DrivebaseProfilingMode.Angular, Direction.kForward));
-    SmartDashboard.putData("Cmd: QStaticRev - Angular",
+    SmartDashboard.putData("SysId: QStaticRev - Angular",
         SysIdGenerator.sysIdQuasistatic(
             m_drivebase, DrivebaseProfilingMode.Angular, Direction.kReverse));
   }
@@ -439,11 +457,6 @@ public class RobotContainer {
   /** Configures any additional bindings that are needed. */
   private void configureBindings() {
     // Add any additional bindings here.
-    Pose2d targetPose = new Pose2d(RebuiltConstants.BLUE_STARTING_LINE.minus(Meters.of(1)),
-        RebuiltConstants.FIELD_WIDTH.div(2),
-        new Rotation2d(RebuiltConstants.FACING_RED));
-    SmartDashboard.putData("Cmd: Pushbutton trajectory",
-        new PushbuttonTrajectory(m_drivebase, m_trajectoryConfig, targetPose));
   }
 
   /** Returns the command to run in autonomous mode. */

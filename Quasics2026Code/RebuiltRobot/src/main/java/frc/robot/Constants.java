@@ -17,28 +17,26 @@ import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotGearing;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
- * numerical or boolean
- * constants. This class should not be used for any other purpose. All constants
- * should be declared
- * globally (i.e. public static). Do not put anything functional in this class.
+ * numerical or boolean constants. This class should not be used for any other
+ * purpose. All constants should be declared globally (i.e. public static). Do
+ * not put anything functional in this class.
  *
  * <p>
  * It is advised to statically import this class (or one of its inner classes)
- * wherever the
- * constants are needed, to reduce verbosity.
+ * wherever the constants are needed, to reduce verbosity.
  */
 public final class Constants {
   /** Radius of the drive base wheels. */
-  public static final Distance wheelRadius = Inches.of(3);
+  public static final Distance WHEEL_RADIUS = Inches.of(3);
 
   /** Gearing ratio for kitbots (which also happens to match what we're using). */
-  public static final KitbotGearing gearing = KitbotGearing.k8p45;
+  public static final KitbotGearing GEARING = KitbotGearing.k8p45;
 
   /** Gearing ratio for our robots this year. */
-  public static final double drivebaseGearRatio = gearing.value;
+  public static final double DRIVEBASE_GEAR_RATIO = GEARING.value;
 
-  public static final LinearVelocity maxLinearDriveSpeed = MetersPerSecond.of(3);
-  public static final AngularVelocity maxRotationalSpeed = RadiansPerSecond.of(2);
+  public static final LinearVelocity MAX_LINEAR_DRIVE_SPEED = MetersPerSecond.of(3);
+  public static final AngularVelocity MAX_ROTATIONAL_SPEED = RadiansPerSecond.of(2);
 
   /**
    * Maximum length used in the lighting subsystem for the addressable LED strip.

@@ -44,7 +44,7 @@ public class SimulationDrivebase extends AbstractDrivebase {
 
   private DifferentialDrivetrainSim m_driveSim = DifferentialDrivetrainSim.createKitbotSim(
       KitbotMotor.kDualCIMPerSide, // 2 CIMs per side.
-      Constants.gearing,
+      Constants.GEARING,
       KitbotWheelSize.kSixInch, // 6" diameter wheels.
       null // No measurement noise.
   );
@@ -61,8 +61,8 @@ public class SimulationDrivebase extends AbstractDrivebase {
     Encoder leftEncoder = new Encoder(LEFT_ENCODER_CHANNEL_A, LEFT_ENCODER_CHANNEL_B);
     Encoder rightEncoder = new Encoder(RIGHT_ENCODER_CHANNEL_A, RIGHT_ENCODER_CHANNEL_B);
 
-    System.out.println(Constants.wheelRadius);
-    System.out.println(2.0 * Math.PI * Constants.wheelRadius.in(Meters) / -4096.0);
+    System.out.println(Constants.WHEEL_RADIUS);
+    System.out.println(2.0 * Math.PI * Constants.WHEEL_RADIUS.in(Meters) / -4096.0);
     System.out.println(getDistancePerPulse());
     leftEncoder.setDistancePerPulse(getDistancePerPulse());
     rightEncoder.setDistancePerPulse(getDistancePerPulse());
@@ -74,7 +74,7 @@ public class SimulationDrivebase extends AbstractDrivebase {
   }
 
   protected static double getDistancePerPulse() {
-    return 2.0 * Math.PI * Constants.wheelRadius.in(Meters) / -4096.0;
+    return 2.0 * Math.PI * Constants.WHEEL_RADIUS.in(Meters) / -4096.0;
   }
 
   @Override

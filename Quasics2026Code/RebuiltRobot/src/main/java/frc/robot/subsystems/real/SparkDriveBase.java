@@ -70,11 +70,11 @@ public class SparkDriveBase extends AbstractDrivebase {
         rightLeader, rightfollower);
 
     // Conversion factor from units in rotations (or RPM) to meters (or m/s).
-    final Distance wheelCircumference = Constants.wheelRadius.times(2 * Math.PI);
-    final double distanceScalingFactorForGearing = wheelCircumference.div(Constants.drivebaseGearRatio).in(Meters);
+    final Distance wheelCircumference = Constants.WHEEL_RADIUS.times(2 * Math.PI);
+    final double distanceScalingFactorForGearing = wheelCircumference.div(Constants.DRIVEBASE_GEAR_RATIO).in(Meters);
     final double velocityScalingFactor = distanceScalingFactorForGearing / 60;
     System.out.println("Wheel circumference: " + wheelCircumference);
-    System.out.println("Using gear ratio: " + Constants.drivebaseGearRatio);
+    System.out.println("Using gear ratio: " + Constants.DRIVEBASE_GEAR_RATIO);
     System.out.println("Adjustment for gearing (m/rotation): " + distanceScalingFactorForGearing);
     System.out.println("Velocity adj.: " + velocityScalingFactor);
 

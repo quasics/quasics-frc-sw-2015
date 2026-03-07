@@ -70,11 +70,11 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
     m_gearing = gearing;
 
     final Distance wheelCircumference = wheelOuterDiameter.times(Math.PI);
-    m_distanceScalingFactorForGearing = wheelCircumference.div(Constants.drivebaseGearRatio).in(Meters);
+    m_distanceScalingFactorForGearing = wheelCircumference.div(Constants.DRIVEBASE_GEAR_RATIO).in(Meters);
     m_velocityScalingFactor = m_distanceScalingFactorForGearing / 60;
     if (USE_SPARK_CALCULATIONS) {
       System.out.println("Wheel circumference: " + wheelCircumference);
-      System.out.println("Using gear ratio: " + Constants.drivebaseGearRatio);
+      System.out.println("Using gear ratio: " + Constants.DRIVEBASE_GEAR_RATIO);
       System.out.println("Adjustment for gearing (m/rotation): " + m_distanceScalingFactorForGearing);
       System.out.println("Velocity adj.: " + m_velocityScalingFactor);
     }

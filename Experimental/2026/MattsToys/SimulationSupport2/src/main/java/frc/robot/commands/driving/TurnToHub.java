@@ -6,26 +6,25 @@ package frc.robot.commands.driving;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.subsystems.interfaces.IDrivebasePlus;
+import frc.robot.util.games.rebuilt.TargetPositioningUtils;
 
 /**
- * Simple command to turn the robot to a fixed (field-relative) heading.
+ * Example command to turn the robot to point at our alliance's hub (e.g., to
+ * line up our shots).
  */
-public class TurnToHeading extends TurnToHeadingBase {
-  final Rotation2d m_targetHeading;
+public class TurnToHub extends TurnToHeadingBase {
 
   /**
    * Constructor.
    * 
-   * @param drivebase     the drivebase being controlled
-   * @param targetHeading the heading to which the robot should be turned
+   * @param drivebase drivebase being controlled
    */
-  public TurnToHeading(IDrivebasePlus drivebase, Rotation2d targetHeading) {
+  public TurnToHub(IDrivebasePlus drivebase) {
     super(drivebase);
-    m_targetHeading = targetHeading;
   }
 
   @Override
   protected Rotation2d getTargetHeading() {
-    return m_targetHeading;
+    return TargetPositioningUtils.getAngleToHubCenter(m_drivebase.getEstimatedPose());
   }
 }

@@ -69,7 +69,7 @@ public class DriveForDistance extends Command {
         "Starting driving at " + m_percent + " power, from " + m_lastReportedDistance + " to " + m_targetDistance);
   }
 
-  static final double GEARING_RATIO = Constants.drivebaseGearRatio;
+  static final double GEARING_RATIO = Constants.DRIVEBASE_GEAR_RATIO;
 
   @Override
   public void execute() {

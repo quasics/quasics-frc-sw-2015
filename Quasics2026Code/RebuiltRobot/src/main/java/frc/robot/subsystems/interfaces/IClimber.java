@@ -19,12 +19,31 @@ public interface IClimber {
    * Need to talk to folks about limit switches, etc.
    */
 
+  void stopClimber();
+
+  double getClimberPosition();
+
+  void setClimberSpeed(double speed);
+
   /**
    * Trivial implementation of IClimber, for use when we're on a robot without
    * one.
    */
   public class NullClimber extends SubsystemBase implements IClimber {
-    public NullClimber() {
+    // public NullClimber() {
+    @Override
+    public void stopClimber() {
     }
+
+    @Override
+    public void setClimberSpeed(double speed) {
+    }
+
+    @Override
+    public double getClimberPosition() {
+      return 0;
+    }
+
   }
+
 }

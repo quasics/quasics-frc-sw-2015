@@ -23,6 +23,7 @@ import frc.robot.Constants.PwmPortIds;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.Autos;
 import frc.robot.commands.PivotHoodToPosition;
+import frc.robot.commands.RunClimber;
 import frc.robot.commands.RunIndexer;
 import frc.robot.commands.RunIntakeExtension;
 import frc.robot.commands.RunIntakeRollers;
@@ -61,6 +62,8 @@ import static edu.wpi.first.units.Units.RPM;
 
 import java.util.List;
 import java.util.function.Supplier;
+
+import com.pathplanner.lib.auto.NamedCommands;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -216,6 +219,15 @@ public class RobotContainer {
     configureArcadeDriving();
     configureDriverButtons();
     configureOperatorButtons();
+
+    NamedCommands.registerCommand("Shooter", new RunShooterForTime(m_shooter, 480, 120, true, 4));
+    // NamedCommands.registerCommand("");
+    // NamedCommands.registerCommand("");
+    // NamedCommands.registerCommand("");
+    // NamedCommands.registerCommand("");
+    // NamedCommands.registerCommand("");
+    // NamedCommands.registerCommand("");
+    // NamedCommands.registerCommand("");
   }
 
   private ILighting allocatePrimaryLighting() {
@@ -300,6 +312,16 @@ public class RobotContainer {
         new PivotHoodToPosition(m_hood, 0.15, Degrees.of(25)));
   }
 
+  private void addClimberTestCommandsToSmartDashboard() {
+    if (m_climber == null) {
+      return;
+    }
+    SmartDashboard.putData("Run climber @ 2.5%",
+        new RunClimber(m_climber, .025));
+    SmartDashboard.putData("Run climber @ - 2.5%",
+        new RunClimber(m_climber, .025));
+  }
+
   private void addDrivebaseTestCommandsToSmartDashboard() {
     if (m_drivebase == null) {
       return;
@@ -359,6 +381,7 @@ public class RobotContainer {
     addIntakeTestCommandsToSmartDashboard();
     addIndexerTestCommandsToSmartDashboard();
     addHoodTestCommandsToSmartDashboard();
+    addClimberTestCommandsToSmartDashboard();
     addDrivebaseTestCommandsToSmartDashboard();
     addSysIdButtonsToSmartDashboard();
   }

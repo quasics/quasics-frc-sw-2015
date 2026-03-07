@@ -12,6 +12,7 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.constants.games.RebuiltConstants;
+import frc.robot.util.LinearInterpolator;
 
 /**
  * Some potentially helpful functions for use in calculating targeting data for
@@ -70,5 +71,21 @@ public class TargetPositioningUtils {
    */
   public double getDistanceToHubCenter(Pose2d robotPose) {
     return getDistanceToHubCenter(robotPose.getTranslation());
+  }
+
+  /**
+   * Computes an approximate speed for the shooter to use in hitting the hub's
+   * center, based on the robot's current position (pose) and a previously
+   * identified set of values (speedInterpolator).
+   * 
+   * @param robotPose         robot position
+   * @param speedInterpolator interpolator object, loaded with "distance:speed"
+   *                          values
+   * @return approximate speed needed to hit the alliance's hub center from the
+   *         specified position
+   */
+  public double getShooterSpeedForHubCenter(Pose2d robotPose, LinearInterpolator speedInterpolator) {
+    final double distance = getDistanceToHubCenter(robotPose);
+    return speedInterpolator.getTargetApproximationForKey(distance);
   }
 }

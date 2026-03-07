@@ -1,4 +1,4 @@
-// Copyright (c) 2024, Matthew J. Healy and other Quasics contributors.
+// Copyright (c) 2024-2026, Matthew J. Healy and other Quasics contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -14,11 +14,11 @@ import frc.robot.subsystems.interfaces.ILighting;;
  * Provides a "flowing rainbow" effect on the LED strip.
  */
 public class RainbowLighting extends Command {
-  /** The subsystem we'll work with to set the lights. */
-  final ILighting subsystem;
-
   /** Maximum legal value in WPILib for hues. */
   static final int MAX_HUE = 180;
+
+  /** The subsystem we'll work with to set the lights. */
+  final ILighting m_subsystem;
 
   /**
    * Used to store an "offset" used to translate a physical LED's position to an
@@ -26,22 +26,22 @@ public class RainbowLighting extends Command {
    * and then updated every time that execute() is called, in order to advance
    * the rainbow a step.
    */
-  int offset = 0;
+  int m_offset = 0;
 
   /**
    * How long (in seconds) the colors will remain set on each LED, before
    * advancing to the next step
    * along the color wheel.
    */
-  final double secondsBeforeAdvancing;
+  final double m_secondsBeforeAdvancing;
 
   /** Used to control delay in advancing colors. */
-  final Timer timer = new Timer();
+  final Timer m_timer = new Timer();
 
   /**
    * The functor to be used in controlling the colors across the strip.
    */
-  private final ILighting.ColorSupplier colorFunction;
+  private final ILighting.ColorSupplier m_colorFunction;
 
   /**
    * Creates a new RainbowLightingCommand.
@@ -75,26 +75,23 @@ public class RainbowLighting extends Command {
    * Creates a new RainbowLighting command.
    *
    * @param subsystem              the lighting subsystem being controlled by
-   *                               the
-   *                               command
+   *                               the command
    * @param secondsBeforeAdvancing how long (in seconds) that the LEDs will
-   *                               remain
-   *                               a given color before "advancing" to the next
-   *                               stage. (Normalized to a minimum of 0.)
+   *                               remain a given color before "advancing" to the
+   *                               next stage. (Normalized to a minimum of 0.)
    * @param extraGapBetweenColors  any extra "distance" along the color wheel to
-   *                               be used between
-   *                               adjacent LEDs. (Normalized to a minimum of
-   *                               0.)
+   *                               be used between adjacent LEDs. (Normalized to a
+   *                               minimum of 0.)
    */
   public RainbowLighting(ILighting subsystem, double secondsBeforeAdvancing,
       int extraGapBetweenColors) {
     addRequirements((Subsystem) subsystem);
-    this.subsystem = subsystem;
-    this.secondsBeforeAdvancing = Math.max(0, secondsBeforeAdvancing);
+    this.m_subsystem = subsystem;
+    this.m_secondsBeforeAdvancing = Math.max(0, secondsBeforeAdvancing);
     final int normalizedExtraGapBetweenColors = Math.max(0, extraGapBetweenColors);
 
-    colorFunction = (var position) -> {
-      int effectivePosition = (position + offset + normalizedExtraGapBetweenColors) % MAX_HUE;
+    m_colorFunction = (var position) -> {
+      int effectivePosition = (position + m_offset + normalizedExtraGapBetweenColors) % MAX_HUE;
       // h - the h value [0-180] - ranges from red @ 0 to green @ 60, to blue @
       // 120, and back to red s - the s value [0-255] - "depth of color" (lower
       // values shift toward white) (colorfulness, relative to its own
@@ -106,25 +103,25 @@ public class RainbowLighting extends Command {
   @Override
   public void initialize() {
     // Reset the values used to control color advance.
-    offset = 0;
-    timer.reset();
-    timer.start();
+    m_offset = 0;
+    m_timer.reset();
+    m_timer.start();
 
     // Update the colors of the LEDs on the strip.
-    subsystem.setStripColor(colorFunction);
+    m_subsystem.setStripColor(m_colorFunction);
   }
 
   @Override
   public void execute() {
     // See if any requested delay has elapsed before updating "offset" to
     // advance the colors along the strip.
-    if (secondsBeforeAdvancing == 0
-        || timer.hasElapsed(secondsBeforeAdvancing)) {
-      timer.reset();
-      ++offset;
+    if (m_secondsBeforeAdvancing == 0
+        || m_timer.hasElapsed(m_secondsBeforeAdvancing)) {
+      m_timer.reset();
+      ++m_offset;
     }
 
     // Update the colors of the LEDs on the strip.
-    subsystem.setStripColor(colorFunction);
+    m_subsystem.setStripColor(m_colorFunction);
   }
 }

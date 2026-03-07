@@ -277,7 +277,7 @@ public class RobotContainer {
     SmartDashboard.putData("Extend Intake",
         new RunIntakeExtension(m_intake, 0.10, false));
     SmartDashboard.putData("Retract Intake",
-        new RunIntakeExtension(m_intake, 0.10, true));
+        new RunIntakeExtension(m_intake, 0.20, true));
   }
 
   private void addIndexerTestCommandsToSmartDashboard() {

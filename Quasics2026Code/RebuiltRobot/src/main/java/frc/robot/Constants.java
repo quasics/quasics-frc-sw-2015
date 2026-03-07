@@ -198,8 +198,8 @@ public final class Constants {
   }
 
   public static class RobotSpeedScaling {
-    public static final double TURTLE_SPEED_SCALING = 0.3;
-    public static final double NORMAL_SPEED_SCALING = 0.5;
+    public static final double TURTLE_SPEED_SCALING = 0.1;
+    public static final double NORMAL_SPEED_SCALING = 0.3;
     public static final double TURBO_SPEED_SCALING = 0.7;
   }
 

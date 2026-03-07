@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
@@ -201,6 +202,13 @@ public abstract class AbstractDrivebase
     return m_odometry.getPoseMeters();
   }
 
+  //@Override
+  public void resetPose(Pose2d pose) {
+    final Distance lDistance = getLeftDistance();
+    final Distance rDistance = getRightDistance();
+    final Rotation2d pRotation2d = getGyro().getRotation2d();
+  }
+
   @Override
   public Pose2d getEstimatedPose() {
     return m_poseEstimator.getEstimatedPosition();
@@ -254,14 +262,19 @@ public abstract class AbstractDrivebase
 
   @Override
   public ChassisSpeeds getSpeed() {
-    // TODO: Use kinematics to get the current chassis speed of the robot
-    return new ChassisSpeeds();
+    return new ChassisSpeeds(getLeftVelocity(), getRightVelocity(), getTurnRate());
   }
 
   @Override
   public void setSpeed(ChassisSpeeds speed) {
-    // TODO: Use reverse kinematics to calculate motor speeds based on
-    m_logger.log("SetSpeed not yet implemented", Verbosity.Warn);
+    DifferentialDriveWheelSpeeds speedForMotor = m_kinematics.toWheelSpeeds(speed);
+    setSpeeds(MetersPerSecond.of(speedForMotor.leftMetersPerSecond), MetersPerSecond.of(speedForMotor.rightMetersPerSecond));
+  //  m_logger.log("SetSpeed not yet implemented", Verbosity.Warn);
+  }
+
+  //@Override
+  public void driveWithPid(ChassisSpeeds speed) {
+    setSpeed(speed);
   }
 
   protected Pose2d getVisionPose() {

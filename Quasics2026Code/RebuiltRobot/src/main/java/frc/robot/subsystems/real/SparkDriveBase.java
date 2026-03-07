@@ -97,14 +97,16 @@ public class SparkDriveBase extends AbstractDrivebase {
 
     // // Configure the encoders.
     // // FINDME(Rylie, Robert): The SparkMax motors don't use WPILib Encoder
-    // objects.
-    // // They use the RelativeEncoders that are specific to the Sparks. As a
-    // result,
-    // // this whole section of the code is unfortunately just *wrong*.
+    // // objects. They use the RelativeEncoders that are specific to the Sparks. As
+    // // a result, this whole section of the code was unfortunately just *wrong*.
+    //
     // Encoder leftEncoder = new Encoder(1, 2);
     // Encoder rightEncoder = new Encoder(3, 4);
     // leftEncoder.setDistancePerPulse(getDistancePerPulse());
     // rightEncoder.setDistancePerPulse(getDistancePerPulse());
+    //
+    // // (I've replaced this with the use of the SparkMax's native encoders,
+    // // below.)
 
     m_leftEncoder = new SparkMaxEncoderWrapper(leftLeader.getEncoder());
     m_rightEncoder = new SparkMaxEncoderWrapper(rightLeader.getEncoder());

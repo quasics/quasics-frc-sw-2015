@@ -199,8 +199,8 @@ public final class Constants {
 
   public static class RobotSpeedScaling {
     public static final double TURTLE_SPEED_SCALING = 0.3;
-    public static final double NORMAL_SPEED_SCALING = 0.6;
-    public static final double TURBO_SPEED_SCALING = 0.9;
+    public static final double NORMAL_SPEED_SCALING = 0.5;
+    public static final double TURBO_SPEED_SCALING = 0.7;
   }
 
   // TODO: Likely want configurable settings other than just this (track width,

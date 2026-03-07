@@ -4,9 +4,12 @@
 
 package frc.robot.util.games.rebuilt;
 
+import static edu.wpi.first.units.Units.Meters;
+
 import java.util.Optional;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -24,7 +27,7 @@ public class TargetPositioningUtils {
    * 
    * @return the location (in field-based coordinates) of the hub
    */
-  public Translation2d getHubCenterLocation() {
+  public static Translation2d getHubCenterLocation() {
     Optional<Alliance> optAlliance = DriverStation.getAlliance();
     if (optAlliance.isEmpty()) {
       return new Translation2d();
@@ -39,7 +42,7 @@ public class TargetPositioningUtils {
    * @param alliance the alliance whose hub we care about
    * @return the location (in field-based coordinates) of the hub
    */
-  public Translation2d getHubCenterLocation(Alliance alliance) {
+  public static Translation2d getHubCenterLocation(Alliance alliance) {
     Distance x = switch (alliance) {
       case Red -> RebuiltConstants.FIELD_LENGTH.minus(RebuiltConstants.HUB_CENTER_DISTANCE_TO_ALLIANCE_WALL);
       case Blue -> RebuiltConstants.HUB_CENTER_DISTANCE_TO_ALLIANCE_WALL;
@@ -57,9 +60,9 @@ public class TargetPositioningUtils {
    * @param robotPose robot's current pose
    * @return distance to the center of the team's hub
    */
-  public double getDistanceToHubCenter(Translation2d robotPosition) {
+  public static Distance getDistanceToHubCenter(Translation2d robotPosition) {
     Translation2d hubCenter = getHubCenterLocation();
-    return robotPosition.getDistance(hubCenter);
+    return Meters.of(robotPosition.getDistance(hubCenter));
   }
 
   /**
@@ -69,7 +72,7 @@ public class TargetPositioningUtils {
    * @param robotPose robot's current pose
    * @return distance to the center of the team's hub
    */
-  public double getDistanceToHubCenter(Pose2d robotPose) {
+  public static Distance getDistanceToHubCenter(Pose2d robotPose) {
     return getDistanceToHubCenter(robotPose.getTranslation());
   }
 
@@ -79,13 +82,43 @@ public class TargetPositioningUtils {
    * identified set of values (speedInterpolator).
    * 
    * @param robotPose         robot position
-   * @param speedInterpolator interpolator object, loaded with "distance:speed"
-   *                          values
+   * @param speedInterpolator interpolator object, loaded with
+   *                          "distanceInMeters:speed" values
    * @return approximate speed needed to hit the alliance's hub center from the
    *         specified position
    */
-  public double getShooterSpeedForHubCenter(Pose2d robotPose, LinearInterpolator speedInterpolator) {
-    final double distance = getDistanceToHubCenter(robotPose);
+  public static double getShooterSpeedForHubCenter(Pose2d robotPose, LinearInterpolator speedInterpolator) {
+    final double distance = getDistanceToHubCenter(robotPose).in(Meters);
     return speedInterpolator.getTargetApproximationForKey(distance);
+  }
+
+  /**
+   * Returns the field-relative heading needed in order for the robot to be
+   * pointed at its alliance's hub (given the robot's current position).
+   * 
+   * @param robotPose current field-relative pose of the robot (e.g., based on
+   *                  pose estimation)
+   * @return the field-relative heading to the hub center (i.e., what you want to
+   *         have as your heading in the robot's *pose*, if you're aiming at the
+   *         hub's center)
+   */
+  public static Rotation2d getAngleToHubCenter(Pose2d robotPose) {
+    return getAngleToHubCenter(robotPose.getTranslation());
+  }
+
+  /**
+   * Returns the field-relative heading needed in order for the robot to be
+   * pointed at its alliance's hub (given the robot's current position).
+   * 
+   * @param robotPosition current field-relative position of the robot (e.g.,
+   *                      "getEstimatedPose().getTranslation()")
+   * @return the field-relative heading to the hub center (i.e., what you want to
+   *         have as your heading in the robot's *pose*, if you're aiming at the
+   *         hub's center)
+   */
+  public static Rotation2d getAngleToHubCenter(Translation2d robotPosition) {
+    final var hubCenterPosition = getHubCenterLocation();
+    Translation2d relativeVector = hubCenterPosition.minus(robotPosition);
+    return relativeVector.getAngle();
   }
 }

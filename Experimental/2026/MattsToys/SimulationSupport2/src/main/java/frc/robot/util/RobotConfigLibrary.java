@@ -56,7 +56,7 @@ public final class RobotConfigLibrary {
     // /** 2025 ("Reefscape") robot */
     // Amelia,
     // /** 2026 ("Rebuilt") robot */
-    Rebuilt2026, // 20.25" trackwidth (roughly)
+    Lizzie, // 20.25" trackwidth (roughly)
   }
 
   //
@@ -160,7 +160,7 @@ public final class RobotConfigLibrary {
     map.put(
         Robot.SimulationWithTwoCameras, generateTwoCameraSimulationConfig());
     map.put(Robot.Sally, generateSallyConfig());
-    map.put(Robot.Rebuilt2026, generate2026Config());
+    map.put(Robot.Lizzie, generate2026Config());
 
     //
     // Sanity checks to make sure that we have entries for all known robots.

@@ -26,6 +26,10 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
    */
   final Distance m_wheelCircumference;
 
+  /**
+   * Gear ratio for the drive base (e.g., "8.45" if it will take 8.45 revolutions
+   * of the motor to make the actual wheels turn 1 time).
+   */
   final double m_gearing;
 
   /**

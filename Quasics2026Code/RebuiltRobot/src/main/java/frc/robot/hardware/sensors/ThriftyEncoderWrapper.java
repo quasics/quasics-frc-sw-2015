@@ -29,7 +29,15 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
    */
   final Distance m_wheelCircumference;
 
+  /**
+   * Gear ratio for the drive base (e.g., "8.45" if it will take 8.45 revolutions
+   * of the motor to make the actual wheels turn 1 time).
+   */
   final double m_gearing;
+
+  // TODO(Matt): Remove these pieces, once we've confirmed that the code is
+  // working correctly.
+  static final boolean USE_SPARK_CALCULATIONS = true;
   final double m_distanceScalingFactorForGearing;
   final double m_velocityScalingFactor;
 
@@ -45,8 +53,6 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
       ThriftyNova motorController, Distance wheelOuterDiameter) {
     this(motorController, wheelOuterDiameter, 1.0);
   }
-
-  static final boolean USE_SPARK_CALCULATIONS = true;
 
   /**
    * Constructor.

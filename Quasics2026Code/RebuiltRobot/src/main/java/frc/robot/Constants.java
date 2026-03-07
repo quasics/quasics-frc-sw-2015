@@ -33,7 +33,7 @@ public final class Constants {
   public static final KitbotGearing gearing = KitbotGearing.k8p45;
   public static final double drivebaseGearRatio = gearing.value;
   public static final LinearVelocity maxLinearDriveSpeed = MetersPerSecond.of(3);
-  public static final AngularVelocity maxRotationalSpeed = RadiansPerSecond.of(6.5);
+  public static final AngularVelocity maxRotationalSpeed = RadiansPerSecond.of(2);
   public static final int LIGHTING_TOTAL_LENGTH = 80;
 
   // TODO: Calculate https://www.chiefdelphi.com/t/coefficient-of-friction/467778

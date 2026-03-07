@@ -358,14 +358,14 @@ public final class RobotConfigLibrary {
 
     // TODO: Update 2026 flywheel configuration data with real numbers.
     final FlywheelConfig flywheel = new FlywheelConfig(FlywheelConfig.FlywheelType.TalonFX,
-        RebuiltRobotConstants.SparkMaxConstants.FLYWHEEL_MOTOR_ID, false,
+        RebuiltRobotConstants.SparkMaxCanIds.FLYWHEEL_ID, false,
         new SimpleFeedForwardConfig(Volts.of(0.1), // kS
             Volts.of(0.002), // kV
             0.0001), // kA
         new PIDConfig(0.11));
 
     final HoodConfig hood = new HoodConfig(HoodConfig.ControlType.SparkMax,
-        RebuiltRobotConstants.SparkMaxConstants.HOOD_MOTOR_ID, Degrees.of(45),
+        RebuiltRobotConstants.SparkMaxCanIds.HOOD_ID, Degrees.of(45),
         Degrees.of(75));
 
     final PowerDistributor power = new PowerDistributor(ModuleType.kRev);

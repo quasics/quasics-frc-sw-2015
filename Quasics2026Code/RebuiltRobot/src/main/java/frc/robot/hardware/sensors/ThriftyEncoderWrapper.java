@@ -7,34 +7,23 @@ package frc.robot.hardware.sensors;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
+import java.io.IOException;
+
 import com.thethriftybot.devices.ThriftyNova;
 import com.thethriftybot.devices.ThriftyNova.EncoderType;
 import com.thethriftybot.util.Conversion;
 import com.thethriftybot.util.Conversion.PositionUnit;
 import com.thethriftybot.util.Conversion.VelocityUnit;
+
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import frc.robot.Constants;
-
-import java.io.IOException;
 
 /**
  * Convenience wrapper, allowing a ThriftyNova to be read in the same (general)
  * way as a normal WPLib Encoder.
  */
 public class ThriftyEncoderWrapper implements TrivialEncoder {
-  /**
-   * Thrifty conversion object, used to translate native velocity units to
-   * rotations/sec.
-   */
-  final static Conversion m_speedConverter = new Conversion(VelocityUnit.ROTATIONS_PER_SEC, EncoderType.INTERNAL);
-
-  /**
-   * Thrifty conversion object, used to translate native positional units to
-   * rotations.
-   */
-  final static Conversion m_distanceConverter = new Conversion(PositionUnit.ROTATIONS, EncoderType.INTERNAL);
-
   /** Wrapped Thrifty Nova controller, providing access to encoder data. */
   final ThriftyNova m_motorController;
 
@@ -91,22 +80,7 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
 
   @Override
   public Distance getPosition() {
-    /*
-     * Math for SparkMax controller setup:
-     * 
-     * final Distance wheelCircumference = Constants.wheelRadius.times(2 * Math.PI);
-     * 
-     * final double scalingFactor_geared =
-     * wheelCircumference.div(Constants.drivebaseGearRatio).in(Meters);
-     * 
-     * final double velocityScalingFactor = distanceScalingFactorForGearing / 60;
-     * System.out.println("Wheel circumference: " + wheelCircumference);
-     * System.out.println("Using gear ratio: " + Constants.drivebaseGearRatio);
-     * System.out.println("Adjustment for gearing (m/rotation): " +
-     * distanceScalingFactorForGearing);
-     * System.out.println("Velocity adj.: " + velocityScalingFactor);
-     */
-    final double currentRevolutions = m_distanceConverter.fromMotor(m_motorController.getPosition());
+    final double currentRevolutions = m_motorController.getPosition();
     if (USE_SPARK_CALCULATIONS) {
       return Meters.of(currentRevolutions * m_distanceScalingFactorForGearing);
     } else {
@@ -117,7 +91,7 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
 
   @Override
   public LinearVelocity getVelocity() {
-    final double currentRotationsPerSecond = m_speedConverter.fromMotor(m_motorController.getVelocity());
+    final double currentRotationsPerSecond = m_motorController.getVelocity();
     if (USE_SPARK_CALCULATIONS) {
       return MetersPerSecond.of(currentRotationsPerSecond * m_velocityScalingFactor);
     } else {
@@ -387,5 +361,11 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
  * Reported left distance: 0.0445 m (delta: 0.0007 m, raw: 32.9524 units),
  * velocity: 0.0005 m/s (sampled: 0.04)
  * Forward - isFinished --> false
+ * 
+ * 
+ * Raw motor rotations: 32.9524
+ * Geared (wheel) rotations: 3.8997
+ * Expected distance: 1.867 meters
+ * Calculated distance: 0.0445 meters (off by x42)
  * 
  */

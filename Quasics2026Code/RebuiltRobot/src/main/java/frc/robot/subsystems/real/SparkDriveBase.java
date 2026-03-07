@@ -63,11 +63,19 @@ public class SparkDriveBase extends AbstractDrivebase {
     super(new SparkMaxMotorControllerPlus(leftLeader),
         new SparkMaxMotorControllerPlus(rightLeader));
 
+    // Configure followers to follow the leaders.
+    final SparkMax leftfollower = new SparkMax(SparkMaxIds.LEFT_FOLLOWER_ID, MotorType.kBrushless);
+    final SparkMax rightfollower = new SparkMax(SparkMaxIds.RIGHT_FOLLOWER_ID, MotorType.kBrushless);
+    configureMotorControllersForLeadingAndFollowing(
+        leftLeader, leftfollower);
+    configureMotorControllersForLeadingAndFollowing(
+        rightLeader, rightfollower);
+
     // Conversion factor from units in rotations (or RPM) to meters (or m/s).
     final Distance wheelCircumference = Constants.wheelRadius.times(2 * Math.PI);
     final double distanceScalingFactorForGearing = wheelCircumference.div(Constants.drivebaseGearRatio).in(Meters);
     final double velocityScalingFactor = distanceScalingFactorForGearing / 60;
-    System.out.println("Wheel circumference: " + Constants.drivebaseGearRatio);
+    System.out.println("Wheel circumference: " + wheelCircumference);
     System.out.println("Using gear ratio: " + Constants.drivebaseGearRatio);
     System.out.println("Adjustment for gearing (m/rotation): " + distanceScalingFactorForGearing);
     System.out.println("Velocity adj.: " + velocityScalingFactor);
@@ -85,17 +93,9 @@ public class SparkDriveBase extends AbstractDrivebase {
     rightConfig.inverted(true);
 
     leftLeader.configure(
-        leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        leftConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     rightLeader.configure(
-        rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
-    // Configure followers to follow the leaders.
-    final SparkMax leftfollower = new SparkMax(SparkMaxIds.LEFT_FOLLOWER_ID, MotorType.kBrushless);
-    final SparkMax rightfollower = new SparkMax(SparkMaxIds.RIGHT_FOLLOWER_ID, MotorType.kBrushless);
-    configureMotorControllersForLeadingAndFollowing(
-        leftLeader, leftfollower);
-    configureMotorControllersForLeadingAndFollowing(
-        rightLeader, rightfollower);
+        rightConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
     // // Configure the encoders.
     // // FINDME(Rylie, Robert): The SparkMax motors don't use WPILib Encoder
@@ -147,16 +147,16 @@ public class SparkDriveBase extends AbstractDrivebase {
     followerConfig.follow(leader);
 
     // Apply the configuration to the follower motor
-    follower.configure(followerConfig, ResetMode.kResetSafeParameters,
-        PersistMode.kPersistParameters);
+    follower.configure(followerConfig, ResetMode.kNoResetSafeParameters,
+        PersistMode.kNoPersistParameters);
 
     // Configure the leader so that it is *not* a follower of anything (in case we
     // swap motor controllers around, and fail to set this up with the configuration
     // tool).
     SparkMaxConfig leaderConfig = new SparkMaxConfig();
     leaderConfig.follow(0);
-    leader.configure(leaderConfig, ResetMode.kResetSafeParameters,
-        PersistMode.kPersistParameters);
+    leader.configure(leaderConfig, ResetMode.kNoResetSafeParameters,
+        PersistMode.kNoPersistParameters);
   }
 
   // We've removed @Override periodic, but be sure to use super.periodic if we

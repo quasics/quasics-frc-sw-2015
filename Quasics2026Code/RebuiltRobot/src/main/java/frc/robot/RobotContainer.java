@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.DriveteamConstants;
 import frc.robot.Constants.PwmPortIds;
 import frc.robot.commands.ArcadeDrive;
+import frc.robot.commands.Autos;
 import frc.robot.commands.PivotHoodToPosition;
 import frc.robot.commands.RunIndexer;
 import frc.robot.commands.RunIntakeExtension;
@@ -40,6 +41,7 @@ import frc.robot.subsystems.interfaces.IClimber;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.IIndexer;
 import frc.robot.subsystems.interfaces.IVision;
+import frc.robot.subsystems.real.AbstractDrivebase;
 import frc.robot.subsystems.real.Lighting;
 import frc.robot.subsystems.real.LightingBuffer;
 import frc.robot.subsystems.real.NovaDriveBase;
@@ -488,6 +490,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // TODO: Implement functionality for autonomous mode.
-    return Commands.print("We should do something in auto mode....");
+    return Autos.exampleAuto((AbstractDrivebase)m_drivebase);
   }
 }

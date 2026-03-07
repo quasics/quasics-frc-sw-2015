@@ -437,12 +437,12 @@ public class RobotContainer {
       new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.LeftTrigger))
           .whileTrue(new RunIntakeRollers(m_intake, 0.9, false));
       new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.RightTrigger))
-          .whileTrue(new RunIndexer(m_indexer, 0.5, true));
+          .whileTrue(new RunIntakeRollers(m_intake, 0.9, true));
 
       new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.XButton))
-          .whileTrue(new RunIntakeExtension(m_intake, 0.1, true));
+          .whileTrue(new RunIntakeExtension(m_intake, 0.2, false));
       new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.BButton))
-          .whileTrue(new RunIntakeExtension(m_intake, 0.1, false));
+          .whileTrue(new RunIntakeExtension(m_intake, 0.1, true));
     }
   }
 

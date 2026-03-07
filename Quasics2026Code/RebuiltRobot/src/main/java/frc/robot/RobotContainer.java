@@ -389,7 +389,7 @@ public class RobotContainer {
         return speedSlewRateLimiter.calculate(joystickPercent);
       }
     };
-    final double ROTATION_FIXED_SCALING = 0.5;
+    final double ROTATION_FIXED_SCALING = 1.25;
     Supplier<Double> rotationDrivingStick = () -> {
       double scaling = getDriveSpeedScalingFactor();
       double axis = getDriverAxis(Constants.LogitechDualshock.RightXAxis);
@@ -435,6 +435,11 @@ public class RobotContainer {
         new RunShooterPID(m_shooter, RPM.of(3700), .387, 2));
   }
 
+  private Command trenchShot() {
+    return Commands.sequence(new PivotHoodToPosition(m_hood, 0.15, Degrees.of(15)),
+        new RunShooterPID(m_shooter, RPM.of(3300), .387, 2));
+  }
+
   private void configureDriverButtons() {
     if (m_intake != null) {
       new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.LeftTrigger))
@@ -454,12 +459,13 @@ public class RobotContainer {
       new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kX.value))
           .whileTrue(towerShot());
       new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kB.value)).whileTrue(againstHubShot());
+      new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kA.value)).whileTrue(trenchShot());
     }
     if (m_indexer != null) {
       new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kLeftBumper.value))
           .whileTrue(new RunIndexer(m_indexer, 0.5, true));
       new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kRightBumper.value))
-          .whileTrue(new RunIndexer(m_indexer, 0.3, false));
+          .whileTrue(new RunIndexer(m_indexer, 0.6, false));
     }
   }
 
@@ -490,6 +496,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // TODO: Implement functionality for autonomous mode.
-    return Autos.exampleAuto((AbstractDrivebase)m_drivebase);
+    return Autos.exampleAuto((AbstractDrivebase) m_drivebase);
   }
 }

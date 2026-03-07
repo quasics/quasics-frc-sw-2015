@@ -42,6 +42,11 @@ public abstract class TurnToHeadingBase extends Command {
     // example) running angular profiling using SysID.
     m_pid = new PIDController(0.002, 0, 0.0);
 
+    // Tell the PID controller that that data "wraps" at -180/180 (e.g., that -181
+    // is actually the same thing as +179), to keep the robot from "taking the long
+    // way around" when crossing the that threshold.
+    m_pid.enableContinuousInput(-180, 180);
+
     addRequirements(drivebase.asSubsystem());
   }
 

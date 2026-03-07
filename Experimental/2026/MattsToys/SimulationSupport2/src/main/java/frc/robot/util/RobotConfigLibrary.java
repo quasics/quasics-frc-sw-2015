@@ -151,6 +151,15 @@ public final class RobotConfigLibrary {
   }
 
   /**
+   * (Exposed for testing.)
+   * 
+   * @return
+   */
+  public static Map<Robot, RobotConfig> getRobotConfigMap() {
+    return Collections.unmodifiableMap(m_map);
+  }
+
+  /**
    * Helper function, used to construct the underlying map. (Java doesn't
    * support inline specification of Map data.)
    *
@@ -170,20 +179,15 @@ public final class RobotConfigLibrary {
     map.put(Robot.Lizzie, generate2026Config());
 
     //
-    // Sanity checks to make sure that we have entries for all known robots.
+    // Sanity check to make sure that we have entries for all known robots.
+    // (This should be redundant to the build-time checks in
+    // RobotConfigLibraryTest.)
 
     // Note that assertions are disabled by default. :-(
     // See
     // https://docs.oracle.com/javase/8/docs/technotes/guides/language/assert.html.
     assert (map.size() == Robot.values().length)
         : "Configurations for one or more robots are missing!";
-
-    // Back up the assertion with something that can't be disabled.
-    if (map.size() != Robot.values().length) {
-      final int numRobotsWithoutConfigs = Robot.values().length - map.size();
-      throw new RuntimeException("Configurations are missing for "
-          + numRobotsWithoutConfigs + " robot(s)!");
-    }
 
     return map;
   }
@@ -354,14 +358,14 @@ public final class RobotConfigLibrary {
 
     // TODO: Update 2026 flywheel configuration data with real numbers.
     final FlywheelConfig flywheel = new FlywheelConfig(FlywheelConfig.FlywheelType.TalonFX,
-        RebuiltRobotConstants.SparkMaxConstants.FLYWHEEL_MOTOR_ID, false,
+        RebuiltRobotConstants.SparkMaxCanIds.FLYWHEEL_ID, false,
         new SimpleFeedForwardConfig(Volts.of(0.1), // kS
             Volts.of(0.002), // kV
             0.0001), // kA
         new PIDConfig(0.11));
 
     final HoodConfig hood = new HoodConfig(HoodConfig.ControlType.SparkMax,
-        RebuiltRobotConstants.SparkMaxConstants.HOOD_MOTOR_ID, Degrees.of(45),
+        RebuiltRobotConstants.SparkMaxCanIds.HOOD_ID, Degrees.of(45),
         Degrees.of(75));
 
     final PowerDistributor power = new PowerDistributor(ModuleType.kRev);

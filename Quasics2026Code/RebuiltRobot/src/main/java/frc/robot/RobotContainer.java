@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -22,14 +23,15 @@ import frc.robot.Constants.PwmPortIds;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.Autos;
 import frc.robot.commands.PivotHoodToPosition;
-import frc.robot.commands.RainbowLighting;
 import frc.robot.commands.RunIndexer;
 import frc.robot.commands.RunIntakeExtension;
 import frc.robot.commands.RunIntakeRollers;
 import frc.robot.commands.RunShooter;
 import frc.robot.commands.RunShooterForTime;
 import frc.robot.commands.RunShooterPID;
+import frc.robot.commands.lighting.RainbowLighting;
 import frc.robot.commands.testing.DriveForDistance;
+import frc.robot.commands.testing.FlywheelDialIn;
 import frc.robot.commands.testing.LinearSpeedCommand;
 import frc.robot.subsystems.interfaces.IIntake;
 import frc.robot.subsystems.interfaces.IShooterHood;
@@ -213,6 +215,7 @@ public class RobotContainer {
     configureBindings();
     configureArcadeDriving();
     configureDriverButtons();
+    configureOperatorButtons();
   }
 
   private ILighting allocatePrimaryLighting() {
@@ -243,12 +246,21 @@ public class RobotContainer {
       return;
     }
     SmartDashboard.putData("Run Flywheel @ 1200 RPM, Kicker @ 12.5% speed",
-        new RunShooterPID(m_shooter, RPM.of(1200), .125));
+        new RunShooterPID(m_shooter, RPM.of(1200), .125, 1));
     SmartDashboard.putData("Run Flywheel @ 3700 RPM, Kicker @ 38.7% speed",
-        new RunShooterPID(m_shooter, RPM.of(3700), .387));
+        new RunShooterPID(m_shooter, RPM.of(3700), .387, 1));
     SmartDashboard.putData("Run Flywheel @ 15% speed, Kicker @ 50% speed",
         new RunShooter(m_shooter, 0.15, .50, true));
     SmartDashboard.putData("Jam", runKickerReverse());
+    SmartDashboard.putData("3500 RPM",
+        new RunShooterPID(m_shooter, RPM.of(3500), .387, 1));
+    SmartDashboard.putData("3300 RPM",
+        new RunShooterPID(m_shooter, RPM.of(3300), .387, 1));
+    SmartDashboard.putData("2700 RPM",
+        new RunShooterPID(m_shooter, RPM.of(2700), .387, 1));
+    SmartDashboard.putData("3050 RPM",
+        new RunShooterPID(m_shooter, RPM.of(3050), .387, 1));
+    SmartDashboard.putData("Dial in Shooter", new FlywheelDialIn(m_shooter));
   }
 
   private void addIntakeTestCommandsToSmartDashboard() {
@@ -403,16 +415,23 @@ public class RobotContainer {
   private void configureBindings() {
     // Note that we're not saving the trigger in a variable. That's fine: this is a
     // "just set it up and let it do its thing" sort of thing....
-    new Trigger(() -> m_driverController.getRawButton(
-        Constants.LogitechDualshock.BButton))
-        .onTrue(
-            new InstantCommand(() -> {
-              m_switchDrive = !m_switchDrive;
-            }));
+    // new Trigger(() ->
+    // m_driverController.getRawButton(Constants.LogitechDualshock.BButton)).onTrue(new
+    // InstantCommand(() -> {m_switchDrive = !m_switchDrive;}));
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is
     // pressed, cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+  }
+
+  private Command againstHubShot() {
+    return Commands.sequence(new PivotHoodToPosition(m_hood, 0.15, Degrees.of(5)),
+        new RunShooterPID(m_shooter, RPM.of(2700), .387, 1));
+  }
+
+  private Command towerShot() {
+    return Commands.sequence(new PivotHoodToPosition(m_hood, 0.15, Degrees.of(15)),
+        new RunShooterPID(m_shooter, RPM.of(3700), .387, 2));
   }
 
   private void configureDriverButtons() {
@@ -420,16 +439,26 @@ public class RobotContainer {
       new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.LeftTrigger))
           .whileTrue(new RunIntakeRollers(m_intake, 0.9, false));
       new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.RightTrigger))
-          .whileTrue(new RunIntakeRollers(m_intake, 0.9, true));
+          .whileTrue(new RunIndexer(m_indexer, 0.5, true));
 
-      new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.StartButton))
+      new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.XButton))
           .whileTrue(new RunIntakeExtension(m_intake, 0.1, true));
-      new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.BackButton))
+      new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.BButton))
           .whileTrue(new RunIntakeExtension(m_intake, 0.1, false));
     }
+  }
+
+  private void configureOperatorButtons() {
     if (m_shooter != null) {
-      new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.XButton))
-          .whileTrue(new RunShooterPID(m_shooter, RPM.of(3700), .387));
+      new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kX.value))
+          .whileTrue(towerShot());
+      new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kB.value)).whileTrue(againstHubShot());
+    }
+    if (m_indexer != null) {
+      new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kLeftBumper.value))
+          .whileTrue(new RunIndexer(m_indexer, 0.5, true));
+      new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kRightBumper.value))
+          .whileTrue(new RunIndexer(m_indexer, 0.3, false));
     }
   }
 

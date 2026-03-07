@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems.interfaces;
 
+import static edu.wpi.first.units.Units.Degrees;
+
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public interface IShooterHood {
@@ -37,7 +40,9 @@ public interface IShooterHood {
   // FINDME(Daniel): This should return a WPILib "Angle" object (from the Units
   // library), rather than a "naked value" (which could be degrees, radians,
   // etc.).
-  double getCurrentAngle();
+  //
+  // Note: I've fixed this for you, but it's a habit worth building....
+  Angle getCurrentAngle();
 
   void moveDown(double speed);
 
@@ -51,8 +56,8 @@ public interface IShooterHood {
    */
   public class NullShooterHood extends SubsystemBase implements IShooterHood {
     @Override
-    public double getCurrentAngle() {
-      return 0;
+    public Angle getCurrentAngle() {
+      return Degrees.of(0);
     }
 
     @Override

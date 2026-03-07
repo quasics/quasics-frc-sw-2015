@@ -51,6 +51,7 @@ import frc.robot.subsystems.real.Vision;
 import frc.robot.subsystems.simulated.SimulatedVision;
 import frc.robot.subsystems.simulated.SimulationDrivebase;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
 
@@ -278,11 +279,11 @@ public class RobotContainer {
       return;
     }
     SmartDashboard.putData("Move Hood to 15 degrees (60 degrees)",
-        new PivotHoodToPosition(m_hood, 0.15, 15));
+        new PivotHoodToPosition(m_hood, 0.15, Degrees.of(15)));
     SmartDashboard.putData("Move Hood to 5 degrees (70 degrees)",
-        new PivotHoodToPosition(m_hood, 0.15, 5));
+        new PivotHoodToPosition(m_hood, 0.15, Degrees.of(5)));
     SmartDashboard.putData("Move Hood to 25 degrees (50 degrees)",
-        new PivotHoodToPosition(m_hood, 0.15, 25));
+        new PivotHoodToPosition(m_hood, 0.15, Degrees.of(25)));
   }
 
   private void addDrivebaseTestCommandsToSmartDashboard() {

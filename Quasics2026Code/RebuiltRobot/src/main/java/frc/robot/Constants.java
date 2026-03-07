@@ -4,10 +4,12 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
@@ -82,7 +84,7 @@ public final class Constants {
   }
 
   public static class Tolerances {
-    public static final double ANGLETOLERANCE = 8;
+    public static final Angle ANGLETOLERANCE = Degrees.of(8);
   }
 
   public static class Ratios {

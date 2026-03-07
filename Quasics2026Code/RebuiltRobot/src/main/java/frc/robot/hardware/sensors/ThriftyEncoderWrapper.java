@@ -14,6 +14,8 @@ import com.thethriftybot.util.Conversion.PositionUnit;
 import com.thethriftybot.util.Conversion.VelocityUnit;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
+import frc.robot.Constants;
+
 import java.io.IOException;
 
 /**
@@ -43,6 +45,8 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
   final Distance m_wheelCircumference;
 
   final double m_gearing;
+  final double m_distanceScalingFactorForGearing;
+  final double m_velocityScalingFactor;
 
   /**
    * Constructor. (This assumes that the motor is directly connected to the wheel,
@@ -56,6 +60,8 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
       ThriftyNova motorController, Distance wheelOuterDiameter) {
     this(motorController, wheelOuterDiameter, 1.0);
   }
+
+  static final boolean USE_SPARK_CALCULATIONS = true;
 
   /**
    * Constructor.
@@ -71,21 +77,54 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
     m_motorController = motorController;
     m_wheelCircumference = wheelOuterDiameter.times(Math.PI);
     m_gearing = gearing;
+
+    final Distance wheelCircumference = wheelOuterDiameter.times(Math.PI);
+    m_distanceScalingFactorForGearing = wheelCircumference.div(Constants.drivebaseGearRatio).in(Meters);
+    m_velocityScalingFactor = m_distanceScalingFactorForGearing / 60;
+    if (USE_SPARK_CALCULATIONS) {
+      System.out.println("Wheel circumference: " + wheelCircumference);
+      System.out.println("Using gear ratio: " + Constants.drivebaseGearRatio);
+      System.out.println("Adjustment for gearing (m/rotation): " + m_distanceScalingFactorForGearing);
+      System.out.println("Velocity adj.: " + m_velocityScalingFactor);
+    }
   }
 
   @Override
   public Distance getPosition() {
+    /*
+     * Math for SparkMax controller setup:
+     * 
+     * final Distance wheelCircumference = Constants.wheelRadius.times(2 * Math.PI);
+     * 
+     * final double scalingFactor_geared =
+     * wheelCircumference.div(Constants.drivebaseGearRatio).in(Meters);
+     * 
+     * final double velocityScalingFactor = distanceScalingFactorForGearing / 60;
+     * System.out.println("Wheel circumference: " + wheelCircumference);
+     * System.out.println("Using gear ratio: " + Constants.drivebaseGearRatio);
+     * System.out.println("Adjustment for gearing (m/rotation): " +
+     * distanceScalingFactorForGearing);
+     * System.out.println("Velocity adj.: " + velocityScalingFactor);
+     */
     final double currentRevolutions = m_distanceConverter.fromMotor(m_motorController.getPosition());
-    // revolutions * circumferenceTraveled/revolution / gearingRatio --> distance
-    return m_wheelCircumference.times(currentRevolutions / m_gearing);
+    if (USE_SPARK_CALCULATIONS) {
+      return Meters.of(currentRevolutions * m_distanceScalingFactorForGearing);
+    } else {
+      // revolutions * circumferenceTraveled/revolution / gearingRatio --> distance
+      return m_wheelCircumference.times(currentRevolutions / m_gearing);
+    }
   }
 
   @Override
   public LinearVelocity getVelocity() {
     final double currentRotationsPerSecond = m_speedConverter.fromMotor(m_motorController.getVelocity());
-    // (revs/sec) * circumferenceTraveled/rev / gearingRatio) --> (meters/sec)
-    final double metersPerRotation = m_wheelCircumference.in(Meters);
-    return MetersPerSecond.of(currentRotationsPerSecond * metersPerRotation / m_gearing);
+    if (USE_SPARK_CALCULATIONS) {
+      return MetersPerSecond.of(currentRotationsPerSecond * m_velocityScalingFactor);
+    } else {
+      // (revs/sec) * circumferenceTraveled/rev / gearingRatio) --> (meters/sec)
+      final double metersPerRotation = m_wheelCircumference.in(Meters);
+      return MetersPerSecond.of(currentRotationsPerSecond * metersPerRotation / m_gearing);
+    }
   }
 
   @Override

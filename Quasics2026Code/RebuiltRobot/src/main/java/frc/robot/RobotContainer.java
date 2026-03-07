@@ -51,6 +51,7 @@ import frc.robot.subsystems.real.Vision;
 import frc.robot.subsystems.simulated.SimulatedVision;
 import frc.robot.subsystems.simulated.SimulationDrivebase;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
 
@@ -93,24 +94,45 @@ public class RobotContainer {
    */
   private static final RobotName ROBOT_NAME = Robot.isReal() ? DEFAULT_ROBOT_NAME : RobotName.Simulated;
 
+  private static final boolean ENABLE_SHOOTER_TEST_CMDS = true;
+  private static final boolean ENABLE_INDEXER_TEST_CMDS = true;
+  private static final boolean ENABLE_HOOD_TEST_CMDS = true;
+  private static final boolean ENABLE_INTAKE_TEST_CMDS = true;
+
   //
   // The robot's subystems are listed here.
   //
 
-  private final IIntake m_intake = (ROBOT_NAME == RobotName.Lizzie) ? new RealIntake() : new IIntake.NullIntake();
-  private final IIndexer m_indexer = (ROBOT_NAME == RobotName.Lizzie) ? new RealIndexer() : new IIndexer.NullIndexer();
-  private final IShooterHood m_hood = (ROBOT_NAME == RobotName.Lizzie) ? new RealShooterHood()
-      : new IShooterHood.NullShooterHood();
-  private final IShooter m_shooter = (ROBOT_NAME == RobotName.Lizzie) ? new RealShooter()
-      : new IShooter.NullShooter();
-  private final IClimber m_climber = (ROBOT_NAME == RobotName.Lizzie) ? new RealClimber() : new IClimber.NullClimber();
-
   private final IDrivebase m_drivebase = switch (ROBOT_NAME) {
     case Sally -> new SparkDriveBase();
-    case Simulated -> new SimulationDrivebase();
     case Lizzie -> new NovaDriveBase();
+    case Simulated -> new SimulationDrivebase();
   };
-  private final IVision m_vision = (ROBOT_NAME == RobotName.Lizzie) ? new Vision() : new SimulatedVision();
+  private final IVision m_vision = switch (ROBOT_NAME) {
+    case Lizzie -> new Vision();
+    case Sally -> new IVision.NullVision();
+    case Simulated -> new SimulatedVision();
+  };
+  private final IIntake m_intake = switch (ROBOT_NAME) {
+    case Lizzie -> new RealIntake();
+    case Sally, Simulated -> new IIntake.NullIntake();
+  };
+  private final IIndexer m_indexer = switch (ROBOT_NAME) {
+    case Lizzie -> new RealIndexer();
+    case Sally, Simulated -> new IIndexer.NullIndexer();
+  };
+  private final IShooterHood m_hood = switch (ROBOT_NAME) {
+    case Lizzie -> new RealShooterHood();
+    case Sally, Simulated -> new IShooterHood.NullShooterHood();
+  };
+  private final IShooter m_shooter = switch (ROBOT_NAME) {
+    case Lizzie -> new RealShooter();
+    case Sally, Simulated -> new IShooter.NullShooter();
+  };
+  private final IClimber m_climber = switch (ROBOT_NAME) {
+    case Lizzie -> new RealClimber();
+    case Sally, Simulated -> new IClimber.NullClimber();
+  };
 
   /** Primary lighting control (owns the LED strip and will partition it out). */
   private final ILighting m_primaryLighting;
@@ -215,7 +237,7 @@ public class RobotContainer {
   }
 
   private void addShooterTestCommandsToSmartDashboard() {
-    if (m_shooter == null) {
+    if (m_shooter == null || !ENABLE_SHOOTER_TEST_CMDS) {
       return;
     }
     SmartDashboard.putData("Run Flywheel @ 1200 RPM, Kicker @ 12.5% speed",
@@ -228,9 +250,10 @@ public class RobotContainer {
   }
 
   private void addIntakeTestCommandsToSmartDashboard() {
-    if (m_intake == null) {
+    if (m_intake == null || !ENABLE_INTAKE_TEST_CMDS) {
       return;
     }
+
     SmartDashboard.putData("Run Intake Rollers", new RunIntakeRollers(m_intake, 0.1, true));
     SmartDashboard.putData("Run Indexer", new RunIndexer(m_indexer, 0.1, true));
     // SmartDashboard.putData("Extend Intake", new InstantCommand(() ->
@@ -244,7 +267,7 @@ public class RobotContainer {
   }
 
   private void addIndexerTestCommandsToSmartDashboard() {
-    if (m_indexer == null) {
+    if (m_indexer == null || !ENABLE_INDEXER_TEST_CMDS) {
       return;
     }
     SmartDashboard.putData("Reverse Indexer", new RunIndexer(m_indexer, 0.1, false));
@@ -252,21 +275,31 @@ public class RobotContainer {
   }
 
   private void addHoodTestCommandsToSmartDashboard() {
-    if (m_hood == null) {
+    if (m_hood == null || !ENABLE_HOOD_TEST_CMDS) {
       return;
     }
     SmartDashboard.putData("Move Hood to 15 degrees (60 degrees)",
-        new PivotHoodToPosition(m_hood, 0.15, 15));
+        new PivotHoodToPosition(m_hood, 0.15, Degrees.of(15)));
     SmartDashboard.putData("Move Hood to 5 degrees (70 degrees)",
-        new PivotHoodToPosition(m_hood, 0.15, 5));
+        new PivotHoodToPosition(m_hood, 0.15, Degrees.of(5)));
     SmartDashboard.putData("Move Hood to 25 degrees (50 degrees)",
-        new PivotHoodToPosition(m_hood, 0.15, 25));
+        new PivotHoodToPosition(m_hood, 0.15, Degrees.of(25)));
   }
 
   private void addDrivebaseTestCommandsToSmartDashboard() {
     if (m_drivebase == null) {
       return;
     }
+    SmartDashboard.putData(
+        "Braking on",
+        new InstantCommand(() -> {
+          m_drivebase.setBreakingMode(true);
+        }, (Subsystem) m_drivebase));
+    SmartDashboard.putData(
+        "Braking off",
+        new InstantCommand(() -> {
+          m_drivebase.setBreakingMode(false);
+        }, (Subsystem) m_drivebase));
     SmartDashboard.putData("LinearSpeedCommand", new LinearSpeedCommand(m_drivebase));
     SmartDashboard.putData("CMD: Testing encoders",
         Commands.sequence(new DriveForDistance(m_drivebase, .25, Meters.of(2))));

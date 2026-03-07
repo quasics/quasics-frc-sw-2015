@@ -4,10 +4,13 @@
 
 package frc.robot.subsystems.real;
 
+import static edu.wpi.first.units.Units.Degrees;
+
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
 import frc.robot.logging.Logger;
@@ -30,18 +33,16 @@ public class RealShooterHood extends SubsystemBase implements IShooterHood {
   }
 
   @Override
-  public double getCurrentAngle() {
+  public Angle getCurrentAngle() {
 
-    double m_currentAngleDegrees = m_throughBoreEncoder.getPosition() * 360;
+    double currentAngleDegrees = m_throughBoreEncoder.getPosition() * 360;
 
-    if (m_currentAngleDegrees > 300) {
-
-      m_currentAngleDegrees = 0;
-
+    // FINDME(Daniel): Why are you making anything over 300 ==> 0?
+    if (currentAngleDegrees > 300) {
+      currentAngleDegrees = 0;
     }
 
-    return m_currentAngleDegrees;
-
+    return Degrees.of(currentAngleDegrees);
   }
 
   @Override

@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Ratios;
@@ -15,16 +16,16 @@ public class PivotHoodToPosition extends Command {
 
   IShooterHood m_hood;
   private double m_speed;
-  private double m_endAngle;
+  private Angle m_endAngle;
 
   /** Creates a new PivotHoodToPosition. */
-  public PivotHoodToPosition(IShooterHood hood, double speed, double endAngle) {
+  public PivotHoodToPosition(IShooterHood hood, double speed, Angle endAngle) {
 
     m_hood = hood;
 
     m_speed = speed;
 
-    m_endAngle = endAngle * Ratios.ENCODERTOHOODRATIO;
+    m_endAngle = endAngle.times(Ratios.ENCODERTOHOODRATIO);
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements((SubsystemBase) hood);
@@ -34,11 +35,11 @@ public class PivotHoodToPosition extends Command {
   @Override
   public void initialize() {
 
-    if (m_hood.getCurrentAngle() > (m_endAngle - Tolerances.ANGLETOLERANCE)) {
+    if (m_hood.getCurrentAngle().gt(m_endAngle.minus(Tolerances.ANGLETOLERANCE))) {
 
       m_hood.moveDown(m_speed);
 
-    } else if (m_hood.getCurrentAngle() < (m_endAngle + Tolerances.ANGLETOLERANCE)) {
+    } else if (m_hood.getCurrentAngle().lt(m_endAngle.plus(Tolerances.ANGLETOLERANCE))) {
 
       m_hood.moveUp(m_speed);
 
@@ -63,8 +64,8 @@ public class PivotHoodToPosition extends Command {
   @Override
   public boolean isFinished() {
 
-    return (m_hood.getCurrentAngle() < m_endAngle + Tolerances.ANGLETOLERANCE &&
-        m_hood.getCurrentAngle() > m_endAngle - Tolerances.ANGLETOLERANCE);
+    return (m_hood.getCurrentAngle().lt(m_endAngle.plus(Tolerances.ANGLETOLERANCE)) &&
+        m_hood.getCurrentAngle().gt(m_endAngle.minus(Tolerances.ANGLETOLERANCE)));
 
   }
 }

@@ -4,6 +4,11 @@
 
 package frc.robot.subsystems.interfaces;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import edu.wpi.first.wpilibj.AddressableLEDBufferView;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -221,11 +226,18 @@ public interface ILighting extends ISubsystem {
   }
 
   /**
+   * Returns the list of LED buffer views for any configured sub-views.
+   *
+   * @return the list of LED buffer views
+   */
+  public List<AddressableLEDBufferView> getSubViews();
+
+  /**
    * Trivial implementation of the interface, for use on robots that don't support
    * lighting (but want to have a subsystem available for convenience/common
    * code).
    */
-  public static final class NullLighting extends SubsystemBase implements ILighting {
+  public final class NullLighting extends SubsystemBase implements ILighting {
     /** Constructor. */
     public NullLighting() {
       setName("NullLighting");
@@ -239,6 +251,11 @@ public interface ILighting extends ISubsystem {
     @Override
     public int getLength() {
       return 0;
+    }
+
+    @Override
+    public List<AddressableLEDBufferView> getSubViews() {
+      return new ArrayList<>();
     }
   }
 }

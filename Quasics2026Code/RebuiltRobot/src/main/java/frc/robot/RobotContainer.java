@@ -102,23 +102,35 @@ public class RobotContainer {
   // The robot's subystems are listed here.
   //
 
-  private final IIntake m_intake = (ROBOT_NAME == RobotName.Lizzie) ? new RealIntake() : new IIntake.NullIntake();
-  private final IIndexer m_indexer = (ROBOT_NAME == RobotName.Lizzie) ? new RealIndexer() : new IIndexer.NullIndexer();
-  private final IShooterHood m_hood = (ROBOT_NAME == RobotName.Lizzie) ? new RealShooterHood()
-      : new IShooterHood.NullShooterHood();
-  private final IShooter m_shooter = (ROBOT_NAME == RobotName.Lizzie) ? new RealShooter()
-      : new IShooter.NullShooter();
-  private final IClimber m_climber = (ROBOT_NAME == RobotName.Lizzie) ? new RealClimber() : new IClimber.NullClimber();
-
   private final IDrivebase m_drivebase = switch (ROBOT_NAME) {
     case Sally -> new SparkDriveBase();
-    case Simulated -> new SimulationDrivebase();
     case Lizzie -> new NovaDriveBase();
+    case Simulated -> new SimulationDrivebase();
   };
   private final IVision m_vision = switch (ROBOT_NAME) {
     case Lizzie -> new Vision();
     case Sally -> new IVision.NullVision();
     case Simulated -> new SimulatedVision();
+  };
+  private final IIntake m_intake = switch (ROBOT_NAME) {
+    case Lizzie -> new RealIntake();
+    case Sally, Simulated -> new IIntake.NullIntake();
+  };
+  private final IIndexer m_indexer = switch (ROBOT_NAME) {
+    case Lizzie -> new RealIndexer();
+    case Sally, Simulated -> new IIndexer.NullIndexer();
+  };
+  private final IShooterHood m_hood = switch (ROBOT_NAME) {
+    case Lizzie -> new RealShooterHood();
+    case Sally, Simulated -> new IShooterHood.NullShooterHood();
+  };
+  private final IShooter m_shooter = switch (ROBOT_NAME) {
+    case Lizzie -> new RealShooter();
+    case Sally, Simulated -> new IShooter.NullShooter();
+  };
+  private final IClimber m_climber = switch (ROBOT_NAME) {
+    case Lizzie -> new RealClimber();
+    case Sally, Simulated -> new IClimber.NullClimber();
   };
 
   /** Primary lighting control (owns the LED strip and will partition it out). */

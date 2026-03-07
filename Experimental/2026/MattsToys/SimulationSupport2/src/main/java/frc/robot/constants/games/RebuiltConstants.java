@@ -18,6 +18,8 @@ import edu.wpi.first.units.measure.Distance;
  * the field, while "width" dimensions are along the Y-axis (short axis) of the
  * playing field. Values are taken from the published field dimensions and the
  * game manual.
+ * 
+ * Note also that we're assuming that a Welded Perimeter field is in use.
  */
 public final class RebuiltConstants {
   /** Robot heading when facing the Blue alliance. */
@@ -30,7 +32,7 @@ public final class RebuiltConstants {
   public static final Distance FIELD_LENGTH = Inches.of(651.22);
 
   /** Width (y) of the field. */
-  public static final Distance FIELD_WIDTH = Meters.of(8.05);
+  public static final Distance FIELD_WIDTH = Inches.of(317.69);
 
   /** Field midline (length-wise), where the barge is located. */
   public static final Distance MIDLINE = FIELD_LENGTH.div(2);

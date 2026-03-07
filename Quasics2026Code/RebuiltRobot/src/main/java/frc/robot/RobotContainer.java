@@ -110,7 +110,11 @@ public class RobotContainer {
     case Simulated -> new SimulationDrivebase();
     case Lizzie -> new NovaDriveBase();
   };
-  private final IVision m_vision = (ROBOT_NAME == RobotName.Lizzie) ? new Vision() : new SimulatedVision();
+  private final IVision m_vision = switch (ROBOT_NAME) {
+    case Lizzie -> new Vision();
+    case Sally -> new IVision.NullVision();
+    case Simulated -> new SimulatedVision();
+  };
 
   /** Primary lighting control (owns the LED strip and will partition it out). */
   private final ILighting m_primaryLighting;

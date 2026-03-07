@@ -147,6 +147,10 @@ public interface IDrivebase {
 
   void setSpeed(ChassisSpeeds speed);
 
+  void driveWithPid(ChassisSpeeds speed);
+
+  SubsystemBase asSubsystem();
+
   //////////////////////////////////////////////
 
   public enum Mode {
@@ -274,7 +278,17 @@ public interface IDrivebase {
 
     @Override
     public void setSpeed(ChassisSpeeds speed) {
-      // Intentionally empty
+      // No-op.
+    }
+
+    @Override
+    public void driveWithPid(ChassisSpeeds speed) {
+      // No-op.
+    }
+
+    @Override
+    public SubsystemBase asSubsystem() {
+      return (SubsystemBase) this;
     }
 
     @Override

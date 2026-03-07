@@ -4,16 +4,15 @@
 
 package frc.robot.utils;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.interfaces.IDrivebase;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.controllers.PPLTVController;
-import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.real.AbstractDrivebase;
 
 /** Add your docs here. */
 public class PathPlannerHelper {
@@ -23,7 +22,7 @@ public class PathPlannerHelper {
 
   // TODO: Make sure this only happens once
   public static boolean configureAutoBuilder(
-      AbstractDrivebase abstractDrivebase) {
+      IDrivebase drivebase) {
     com.pathplanner.lib.config.RobotConfig config = null;
     try {
       config = com.pathplanner.lib.config.RobotConfig.fromGUISettings();
@@ -46,29 +45,28 @@ public class PathPlannerHelper {
       e.printStackTrace();
     }
 
-    AutoBuilder.configure(abstractDrivebase::getOdometryPose,
-        abstractDrivebase::resetOdometry, abstractDrivebase::getSpeed,
-        (speeds, feedforwards)
-            -> abstractDrivebase.driveWithPid(speeds),
+    AutoBuilder.configure(drivebase::getOdometryPose,
+        drivebase::resetOdometry, drivebase::getSpeed,
+        (speeds, feedforwards) -> drivebase.driveWithPid(speeds),
         new PPLTVController(0.02), config, () -> {
           var alliance = DriverStation.getAlliance();
           if (alliance.isPresent()) {
             return alliance.get() == DriverStation.Alliance.Red;
           }
           return false;
-        }, abstractDrivebase);
+        },
+        drivebase.asSubsystem());
     return true;
   }
 
-  public static Command getAutonomousCommand(
-      AbstractDrivebase abstractDrivebase) {
-    configureAutoBuilder(abstractDrivebase);
-    return new PathPlannerAuto("MoveForward1");
+  public static Command getAutonomousCommand(IDrivebase drivebase, String auto) {
+    configureAutoBuilder(drivebase);
+    return new PathPlannerAuto(auto);
   }
 
-  public static Command autoChooser(AbstractDrivebase abstractDrivebase) {
+  public static Command autoChooser(IDrivebase drivebase) {
     System.out.println("AutoChooser is being called!");
-    configureAutoBuilder(abstractDrivebase);
+    configureAutoBuilder(drivebase);
     SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
     // DifferentialDrive.m_rightMotor.setSafetyEnabled(false);

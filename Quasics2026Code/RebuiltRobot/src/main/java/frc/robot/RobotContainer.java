@@ -5,9 +5,6 @@
 package frc.robot;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -26,6 +23,7 @@ import frc.robot.Constants.DriveteamConstants;
 import frc.robot.Constants.PwmPortIds;
 import frc.robot.commands.AlignToHub;
 import frc.robot.commands.ArcadeDrive;
+import frc.robot.commands.Autos;
 import frc.robot.commands.PivotHoodToPosition;
 import frc.robot.commands.RunClimber;
 import frc.robot.commands.RunIndexer;
@@ -176,8 +174,8 @@ public class RobotContainer {
    */
   private boolean m_switchDrive = false;
 
-  //Just creating the Auto Selecter
-  //private final SendableChooser<Command> autoChooser;
+  // Just creating the Auto Selecter
+  // private final SendableChooser<Command> autoChooser;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and
@@ -232,7 +230,6 @@ public class RobotContainer {
     configureDriverButtons();
     configureOperatorButtons();
 
-    
     NamedCommands.registerCommand("Shooter", new RunShooterForTime(m_shooter, 480, 120, true, 4));
     // NamedCommands.registerCommand("");
     // NamedCommands.registerCommand("");
@@ -549,11 +546,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // TODO: Implement functionality for autonomous mode.
-    m_drivebase.resetOdometry(new Pose2d(new Translation2d(3.879, 3.942), new Rotation2d(0)));
-    //return Commands.print("Just sit there");
-    //Autos.exampleAuto((AbstractDrivebase) m_drivebase);
-    System.out.println("Returning the AutoChooser");
-    return PathPlannerHelper.autoChooser((AbstractDrivebase)m_drivebase);
+    return PathPlannerHelper.autoChooser(m_drivebase);
   }
 }

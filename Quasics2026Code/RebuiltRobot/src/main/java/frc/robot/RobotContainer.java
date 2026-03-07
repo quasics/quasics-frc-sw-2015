@@ -277,6 +277,16 @@ public class RobotContainer {
     if (m_drivebase == null) {
       return;
     }
+    SmartDashboard.putData(
+        "Braking on",
+        new InstantCommand(() -> {
+          m_drivebase.setBreakingMode(true);
+        }, (Subsystem) m_drivebase));
+    SmartDashboard.putData(
+        "Braking off",
+        new InstantCommand(() -> {
+          m_drivebase.setBreakingMode(false);
+        }, (Subsystem) m_drivebase));
     SmartDashboard.putData("LinearSpeedCommand", new LinearSpeedCommand(m_drivebase));
     SmartDashboard.putData("CMD: Testing encoders",
         Commands.sequence(new DriveForDistance(m_drivebase, .25, Meters.of(2))));

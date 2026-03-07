@@ -28,12 +28,21 @@ import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotGearing;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  /** Radius of the drive base wheels. */
   public static final Distance wheelRadius = Inches.of(3);
-  // 8.45: if this changes, set up our simulation without kitbot helpers
+
+  /** Gearing ratio for kitbots (which also happens to match what we're using). */
   public static final KitbotGearing gearing = KitbotGearing.k8p45;
+
+  /** Gearing ratio for our robots this year. */
   public static final double drivebaseGearRatio = gearing.value;
+
   public static final LinearVelocity maxLinearDriveSpeed = MetersPerSecond.of(3);
   public static final AngularVelocity maxRotationalSpeed = RadiansPerSecond.of(2);
+
+  /**
+   * Maximum length used in the lighting subsystem for the addressable LED strip.
+   */
   public static final int LIGHTING_TOTAL_LENGTH = 80;
 
   // TODO: Calculate https://www.chiefdelphi.com/t/coefficient-of-friction/467778
@@ -42,12 +51,19 @@ public final class Constants {
   public static class PwmPortIds {
     public static final int SIMULATED_LEFT_MOTOR_CHANNEL = 0;
     public static final int SIMULATED_RIGHT_MOTOR_CHANNEL = 1;
+
+    /** PWM port ID for addressable lighting control. */
     public static final int LIGHTING_ID = 2;
   }
 
   public static class CanBusIds {
+    /** CAN ID for the Pigeon2 hardware. */
     public static final int PIGEON2_CAN_ID = 1;
 
+    /**
+     * CAN IDs for SparkMax motors used on any of the robots this year (generally
+     * Lizzie or Sally).
+     */
     public static class SparkMaxIds {
       // Note: Drive base motor IDs are based on those Quasics has used over the
       // last couple of years.
@@ -65,6 +81,10 @@ public final class Constants {
       public static final int CLIMBER_ID = 12;
     }
 
+    /**
+     * CAN IDs for ThriftyNova motors used this year. (This should just be the drive
+     * motors in Lizzie.)
+     */
     public static class ThriftyNovaIds {
       public static final int LEFT_LEADER_ID = 2;
       public static final int LEFT_FOLLOWER_ID = 1;
@@ -78,6 +98,9 @@ public final class Constants {
     public static final int OPERATOR_JOYSTICK_ID = 1;
   }
 
+  /**
+   * PID values for the flywheel on the shooter.
+   */
   public static class FlywheelPIDConstants {
     public static final double kV = 0.11676;
     public static final double kP = 0.17735;
@@ -197,12 +220,23 @@ public final class Constants {
     public static final int RightStickPress = 10;
   }
 
+  /**
+   * Settings for normal/turtle/turbo speed modes. (These will be applied as a
+   * scaling factor to the raw inputs from the driver joysticks.)
+   */
   public static class RobotSpeedScaling {
+    /** Turtle mode speed scaling factor. */
     public static final double TURTLE_SPEED_SCALING = 0.3;
+    /** Normal mode speed scaling factor. */
     public static final double NORMAL_SPEED_SCALING = 0.5;
+    /** Turbo mode speed scaling factor. */
     public static final double TURBO_SPEED_SCALING = 0.7;
   }
 
+  /**
+   * Types of drivebases that we "know about" in the code. (Assumption is that all
+   * of the motors in the drivebase are of a common type.)
+   */
   // TODO: Likely want configurable settings other than just this (track width,
   // etc): See RobotSettings.java in Reefscape code
   public static enum DrivebaseMotors {

@@ -55,6 +55,10 @@ public class DriveForDistance extends Command {
     m_drivebase.setPercent(m_percent, m_percent);
     m_timer.restart();
     m_lastReportedTime = m_timer.get();
+    if (!m_drivebase.setBreakingMode(true)) {
+      System.err.println("*** Warning: couldn't enable braking mode for drivebase.");
+      System.err.println("*** This may impact test data.");
+    }
 
     System.out.println(
         "Starting driving at " + m_percent + " power, from " + m_lastReportedDistance + " to " + m_targetDistance);
@@ -80,6 +84,9 @@ public class DriveForDistance extends Command {
 
     m_lastReportedDistance = currentDistance;
     m_lastReportedTime = now;
+
+    // Don't forget to "feed" the differential drivebase.
+    m_drivebase.setPercent(m_percent, m_percent);
   }
 
   @Override

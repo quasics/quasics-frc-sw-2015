@@ -16,12 +16,21 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 
 /**
  * Defines various configuration data for robot subsystems.
  */
 public class RobotConfigs {
+  @SuppressWarnings("unused")
+  private static final DriveConfig NO_DRIVE = null;
+  private static final List<CameraConfig> NO_CAMERA = List.of();
+  private static final ElevatorConfig NO_ELEVATOR = null;
+  private static final LightingConfig NO_LIGHTING = null;
+  private static final ArmConfig NO_ARM = null;
+  private static final CandleConfig NO_CANDLE = null;
+
   /** Invalid CAN ID. */
   public static final int INVALID_CAN_ID = -1;
 
@@ -388,7 +397,7 @@ public class RobotConfigs {
    * Collective robot configuration data.
    *
    * @param drive    drive base configuration (may be null)
-   * @param cameras  list of camera configurations (may be null)
+   * @param cameras  list of camera configurations (may be empty)
    * @param elevator elevator configuration (may be null)
    * @param lighting lighting configuration (may be null)
    * @param arm      arm configuration (may be null)
@@ -397,20 +406,10 @@ public class RobotConfigs {
   public static record RobotConfig(DriveConfig drive,
       List<CameraConfig> cameras, ElevatorConfig elevator, ArmConfig arm,
       LightingConfig lighting, CandleConfig candle) {
-    /**
-     * Utility constructor fo a single-camera robot.
-     *
-     * @param drive    drive base configuration (may be null)
-     * @param camera   camera configuration (may be null)
-     * @param elevator elevator configuration (may be null)
-     * @param lighting lighting configuration (may be null)
-     * @param arm      arm configuration (may be null)
-     * @param candle   CANdle configuration (may be null)
-     */
-    RobotConfig(DriveConfig drive, CameraConfig camera, ElevatorConfig elevator,
-        ArmConfig arm, LightingConfig lighting, CandleConfig candle) {
-      this(drive, Collections.singletonList(camera), elevator, arm, lighting,
-          candle);
+
+    // Compact constructor — runs before the canonical one
+    public RobotConfig {
+      Objects.requireNonNull(cameras, "cameras must not be null — use List.of() for no cameras");
     }
 
     /**
@@ -428,7 +427,7 @@ public class RobotConfigs {
      * @return true iff the configuration includes data for the camera
      */
     public boolean hasCamera() {
-      return (cameras() != null) && !cameras.isEmpty();
+      return !cameras.isEmpty();
     }
 
     /**
@@ -467,13 +466,6 @@ public class RobotConfigs {
       return candle != null;
     }
   }
-
-  @SuppressWarnings("unused") private static final DriveConfig NO_DRIVE = null;
-  private static final CameraConfig NO_CAMERA = null;
-  private static final ElevatorConfig NO_ELEVATOR = null;
-  private static final LightingConfig NO_LIGHTING = null;
-  private static final ArmConfig NO_ARM = null;
-  private static final CandleConfig NO_CANDLE = null;
 
   private static RobotConfig generateAmeliaConfig() {
     return new RobotConfig(

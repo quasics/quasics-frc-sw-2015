@@ -7,6 +7,7 @@ package frc.robot.subsystems.interfaces;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.ILighting.StockColor;
 
 /**
@@ -110,7 +111,7 @@ public interface ICandle extends ISubsystem {
    * without, and don't want to have to check in code every time we might do
    * something with the CANdle to see if we actually have one.)
    */
-  public static class NullCandle implements ICandle {
+  public class NullCandle extends SubsystemBase implements ICandle {
     /** Constructor. */
     public NullCandle() {
       System.out.println("INFO: allocating NullCandle");

@@ -104,12 +104,16 @@ public class DriveForDistance extends Command {
 
   @Override
   public boolean isFinished() {
+    boolean result;
     if (m_distance.baseUnitMagnitude() >= 0) {
       // Desired distance was positive, so we're moving forward
-      return m_drivebase.getLeftDistance().gte(m_targetDistance);
+      result = m_drivebase.getLeftDistance().gte(m_targetDistance);
+      System.out.println("Forward - isFinished --> " + result);
     } else {
       // Desired distance was negative, so we're moving backward
-      return m_drivebase.getLeftDistance().lte(m_targetDistance);
+      result = m_drivebase.getLeftDistance().lte(m_targetDistance);
+      System.out.println("Backward - isFinished --> " + result);
     }
+    return result;
   }
 }

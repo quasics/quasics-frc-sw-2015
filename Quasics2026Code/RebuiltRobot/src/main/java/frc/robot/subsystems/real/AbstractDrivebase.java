@@ -53,6 +53,9 @@ public abstract class AbstractDrivebase
   private final IMotorControllerPlus m_leftMotor;
   private final IMotorControllerPlus m_rightMotor;
 
+  // FINDME(Rylie, Robert): Do we really _need_ to use a DifferentialDrive object?
+  // Doing so means that we *must* ensure that it's "fed" with updated values for
+  // left and right regularly, or else it can (potentially) error-out.
   private final DifferentialDrive m_robotDrive;
 
   private final DifferentialDriveOdometry m_odometry;

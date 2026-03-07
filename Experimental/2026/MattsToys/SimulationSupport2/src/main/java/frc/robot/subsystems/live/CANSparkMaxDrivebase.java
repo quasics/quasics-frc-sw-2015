@@ -79,10 +79,10 @@ public class CANSparkMaxDrivebase extends DrivebaseBase {
     rightLeaderConfig.inverted(config.orientation().isRightInverted());
     leftLeaderConfig.inverted(config.orientation().isLeftInverted());
 
-    leftLeader.configure(leftLeaderConfig, ResetMode.kResetSafeParameters,
-        PersistMode.kPersistParameters);
-    rightLeader.configure(rightLeaderConfig, ResetMode.kResetSafeParameters,
-        PersistMode.kPersistParameters);
+    leftLeader.configure(leftLeaderConfig, ResetMode.kNoResetSafeParameters,
+        PersistMode.kNoPersistParameters);
+    rightLeader.configure(rightLeaderConfig, ResetMode.kNoResetSafeParameters,
+        PersistMode.kNoPersistParameters);
 
     // Configure the other motors to follow their respective leaders.
     configureMotorToFollow(QuasicsDrivebaseCanIds.LEFT_FOLLOWER_ID, leftLeader);

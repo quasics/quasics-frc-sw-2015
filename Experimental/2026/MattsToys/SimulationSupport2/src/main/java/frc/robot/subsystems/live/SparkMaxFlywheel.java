@@ -45,7 +45,7 @@ public class SparkMaxFlywheel extends BaseFlywheel {
     config.closedLoop.d(flywheelConfig.pidConfig().kD(), ClosedLoopSlot.kSlot0);
 
     motor.configure(
-        config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
   }
 
   @Override

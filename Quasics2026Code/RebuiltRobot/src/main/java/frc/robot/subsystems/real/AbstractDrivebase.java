@@ -8,6 +8,8 @@ import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
+import edu.wpi.first.math.controller.DifferentialDriveFeedforward;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -15,6 +17,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
@@ -65,6 +68,12 @@ public abstract class AbstractDrivebase
 
   private final Logger m_logger = new Logger(Logger.Verbosity.Info, "AbstractDriveBase");
 
+  // sim bot
+  final protected PIDController m_leftPidController = new PIDController(0.0, 0.0, 0.0);
+  final protected PIDController m_rightPidController = new PIDController(0.0, 0.0, 0.0);
+  final protected DifferentialDriveFeedforward m_feedforward = new DifferentialDriveFeedforward(3.5375, 0.19759, 3.5375,
+      0.051438);
+
   /** Creates a new AbstractDrivebase. */
   public AbstractDrivebase(
       IMotorControllerPlus leftController, IMotorControllerPlus rightController) {
@@ -76,6 +85,19 @@ public abstract class AbstractDrivebase
     m_poseEstimator = new DifferentialDrivePoseEstimator(
         m_kinematics, new Rotation2d(), 0, 0, new Pose2d());
     SmartDashboard.putData("Field", m_field);
+  }
+
+  public void drivePID(ChassisSpeeds chassisSpeeds) {
+    DifferentialDriveWheelSpeeds speeds = m_kinematics.toWheelSpeeds(chassisSpeeds);
+    double leftPidOutput = m_leftPidController.calculate(getLeftEncoder().getVelocity().in(
+        MetersPerSecond), speeds.leftMetersPerSecond);
+    double rightPidOutput = m_leftPidController.calculate(getRightEncoder().getVelocity().in(
+        MetersPerSecond), speeds.rightMetersPerSecond);
+    var feedforward = m_feedforward.calculate(getLeftEncoder().getVelocity().in(MetersPerSecond),
+        speeds.leftMetersPerSecond, getRightEncoder().getVelocity().in(MetersPerSecond), speeds.rightMetersPerSecond,
+        0.02);
+    setVoltages(leftPidOutput + feedforward.left, rightPidOutput +
+        feedforward.right);
   }
 
   public static LinearVelocity getMaxMotorLinearSpeed() {

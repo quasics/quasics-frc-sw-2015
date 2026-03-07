@@ -29,6 +29,7 @@ import frc.robot.commands.RunShooter;
 import frc.robot.commands.RunShooterForTime;
 import frc.robot.commands.RunShooterPID;
 import frc.robot.commands.testing.DriveForDistance;
+import frc.robot.commands.testing.FlywheelDialIn;
 import frc.robot.commands.testing.LinearSpeedCommand;
 import frc.robot.subsystems.interfaces.IIntake;
 import frc.robot.subsystems.interfaces.IShooterHood;
@@ -247,7 +248,6 @@ public class RobotContainer {
     SmartDashboard.putData("Run Flywheel @ 15% speed, Kicker @ 50% speed",
         new RunShooter(m_shooter, 0.15, .50, true));
     SmartDashboard.putData("Jam", runKickerReverse());
-<<<<<<< HEAD
     SmartDashboard.putData("3500 RPM",
         new RunShooterPID(m_shooter, RPM.of(3500), .387, 1));
     SmartDashboard.putData("3300 RPM",
@@ -256,9 +256,7 @@ public class RobotContainer {
         new RunShooterPID(m_shooter, RPM.of(2700), .387, 1));
     SmartDashboard.putData("3050 RPM",
         new RunShooterPID(m_shooter, RPM.of(3050), .387, 1));
-=======
     SmartDashboard.putData("Dial in Shooter", new FlywheelDialIn(m_shooter));
->>>>>>> 119ec0c961c443f115e2a7b0daf1e1c904cf2a6a
   }
 
   private void addIntakeTestCommandsToSmartDashboard() {

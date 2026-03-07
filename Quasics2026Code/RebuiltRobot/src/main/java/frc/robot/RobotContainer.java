@@ -62,6 +62,8 @@ import static edu.wpi.first.units.Units.RPM;
 import java.util.List;
 import java.util.function.Supplier;
 
+import com.pathplanner.lib.auto.NamedCommands;
+
 /**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a "declarative" paradigm, very little robot logic should
@@ -216,6 +218,15 @@ public class RobotContainer {
     configureArcadeDriving();
     configureDriverButtons();
     configureOperatorButtons();
+
+    NamedCommands.registerCommand("Shooter", new RunShooterForTime(m_shooter, 480, 120, true, 4));
+    //NamedCommands.registerCommand("");
+    //NamedCommands.registerCommand("");
+    //NamedCommands.registerCommand("");
+    //NamedCommands.registerCommand("");
+    //NamedCommands.registerCommand("");
+    //NamedCommands.registerCommand("");
+    //NamedCommands.registerCommand("");
   }
 
   private ILighting allocatePrimaryLighting() {

@@ -14,6 +14,7 @@ import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.Constants;
 import frc.robot.subsystems.interfaces.IDrivebase;
 
 public class DriveForDistance extends Command {
@@ -68,6 +69,8 @@ public class DriveForDistance extends Command {
         "Starting driving at " + m_percent + " power, from " + m_lastReportedDistance + " to " + m_targetDistance);
   }
 
+  static final double GEARING_RATIO = Constants.drivebaseGearRatio;
+
   @Override
   public void execute() {
     // Get current conditions.
@@ -80,10 +83,11 @@ public class DriveForDistance extends Command {
       final Distance movementSinceLastSample = currentDistance.minus(m_lastReportedDistance);
       final LinearVelocity sampleVelocity = movementSinceLastSample.div(sampleTime);
       System.out.format(
-          "Reported left distance: %.4f m (delta: %.4f m, raw: %.4f units), velocity: %.4f m/s (sampled: %.2f)\n",
+          "Reported left distance: %.4f m (delta: %.4f m, rawMotor: %.4f rotations, withGearing: %.4f rotations), velocity: %.4f m/s (sampled: %.2f)\n",
           currentDistance.in(Meters),
           movementSinceLastSample.in(Meters),
           m_drivebase.getLeftRawDistance(),
+          m_drivebase.getLeftRawDistance() / GEARING_RATIO,
           m_drivebase.getLeftVelocity().in(MetersPerSecond),
           sampleVelocity.in(MetersPerSecond));
     }

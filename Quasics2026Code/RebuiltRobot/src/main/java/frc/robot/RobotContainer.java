@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -109,7 +110,7 @@ public class RobotContainer {
     case Simulated -> new SimulationDrivebase();
     case Lizzie -> new NovaDriveBase();
   };
-  private final IVision m_vision = (Robot.isReal()) ? new Vision() : new SimulatedVision();
+  private final IVision m_vision = (ROBOT_NAME == RobotName.Lizzie) ? new Vision() : new SimulatedVision();
 
   /** Primary lighting control (owns the LED strip and will partition it out). */
   private final ILighting m_primaryLighting;
@@ -146,6 +147,13 @@ public class RobotContainer {
         "******************\n" +
             "Setting up robot for " + ROBOT_NAME + "\n" +
             "******************\n");
+
+    // Don't warn about joysticks not being plugged in when working on a robot where
+    // we frequently aren't worried about it.
+    if (ROBOT_NAME == RobotName.Sally || ROBOT_NAME == RobotName.Sally) {
+      DriverStation.silenceJoystickConnectionWarning(true);
+    }
+
     //
     // Finish allocating our subsystems and setting them up.
     //

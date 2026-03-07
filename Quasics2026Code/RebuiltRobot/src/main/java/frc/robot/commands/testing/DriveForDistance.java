@@ -50,25 +50,31 @@ public class DriveForDistance extends Command {
 
   @Override
   public void initialize() {
-    m_lastReportedDistance = m_drivebase.getLeftDistance();
-    m_targetDistance = m_drivebase.getLeftDistance().plus(m_distance);
+    final Distance currentPosition = m_drivebase.getLeftDistance();
+    m_lastReportedDistance = currentPosition;
+    m_targetDistance = currentPosition.plus(m_distance);
+    m_lastReportedTime = m_timer.get();
     m_drivebase.setPercent(m_percent, m_percent);
     m_timer.restart();
-    m_lastReportedTime = m_timer.get();
+
+    // Enable braking mode
     if (!m_drivebase.setBreakingMode(true)) {
       System.err.println("*** Warning: couldn't enable braking mode for drivebase.");
       System.err.println("*** This may impact test data.");
     }
 
+    // Debugging output (reporting starting conditions).
     System.out.println(
         "Starting driving at " + m_percent + " power, from " + m_lastReportedDistance + " to " + m_targetDistance);
   }
 
   @Override
   public void execute() {
+    // Get current conditions.
     final double now = m_timer.get();
     final Distance currentDistance = m_drivebase.getLeftDistance();
 
+    // Optional logging of current "step" in conditions.
     if (LOG_VELOCITY) {
       final Time sampleTime = Seconds.of(now - m_lastReportedTime);
       final Distance movementSinceLastSample = currentDistance.minus(m_lastReportedDistance);
@@ -82,6 +88,7 @@ public class DriveForDistance extends Command {
           sampleVelocity.in(MetersPerSecond));
     }
 
+    // Retain values for next report.
     m_lastReportedDistance = currentDistance;
     m_lastReportedTime = now;
 

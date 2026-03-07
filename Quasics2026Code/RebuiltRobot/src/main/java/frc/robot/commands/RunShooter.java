@@ -20,6 +20,7 @@ public class RunShooter extends Command {
   public RunShooter(
       IShooter shooter, double shooterSpeed,
       double kickerSpeed, boolean shooting) {
+        
     m_shooter = shooter;
     m_shooterSpeed = shooterSpeed;
     m_kickerSpeed = kickerSpeed;
@@ -30,6 +31,8 @@ public class RunShooter extends Command {
       m_shooterSpeed = -Math.abs(shooterSpeed);
       m_kickerSpeed = -Math.abs(kickerSpeed);
     }
+
+  
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements((Subsystem) shooter);
@@ -47,6 +50,14 @@ public class RunShooter extends Command {
   public void execute() {
     m_shooter.setFlywheelSpeed(m_shooterSpeed);
     m_shooter.setKickerSpeed(m_kickerSpeed);
+
+    if(m_shooterSpeed > 0) {
+          if(m_kickerSpeed == 0) {
+            System.out.println("Revving up!");
+          } else {
+            System.out.println("Shooting!");
+          }
+        }
   }
 
   // Called once the command ends or is interrupted.

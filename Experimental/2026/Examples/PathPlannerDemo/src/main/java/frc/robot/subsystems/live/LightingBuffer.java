@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems.live;
 
+import java.util.Arrays;
+import java.util.List;
+
 import edu.wpi.first.wpilibj.AddressableLEDBufferView;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.ILighting;
@@ -35,5 +38,10 @@ public class LightingBuffer extends SubsystemBase implements ILighting {
     for (var i = 0; i < m_buffer.getLength(); i++) {
       m_buffer.setLED(i, function.getColorForLed(i));
     }
+  }
+
+  @Override
+  public List<AddressableLEDBufferView> getSubViews() {
+    return Arrays.asList(new AddressableLEDBufferView[] { m_buffer });
   }
 }

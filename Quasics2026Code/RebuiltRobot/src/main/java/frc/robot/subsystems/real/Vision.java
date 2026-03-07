@@ -101,8 +101,13 @@ public class Vision extends SubsystemBase implements IVision {
     // combined odometry+vision) pose estimate.
     if (result != null) {
       visionEstimate = photonEstimator.estimateCoprocMultiTagPose(result);
-      if (visionEstimate.isEmpty()) {
+      if (getListOfTargetsNumber() == 1) {
         visionEstimate = photonEstimator.estimateLowestAmbiguityPose(result);
+      }
+      if (visionEstimate.isEmpty()) {
+        latestPose3d = null;
+        latestPose2d = null;
+        // visionEstimate = photonEstimator.estimateLowestAmbiguityPose(result);
       }
     }
     if (visionEstimate.isPresent()) {
@@ -134,6 +139,12 @@ public class Vision extends SubsystemBase implements IVision {
     var result = getLatestPipelineResults();
     hasTargets = result.hasTargets();
     return hasTargets;
+  }
+
+  public int getListOfTargetsNumber() {
+    var results = getLatestPipelineResults();
+    List<PhotonTrackedTarget> targets = results.getTargets();
+    return targets.size();
   }
 
   @Override

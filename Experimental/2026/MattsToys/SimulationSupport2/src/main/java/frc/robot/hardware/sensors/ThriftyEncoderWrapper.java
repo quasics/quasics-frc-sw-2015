@@ -8,10 +8,6 @@ import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
 import com.thethriftybot.devices.ThriftyNova;
-import com.thethriftybot.devices.ThriftyNova.EncoderType;
-import com.thethriftybot.util.Conversion;
-import com.thethriftybot.util.Conversion.PositionUnit;
-import com.thethriftybot.util.Conversion.VelocityUnit;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import java.io.IOException;
@@ -21,18 +17,6 @@ import java.io.IOException;
  * way as a normal WPLib Encoder.
  */
 public class ThriftyEncoderWrapper implements TrivialEncoder {
-  /**
-   * Thrifty conversion object, used to translate native velocity units to
-   * rotations/sec.
-   */
-  final static Conversion m_speedConverter = new Conversion(VelocityUnit.ROTATIONS_PER_SEC, EncoderType.INTERNAL);
-
-  /**
-   * Thrifty conversion object, used to translate native positional units to
-   * rotations.
-   */
-  final static Conversion m_distanceConverter = new Conversion(PositionUnit.ROTATIONS, EncoderType.INTERNAL);
-
   /** Wrapped Thrifty Nova controller, providing access to encoder data. */
   final ThriftyNova m_motorController;
 
@@ -40,8 +24,12 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
    * Outer diameter of the wheel. (Used to convert "revolutions" to linear
    * distance.)
    */
-  final Distance m_wheelDiameter;
+  final Distance m_wheelCircumference;
 
+  /**
+   * Gear ratio for the drive base (e.g., "8.45" if it will take 8.45 revolutions
+   * of the motor to make the actual wheels turn 1 time).
+   */
   final double m_gearing;
 
   /**
@@ -69,23 +57,23 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
   public ThriftyEncoderWrapper(
       ThriftyNova motorController, Distance wheelOuterDiameter, double gearing) {
     m_motorController = motorController;
-    m_wheelDiameter = wheelOuterDiameter;
+    m_wheelCircumference = wheelOuterDiameter.times(Math.PI);
     m_gearing = gearing;
   }
 
   @Override
   public Distance getPosition() {
-    final double currentRevolutions = m_distanceConverter.fromMotor(m_motorController.getPosition());
-    // revolutions * (diameter * PI)/revolution * gearingRatio --> distance
-    return m_wheelDiameter.times(Math.PI * currentRevolutions * m_gearing);
+    final double currentRevolutions = m_motorController.getPosition();
+    // revolutions * circumferenceTraveled/revolution / gearingRatio --> distance
+    return m_wheelCircumference.times(currentRevolutions / m_gearing);
   }
 
   @Override
   public LinearVelocity getVelocity() {
-    final double currentRotationsPerSecond = m_speedConverter.fromMotor(m_motorController.getVelocity());
-    // (revs/sec) * (pi * diameterInMeters)/rev * gearingRatio) --> (meters/sec)
-    final double metersPerRotation = m_wheelDiameter.in(Meters) * Math.PI;
-    return MetersPerSecond.of(metersPerRotation * currentRotationsPerSecond * m_gearing);
+    final double currentRotationsPerSecond = m_motorController.getVelocity();
+    // (revs/sec) * circumferenceTraveled/rev / gearingRatio) --> (meters/sec)
+    final double metersPerRotation = m_wheelCircumference.in(Meters);
+    return MetersPerSecond.of(currentRotationsPerSecond * metersPerRotation / m_gearing);
   }
 
   @Override

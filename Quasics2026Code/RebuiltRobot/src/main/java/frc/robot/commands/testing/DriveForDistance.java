@@ -14,6 +14,7 @@ import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.Constants;
 import frc.robot.subsystems.interfaces.IDrivebase;
 
 public class DriveForDistance extends Command {
@@ -50,33 +51,53 @@ public class DriveForDistance extends Command {
 
   @Override
   public void initialize() {
-    m_lastReportedDistance = m_drivebase.getLeftDistance();
-    m_targetDistance = m_drivebase.getLeftDistance().plus(m_distance);
+    final Distance currentPosition = m_drivebase.getLeftDistance();
+    m_lastReportedDistance = currentPosition;
+    m_targetDistance = currentPosition.plus(m_distance);
+    m_lastReportedTime = m_timer.get();
     m_drivebase.setPercent(m_percent, m_percent);
     m_timer.restart();
-    m_lastReportedTime = m_timer.get();
+
+    // Enable braking mode
+    if (!m_drivebase.setBreakingMode(true)) {
+      System.err.println("*** Warning: couldn't enable braking mode for drivebase.");
+      System.err.println("*** This may impact test data.");
+    }
+
+    // Debugging output (reporting starting conditions).
+    System.out.println(
+        "Starting driving at " + m_percent + " power, from " + m_lastReportedDistance + " to " + m_targetDistance);
   }
+
+  static final double GEARING_RATIO = Constants.drivebaseGearRatio;
 
   @Override
   public void execute() {
+    // Get current conditions.
     final double now = m_timer.get();
     final Distance currentDistance = m_drivebase.getLeftDistance();
 
+    // Optional logging of current "step" in conditions.
     if (LOG_VELOCITY) {
       final Time sampleTime = Seconds.of(now - m_lastReportedTime);
       final Distance movementSinceLastSample = currentDistance.minus(m_lastReportedDistance);
       final LinearVelocity sampleVelocity = movementSinceLastSample.div(sampleTime);
       System.out.format(
-          "Reported left distance: %.4f m (delta: %.4f m, raw: %.4f units), velocity: %.4f m/s (sampled: %.2f)\n",
+          "Reported left distance: %.4f m (delta: %.4f m, rawMotor: %.4f rotations, withGearing: %.4f rotations), velocity: %.4f m/s (sampled: %.2f)\n",
           currentDistance.in(Meters),
           movementSinceLastSample.in(Meters),
           m_drivebase.getLeftRawDistance(),
+          m_drivebase.getLeftRawDistance() / GEARING_RATIO,
           m_drivebase.getLeftVelocity().in(MetersPerSecond),
           sampleVelocity.in(MetersPerSecond));
     }
 
+    // Retain values for next report.
     m_lastReportedDistance = currentDistance;
     m_lastReportedTime = now;
+
+    // Don't forget to "feed" the differential drivebase.
+    m_drivebase.setPercent(m_percent, m_percent);
   }
 
   @Override
@@ -87,12 +108,16 @@ public class DriveForDistance extends Command {
 
   @Override
   public boolean isFinished() {
+    boolean result;
     if (m_distance.baseUnitMagnitude() >= 0) {
       // Desired distance was positive, so we're moving forward
-      return m_drivebase.getLeftDistance().gte(m_targetDistance);
+      result = m_drivebase.getLeftDistance().gte(m_targetDistance);
+      System.out.println("Forward - isFinished --> " + result);
     } else {
       // Desired distance was negative, so we're moving backward
-      return m_drivebase.getLeftDistance().lte(m_targetDistance);
+      result = m_drivebase.getLeftDistance().lte(m_targetDistance);
+      System.out.println("Backward - isFinished --> " + result);
     }
+    return result;
   }
 }

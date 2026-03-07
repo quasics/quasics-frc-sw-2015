@@ -7,20 +7,22 @@ package frc.robot.subsystems.real;
 import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.DifferentialDriveFeedforward;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -33,20 +35,14 @@ import frc.robot.hardware.sensors.TrivialEncoder;
 import frc.robot.logging.Logger;
 import frc.robot.logging.Logger.Verbosity;
 import frc.robot.subsystems.interfaces.IDrivebase;
-
 import java.util.function.Supplier;
 
 public abstract class AbstractDrivebase
     extends SubsystemBase implements IDrivebase {
-  // TODO: this should (probably) come from a robot config
-  private static final LinearVelocity m_maxMotorSpeedMPS = MetersPerSecond.of(3);
-
-  // TODO: this should (probably) come from a robot config
-  private static final AngularVelocity m_maxTurningSpeed = RadiansPerSecond.of(6.5);
-
   /** Track width (distance between left and right wheels) in meters. */
   // TODO: this should come from a robot config
-  public static final Distance TRACK_WIDTH = Meters.of(0.5588); /* 22 inches (from 2024) */
+  public static final Distance TRACK_WIDTH =
+      Meters.of(0.5588); /* 22 inches (from 2024) */
 
   /** Kinematics calculator for the drivebase. */
   private final DifferentialDriveKinematics m_kinematics;
@@ -56,6 +52,10 @@ public abstract class AbstractDrivebase
   private final IMotorControllerPlus m_leftMotor;
   private final IMotorControllerPlus m_rightMotor;
 
+  // FINDME(Rylie, Robert): Do we really _need_ to use a DifferentialDrive
+  // object? Doing so means that we *must* ensure that it's "fed" with updated
+  // values for left and right regularly, or else it can (potentially)
+  // error-out.
   private final DifferentialDrive m_robotDrive;
 
   private final DifferentialDriveOdometry m_odometry;
@@ -66,11 +66,20 @@ public abstract class AbstractDrivebase
   // implemented for all cases
   private final Field2d m_field = new Field2d();
 
-  private final Logger m_logger = new Logger(Logger.Verbosity.Info, "AbstractDriveBase");
+  private final Logger m_logger =
+      new Logger(Logger.Verbosity.Info, "AbstractDriveBase");
+
+  // sim bot
+  final protected PIDController m_leftPidController =
+      new PIDController(0.0, 0.0, 0.0);
+  final protected PIDController m_rightPidController =
+      new PIDController(0.0, 0.0, 0.0);
+  final protected DifferentialDriveFeedforward m_feedforward =
+      new DifferentialDriveFeedforward(3.5375, 0.19759, 3.5375, 0.051438);
 
   /** Creates a new AbstractDrivebase. */
-  public AbstractDrivebase(
-      IMotorControllerPlus leftController, IMotorControllerPlus rightController) {
+  public AbstractDrivebase(IMotorControllerPlus leftController,
+      IMotorControllerPlus rightController) {
     m_kinematics = new DifferentialDriveKinematics(TRACK_WIDTH.in(Meters));
     m_leftMotor = leftController;
     m_rightMotor = rightController;
@@ -81,19 +90,40 @@ public abstract class AbstractDrivebase
     SmartDashboard.putData("Field", m_field);
   }
 
+  public void drivePID(ChassisSpeeds chassisSpeeds) {
+    DifferentialDriveWheelSpeeds speeds =
+        m_kinematics.toWheelSpeeds(chassisSpeeds);
+    double leftPidOutput = m_leftPidController.calculate(
+        getLeftEncoder().getVelocity().in(MetersPerSecond),
+        speeds.leftMetersPerSecond);
+    double rightPidOutput = m_leftPidController.calculate(
+        getRightEncoder().getVelocity().in(MetersPerSecond),
+        speeds.rightMetersPerSecond);
+    var feedforward = m_feedforward.calculate(
+        getLeftEncoder().getVelocity().in(MetersPerSecond),
+        speeds.leftMetersPerSecond,
+        getRightEncoder().getVelocity().in(MetersPerSecond),
+        speeds.rightMetersPerSecond, 0.02);
+    setVoltages(
+        leftPidOutput + feedforward.left, rightPidOutput + feedforward.right);
+  }
+
   public static LinearVelocity getMaxMotorLinearSpeed() {
-    return m_maxMotorSpeedMPS;
+    return Constants.maxLinearDriveSpeed;
   }
 
   public static AngularVelocity getMaxMotorTurnSpeed() {
-    return m_maxTurningSpeed;
+    return Constants.maxRotationalSpeed;
   }
 
   public SysIdRoutine getSysIdRoutine(IDrivebase drivebase, Mode mode) {
-    return new SysIdRoutine(
-        new SysIdRoutine.Config(),
-        new SysIdRoutine.Mechanism((volts) -> this.setVoltages(volts, volts.times(mode == Mode.Linear ? 1 : -1)),
-            log -> {
+    return new SysIdRoutine(new SysIdRoutine.Config(),
+        new SysIdRoutine.Mechanism(
+            (volts)
+                -> this.setVoltages(
+                    volts, volts.times(mode == Mode.Linear ? 1 : -1)),
+            log
+            -> {
               final var leftVoltage = getLeftVoltage();
               final var leftPosition = getLeftEncoder().getPosition();
               final var leftVelocity = getLeftEncoder().getVelocity();
@@ -101,37 +131,42 @@ public abstract class AbstractDrivebase
               final var rightPosition = getRightEncoder().getPosition();
               final var rightVelocity = getRightEncoder().getVelocity();
 
-              log.motor("drive-left").voltage(leftVoltage).linearPosition(leftPosition).linearVelocity(leftVelocity);
-              log.motor("drive-right").voltage(rightVoltage).linearPosition(rightPosition)
+              log.motor("drive-left")
+                  .voltage(leftVoltage)
+                  .linearPosition(leftPosition)
+                  .linearVelocity(leftVelocity);
+              log.motor("drive-right")
+                  .voltage(rightVoltage)
+                  .linearPosition(rightPosition)
                   .linearVelocity(rightVelocity);
-            }, this));
+            },
+            this));
   }
 
   @Override
-  public Command sysIdQuasistatic(IDrivebase drivebase, Mode mode, SysIdRoutine.Direction direction) {
+  public Command sysIdQuasistatic(
+      IDrivebase drivebase, Mode mode, SysIdRoutine.Direction direction) {
     return getSysIdRoutine(drivebase, mode).quasistatic(direction);
   }
 
   @Override
-  public Command sysIdDynamic(IDrivebase drivebase, IDrivebase.Mode mode, SysIdRoutine.Direction direction) {
+  public Command sysIdDynamic(IDrivebase drivebase, IDrivebase.Mode mode,
+      SysIdRoutine.Direction direction) {
     return getSysIdRoutine(drivebase, mode).dynamic(direction);
   }
 
-  protected static AngularVelocity getCappedTurnSpeed(AngularVelocity turnSpeed) {
-    return DegreesPerSecond.of(
-        MathUtil.clamp(
-            turnSpeed.in(DegreesPerSecond),
-            -m_maxTurningSpeed.in(DegreesPerSecond),
-            m_maxTurningSpeed.in(DegreesPerSecond)));
+  protected static AngularVelocity getCappedTurnSpeed(
+      AngularVelocity turnSpeed) {
+    return DegreesPerSecond.of(MathUtil.clamp(turnSpeed.in(DegreesPerSecond),
+        -Constants.maxRotationalSpeed.in(DegreesPerSecond),
+        Constants.maxRotationalSpeed.in(DegreesPerSecond)));
   }
 
-  protected static LinearVelocity getCappedLinearSpeed(LinearVelocity linearSpeed) {
-    return MetersPerSecond.of(
-        MathUtil.clamp(
-            linearSpeed.in(MetersPerSecond),
-            -m_maxMotorSpeedMPS.in(
-                MetersPerSecond),
-            m_maxMotorSpeedMPS.in(MetersPerSecond)));
+  protected static LinearVelocity getCappedLinearSpeed(
+      LinearVelocity linearSpeed) {
+    return MetersPerSecond.of(MathUtil.clamp(linearSpeed.in(MetersPerSecond),
+        -Constants.maxLinearDriveSpeed.in(MetersPerSecond),
+        Constants.maxLinearDriveSpeed.in(MetersPerSecond)));
   }
 
   @Override
@@ -170,14 +205,15 @@ public abstract class AbstractDrivebase
   public void setVoltages(Voltage leftVoltage, Voltage rightVoltage) {
     m_leftMotor.setVoltage(leftVoltage);
     m_rightMotor.setVoltage(rightVoltage);
-    // TODO(Robert): Implement this method (and then use it for
-    // characterization, trajectory following, etc.). (It should be pretty
-    // straightforward, doable with 2 lines of code.)
+
+    m_robotDrive.feed();
   }
 
   public void setVoltages(double leftVoltage, double rightVoltage) {
     m_leftMotor.setVoltage(leftVoltage);
     m_rightMotor.setVoltage(rightVoltage);
+
+    m_robotDrive.feed();
   }
 
   @Override
@@ -185,7 +221,8 @@ public abstract class AbstractDrivebase
     // TODO(ROBERT): Cap this - it shouldn't be greater than max speed.
     // Probably print a warning too so that we can fix whatever is commanding us
     // too high.
-    return speed.in(MetersPerSecond) / m_maxMotorSpeedMPS.in(MetersPerSecond);
+    return speed.in(MetersPerSecond)
+        / Constants.maxLinearDriveSpeed.in(MetersPerSecond);
   }
 
   @Override
@@ -254,16 +291,32 @@ public abstract class AbstractDrivebase
     m_referencePositionSupplier = supplier;
   }
 
+  @Override
+  public ChassisSpeeds getSpeed() {
+    return new ChassisSpeeds(
+        getLeftVelocity(), getRightVelocity(), getTurnRate());
+  }
+
+  @Override
+  public void setSpeed(ChassisSpeeds speed) {
+    DifferentialDriveWheelSpeeds speedForMotor =
+        m_kinematics.toWheelSpeeds(speed);
+    setSpeeds(MetersPerSecond.of(speedForMotor.leftMetersPerSecond),
+        MetersPerSecond.of(speedForMotor.rightMetersPerSecond));
+    //  m_logger.log("SetSpeed not yet implemented", Verbosity.Warn);
+  }
+
+  //@Override
+  public void driveWithPid(ChassisSpeeds speed) {
+    setSpeed(speed);
+  }
+
   protected Pose2d getVisionPose() {
     if (m_referencePositionSupplier != null) {
       return m_referencePositionSupplier.get();
     } else {
       return null;
     }
-  }
-
-  protected static double getDistancePerPulse() {
-    return 2.0 * Math.PI * Constants.wheelRadius.in(Meters) / -4096.0;
   }
 
   protected final DifferentialDriveKinematics getKinematics() {
@@ -277,12 +330,24 @@ public abstract class AbstractDrivebase
   // Slight code design complexity:
   // AbstractDrivebase is going to maintain
   // complete control over leaders
-  protected MotorController getLeftLeader() {
+  protected IMotorControllerPlus getLeftLeader() {
     return m_leftMotor;
   }
 
-  protected MotorController getRightLeader() {
+  protected IMotorControllerPlus getRightLeader() {
     return m_rightMotor;
+  }
+
+  @Override
+  public boolean setBreakingMode(boolean enable) {
+    if (getLeftLeader().canSetBrakeMode()
+        && getRightLeader().canSetBrakeMode()) {
+      getLeftLeader().setBrakeMode(enable);
+      getRightLeader().setBrakeMode(enable);
+      return true;
+    } else {
+      return false;
+    }
   }
 
   protected abstract TrivialEncoder getLeftEncoder();

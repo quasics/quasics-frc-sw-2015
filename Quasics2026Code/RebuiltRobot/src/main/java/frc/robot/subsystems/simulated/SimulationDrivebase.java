@@ -4,16 +4,19 @@
 
 package frc.robot.subsystems.simulated;
 
+import static edu.wpi.first.units.Units.Meters;
+
+import edu.wpi.first.units.DistanceUnit;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.simulation.AnalogGyroSim;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
-import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotGearing;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotMotor;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotWheelSize;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
+import frc.robot.Constants;
 import frc.robot.Constants.PwmPortIds;
 import frc.robot.hardware.actuators.IMotorControllerPlus;
 import frc.robot.hardware.sensors.IGyro;
@@ -41,8 +44,7 @@ public class SimulationDrivebase extends AbstractDrivebase {
 
   private DifferentialDrivetrainSim m_driveSim = DifferentialDrivetrainSim.createKitbotSim(
       KitbotMotor.kDualCIMPerSide, // 2 CIMs per side.
-      KitbotGearing.k12p75, // 12.75:1 if this changes, we may have to use a
-                            // new diffDrivetrain sim
+      Constants.gearing,
       KitbotWheelSize.kSixInch, // 6" diameter wheels.
       null // No measurement noise.
   );
@@ -59,6 +61,9 @@ public class SimulationDrivebase extends AbstractDrivebase {
     Encoder leftEncoder = new Encoder(LEFT_ENCODER_CHANNEL_A, LEFT_ENCODER_CHANNEL_B);
     Encoder rightEncoder = new Encoder(RIGHT_ENCODER_CHANNEL_A, RIGHT_ENCODER_CHANNEL_B);
 
+    System.out.println(Constants.wheelRadius);
+    System.out.println(2.0 * Math.PI * Constants.wheelRadius.in(Meters) / -4096.0);
+    System.out.println(getDistancePerPulse());
     leftEncoder.setDistancePerPulse(getDistancePerPulse());
     rightEncoder.setDistancePerPulse(getDistancePerPulse());
 
@@ -66,6 +71,10 @@ public class SimulationDrivebase extends AbstractDrivebase {
     m_rightEncoderSim = new EncoderSim(rightEncoder);
     m_leftEncoder = TrivialEncoder.forWpiLibEncoder(leftEncoder, m_leftEncoderSim);
     m_rightEncoder = TrivialEncoder.forWpiLibEncoder(rightEncoder, m_rightEncoderSim);
+  }
+
+  protected static double getDistancePerPulse() {
+    return 2.0 * Math.PI * Constants.wheelRadius.in(Meters) / -4096.0;
   }
 
   @Override

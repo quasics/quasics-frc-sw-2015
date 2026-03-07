@@ -8,9 +8,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.subsystems.abstracts.AbstractDrivebase;
-import frc.robot.subsystems.interfaces.drivebase.IDrivebase;
-import frc.robot.subsystems.interfaces.drivebase.IDrivebasePlus;
+import frc.robot.subsystems.real.AbstractDrivebase;
+import frc.robot.subsystems.interfaces.IDrivebase;
+//import frc.robot.subsystems.interfaces.drivebase.IDrivebasePlus;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.controllers.PPLTVController;
@@ -24,6 +24,7 @@ public class PathPlannerHelper {
   } 
 
   public static Command getAutonomousCommand(AbstractDrivebase abstractDrivebase) {
+    //TODO: Make autos selectable fr/ dashboard
     com.pathplanner.lib.config.RobotConfig config = null;
     try{
       config = com.pathplanner.lib.config.RobotConfig.fromGUISettings();
@@ -44,9 +45,9 @@ public class PathPlannerHelper {
     }
 
     AutoBuilder.configure(
-      abstractDrivebase::getPose,
-      abstractDrivebase::resetPose,
-      abstractDrivebase::getCurrentSpeeds,
+      abstractDrivebase::getOdometryPose,
+      abstractDrivebase::resetOdometry,
+      abstractDrivebase::getSpeed,
       (speeds, feedforwards) -> abstractDrivebase.driveWithPid(speeds),
       new PPLTVController(0.02),
       config,
@@ -61,5 +62,4 @@ public class PathPlannerHelper {
     );
     return new PathPlannerAuto("MoveForward1");
   }
-
 }

@@ -10,6 +10,7 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
@@ -110,6 +111,25 @@ public interface IDrivebase {
   LinearVelocity getLeftVelocity();
 
   LinearVelocity getRightVelocity();
+
+  /**
+   * Tries to enable/disable breaking mode, if supported by the underlying
+   * hardware.
+   * 
+   * @param enable if true, breaking mode should be enabled; if false, "coast
+   *               mode" should be enabled
+   * @return true if we were able to apply the mode to the hardware; false if the
+   *         operation isn't supported for this drivebase
+   */
+  boolean setBreakingMode(boolean enable);
+
+  //////////////////////////////////////////////
+  // Auto utilities
+  ChassisSpeeds getSpeed();
+
+  void setSpeed(ChassisSpeeds speed);
+
+  //////////////////////////////////////////////
 
   public enum Mode {
     Linear,
@@ -217,6 +237,21 @@ public interface IDrivebase {
     @Override
     public double getRightRawDistance() {
       return 0;
+    }
+
+    @Override
+    public boolean setBreakingMode(boolean enable) {
+      return false; // Not supported
+    }
+
+    @Override
+    public ChassisSpeeds getSpeed() {
+      return new ChassisSpeeds();
+    }
+
+    @Override
+    public void setSpeed(ChassisSpeeds speed) {
+      // Intentionally empty
     }
   }
 }

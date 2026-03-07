@@ -113,7 +113,7 @@ public class RobotContainer {
   static final AutoModeOperation AUTO_MODE_OPTION = AutoModeOperation.ePPMoveForward1;
 
   /** Indicates the robot we are going to target. */
-  final RobotConfigs.Robot DEPLOYED_ON = RobotConfigs.Robot.Simulation;
+  final RobotConfigs.Robot DEPLOYED_ON = RobotConfigs.Robot.Amelia;
 
   /** Configuration data for the targeted robot. */
   final RobotConfig m_robotConfig = RobotConfigs.getConfig(DEPLOYED_ON);
@@ -746,7 +746,7 @@ public class RobotContainer {
     if (Robot.isReal()) {
       return new Candle(config);
     } else {
-      Lighting realSubsystem = (Lighting) lighting;
+      ILighting realSubsystem = lighting;
       if (realSubsystem.getSubViews().isEmpty()) {
         return new ICandle.NullCandle();
       }

@@ -202,6 +202,7 @@ public class Lighting extends SubsystemBase implements ILighting {
    * 
    * @return the list of LED buffer views
    */
+  @Override
   public List<AddressableLEDBufferView> getSubViews() {
     return m_subViews;
   }

@@ -5,7 +5,9 @@
 package frc.robot;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -19,8 +21,8 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.DriveteamConstants;
 import frc.robot.Constants.PwmPortIds;
 import frc.robot.commands.ArcadeDrive;
+import frc.robot.commands.Autos;
 import frc.robot.commands.PivotHoodToPosition;
-import frc.robot.commands.RainbowLighting;
 import frc.robot.commands.RunClimber;
 import frc.robot.commands.RunIndexer;
 import frc.robot.commands.RunIntakeExtension;
@@ -28,7 +30,9 @@ import frc.robot.commands.RunIntakeRollers;
 import frc.robot.commands.RunShooter;
 import frc.robot.commands.RunShooterForTime;
 import frc.robot.commands.RunShooterPID;
+import frc.robot.commands.lighting.RainbowLighting;
 import frc.robot.commands.testing.DriveForDistance;
+import frc.robot.commands.testing.FlywheelDialIn;
 import frc.robot.commands.testing.LinearSpeedCommand;
 import frc.robot.subsystems.interfaces.IIntake;
 import frc.robot.subsystems.interfaces.IShooterHood;
@@ -38,6 +42,7 @@ import frc.robot.subsystems.interfaces.IClimber;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.IIndexer;
 import frc.robot.subsystems.interfaces.IVision;
+import frc.robot.subsystems.real.AbstractDrivebase;
 import frc.robot.subsystems.real.Lighting;
 import frc.robot.subsystems.real.LightingBuffer;
 import frc.robot.subsystems.real.NovaDriveBase;
@@ -51,11 +56,14 @@ import frc.robot.subsystems.real.Vision;
 import frc.robot.subsystems.simulated.SimulatedVision;
 import frc.robot.subsystems.simulated.SimulationDrivebase;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
 
 import java.util.List;
 import java.util.function.Supplier;
+
+import com.pathplanner.lib.auto.NamedCommands;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -93,24 +101,45 @@ public class RobotContainer {
    */
   private static final RobotName ROBOT_NAME = Robot.isReal() ? DEFAULT_ROBOT_NAME : RobotName.Simulated;
 
+  private static final boolean ENABLE_SHOOTER_TEST_CMDS = true;
+  private static final boolean ENABLE_INDEXER_TEST_CMDS = true;
+  private static final boolean ENABLE_HOOD_TEST_CMDS = true;
+  private static final boolean ENABLE_INTAKE_TEST_CMDS = true;
+
   //
   // The robot's subystems are listed here.
   //
 
-  private final IIntake m_intake = (ROBOT_NAME == RobotName.Lizzie) ? new RealIntake() : new IIntake.NullIntake();
-  private final IIndexer m_indexer = (ROBOT_NAME == RobotName.Lizzie) ? new RealIndexer() : new IIndexer.NullIndexer();
-  private final IShooterHood m_hood = (ROBOT_NAME == RobotName.Lizzie) ? new RealShooterHood()
-      : new IShooterHood.NullShooterHood();
-  private final IShooter m_shooter = (ROBOT_NAME == RobotName.Lizzie) ? new RealShooter()
-      : new IShooter.NullShooter();
-  private final IClimber m_climber = (ROBOT_NAME == RobotName.Lizzie) ? new RealClimber() : new IClimber.NullClimber();
-
   private final IDrivebase m_drivebase = switch (ROBOT_NAME) {
     case Sally -> new SparkDriveBase();
-    case Simulated -> new SimulationDrivebase();
     case Lizzie -> new NovaDriveBase();
+    case Simulated -> new SimulationDrivebase();
   };
-  private final IVision m_vision = (Robot.isReal()) ? new Vision() : new SimulatedVision();
+  private final IVision m_vision = switch (ROBOT_NAME) {
+    case Lizzie -> new Vision();
+    case Sally -> new IVision.NullVision();
+    case Simulated -> new SimulatedVision();
+  };
+  private final IIntake m_intake = switch (ROBOT_NAME) {
+    case Lizzie -> new RealIntake();
+    case Sally, Simulated -> new IIntake.NullIntake();
+  };
+  private final IIndexer m_indexer = switch (ROBOT_NAME) {
+    case Lizzie -> new RealIndexer();
+    case Sally, Simulated -> new IIndexer.NullIndexer();
+  };
+  private final IShooterHood m_hood = switch (ROBOT_NAME) {
+    case Lizzie -> new RealShooterHood();
+    case Sally, Simulated -> new IShooterHood.NullShooterHood();
+  };
+  private final IShooter m_shooter = switch (ROBOT_NAME) {
+    case Lizzie -> new RealShooter();
+    case Sally, Simulated -> new IShooter.NullShooter();
+  };
+  private final IClimber m_climber = switch (ROBOT_NAME) {
+    case Lizzie -> new RealClimber();
+    case Sally, Simulated -> new IClimber.NullClimber();
+  };
 
   /** Primary lighting control (owns the LED strip and will partition it out). */
   private final ILighting m_primaryLighting;
@@ -147,6 +176,13 @@ public class RobotContainer {
         "******************\n" +
             "Setting up robot for " + ROBOT_NAME + "\n" +
             "******************\n");
+
+    // Don't warn about joysticks not being plugged in when working on a robot where
+    // we frequently aren't worried about it.
+    if (ROBOT_NAME == RobotName.Sally || ROBOT_NAME == RobotName.Sally) {
+      DriverStation.silenceJoystickConnectionWarning(true);
+    }
+
     //
     // Finish allocating our subsystems and setting them up.
     //
@@ -182,6 +218,16 @@ public class RobotContainer {
     configureBindings();
     configureArcadeDriving();
     configureDriverButtons();
+    configureOperatorButtons();
+
+    NamedCommands.registerCommand("Shooter", new RunShooterForTime(m_shooter, 480, 120, true, 4));
+    // NamedCommands.registerCommand("");
+    // NamedCommands.registerCommand("");
+    // NamedCommands.registerCommand("");
+    // NamedCommands.registerCommand("");
+    // NamedCommands.registerCommand("");
+    // NamedCommands.registerCommand("");
+    // NamedCommands.registerCommand("");
   }
 
   private ILighting allocatePrimaryLighting() {
@@ -208,22 +254,32 @@ public class RobotContainer {
   }
 
   private void addShooterTestCommandsToSmartDashboard() {
-    if (m_shooter == null) {
+    if (m_shooter == null || !ENABLE_SHOOTER_TEST_CMDS) {
       return;
     }
     SmartDashboard.putData("Run Flywheel @ 1200 RPM, Kicker @ 12.5% speed",
-        new RunShooterPID(m_shooter, RPM.of(1200), .125));
+        new RunShooterPID(m_shooter, RPM.of(1200), .125, 1));
     SmartDashboard.putData("Run Flywheel @ 3700 RPM, Kicker @ 38.7% speed",
-        new RunShooterPID(m_shooter, RPM.of(3700), .387));
+        new RunShooterPID(m_shooter, RPM.of(3700), .387, 1));
     SmartDashboard.putData("Run Flywheel @ 15% speed, Kicker @ 50% speed",
         new RunShooter(m_shooter, 0.15, .50, true));
     SmartDashboard.putData("Jam", runKickerReverse());
+    SmartDashboard.putData("3500 RPM",
+        new RunShooterPID(m_shooter, RPM.of(3500), .387, 1));
+    SmartDashboard.putData("3300 RPM",
+        new RunShooterPID(m_shooter, RPM.of(3300), .387, 1));
+    SmartDashboard.putData("2700 RPM",
+        new RunShooterPID(m_shooter, RPM.of(2700), .387, 1));
+    SmartDashboard.putData("3050 RPM",
+        new RunShooterPID(m_shooter, RPM.of(3050), .387, 1));
+    SmartDashboard.putData("Dial in Shooter", new FlywheelDialIn(m_shooter));
   }
 
   private void addIntakeTestCommandsToSmartDashboard() {
-    if (m_intake == null) {
+    if (m_intake == null || !ENABLE_INTAKE_TEST_CMDS) {
       return;
     }
+
     SmartDashboard.putData("Run Intake Rollers", new RunIntakeRollers(m_intake, 0.1, true));
     SmartDashboard.putData("Run Indexer", new RunIndexer(m_indexer, 0.1, true));
     // SmartDashboard.putData("Extend Intake", new InstantCommand(() ->
@@ -237,7 +293,7 @@ public class RobotContainer {
   }
 
   private void addIndexerTestCommandsToSmartDashboard() {
-    if (m_indexer == null) {
+    if (m_indexer == null || !ENABLE_INDEXER_TEST_CMDS) {
       return;
     }
     SmartDashboard.putData("Reverse Indexer", new RunIndexer(m_indexer, 0.1, false));
@@ -245,15 +301,15 @@ public class RobotContainer {
   }
 
   private void addHoodTestCommandsToSmartDashboard() {
-    if (m_hood == null) {
+    if (m_hood == null || !ENABLE_HOOD_TEST_CMDS) {
       return;
     }
     SmartDashboard.putData("Move Hood to 15 degrees (60 degrees)",
-        new PivotHoodToPosition(m_hood, 0.15, 15));
+        new PivotHoodToPosition(m_hood, 0.15, Degrees.of(15)));
     SmartDashboard.putData("Move Hood to 5 degrees (70 degrees)",
-        new PivotHoodToPosition(m_hood, 0.15, 5));
+        new PivotHoodToPosition(m_hood, 0.15, Degrees.of(5)));
     SmartDashboard.putData("Move Hood to 25 degrees (50 degrees)",
-        new PivotHoodToPosition(m_hood, 0.15, 25));
+        new PivotHoodToPosition(m_hood, 0.15, Degrees.of(25)));
   }
 
   private void addClimberTestCommandsToSmartDashboard() {
@@ -270,6 +326,16 @@ public class RobotContainer {
     if (m_drivebase == null) {
       return;
     }
+    SmartDashboard.putData(
+        "Braking on",
+        new InstantCommand(() -> {
+          m_drivebase.setBreakingMode(true);
+        }, (Subsystem) m_drivebase));
+    SmartDashboard.putData(
+        "Braking off",
+        new InstantCommand(() -> {
+          m_drivebase.setBreakingMode(false);
+        }, (Subsystem) m_drivebase));
     SmartDashboard.putData("LinearSpeedCommand", new LinearSpeedCommand(m_drivebase));
     SmartDashboard.putData("CMD: Testing encoders",
         Commands.sequence(new DriveForDistance(m_drivebase, .25, Meters.of(2))));
@@ -346,10 +412,11 @@ public class RobotContainer {
         return speedSlewRateLimiter.calculate(joystickPercent);
       }
     };
+    final double ROTATION_FIXED_SCALING = 0.5;
     Supplier<Double> rotationDrivingStick = () -> {
       double scaling = getDriveSpeedScalingFactor();
       double axis = getDriverAxis(Constants.LogitechDualshock.RightXAxis);
-      double joystickPercent = -axis * scaling;
+      double joystickPercent = -axis * scaling * ROTATION_FIXED_SCALING;
       return rotationSlewRateLimiter.calculate(joystickPercent);
     };
 
@@ -372,16 +439,23 @@ public class RobotContainer {
   private void configureBindings() {
     // Note that we're not saving the trigger in a variable. That's fine: this is a
     // "just set it up and let it do its thing" sort of thing....
-    new Trigger(() -> m_driverController.getRawButton(
-        Constants.LogitechDualshock.BButton))
-        .onTrue(
-            new InstantCommand(() -> {
-              m_switchDrive = !m_switchDrive;
-            }));
+    // new Trigger(() ->
+    // m_driverController.getRawButton(Constants.LogitechDualshock.BButton)).onTrue(new
+    // InstantCommand(() -> {m_switchDrive = !m_switchDrive;}));
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is
     // pressed, cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+  }
+
+  private Command againstHubShot() {
+    return Commands.sequence(new PivotHoodToPosition(m_hood, 0.15, Degrees.of(5)),
+        new RunShooterPID(m_shooter, RPM.of(2700), .387, 1));
+  }
+
+  private Command towerShot() {
+    return Commands.sequence(new PivotHoodToPosition(m_hood, 0.15, Degrees.of(15)),
+        new RunShooterPID(m_shooter, RPM.of(3700), .387, 2));
   }
 
   private void configureDriverButtons() {
@@ -391,14 +465,24 @@ public class RobotContainer {
       new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.RightTrigger))
           .whileTrue(new RunIntakeRollers(m_intake, 0.9, true));
 
-      new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.StartButton))
-          .whileTrue(new RunIntakeExtension(m_intake, 0.1, true));
-      new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.BackButton))
-          .whileTrue(new RunIntakeExtension(m_intake, 0.1, false));
-    }
-    if (m_shooter != null) {
       new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.XButton))
-          .whileTrue(new RunShooterPID(m_shooter, RPM.of(3700), .387));
+          .whileTrue(new RunIntakeExtension(m_intake, 0.2, false));
+      new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.BButton))
+          .whileTrue(new RunIntakeExtension(m_intake, 0.1, true));
+    }
+  }
+
+  private void configureOperatorButtons() {
+    if (m_shooter != null) {
+      new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kX.value))
+          .whileTrue(towerShot());
+      new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kB.value)).whileTrue(againstHubShot());
+    }
+    if (m_indexer != null) {
+      new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kLeftBumper.value))
+          .whileTrue(new RunIndexer(m_indexer, 0.5, true));
+      new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kRightBumper.value))
+          .whileTrue(new RunIndexer(m_indexer, 0.3, false));
     }
   }
 
@@ -429,6 +513,15 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // TODO: Implement functionality for autonomous mode.
-    return Commands.print("We should do something in auto mode....");
-  }
-}
+    return Autos.exampleAuto((AbstractDrivebase) m_drivebase);
+  }}
+
+  
+  
+  
+  
+  
+  
+  
+
+   

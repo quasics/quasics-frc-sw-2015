@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -212,6 +213,7 @@ public class RobotContainer {
     configureBindings();
     configureArcadeDriving();
     configureDriverButtons();
+    configureOperatorButtons();
   }
 
   private ILighting allocatePrimaryLighting() {
@@ -436,19 +438,26 @@ public class RobotContainer {
           .whileTrue(new RunIntakeRollers(m_intake, 0.9, false));
       new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.RightTrigger))
           .whileTrue(new RunIndexer(m_indexer, 0.5, true));
-      new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.BButton))
-          .whileTrue(againstHubShot());
 
-      new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.StartButton))
+      new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.XButton))
           .whileTrue(new RunIntakeExtension(m_intake, 0.1, true));
-      new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.BackButton))
+      new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.BButton))
           .whileTrue(new RunIntakeExtension(m_intake, 0.1, false));
     }
-    if (m_shooter != null) {
-      new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.XButton))
-          .whileTrue(towerShot());
-    }
+  }
 
+  private void configureOperatorButtons() {
+    if (m_shooter != null) {
+      new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kX.value))
+          .whileTrue(towerShot());
+      new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kB.value)).whileTrue(againstHubShot());
+    }
+    if (m_indexer != null) {
+      new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kLeftBumper.value))
+          .whileTrue(new RunIndexer(m_indexer, 0.5, true));
+      new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kRightBumper.value))
+          .whileTrue(new RunIndexer(m_indexer, 0.3, false));
+    }
   }
 
   private double getDriveSpeedScalingFactor() {

@@ -5,6 +5,9 @@
 package frc.robot;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -539,6 +542,8 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // TODO: Implement functionality for autonomous mode.
-    return Autos.exampleAuto((AbstractDrivebase) m_drivebase);
+    m_drivebase.resetOdometry(new Pose2d(new Translation2d(3.879, 3.942), new Rotation2d(0)));
+    return Commands.print("Just sit there");
+    // Autos.exampleAuto((AbstractDrivebase) m_drivebase);
   }
 }

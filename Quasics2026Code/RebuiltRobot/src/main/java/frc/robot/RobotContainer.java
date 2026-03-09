@@ -55,6 +55,7 @@ import frc.robot.subsystems.real.SparkDriveBase;
 import frc.robot.subsystems.real.Vision;
 import frc.robot.subsystems.simulated.SimulatedVision;
 import frc.robot.subsystems.simulated.SimulationDrivebase;
+import frc.robot.utils.ShooterCalculator;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
@@ -167,6 +168,8 @@ public class RobotContainer {
    */
   private boolean m_switchDrive = false;
 
+  private ShooterCalculator m_calculator = new ShooterCalculator();
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and
    * commands.
@@ -211,6 +214,8 @@ public class RobotContainer {
       }
     });
 
+    setUpShooterCalculator();
+
     // Populate the smart dashboard.
     addButtonsToSmartDashboard();
 
@@ -251,6 +256,13 @@ public class RobotContainer {
     }
 
     return new LightingBuffer(realLighting.getSubViews().get(targetIndex), isLeftSide);
+  }
+
+  private void setUpShooterCalculator() {
+    m_calculator.addDataPoint(50, 2700); // hub (ANGLE IS DIFF)
+    m_calculator.addDataPoint(105, 3050); // half from tower to hub ish
+    m_calculator.addDataPoint(140, 3300); // trench shot
+    m_calculator.addDataPoint(200, 3700); // from tower/back wall
   }
 
   private void addShooterTestCommandsToSmartDashboard() {
@@ -474,6 +486,14 @@ public class RobotContainer {
           .whileTrue(new RunIntakeExtension(m_intake, 0.2, false));
       new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.BButton))
           .whileTrue(new RunIntakeExtension(m_intake, 0.1, true));
+    }
+
+    if (m_shooter != null) {
+      new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.AButton))
+          .whileTrue(new RunShooterPID(m_shooter,
+              RPM.of(m_calculator.getSpeedToHitHubCenter(m_drivebase.getEstimatedPose())),
+              .387, 2));
+
     }
   }
 

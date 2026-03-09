@@ -219,6 +219,17 @@ public final class Constants {
   }
 
   /**
+   * Helpful field calculations based off of Rebuilt numbers.
+   */
+  public class RebuiltFieldData {
+    public static final Distance FIELD_LENGTH = Inches.of(651.22);
+    public static final Distance FIELD_WIDTH = Inches.of(317.69);
+    public static final Distance FIELD_LENGTH_CENTER = Inches.of(325.61);
+    public static final Distance FIELD_WIDTH_CENTER = Inches.of(158.84);
+    public static final Distance ALLIANCE_WALL_TO_HUB_CENTER = Inches.of(182.11);
+  }
+
+  /**
    * Settings for normal/turtle/turbo speed modes. (These will be applied as a
    * scaling factor to the raw inputs from the driver joysticks.)
    */

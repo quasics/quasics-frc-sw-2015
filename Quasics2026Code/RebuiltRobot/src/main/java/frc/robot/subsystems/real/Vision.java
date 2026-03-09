@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.logging.Logger;
 import frc.robot.logging.Logger.Verbosity;
@@ -33,7 +34,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 public class Vision extends SubsystemBase implements IVision {
   private static final AprilTagFields FIELD_LAYOUT = AprilTagFields.kDefaultField;
   private final AprilTagFieldLayout m_tagLayout;
-  protected PhotonCamera camera = new PhotonCamera("camera1");
+  protected PhotonCamera camera = new PhotonCamera("PC_Camera");
   protected PhotonPoseEstimator photonEstimator;
   private Pose3d latestPose3d = new Pose3d();
   protected Pose2d latestPose2d = new Pose2d();

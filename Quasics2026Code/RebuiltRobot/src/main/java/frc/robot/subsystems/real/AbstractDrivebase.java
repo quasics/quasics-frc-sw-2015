@@ -22,6 +22,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -365,8 +366,7 @@ public abstract class AbstractDrivebase
     // Update the field simulation shown on the smart dashboard
     m_field.setRobotPose(m_odometry.getPoseMeters());
     if (getVisionPose() != null) {
-      // m_poseEstimator.addVisionMeasurement(getVisionPose(),
-      // Timer.getFPGATimestamp());
+      m_poseEstimator.addVisionMeasurement(getVisionPose(), Timer.getFPGATimestamp());
     }
   }
 }

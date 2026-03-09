@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
@@ -404,20 +405,27 @@ public class RobotContainer {
     Supplier<Double> linearDrivingStick = () -> {
       double scaling = getDriveSpeedScalingFactor();
       double axis = getDriverAxis(Constants.LogitechDualshock.LeftYAxis);
+      double result;
       if (m_switchDrive) {
         double joystickPercent = axis * scaling;
-        return speedSlewRateLimiter.calculate(joystickPercent);
+        result = speedSlewRateLimiter.calculate(joystickPercent);
       } else {
         double joystickPercent = -axis * scaling;
-        return speedSlewRateLimiter.calculate(joystickPercent);
+        result = speedSlewRateLimiter.calculate(joystickPercent);
       }
+
+      // Clamp the value to the maximum range of a joystick.
+      return MathUtil.clamp(scaling, -1.0, +1.0);
     };
     final double ROTATION_FIXED_SCALING = 1.25;
     Supplier<Double> rotationDrivingStick = () -> {
       double scaling = getDriveSpeedScalingFactor();
       double axis = getDriverAxis(Constants.LogitechDualshock.RightXAxis);
       double joystickPercent = -axis * scaling * ROTATION_FIXED_SCALING;
-      return rotationSlewRateLimiter.calculate(joystickPercent);
+      double slewLimitedValue = rotationSlewRateLimiter.calculate(joystickPercent);
+
+      // Clamp the value to the maximum range of a joystick.
+      return MathUtil.clamp(slewLimitedValue, -1.0, +1.0);
     };
 
     // Set up arcade driving as the default command for the drivebase.

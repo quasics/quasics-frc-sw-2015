@@ -32,6 +32,7 @@ import frc.robot.commands.RunIntakeRollers;
 import frc.robot.commands.RunShooter;
 import frc.robot.commands.RunShooterForTime;
 import frc.robot.commands.RunShooterPID;
+import frc.robot.commands.ShootBasedOnDistance;
 import frc.robot.commands.lighting.RainbowLighting;
 import frc.robot.commands.testing.DriveForDistance;
 import frc.robot.commands.testing.FlywheelDialIn;
@@ -56,7 +57,6 @@ import frc.robot.subsystems.real.SparkDriveBase;
 import frc.robot.subsystems.real.Vision;
 import frc.robot.subsystems.simulated.SimulatedVision;
 import frc.robot.subsystems.simulated.SimulationDrivebase;
-import frc.robot.utils.ShooterCalculator;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
@@ -169,8 +169,6 @@ public class RobotContainer {
    */
   private boolean m_switchDrive = false;
 
-  private ShooterCalculator m_calculator = new ShooterCalculator();
-
   /**
    * The container for the robot. Contains subsystems, OI devices, and
    * commands.
@@ -215,8 +213,6 @@ public class RobotContainer {
       }
     });
 
-    setUpShooterCalculator();
-
     // Populate the smart dashboard.
     addButtonsToSmartDashboard();
 
@@ -257,20 +253,6 @@ public class RobotContainer {
     }
 
     return new LightingBuffer(realLighting.getSubViews().get(targetIndex), isLeftSide);
-  }
-
-  private void setUpShooterCalculator() {
-    // FINDME(Daniel, Riley): Please note that if the angle is different for this
-    // position, then I'd *strongly* encourage you to not include it in the data
-    // set, since the linear interpolation isn't going to be working with "apples to
-    // apples" data (which it assumes *is* the case). I'd recommend establishing a
-    // different value for the lower bound of your set, and treating this as a
-    // one-off.
-    m_calculator.addDataPoint(50, 2700); // hub (ANGLE IS DIFF)
-
-    m_calculator.addDataPoint(105, 3050); // half from tower to hub ish
-    m_calculator.addDataPoint(140, 3300); // trench shot
-    m_calculator.addDataPoint(200, 3700); // from tower/back wall
   }
 
   private void addShooterTestCommandsToSmartDashboard() {
@@ -509,10 +491,7 @@ public class RobotContainer {
       // execute() so that the target speed will be updated continuously (e.g., if the
       // robot is actually *moving* while we're trying to shoot).
       new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.AButton))
-          .whileTrue(new RunShooterPID(m_shooter,
-              m_calculator.getSpeedToHitHubCenter(m_drivebase.getEstimatedPose()),
-              .387, 2));
-
+          .whileTrue(new ShootBasedOnDistance(m_shooter, m_drivebase, 0.387, 2));
     }
   }
 

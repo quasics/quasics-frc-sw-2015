@@ -224,8 +224,8 @@ public final class Constants {
   public class RebuiltFieldData {
     public static final Distance FIELD_LENGTH = Inches.of(651.22);
     public static final Distance FIELD_WIDTH = Inches.of(317.69);
-    public static final Distance FIELD_LENGTH_CENTER = Inches.of(325.61);
-    public static final Distance FIELD_WIDTH_CENTER = Inches.of(158.84);
+    public static final Distance FIELD_LENGTH_CENTER = FIELD_LENGTH.div(2);
+    public static final Distance FIELD_WIDTH_CENTER = FIELD_WIDTH.div(2);
     public static final Distance ALLIANCE_WALL_TO_HUB_CENTER = Inches.of(182.11);
   }
 

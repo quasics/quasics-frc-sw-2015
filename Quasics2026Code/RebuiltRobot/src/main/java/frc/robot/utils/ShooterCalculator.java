@@ -33,11 +33,13 @@ import edu.wpi.first.units.measure.Distance;
  * @see frc.robot.utils.LinearInterpolator.DistanceToShooterSpeedInterpolator
  */
 public class ShooterCalculator {
+  /** Linear interpolator (holding inches->RPM data), used for estimation. */
   // FINDME(Daniel, Rylie): I'd suggest replacing this with a
   // LinearInterpolator.DistanceToShooterSpeedInterpolator object, which is
   // unit-safe. (See comments above.)
   private final LinearInterpolator m_speedInterpolator = new LinearInterpolator();
 
+  /** Constructor. */
   public ShooterCalculator() {
   }
 

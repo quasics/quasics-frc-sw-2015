@@ -6,7 +6,6 @@ package frc.robot.subsystems.simulated;
 
 import static edu.wpi.first.units.Units.Meters;
 
-import edu.wpi.first.units.DistanceUnit;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotController;

@@ -55,6 +55,7 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods. This must be called from the
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
+    System.out.println("Scheduler");
     CommandScheduler.getInstance().run();
   }
 

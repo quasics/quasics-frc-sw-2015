@@ -138,7 +138,8 @@ public class RobotContainer {
   };
   private final IShooter m_shooter = switch (ROBOT_NAME) {
     case Lizzie -> new RealShooter();
-    case Sally, Simulated -> new IShooter.NullShooter();
+    case Sally -> new IShooter.NullShooter();
+    case Simulated -> new RealShooter();
   };
   private final IClimber m_climber = switch (ROBOT_NAME) {
     case Lizzie -> new RealClimber();
@@ -464,20 +465,24 @@ public class RobotContainer {
   }
 
   private Command againstHubShot() {
+    System.out.println("againstHubShot shot");
     return Commands.sequence(new PivotHoodToPosition(m_hood, 0.15, Degrees.of(5)),
         new RunShooterPID(m_shooter, RPM.of(2700), .387, 1));
   }
 
   private Command towerShot() {
+    System.out.println("Tower shot");
     return Commands.sequence(new PivotHoodToPosition(m_hood, 0.15, Degrees.of(15)),
         new RunShooterPID(m_shooter, RPM.of(3700), .387, 2));
   }
 
   private Command trenchShot() {
+    System.out.println("trenchShot shot");
     return Commands.sequence(new PivotHoodToPosition(m_hood, 0.15, Degrees.of(15)),
         new RunShooterPID(m_shooter, RPM.of(3300), .387, 2));
   }
 
+  private final Trigger alwaysTrigger = new Trigger(() -> true);
   private void configureDriverButtons() {
     if (m_intake != null) {
       new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.LeftTrigger))
@@ -491,13 +496,27 @@ public class RobotContainer {
           .whileTrue(new RunIntakeExtension(m_intake, 0.1, true));
     }
 
+    Commands.print("test command").schedule();
+  System.out.println("Binding shooter trigger");
+    System.out.println("M shooter"+ m_shooter);
     if (m_shooter != null) {
-      new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.AButton))
-          .whileTrue(new RunShooterPID(m_shooter,
+      alwaysTrigger
+          .whileTrue(Commands.sequence(Commands.print("shooting now"), new RunShooterPID(m_shooter,
               RPM.of(m_calculator.getSpeedToHitHubCenter(m_drivebase.getEstimatedPose())),
-              .387, 2));
+              .387, 2)));
 
     }
+
+    Commands.sequence(
+      Commands.print("shoot"),
+      new RunShooterPID(
+          m_shooter,
+          RPM.of(m_calculator.getSpeedToHitHubCenter(m_drivebase.getEstimatedPose())),
+          .387,
+          2))
+      .schedule();
+    Commands.print("end test command").schedule();
+
   }
 
   private void configureOperatorButtons() {

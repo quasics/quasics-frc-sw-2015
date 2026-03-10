@@ -77,6 +77,8 @@ public class ShooterCalculator {
 
   public double getSpeedToHitHubCenter(Pose2d robotPose) {
     final double distance = getDistanceToHubCenter(robotPose).in(Meters) * 39.3701;
+
+    System.out.println("dist " + distance + "POse " + robotPose);
     SmartDashboard.putNumber("shooter key", distance);
     return approximateRPM(distance);
   }

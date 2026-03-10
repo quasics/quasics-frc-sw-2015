@@ -35,6 +35,7 @@ public class RunShooterPID extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    System.out.println("INIT shooter");
     m_shooter.setFlywheelRPM(m_velocityRPM);
     m_timer.reset();
   }
@@ -42,6 +43,7 @@ public class RunShooterPID extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    System.out.println("EXEC shooter");
     m_shooter.setFlywheelRPM(m_velocityRPM);
     if (m_timer.hasElapsed(m_kickerDelay)) {
       m_shooter.setKickerSpeed(m_kickSpeed);

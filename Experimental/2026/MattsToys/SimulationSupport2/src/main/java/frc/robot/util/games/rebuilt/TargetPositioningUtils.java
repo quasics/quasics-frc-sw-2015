@@ -44,8 +44,8 @@ public class TargetPositioningUtils {
    */
   public static Translation2d getHubCenterLocation(Alliance alliance) {
     Distance x = switch (alliance) {
-      case Red -> RebuiltConstants.FIELD_LENGTH.minus(RebuiltConstants.HUB_CENTER_DISTANCE_TO_ALLIANCE_WALL);
-      case Blue -> RebuiltConstants.HUB_CENTER_DISTANCE_TO_ALLIANCE_WALL;
+      case Red -> RebuiltConstants.FIELD_LENGTH.minus(RebuiltConstants.ALLIANCE_WALL_TO_HUB_CENTER);
+      case Blue -> RebuiltConstants.ALLIANCE_WALL_TO_HUB_CENTER;
     };
 
     Distance y = RebuiltConstants.FIELD_WIDTH.div(2);

@@ -33,6 +33,12 @@ public final class RebuiltConstants {
   /** Width (y) of the field. */
   public static final Distance FIELD_WIDTH = Inches.of(317.69);
 
+  /** Convenience value for 1/2 length (x) of field. */
+  public static final Distance FIELD_LENGTH_CENTER = FIELD_LENGTH.div(2);
+
+  /** Convenience value for 1/2 width (y) of field. */
+  public static final Distance FIELD_WIDTH_CENTER = FIELD_WIDTH.div(2);
+
   /** Field midline (length-wise), where the barge is located. */
   public static final Distance MIDLINE = FIELD_LENGTH.div(2);
 
@@ -64,7 +70,7 @@ public final class RebuiltConstants {
   public static final Distance TRENCH_WIDTH = Inches.of(65.65);
 
   /** Distance (x) from the alliance walls to the center of the hub. */
-  public static final Distance HUB_CENTER_DISTANCE_TO_ALLIANCE_WALL = DRIVER_WALL_TO_BUMP_CENTER;
+  public static final Distance ALLIANCE_WALL_TO_HUB_CENTER = DRIVER_WALL_TO_BUMP_CENTER;
 
   /** Distance (x) from the alliance walls to the closest side of the hub. */
   public static final Distance HUB_DISTANCE_TO_ALLIANCE_WALL = Inches.of(158.6);

@@ -13,15 +13,42 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 
 /**
- * Simple class for handling linear interpolation (e.g., calculating estimated
- * shooter velocity, given a range of "good values" at known distances).
+ * Simple class for handling linear interpolation.
+ * 
+ * You can think of this as implementing some sort of an algebraic function
+ * ("f(x) -> y"), where one of these objects can be given a (relatively)
+ * arbitrary "x" (key), and estimate the corresponding "y".
+ * 
+ * One obvious application is to try to estimate shooter speeds required to hit
+ * a target from different distances.
+ * 
+ * Note that this is *linear* interpolation, and thus it's assumed that only
+ * *one* value is being varied. (For the shooter speed example, this would be
+ * the distance, and we'd assume that other things like the angle of a hood on
+ * the shooter, etc., were not being changed.)
  */
 public class LinearInterpolator {
   private final TreeMap<Double, Double> m_dataLookupTable = new TreeMap<>();
 
+  /**
+   * Constructor.
+   * 
+   * Note that data points will need to be added to the class before we can
+   * generate estimates.
+   * 
+   * @see #addDataPoint(double, double)
+   */
   public LinearInterpolator() {
   }
 
+  /**
+   * Adds a data point for use in estimation. (If you think of this class as
+   * providing a function that maps "x" keys to "y" values, this adds a point on
+   * the curve.)
+   * 
+   * @param key   a new known input ("x") value for the function
+   * @param value a new known output ("y") value for the function
+   */
   public void addDataPoint(double key, double value) {
     m_dataLookupTable.put(key, value);
   }
@@ -30,6 +57,15 @@ public class LinearInterpolator {
     return m_dataLookupTable.toString();
   }
 
+  /**
+   * Given a key (e.g., distance), generates an estimate of the corresponding
+   * value (e.g., shooter speed) associated with it.
+   * 
+   * @param key value for which a corresponding estimate should be generated
+   * @return an estimated value for the key
+   * @throws IllegalStateException when we don't have any data points to use for
+   *                               estimation
+   */
   public double getTargetApproximationForKey(double key) {
     if (m_dataLookupTable.isEmpty()) {
       throw new IllegalStateException("No data to use in performing interpolation");
@@ -58,6 +94,10 @@ public class LinearInterpolator {
     return speed;
   }
 
+  /**
+   * Sample (though useful) class, demonstrating how the LinearInterpolator class
+   * can be used in a "unitized" (unit-safe) form.
+   */
   static public final class DistanceToShooterSpeedInterpolator {
     /**
      * Linear interpolation object we'll use.

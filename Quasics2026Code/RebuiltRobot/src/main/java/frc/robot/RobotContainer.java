@@ -262,7 +262,14 @@ public class RobotContainer {
   }
 
   private void setUpShooterCalculator() {
+    // FINDME(Daniel, Riley): Please note that if the angle is different for this
+    // position, then I'd *strongly* encourage you to not include it in the data
+    // set, since the linear interpolation isn't going to be working with "apples to
+    // apples" data (which it assumes *is* the case). I'd recommend establishing a
+    // different value for the lower bound of your set, and treating this as a
+    // one-off.
     m_calculator.addDataPoint(50, 2700); // hub (ANGLE IS DIFF)
+
     m_calculator.addDataPoint(105, 3050); // half from tower to hub ish
     m_calculator.addDataPoint(140, 3300); // trench shot
     m_calculator.addDataPoint(200, 3700); // from tower/back wall
@@ -492,9 +499,20 @@ public class RobotContainer {
     }
 
     if (m_shooter != null) {
+      // FINDME(Rylie, Daniel): This isn't going to do what you think it will. It's
+      // going to capture the distance to the hub's center when the driver buttons are
+      // being set up (i.e., when the RobotContainer is being built). However, it's
+      // unlikely that this will be the robot's distance from the Hub when the driver
+      // actually *trigger* the command.
+      //
+      // Suggestion: instead of getting the distance *here*, write a Command class
+      // that will get the distance while it is executing. This would at least be when
+      // the initialize() function is invoked, but it would be better to do it in
+      // execute() so that the target speed will be updated continuously (e.g., if the
+      // robot is actually *moving* while we're trying to shoot).
       new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.AButton))
           .whileTrue(new RunShooterPID(m_shooter,
-              RPM.of(m_calculator.getSpeedToHitHubCenter(m_drivebase.getEstimatedPose())),
+              m_calculator.getSpeedToHitHubCenter(m_drivebase.getEstimatedPose()),
               .387, 2));
 
     }

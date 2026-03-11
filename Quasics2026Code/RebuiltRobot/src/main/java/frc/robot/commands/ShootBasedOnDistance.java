@@ -21,7 +21,7 @@ public class ShootBasedOnDistance extends Command {
 
   private final double m_kickSpeed;
   private final double m_kickerDelay;
-  private final Timer m_timer = new Timer();;
+  private final Timer m_timer = new Timer();
   private final ShooterCalculator m_calculator = new ShooterCalculator();
 
   /** Creates a new RunShooter. */

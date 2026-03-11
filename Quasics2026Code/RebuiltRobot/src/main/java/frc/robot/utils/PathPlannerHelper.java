@@ -4,29 +4,24 @@
 
 package frc.robot.utils;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.subsystems.real.AbstractDrivebase;
-import frc.robot.subsystems.interfaces.IDrivebase;
-//import frc.robot.subsystems.interfaces.drivebase.IDrivebasePlus;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.controllers.PPLTVController;
-
 
 /** Add your docs here. */
 public class PathPlannerHelper {
 
   public PathPlannerHelper() throws IllegalAccessException {
     throw new IllegalAccessException("Don't do that!! :(");
-  } 
+  }
 
   public static Command getAutonomousCommand(AbstractDrivebase abstractDrivebase) {
-    //TODO: Make autos selectable fr/ dashboard
+    // TODO: Make autos selectable fr/ dashboard
     com.pathplanner.lib.config.RobotConfig config = null;
-    try{
+    try {
       config = com.pathplanner.lib.config.RobotConfig.fromGUISettings();
       System.out.println("Auto Config settings");
       System.out.println("Holonomic:" + config.isHolonomic);
@@ -38,28 +33,27 @@ public class PathPlannerHelper {
       System.out.println("Wheel COF:" + config.moduleConfig.wheelCOF);
       System.out.println("Drive Motor:" + config.moduleConfig.driveMotor);
       System.out.println("Drive Current Limit:" + config.moduleConfig.driveCurrentLimit);
-      
+
     } catch (Exception e) {
       System.out.println("Hey! Listen!");
       e.printStackTrace();
     }
 
     AutoBuilder.configure(
-      abstractDrivebase::getOdometryPose,
-      abstractDrivebase::resetOdometry,
-      abstractDrivebase::getSpeed,
-      (speeds, feedforwards) -> abstractDrivebase.driveWithPid(speeds),
-      new PPLTVController(0.02),
-      config,
-      () -> {
-         var alliance = DriverStation.getAlliance();
+        abstractDrivebase::getOdometryPose,
+        abstractDrivebase::resetOdometry,
+        abstractDrivebase::getSpeed,
+        (speeds, feedforwards) -> abstractDrivebase.driveWithPid(speeds),
+        new PPLTVController(0.02),
+        config,
+        () -> {
+          var alliance = DriverStation.getAlliance();
           if (alliance.isPresent()) {
-                return alliance.get() == DriverStation.Alliance.Red;
-              }
-              return false;
-      },
-      abstractDrivebase
-    );
+            return alliance.get() == DriverStation.Alliance.Red;
+          }
+          return false;
+        },
+        abstractDrivebase);
     return new PathPlannerAuto("MoveForward1");
   }
 }

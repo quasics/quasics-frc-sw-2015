@@ -33,6 +33,7 @@ public class ShootBasedOnDistance extends Command {
     m_timer = new Timer();
     m_timer.start();
     m_calculator = new ShooterCalculator();
+    m_calculator.addDataPoint(70, 2700);
     m_calculator.addDataPoint(105, 3050); // half from tower to hub ish
     m_calculator.addDataPoint(140, 3300); // trench shot
     m_calculator.addDataPoint(160, 3700); // from tower/back wall

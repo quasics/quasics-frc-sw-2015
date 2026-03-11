@@ -28,7 +28,6 @@ public class RealClimber extends SubsystemBase implements IClimber {
 
   @Override
   public void setClimberSpeed(double speed) {
-
     m_climber.set(speed);
   }
 
@@ -42,8 +41,10 @@ public class RealClimber extends SubsystemBase implements IClimber {
     return getEncoderClimber().getPosition();
   }
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
+  // @Override
+  // public void periodic() {
+  // ***************************************************************************************************************
+  // // This method will be called once per scheduler run
+  // System.out.print(SparkMaxIds.CLIMBER_ID);
+  // }
 }

@@ -28,7 +28,7 @@ public class RunClimber extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
+    m_climber.setClimberSpeed(m_climberSpeed);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -37,6 +37,7 @@ public class RunClimber extends Command {
 
     m_climber.setClimberSpeed(m_climberSpeed);
     System.out.println("Climber Motor Rotation is: " + m_climber.getClimberPosition());
+    System.out.println("Speed is: " + m_climberSpeed);
 
   }
 

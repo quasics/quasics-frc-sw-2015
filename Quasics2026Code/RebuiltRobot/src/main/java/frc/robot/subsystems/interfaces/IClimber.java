@@ -11,7 +11,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  *
  * TODO: Define the climber interface (and then implement it).
  */
+
 public interface IClimber {
+  void stopClimber();
+
+  // double getClimberPosition();
+  // ****************************************************
+
   /*
    * (1 motor)
    * Extend and retract the climber
@@ -19,7 +25,9 @@ public interface IClimber {
    * Need to talk to folks about limit switches, etc.
    */
 
-  void stopClimber();
+  default void stop() {
+    stopClimber();
+  }
 
   double getClimberPosition();
 

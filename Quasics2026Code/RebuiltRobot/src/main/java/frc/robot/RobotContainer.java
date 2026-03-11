@@ -275,6 +275,7 @@ public class RobotContainer {
     SmartDashboard.putData("3050 RPM",
         new RunShooterPID(m_shooter, RPM.of(3050), .387, 1));
     SmartDashboard.putData("Dial in Shooter", new FlywheelDialIn(m_shooter));
+
   }
 
   private void addIntakeTestCommandsToSmartDashboard() {
@@ -318,8 +319,8 @@ public class RobotContainer {
     if (m_climber == null) {
       return;
     }
-    SmartDashboard.putData("Run climber @ 2.5%",
-        new RunClimber(m_climber, .025));
+    SmartDashboard.putData("Run climber @ 10%",
+        new RunClimber(m_climber, .1));
     SmartDashboard.putData("Run climber @ - 2.5%",
         new RunClimber(m_climber, .025));
   }

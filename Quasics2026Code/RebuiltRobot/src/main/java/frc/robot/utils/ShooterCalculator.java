@@ -12,9 +12,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 
-/** Add your docs here. */
 /**
- * 
+ * Class to help calculate shooter flywheel speeds, based on distances from the
+ * hub.
  * 
  * FINDME(Daniel, Riley): Suggestion - Make the keys/values being passed into
  * this class *Unit-based* values, and then convert them internally to inches
@@ -33,10 +33,11 @@ import edu.wpi.first.units.measure.Distance;
  * @see frc.robot.utils.LinearInterpolator.DistanceToShooterSpeedInterpolator
  */
 public class ShooterCalculator {
-  /** Linear interpolator (holding inches->RPM data), used for estimation. */
+
   // FINDME(Daniel, Rylie): I'd suggest replacing this with a
   // LinearInterpolator.DistanceToShooterSpeedInterpolator object, which is
   // unit-safe. (See comments above.)
+  /** Linear interpolator (holding inches->RPM data), used for estimation. */
   private final LinearInterpolator m_speedInterpolator = new LinearInterpolator();
 
   /** Constructor. */
@@ -86,6 +87,12 @@ public class ShooterCalculator {
     return RPM.of(m_speedInterpolator.getTargetApproximationForKey(distanceFromHub.in(Inches)));
   }
 
+  /**
+   * Returns the estimated shooting speed required from the robot's specified
+   * position on the field.
+   * 
+   * @param robotPose robot position (pose) on the field
+   */
   public AngularVelocity getSpeedToHitHubCenter(Pose2d robotPose) {
     final Distance distanceToHub = TargetPositioningUtils.getDistanceToHubCenter(robotPose);
     SmartDashboard.putNumber("shooter key", distanceToHub.in(Inches));

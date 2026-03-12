@@ -113,6 +113,14 @@ public interface IDrivebase {
   LinearVelocity getRightVelocity();
 
   /**
+   * Convenience function, used to help the drive team tell the robot where it was
+   * actually positioned on the field.
+   * 
+   * @param pose robot pose, as established pre-match
+   */
+  void updateStartingPosition(Pose2d pose);
+
+  /**
    * Tries to enable/disable breaking mode, if supported by the underlying
    * hardware.
    * 
@@ -252,6 +260,11 @@ public interface IDrivebase {
     @Override
     public void setSpeed(ChassisSpeeds speed) {
       // Intentionally empty
+    }
+
+    @Override
+    public void updateStartingPosition(Pose2d pose) {
+      // No-op.
     }
   }
 }

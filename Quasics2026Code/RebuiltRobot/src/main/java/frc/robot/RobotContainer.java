@@ -73,6 +73,8 @@ import com.pathplanner.lib.auto.NamedCommands;
  * actually be handled in the {@link Robot} periodic methods (other than the
  * scheduler calls). Instead, the structure of the robot (including subsystems,
  * commands, and trigger mappings) should be declared here.
+ * 
+ * TODO: Matt should clean up this comment.
  */
 public class RobotContainer {
   private static final int SIDE_LIGHTING_LENGTH = Constants.LIGHTING_TOTAL_LENGTH / 2;

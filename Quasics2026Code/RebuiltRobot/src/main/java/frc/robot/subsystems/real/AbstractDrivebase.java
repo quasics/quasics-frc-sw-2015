@@ -93,11 +93,13 @@ public abstract class AbstractDrivebase
 
   @Override
   public void updateStartingPosition(Pose2d pose) {
+    final Rotation2d facing = pose.getRotation();
+
     getGyro().reset();
     getLeftEncoder().reset();
     getRightEncoder().reset();
 
-    m_odometry = new DifferentialDriveOdometry(new Rotation2d(), 0, 0, pose);
+    m_odometry = new DifferentialDriveOdometry(facing, 0, 0, pose);
 
     m_poseEstimator.resetPosition(
         getGyro().getRotation2d(),

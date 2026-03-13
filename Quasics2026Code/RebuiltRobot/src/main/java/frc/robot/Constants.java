@@ -227,6 +227,36 @@ public final class Constants {
     public static final Distance FIELD_LENGTH_CENTER = FIELD_LENGTH.div(2);
     public static final Distance FIELD_WIDTH_CENTER = FIELD_WIDTH.div(2);
     public static final Distance ALLIANCE_WALL_TO_HUB_CENTER = Inches.of(182.11);
+
+    /** Robot heading when facing the Blue alliance. */
+    public static final Angle FACING_BLUE = Degrees.of(180);
+
+    /** Robot heading when facing the Red alliance. */
+    public static final Angle FACING_RED = Degrees.of(0);
+
+    /** Depth (x and y) of the hub (at its base). */
+    public static final Distance HUB_DEPTH = Inches.of(47);
+
+    /** Length (x) of the bump. */
+    public static final Distance BUMP_LENGTH = Inches.of(44.40);
+
+    /** Width (y) of the bump. */
+    public static final Distance BUMP_WIDTH = Inches.of(73.0);
+
+    /**
+     * Y-position of the mid-point on the lower bumps on the blue/red sides of the
+     * field.
+     */
+    public static final Distance MID_BUMP1_Y = FIELD_WIDTH.div(2).minus(HUB_DEPTH.plus(BUMP_WIDTH).div(2));
+
+    /**
+     * Y-position of the mid-point on the upper bumps on the blue/red sides of the
+     * field.
+     */
+    public static final Distance MID_BUMP2_Y = FIELD_WIDTH.div(2).plus(HUB_DEPTH.plus(BUMP_WIDTH).div(2));
+
+    public static final Distance RED_STARTING_LINE = ALLIANCE_WALL_TO_HUB_CENTER.minus(HUB_DEPTH);
+    public static final Distance BLUE_STARTING_LINE = FIELD_LENGTH.minus(ALLIANCE_WALL_TO_HUB_CENTER.minus(HUB_DEPTH));
   }
 
   /**

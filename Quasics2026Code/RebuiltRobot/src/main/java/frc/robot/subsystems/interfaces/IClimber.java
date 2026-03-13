@@ -4,16 +4,54 @@
 
 package frc.robot.subsystems.interfaces;
 
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 /**
  * Interface for controlling the climbing hardware.
  *
  * TODO: Define the climber interface (and then implement it).
  */
+
 public interface IClimber {
+  void stopClimber();
+
+  // double getClimberPosition();
+  // ****************************************************
+
   /*
    * (1 motor)
    * Extend and retract the climber
    *
    * Need to talk to folks about limit switches, etc.
    */
+
+  default void stop() {
+    stopClimber();
+  }
+
+  double getClimberPosition();
+
+  void setClimberSpeed(double speed);
+
+  /**
+   * Trivial implementation of IClimber, for use when we're on a robot without
+   * one.
+   */
+  public class NullClimber extends SubsystemBase implements IClimber {
+    // public NullClimber() {
+    @Override
+    public void stopClimber() {
+    }
+
+    @Override
+    public void setClimberSpeed(double speed) {
+    }
+
+    @Override
+    public double getClimberPosition() {
+      return 0;
+    }
+
+  }
+
 }

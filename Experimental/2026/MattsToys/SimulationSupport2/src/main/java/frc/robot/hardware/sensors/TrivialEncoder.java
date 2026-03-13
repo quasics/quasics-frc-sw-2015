@@ -76,6 +76,12 @@ import java.io.IOException;
  */
 public interface TrivialEncoder extends Closeable {
   /**
+   * Returns the raw position/distabce value from the encoder, in order to support
+   * debugging, etc.
+   */
+  double getRawPosition();
+
+  /**
    * Returns the distance recorded by the encoder.
    *
    * @return the distance recorded by the encoder
@@ -105,6 +111,11 @@ public interface TrivialEncoder extends Closeable {
     }
 
     return new TrivialEncoder() {
+      @Override
+      public double getRawPosition() {
+        return encoder.getDistance();
+      }
+
       @Override
       public Distance getPosition() {
         return Meters.of(encoder.getDistance());
@@ -147,6 +158,11 @@ public interface TrivialEncoder extends Closeable {
 
     return new TrivialEncoder() {
       @Override
+      public double getRawPosition() {
+        return encoder.getDistance();
+      }
+
+      @Override
       public Distance getPosition() {
         return Meters.of(encoder.getDistance());
       }
@@ -174,6 +190,11 @@ public interface TrivialEncoder extends Closeable {
     /** Constructor. */
     public NullEncoder() {
       System.out.println("INFO: allocating NullEncoder");
+    }
+
+    @Override
+    public double getRawPosition() {
+      return 0;
     }
 
     @Override

@@ -5,6 +5,9 @@
 package frc.robot.subsystems.interfaces;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -19,4 +22,29 @@ public interface IVision {
   void setReferencePositionSupplier(Supplier<Pose2d> supplier);
 
   Pose2d getVisionLatestPose();
+
+  /**
+   * Null implementation of IVision, for use on robots that don't have a camera.
+   */
+  public class NullVision extends SubsystemBase implements IVision {
+    @Override
+    public boolean canSeeTargets() {
+      return false;
+    }
+
+    @Override
+    public List<TargetData> getTargetData() {
+      return Collections.emptyList();
+    }
+
+    @Override
+    public void setReferencePositionSupplier(Supplier<Pose2d> supplier) {
+      // No-op.
+    }
+
+    @Override
+    public Pose2d getVisionLatestPose() {
+      return null;
+    }
+  }
 }

@@ -58,9 +58,12 @@ public class ShooterHoodSubsystem
    *
    * @param hoodConfig configuration for the shooter hood subsystem, which
    *                   includes the control type, CAN ID, and min/max angles.
-   * The control type is expected to be SparkMax for this implementation, and
-   * the CAN ID should match the actual wiring of the robot. The min/max angles
-   * will be used to clamp the target position to prevent mechanical issues.
+   *                   The control type is expected to be SparkMax for this
+   *                   implementation, and
+   *                   the CAN ID should match the actual wiring of the robot. The
+   *                   min/max angles
+   *                   will be used to clamp the target position to prevent
+   *                   mechanical issues.
    */
   public ShooterHoodSubsystem(HoodConfig hoodConfig) {
     setName(SUBSYSTEM_NAME);
@@ -68,7 +71,7 @@ public class ShooterHoodSubsystem
     if (hoodConfig.type() != HoodConfig.ControlType.SparkMax) {
       throw new IllegalArgumentException(
           "Unsupported control type for ShooterHoodSubsystem: "
-          + hoodConfig.type());
+              + hoodConfig.type());
     }
 
     m_config = hoodConfig;
@@ -103,8 +106,8 @@ public class ShooterHoodSubsystem
         .d(kD)
         .outputRange(minOutput, maxOutput);
 
-    m_motor.configure(motorConfig, ResetMode.kResetSafeParameters,
-        PersistMode.kPersistParameters);
+    m_motor.configure(motorConfig, ResetMode.kNoResetSafeParameters,
+        PersistMode.kNoPersistParameters);
   }
 
   @Override

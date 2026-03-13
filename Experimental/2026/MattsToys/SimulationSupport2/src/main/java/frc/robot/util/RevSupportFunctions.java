@@ -30,8 +30,7 @@ public class RevSupportFunctions {
    */
   public static void configureSparkMaxEncoderForDistance(
       SparkMaxConfig config, Distance outerDiameter, double gearRatio) {
-    final double distanceScalingFactorForGearing =
-        outerDiameter.div(gearRatio).in(Meters);
+    final double distanceScalingFactorForGearing = outerDiameter.div(gearRatio).in(Meters);
     final double velocityScalingFactor = distanceScalingFactorForGearing / 60;
 
     config.encoder.positionConversionFactor(distanceScalingFactorForGearing)
@@ -112,8 +111,8 @@ public class RevSupportFunctions {
     followerConfig.follow(leader);
 
     try (SparkMax follower = new SparkMax(followerId, MotorType.kBrushless)) {
-      follower.configure(followerConfig, ResetMode.kResetSafeParameters,
-          PersistMode.kPersistParameters);
+      follower.configure(followerConfig, ResetMode.kNoResetSafeParameters,
+          PersistMode.kNoPersistParameters);
     }
   }
 }

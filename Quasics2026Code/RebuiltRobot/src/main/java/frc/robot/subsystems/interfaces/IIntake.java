@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.interfaces;
 
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 /**
  * Interface for controlling the intake mechanism, used to pick up balls from
  * the floor.
@@ -16,11 +18,36 @@ public interface IIntake {
    * Extend and retract the intake
    */
 
-   void setRollerSpeed(double speed);
+  void setRollerSpeed(double speed);
 
-   void stopRoller();
+  void stopRoller();
 
-   void setExtensionSpeed(double speed);
+  void setExtensionSpeed(double speed);
 
-   void stopExtension();
+  void stopExtension();
+
+  /**
+   * Trivial implementation of IIntake, for use on robots that don't have one.
+   */
+  public class NullIntake extends SubsystemBase implements IIntake {
+    @Override
+    public void setRollerSpeed(double speed) {
+      // No-op.
+    }
+
+    @Override
+    public void stopRoller() {
+      // No-op.
+    }
+
+    @Override
+    public void setExtensionSpeed(double speed) {
+      // No-op.
+    }
+
+    @Override
+    public void stopExtension() {
+      // No-op.
+    }
+  }
 }

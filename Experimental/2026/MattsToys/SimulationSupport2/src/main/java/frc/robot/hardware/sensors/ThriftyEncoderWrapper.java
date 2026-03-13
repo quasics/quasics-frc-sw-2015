@@ -8,10 +8,6 @@ import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
 import com.thethriftybot.devices.ThriftyNova;
-import com.thethriftybot.devices.ThriftyNova.EncoderType;
-import com.thethriftybot.util.Conversion;
-import com.thethriftybot.util.Conversion.PositionUnit;
-import com.thethriftybot.util.Conversion.VelocityUnit;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import java.io.IOException;
@@ -25,26 +21,20 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
   final ThriftyNova m_motorController;
 
   /**
-   * Distance travelled per turn of the outer wheel. (Used to convert
-   * "revolutions" to linear distance.)
+   * Outer diameter of the wheel. (Used to convert "revolutions" to linear
+   * distance.)
    */
-  final Distance m_rotationDistance;
+  final Distance m_wheelCircumference;
 
   /**
-   * Thrifty conversion object, used to translate native velocity units to RPMs.
+   * Gear ratio for the drive base (e.g., "8.45" if it will take 8.45 revolutions
+   * of the motor to make the actual wheels turn 1 time).
    */
-  final Conversion m_shooterConverter =
-      new Conversion(VelocityUnit.ROTATIONS_PER_MIN, EncoderType.INTERNAL);
+  final double m_gearing;
 
   /**
-   * Thrifty conversion object, used to translate native positional units to
-   * rotations.
-   */
-  final Conversion m_distanceConverter =
-      new Conversion(PositionUnit.ROTATIONS, EncoderType.INTERNAL);
-
-  /**
-   * Constructor.
+   * Constructor. (This assumes that the motor is directly connected to the wheel,
+   * or effectively having 1:1 gearing).
    *
    * @param motorController    ThriftyNova object being wrapped for "normal" use
    * @param wheelOuterDiameter outer diameter of the wheel being turned by the
@@ -52,23 +42,38 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
    */
   public ThriftyEncoderWrapper(
       ThriftyNova motorController, Distance wheelOuterDiameter) {
-    m_rotationDistance = wheelOuterDiameter.times(Math.PI);
+    this(motorController, wheelOuterDiameter, 1.0);
+  }
+
+  /**
+   * Constructor.
+   *
+   * @param motorController    ThriftyNova object being wrapped for "normal" use
+   * @param wheelOuterDiameter outer diameter of the wheel being turned by the
+   *                           motor
+   * @param gearing            gearing ratio from the motor to the wheel (e.g.,
+   *                           8.45)
+   */
+  public ThriftyEncoderWrapper(
+      ThriftyNova motorController, Distance wheelOuterDiameter, double gearing) {
     m_motorController = motorController;
+    m_wheelCircumference = wheelOuterDiameter.times(Math.PI);
+    m_gearing = gearing;
   }
 
   @Override
   public Distance getPosition() {
-    final double currentRevolutions =
-        m_distanceConverter.fromMotor(m_motorController.getPosition());
-    return m_rotationDistance.times(currentRevolutions);
+    final double currentRevolutions = m_motorController.getPosition();
+    // revolutions * circumferenceTraveled/revolution / gearingRatio --> distance
+    return m_wheelCircumference.times(currentRevolutions / m_gearing);
   }
 
   @Override
   public LinearVelocity getVelocity() {
-    final double currentRPM =
-        m_shooterConverter.fromMotor(m_motorController.getVelocity());
-    final double revsPerSec = currentRPM * 60;
-    return MetersPerSecond.of(m_rotationDistance.in(Meters) *revsPerSec);
+    final double currentRotationsPerSecond = m_motorController.getVelocity();
+    // (revs/sec) * circumferenceTraveled/rev / gearingRatio) --> (meters/sec)
+    final double metersPerRotation = m_wheelCircumference.in(Meters);
+    return MetersPerSecond.of(currentRotationsPerSecond * metersPerRotation / m_gearing);
   }
 
   @Override
@@ -80,5 +85,10 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
   public void close() throws IOException {
     // No-op: ThriftyNova should be closed through the MotorController
     // interface.
+  }
+
+  @Override
+  public double getRawPosition() {
+    return m_motorController.getPosition();
   }
 }

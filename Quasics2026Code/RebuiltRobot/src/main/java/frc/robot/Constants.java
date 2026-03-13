@@ -4,26 +4,64 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotGearing;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
- * numerical or boolean
- * constants. This class should not be used for any other purpose. All constants
- * should be declared
- * globally (i.e. public static). Do not put anything functional in this class.
+ * numerical or boolean constants. This class should not be used for any other
+ * purpose. All constants should be declared globally (i.e. public static). Do
+ * not put anything functional in this class.
  *
  * <p>
  * It is advised to statically import this class (or one of its inner classes)
- * wherever the
- * constants are needed, to reduce verbosity.
+ * wherever the constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static final Distance wheelRadius = Meters.of(0.0508);
+  /** Radius of the drive base wheels. */
+  public static final Distance WHEEL_RADIUS = Inches.of(3);
+
+  /** Gearing ratio for kitbots (which also happens to match what we're using). */
+  public static final KitbotGearing GEARING = KitbotGearing.k8p45;
+
+  /** Gearing ratio for our robots this year. */
+  public static final double DRIVEBASE_GEAR_RATIO = GEARING.value;
+
+  public static final LinearVelocity MAX_LINEAR_DRIVE_SPEED = MetersPerSecond.of(3);
+  public static final AngularVelocity MAX_ROTATIONAL_SPEED = RadiansPerSecond.of(2);
+
+  /**
+   * Maximum length used in the lighting subsystem for the addressable LED strip.
+   */
+  public static final int LIGHTING_TOTAL_LENGTH = 80;
+
+  // TODO: Calculate https://www.chiefdelphi.com/t/coefficient-of-friction/467778
+  // TODO: mass, moi, CoF, current draw, track width for auto
+
+  public static class PwmPortIds {
+    public static final int SIMULATED_LEFT_MOTOR_CHANNEL = 0;
+    public static final int SIMULATED_RIGHT_MOTOR_CHANNEL = 1;
+
+    /** PWM port ID for addressable lighting control. */
+    public static final int LIGHTING_ID = 2;
+  }
 
   public static class CanBusIds {
+    /** CAN ID for the Pigeon2 hardware. */
+    public static final int PIGEON2_CAN_ID = 1;
+
+    /**
+     * CAN IDs for SparkMax motors used on any of the robots this year (generally
+     * Lizzie or Sally).
+     */
     public static class SparkMaxIds {
       // Note: Drive base motor IDs are based on those Quasics has used over the
       // last couple of years.
@@ -41,6 +79,10 @@ public final class Constants {
       public static final int CLIMBER_ID = 12;
     }
 
+    /**
+     * CAN IDs for ThriftyNova motors used this year. (This should just be the drive
+     * motors in Lizzie.)
+     */
     public static class ThriftyNovaIds {
       public static final int LEFT_LEADER_ID = 2;
       public static final int LEFT_FOLLOWER_ID = 1;
@@ -54,9 +96,20 @@ public final class Constants {
     public static final int OPERATOR_JOYSTICK_ID = 1;
   }
 
+  /**
+   * PID values for the flywheel on the shooter.
+   */
   public static class FlywheelPIDConstants {
     public static final double kV = 0.11676;
     public static final double kP = 0.17735;
+  }
+
+  public static class Tolerances {
+    public static final Angle ANGLETOLERANCE = Degrees.of(8);
+  }
+
+  public static class Ratios {
+    public static final double ENCODERTOHOODRATIO = 9;
   }
 
   /**
@@ -165,16 +218,42 @@ public final class Constants {
     public static final int RightStickPress = 10;
   }
 
-  public static class RobotSpeedScaling {
-    public static final double TURTLE_SPEED_SCALING = 0.3;
-    public static final double NORMAL_SPEED_SCALING = 0.6;
-    public static final double TURBO_SPEED_SCALING = 0.9;
+  /**
+   * Helpful field calculations based off of Rebuilt numbers.
+   */
+  public class RebuiltFieldData {
+    public static final Distance FIELD_LENGTH = Inches.of(651.22);
+    public static final Distance FIELD_WIDTH = Inches.of(317.69);
+    public static final Distance FIELD_LENGTH_CENTER = FIELD_LENGTH.div(2);
+    public static final Distance FIELD_WIDTH_CENTER = FIELD_WIDTH.div(2);
+    public static final Distance ALLIANCE_WALL_TO_HUB_CENTER = Inches.of(182.11);
   }
 
+  /**
+   * Settings for normal/turtle/turbo speed modes. (These will be applied as a
+   * scaling factor to the raw inputs from the driver joysticks.)
+   */
+  public static class RobotSpeedScaling {
+    /** Turtle mode speed scaling factor. */
+    public static final double TURTLE_SPEED_SCALING = 0.1;
+    /** Normal mode speed scaling factor. */
+    public static final double NORMAL_SPEED_SCALING = 0.2;
+    /** Turbo mode speed scaling factor. */
+    public static final double TURBO_SPEED_SCALING = 0.7;
+  }
+
+  /**
+   * Types of drivebases that we "know about" in the code. (Assumption is that all
+   * of the motors in the drivebase are of a common type.)
+   */
   // TODO: Likely want configurable settings other than just this (track width,
   // etc): See RobotSettings.java in Reefscape code
   public static enum DrivebaseMotors {
     Unknown,
     SparkMax,
     ThriftyNova
-  }}
+  }
+
+  // TODO: Make a com.pathplanner.lib.config.RobotConfig per robot we want to run
+  // auto on
+}

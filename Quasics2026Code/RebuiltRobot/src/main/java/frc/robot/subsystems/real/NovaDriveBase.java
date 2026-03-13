@@ -4,18 +4,18 @@
 
 package frc.robot.subsystems.real;
 
-import static edu.wpi.first.units.Units.Meters;
-
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.thethriftybot.devices.ThriftyNova;
 import com.thethriftybot.devices.ThriftyNova.EncoderType;
 import com.thethriftybot.devices.ThriftyNova.ThriftyNovaConfig;
 import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.wpilibj.AnalogGyro;
 import frc.robot.Constants;
 import frc.robot.Constants.CanBusIds.ThriftyNovaIds;
-import frc.robot.sensors.IGyro;
-import frc.robot.sensors.ThriftyEncoderWrapper;
-import frc.robot.sensors.TrivialEncoder;
+import frc.robot.hardware.actuators.ThriftyNovaMotorControllerPlus;
+import frc.robot.hardware.sensors.IGyro;
+import frc.robot.hardware.sensors.Pigeon2Wrapper;
+import frc.robot.hardware.sensors.ThriftyEncoderWrapper;
+import frc.robot.hardware.sensors.TrivialEncoder;
 
 public class NovaDriveBase extends AbstractDrivebase {
   private final TrivialEncoder m_leftEncoder;
@@ -70,7 +70,9 @@ public class NovaDriveBase extends AbstractDrivebase {
    */
   public NovaDriveBase(
       ThriftyNova leftController, ThriftyNova rightController) {
-    super(leftController, rightController);
+    super(
+        new ThriftyNovaMotorControllerPlus(leftController),
+        new ThriftyNovaMotorControllerPlus(rightController));
 
     // Configure followers to follow the leaders.
     configureMotorControllersForFollowing(
@@ -84,8 +86,13 @@ public class NovaDriveBase extends AbstractDrivebase {
 
     // Configure the encoder type. (Note that only the leaders need to know this,
     // since we won't read encoder data from the followers.)
-    ThriftyNovaConfig config = new ThriftyNovaConfig();
-    config.encoderType = EncoderType.INTERNAL;
+    ThriftyNovaConfig configLeft = new ThriftyNovaConfig();
+    configLeft.encoderType = EncoderType.INTERNAL;
+    configLeft.inverted = false;
+
+    ThriftyNovaConfig configRight = new ThriftyNovaConfig();
+    configRight.encoderType = EncoderType.INTERNAL;
+    configRight.inverted = true;
 
     // TODO: Configure the leaders so that they are *not* a follower of anything.
     //
@@ -94,29 +101,22 @@ public class NovaDriveBase extends AbstractDrivebase {
     // done with ~1 line of code per motor.
 
     // Apply the configuration settings to the motors.
-    leftController.applyConfig(config);
-    rightController.applyConfig(config);
+    leftController.applyConfig(configLeft);
+    rightController.applyConfig(configRight);
 
     //
     // Set up the TrivialEncoders we'll use to handle accessing the data from the
     // motors.
     //
-    final Distance wheelDiam = Meters.of(2.0 * Constants.wheelRadius.in(Meters));
-    m_leftEncoder = new ThriftyEncoderWrapper(leftController, wheelDiam);
-    m_rightEncoder = new ThriftyEncoderWrapper(leftController, wheelDiam);
+    final Distance wheelDiam = Constants.WHEEL_RADIUS.times(2);
+    m_leftEncoder = new ThriftyEncoderWrapper(leftController, wheelDiam, Constants.DRIVEBASE_GEAR_RATIO);
+    m_rightEncoder = new ThriftyEncoderWrapper(leftController, wheelDiam, Constants.DRIVEBASE_GEAR_RATIO);
 
     //
     // Set up the gyro.
     //
-
-    // TODO: Switch this to use the gyro that we're actually going to be using
-    // on the real robot.
-    //
-    // FINDME(Robert): This needs to be updated, since we're not actually going
-    // to be using an AnalogGyro for the real robot. (We'll probably be using a
-    // Pigeon2.)
-    AnalogGyro gyro = new AnalogGyro(0);
-    m_gryo = IGyro.wrapGyro(gyro);
+    Pigeon2 pigeon = new Pigeon2(Constants.CanBusIds.PIGEON2_CAN_ID);
+    m_gryo = new Pigeon2Wrapper(pigeon);
   }
 
   /**

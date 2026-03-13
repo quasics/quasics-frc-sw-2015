@@ -4,16 +4,22 @@
 
 package frc.robot.subsystems.real;
 
+import static edu.wpi.first.units.Units.Meters;
+
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
+
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.AnalogGyro;
-import edu.wpi.first.wpilibj.Encoder;
+import frc.robot.Constants;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
-import frc.robot.sensors.IGyro;
-import frc.robot.sensors.TrivialEncoder;
+import frc.robot.hardware.actuators.SparkMaxMotorControllerPlus;
+import frc.robot.hardware.sensors.IGyro;
+import frc.robot.hardware.sensors.SparkMaxEncoderWrapper;
+import frc.robot.hardware.sensors.TrivialEncoder;
 
 public class SparkDriveBase extends AbstractDrivebase {
   private final TrivialEncoder m_leftEncoder;
@@ -36,31 +42,74 @@ public class SparkDriveBase extends AbstractDrivebase {
     return m_rightEncoder;
   }
 
-  /** Creates a new RealDrivebase. */
+  /**
+   * Creates a new SparkDriveBase, using default CAN IDs for the left/right
+   * leaders.
+   */
   public SparkDriveBase() {
-    super(new SparkMax(SparkMaxIds.LEFT_LEADER_ID, MotorType.kBrushless),
+    this(new SparkMax(SparkMaxIds.LEFT_LEADER_ID, MotorType.kBrushless),
         new SparkMax(SparkMaxIds.RIGHT_LEADER_ID, MotorType.kBrushless));
+  }
+
+  /**
+   * Constructor.
+   * 
+   * @param leftLeader  left leader motor
+   * @param rightLeader right leader motor
+   */
+  public SparkDriveBase(SparkMax leftLeader, SparkMax rightLeader) {
+    super(new SparkMaxMotorControllerPlus(leftLeader),
+        new SparkMaxMotorControllerPlus(rightLeader));
 
     // Configure followers to follow the leaders.
     final SparkMax leftfollower = new SparkMax(SparkMaxIds.LEFT_FOLLOWER_ID, MotorType.kBrushless);
     final SparkMax rightfollower = new SparkMax(SparkMaxIds.RIGHT_FOLLOWER_ID, MotorType.kBrushless);
+    configureMotorControllersForLeadingAndFollowing(
+        leftLeader, leftfollower);
+    configureMotorControllersForLeadingAndFollowing(
+        rightLeader, rightfollower);
 
-    configureMotorControllersForFollowing(
-        (SparkMax) getLeftLeader(), leftfollower);
-    configureMotorControllersForFollowing(
-        (SparkMax) getRightLeader(), rightfollower);
+    // Conversion factor from units in rotations (or RPM) to meters (or m/s).
+    final Distance wheelCircumference = Constants.WHEEL_RADIUS.times(2 * Math.PI);
+    final double distanceScalingFactorForGearing = wheelCircumference.div(Constants.DRIVEBASE_GEAR_RATIO).in(Meters);
+    final double velocityScalingFactor = distanceScalingFactorForGearing / 60;
+    System.out.println("Wheel circumference: " + wheelCircumference);
+    System.out.println("Using gear ratio: " + Constants.DRIVEBASE_GEAR_RATIO);
+    System.out.println("Adjustment for gearing (m/rotation): " + distanceScalingFactorForGearing);
+    System.out.println("Velocity adj.: " + velocityScalingFactor);
 
-    // Configure the encoders.
-    Encoder leftEncoder = new Encoder(1, 2);
-    Encoder rightEncoder = new Encoder(3, 4);
+    // Configure the leader motors
+    final SparkMaxConfig leftConfig = new SparkMaxConfig();
+    final SparkMaxConfig rightConfig = new SparkMaxConfig();
 
-    leftEncoder.setDistancePerPulse(getDistancePerPulse());
-    rightEncoder.setDistancePerPulse(getDistancePerPulse());
+    leftConfig.encoder.positionConversionFactor(distanceScalingFactorForGearing);
+    leftConfig.encoder.velocityConversionFactor(velocityScalingFactor);
+    leftConfig.inverted(false);
 
-    // TODO(DISCUSS): What about our encoders are missing information here...
+    rightConfig.encoder.positionConversionFactor(distanceScalingFactorForGearing);
+    rightConfig.encoder.velocityConversionFactor(velocityScalingFactor);
+    rightConfig.inverted(true);
 
-    m_leftEncoder = TrivialEncoder.forWpiLibEncoder(leftEncoder);
-    m_rightEncoder = TrivialEncoder.forWpiLibEncoder(rightEncoder);
+    leftLeader.configure(
+        leftConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    rightLeader.configure(
+        rightConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+
+    // // Configure the encoders.
+    // // FINDME(Rylie, Robert): The SparkMax motors don't use WPILib Encoder
+    // // objects. They use the RelativeEncoders that are specific to the Sparks. As
+    // // a result, this whole section of the code was unfortunately just *wrong*.
+    //
+    // Encoder leftEncoder = new Encoder(1, 2);
+    // Encoder rightEncoder = new Encoder(3, 4);
+    // leftEncoder.setDistancePerPulse(getDistancePerPulse());
+    // rightEncoder.setDistancePerPulse(getDistancePerPulse());
+    //
+    // // (I've replaced this with the use of the SparkMax's native encoders,
+    // // below.)
+
+    m_leftEncoder = new SparkMaxEncoderWrapper(leftLeader.getEncoder());
+    m_rightEncoder = new SparkMaxEncoderWrapper(rightLeader.getEncoder());
 
     // Configure the gyro.
     //
@@ -84,13 +133,12 @@ public class SparkDriveBase extends AbstractDrivebase {
    * to be replaced, or if we need to swap a controller from one side of the
    * drivebase to the other for some reason, etc.).
    *
-   * @param leader   leader SparkMax motor controller that the follower should
-   *                 follow
+   * @param leader   leader SparkMax motor controller (which the follower should
+   *                 follow)
    * @param follower SparkMax motor controller that should be configured to
-   *                 follow
-   *                 the leader
+   *                 follow the leader
    */
-  private void configureMotorControllersForFollowing(
+  private void configureMotorControllersForLeadingAndFollowing(
       SparkMax leader, SparkMax follower) {
     SparkMaxConfig followerConfig = new SparkMaxConfig();
 
@@ -99,14 +147,16 @@ public class SparkDriveBase extends AbstractDrivebase {
     followerConfig.follow(leader);
 
     // Apply the configuration to the follower motor
-    follower.configure(followerConfig, ResetMode.kResetSafeParameters,
-        PersistMode.kPersistParameters);
+    follower.configure(followerConfig, ResetMode.kNoResetSafeParameters,
+        PersistMode.kNoPersistParameters);
 
-    // TODO: Configure the leader so that it is *not* a follower of anything.
-    //
-    // FINDME(Robert): This is important to do to ensure that the leader motor
-    // controllers are correctly configured even if they get swapped out. It can be
-    // done with 1-2 lines of code.
+    // Configure the leader so that it is *not* a follower of anything (in case we
+    // swap motor controllers around, and fail to set this up with the configuration
+    // tool).
+    SparkMaxConfig leaderConfig = new SparkMaxConfig();
+    leaderConfig.follow(0);
+    leader.configure(leaderConfig, ResetMode.kNoResetSafeParameters,
+        PersistMode.kNoPersistParameters);
   }
 
   // We've removed @Override periodic, but be sure to use super.periodic if we

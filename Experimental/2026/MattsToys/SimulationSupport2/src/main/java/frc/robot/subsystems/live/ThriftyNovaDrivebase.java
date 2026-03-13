@@ -52,8 +52,10 @@ public class ThriftyNovaDrivebase extends DrivebaseBase {
       ThriftyNova leftLeader, ThriftyNova rightLeader, Pigeon2 rawGyro) {
     super(driveConfig, new ThriftyNovaMotorControllerPlus(leftLeader),
         new ThriftyNovaMotorControllerPlus(rightLeader),
-        new ThriftyEncoderWrapper(leftLeader, WHEEL_DIAMETER),
-        new ThriftyEncoderWrapper(rightLeader, WHEEL_DIAMETER),
+        new ThriftyEncoderWrapper(
+            leftLeader, WHEEL_DIAMETER, driveConfig.gearing()),
+        new ThriftyEncoderWrapper(
+            rightLeader, WHEEL_DIAMETER, driveConfig.gearing()),
         new Pigeon2Wrapper(rawGyro), true);
 
     ThriftyNovaConfig leftMotorConfig = new ThriftyNovaConfig();

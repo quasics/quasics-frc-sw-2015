@@ -5,19 +5,22 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.real.RealShooter;
+import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.subsystems.interfaces.IShooter;
 
 /* You should consider using the more terse Command factories API instead
  * https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands
  */
 public class RunShooter extends Command {
-  RealShooter m_shooter;
+  IShooter m_shooter;
   private double m_shooterSpeed;
   private double m_kickerSpeed;
 
   /** Creates a new RunShooter. */
-  public RunShooter(RealShooter shooter, double shooterSpeed,
+  public RunShooter(
+      IShooter shooter, double shooterSpeed,
       double kickerSpeed, boolean shooting) {
+        
     m_shooter = shooter;
     m_shooterSpeed = shooterSpeed;
     m_kickerSpeed = kickerSpeed;
@@ -29,8 +32,10 @@ public class RunShooter extends Command {
       m_kickerSpeed = -Math.abs(kickerSpeed);
     }
 
+  
+
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(shooter);
+    addRequirements((Subsystem) shooter);
   }
 
   // Called when the command is initially scheduled.
@@ -45,6 +50,14 @@ public class RunShooter extends Command {
   public void execute() {
     m_shooter.setFlywheelSpeed(m_shooterSpeed);
     m_shooter.setKickerSpeed(m_kickerSpeed);
+
+    if(m_shooterSpeed > 0) {
+          if(m_kickerSpeed == 0) {
+            System.out.println("Revving up!");
+          } else {
+            System.out.println("Shooting!");
+          }
+        }
   }
 
   // Called once the command ends or is interrupted.

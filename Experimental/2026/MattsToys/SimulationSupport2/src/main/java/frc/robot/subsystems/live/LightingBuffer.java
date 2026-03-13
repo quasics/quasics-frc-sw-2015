@@ -46,7 +46,7 @@ public class LightingBuffer extends SubsystemBase implements ILighting {
    * </ul>
    *
    * @see
-   *     #SetStripColor(frc.robot.subsystems.interfaces.ILighting.ColorSupplier)
+   *      #setStripColor(frc.robot.subsystems.interfaces.ILighting.ColorSupplier)
    */
   public void setForward(boolean forward) {
     m_forward = forward;
@@ -58,7 +58,7 @@ public class LightingBuffer extends SubsystemBase implements ILighting {
   }
 
   @Override
-  public void SetStripColor(ColorSupplier function) {
+  public void setStripColor(ColorSupplier function) {
     final int maxIndex = getLength() - 1;
     for (var i = 0; i < m_buffer.getLength(); i++) {
       int pos = (m_forward ? i : (maxIndex - i));
@@ -67,14 +67,14 @@ public class LightingBuffer extends SubsystemBase implements ILighting {
   }
 
   @Override
-  public void SetDisabledSupplier(ColorSupplier function) {
+  public void setDisabledSupplier(ColorSupplier function) {
     m_disabledColorSupplier = function;
   }
 
   @Override
   public void periodic() {
     if (m_disabledColorSupplier != null && DriverStation.isDisabled()) {
-      SetStripColor(m_disabledColorSupplier);
+      setStripColor(m_disabledColorSupplier);
     }
   }
 

@@ -37,9 +37,9 @@ public interface ILighting extends ISubsystem {
    * @param function used to generate the color for each position on the set of
    *                 lights.
    */
-  public void SetStripColor(ColorSupplier function);
+  public void setStripColor(ColorSupplier function);
 
-  public void SetDisabledSupplier(ColorSupplier function);
+  public void setDisabledSupplier(ColorSupplier function);
 
   /**
    * Returns the number of LEDs controllable by this object's various functions.
@@ -147,8 +147,8 @@ public interface ILighting extends ISubsystem {
    *
    * @param color the color to make all of the lights in the strip
    */
-  public default void SetStripColor(StockColor color) {
-    SetStripColor(color, 1.0);
+  public default void setStripColor(StockColor color) {
+    setStripColor(color, 1.0);
   }
 
   /**
@@ -160,8 +160,8 @@ public interface ILighting extends ISubsystem {
    * @param intensityPercent intensity to which the color should be scaled
    *                         (0.0-1.0)
    */
-  public default void SetStripColor(StockColor color, double intensityPercent) {
-    SetStripColor(color.toWpiColor(intensityPercent));
+  public default void setStripColor(StockColor color, double intensityPercent) {
+    setStripColor(color.toWpiColor(intensityPercent));
   }
 
   /**
@@ -172,12 +172,12 @@ public interface ILighting extends ISubsystem {
    * @param green green component (0-255)
    * @param blue  blue component (0-255)
    */
-  public default void SetStripColor(int red, int green, int blue) {
+  public default void setStripColor(int red, int green, int blue) {
     // Note: WPI expects color component values to be percentages in the range
     // [0.0-1.0], so we need to convert to the right scale.
     var color = new Color(red / 255.0, green / 255.0, blue / 255.0);
 
-    SetStripColor(color);
+    setStripColor(color);
   }
 
   /**
@@ -187,9 +187,11 @@ public interface ILighting extends ISubsystem {
    * @param color1 color to use for even pixels (starting at 0)
    * @param color2 color to use for odd pixels (starting at 1)
    */
-  public default void SetAlternatingColors(Color color1, Color color2) {
-    SetStripColor(
-        (int position) -> { return (position % 2 == 0) ? color1 : color2; });
+  public default void setAlternatingColors(Color color1, Color color2) {
+    setStripColor(
+        (int position) -> {
+          return (position % 2 == 0) ? color1 : color2;
+        });
   }
 
   /**
@@ -199,9 +201,9 @@ public interface ILighting extends ISubsystem {
    * @param color1 color to use for even pixels (starting at 0)
    * @param color2 color to use for odd pixels (starting at 1)
    */
-  public default void SetAlternatingColors(
+  public default void setAlternatingColors(
       StockColor color1, StockColor color2) {
-    SetAlternatingColors(color1.toWpiColor(), color2.toWpiColor());
+    setAlternatingColors(color1.toWpiColor(), color2.toWpiColor());
   }
 
   /**
@@ -213,14 +215,14 @@ public interface ILighting extends ISubsystem {
    *
    * @param color the color to make all of the lights in the strip
    */
-  public default void SetStripColor(Color color) {
+  public default void setStripColor(Color color) {
     // Defines a "lambda" function that will be used to fulfill the
     // requirements of the ColorFunctor type. (It will return the
     // same color for each position in the strip.)
     ColorSupplier function = (var position) -> color;
 
     // Uses the lambda to set the color for the full strip.
-    SetStripColor(function);
+    setStripColor(function);
   }
 
   /**
@@ -236,7 +238,7 @@ public interface ILighting extends ISubsystem {
     }
 
     @Override
-    public void SetStripColor(ColorSupplier function) {
+    public void setStripColor(ColorSupplier function) {
       // Do nothing with the lighting request.
     }
 
@@ -246,7 +248,7 @@ public interface ILighting extends ISubsystem {
     }
 
     @Override
-    public void SetDisabledSupplier(ColorSupplier function) {
+    public void setDisabledSupplier(ColorSupplier function) {
       // Do nothing.
     }
 

@@ -5,6 +5,11 @@
 package frc.robot.subsystems.interfaces;
 
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 /**
  * Interface for controlling the shooter.
@@ -46,7 +51,63 @@ public interface IShooter {
 
   void setKickerSpeed(double speed);
 
+  void setFlywheelSpeed(double speed);
+
   void stopFlywheel();
 
   void stopKicker();
+
+  Command sysIdQuasistatic(SysIdRoutine.Direction direction);
+
+  Command sysIdDynamic(SysIdRoutine.Direction direction);
+
+  //
+  // Convenience functions
+  //
+
+  /** Stop both the flywheel and kicker. */
+  default void stop() {
+    stopFlywheel();
+    stopKicker();
+  }
+
+  /**
+   * Null implementation of IShooter, for use on robots that don't have a shooter.
+   */
+  public class NullShooter extends SubsystemBase implements IShooter {
+    @Override
+    public void setFlywheelRPM(AngularVelocity rpm) {
+      // No-op.
+    }
+
+    @Override
+    public void setKickerSpeed(double speed) {
+      // No-op.
+    }
+
+    @Override
+    public void setFlywheelSpeed(double speed) {
+      // No-op.
+    }
+
+    @Override
+    public void stopFlywheel() {
+      // No-op.
+    }
+
+    @Override
+    public void stopKicker() {
+      // No-op.
+    }
+
+    @Override
+    public Command sysIdQuasistatic(Direction direction) {
+      return Commands.print("Can't characterize a NullFlywheel");
+    }
+
+    @Override
+    public Command sysIdDynamic(Direction direction) {
+      return Commands.print("Can't characterize a NullFlywheel");
+    }
+  }
 }

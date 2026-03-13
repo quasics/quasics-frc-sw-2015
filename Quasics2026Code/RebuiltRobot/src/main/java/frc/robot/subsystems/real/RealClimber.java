@@ -4,16 +4,47 @@
 
 package frc.robot.subsystems.real;
 
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.CanBusIds.SparkMaxIds;
 import frc.robot.subsystems.interfaces.IClimber;
 
 public class RealClimber extends SubsystemBase implements IClimber {
+
+  private static SparkMax m_climber;
+  double RawPos;
+
+  public static RelativeEncoder getEncoderClimber() {
+    return m_climber.getEncoder();
+  }
+
   /** Creates a new RealClimber. */
   public RealClimber() {
+    m_climber = new SparkMax(SparkMaxIds.CLIMBER_ID, MotorType.kBrushless);
   }
 
   @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
+  public void setClimberSpeed(double speed) {
+    m_climber.set(speed);
   }
+
+  @Override
+  public void stopClimber() {
+    m_climber.set(0);
+  }
+
+  @Override
+  public double getClimberPosition() {
+    return getEncoderClimber().getPosition();
+  }
+
+  // @Override
+  // public void periodic() {
+  // ***************************************************************************************************************
+  // // This method will be called once per scheduler run
+  // System.out.print(SparkMaxIds.CLIMBER_ID);
+  // }
 }

@@ -33,11 +33,12 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 public class Vision extends SubsystemBase implements IVision {
   private static final AprilTagFields FIELD_LAYOUT = AprilTagFields.kDefaultField;
   private final AprilTagFieldLayout m_tagLayout;
-  protected PhotonCamera camera = new PhotonCamera("camera1");
+  protected PhotonCamera camera = new PhotonCamera("PC_Camera");
   protected PhotonPoseEstimator photonEstimator;
   private Pose3d latestPose3d = new Pose3d();
   protected Pose2d latestPose2d = new Pose2d();
   private Translation3d robotToCamTrl = new Translation3d(0.0762, -0.17145, 0.53975);
+  // up 20.25, offset 2.25 inches behind center, 8.5 inches
   private Rotation3d robotToCameraRot = new Rotation3d();
   private Transform3d robotToCamera = new Transform3d(robotToCamTrl, robotToCameraRot);
 
@@ -86,10 +87,28 @@ public class Vision extends SubsystemBase implements IVision {
     // Pose3d(refPose));
     // }
     // }
+
+    // FINDME(Rylie): There's a subtle bug here, which you reproduce easily in the
+    // simulator if you just run the "LinearSpeedCommand" from the default starting
+    // position. You'll see the vision-based pose update as the robot moves, and
+    // mostly follow along with the robot, then suddenly lock in place as the robot
+    // continues to move away from it.
+    //
+    // The problem is that you're not handling the case when you *don't* have any
+    // data from the pipeline (e.g., because there's no targets in view): when this
+    // happens, you stop updating the estimate, but you don't "forget" the last one
+    // that you computed, based on when you *did* have data. This could lead to some
+    // significant errors when you're trying to use that as a part of a fused (i.e.,
+    // combined odometry+vision) pose estimate.
     if (result != null) {
       visionEstimate = photonEstimator.estimateCoprocMultiTagPose(result);
-      if (visionEstimate.isEmpty()) {
+      if (getListOfTargetsNumber() == 1) {
         visionEstimate = photonEstimator.estimateLowestAmbiguityPose(result);
+      }
+      if (visionEstimate.isEmpty()) {
+        latestPose3d = null;
+        latestPose2d = null;
+        // visionEstimate = photonEstimator.estimateLowestAmbiguityPose(result);
       }
     }
     if (visionEstimate.isPresent()) {
@@ -121,6 +140,12 @@ public class Vision extends SubsystemBase implements IVision {
     var result = getLatestPipelineResults();
     hasTargets = result.hasTargets();
     return hasTargets;
+  }
+
+  public int getListOfTargetsNumber() {
+    var results = getLatestPipelineResults();
+    List<PhotonTrackedTarget> targets = results.getTargets();
+    return targets.size();
   }
 
   @Override

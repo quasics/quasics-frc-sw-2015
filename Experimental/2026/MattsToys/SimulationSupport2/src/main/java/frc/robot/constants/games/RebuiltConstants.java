@@ -6,7 +6,6 @@ package frc.robot.constants.games;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
-import static edu.wpi.first.units.Units.Meters;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
@@ -18,6 +17,8 @@ import edu.wpi.first.units.measure.Distance;
  * the field, while "width" dimensions are along the Y-axis (short axis) of the
  * playing field. Values are taken from the published field dimensions and the
  * game manual.
+ * 
+ * Note also that we're assuming that a Welded Perimeter field is in use.
  */
 public final class RebuiltConstants {
   /** Robot heading when facing the Blue alliance. */
@@ -30,7 +31,13 @@ public final class RebuiltConstants {
   public static final Distance FIELD_LENGTH = Inches.of(651.22);
 
   /** Width (y) of the field. */
-  public static final Distance FIELD_WIDTH = Meters.of(8.05);
+  public static final Distance FIELD_WIDTH = Inches.of(317.69);
+
+  /** Convenience value for 1/2 length (x) of field. */
+  public static final Distance FIELD_LENGTH_CENTER = FIELD_LENGTH.div(2);
+
+  /** Convenience value for 1/2 width (y) of field. */
+  public static final Distance FIELD_WIDTH_CENTER = FIELD_WIDTH.div(2);
 
   /** Field midline (length-wise), where the barge is located. */
   public static final Distance MIDLINE = FIELD_LENGTH.div(2);
@@ -62,20 +69,21 @@ public final class RebuiltConstants {
   /** Width (y) of the trench. */
   public static final Distance TRENCH_WIDTH = Inches.of(65.65);
 
+  /** Distance (x) from the alliance walls to the center of the hub. */
+  public static final Distance ALLIANCE_WALL_TO_HUB_CENTER = DRIVER_WALL_TO_BUMP_CENTER;
+
   /** Distance (x) from the alliance walls to the closest side of the hub. */
   public static final Distance HUB_DISTANCE_TO_ALLIANCE_WALL = Inches.of(158.6);
 
   /**
    * Distance (x) from the origin corner to the Blue alliance's starting line.
    */
-  public static final Distance BLUE_STARTING_LINE =
-      HUB_DISTANCE_TO_ALLIANCE_WALL;
+  public static final Distance BLUE_STARTING_LINE = HUB_DISTANCE_TO_ALLIANCE_WALL;
 
   /**
    * Distance (x) from the origin corner to the Red alliance's starting line.
    */
-  public static final Distance RED_STARTING_LINE =
-      FIELD_LENGTH.minus(HUB_DISTANCE_TO_ALLIANCE_WALL);
+  public static final Distance RED_STARTING_LINE = FIELD_LENGTH.minus(HUB_DISTANCE_TO_ALLIANCE_WALL);
 
   /** Length (x) of the depot. */
   public static final Distance DEPOT_LENGTH = Inches.of(27.0);
@@ -93,13 +101,11 @@ public final class RebuiltConstants {
    * Y-position of the mid-point on the lower bumps on the blue/red sides of the
    * field.
    */
-  public static final Distance MID_BUMP1_Y =
-      FIELD_WIDTH.div(2).minus(HUB_DEPTH.plus(BUMP_WIDTH).div(2));
+  public static final Distance MID_BUMP1_Y = FIELD_WIDTH.div(2).minus(HUB_DEPTH.plus(BUMP_WIDTH).div(2));
 
   /**
    * Y-position of the mid-point on the upper bumps on the blue/red sides of the
    * field.
    */
-  public static final Distance MID_BUMP2_Y =
-      FIELD_WIDTH.div(2).plus(HUB_DEPTH.plus(BUMP_WIDTH).div(2));
+  public static final Distance MID_BUMP2_Y = FIELD_WIDTH.div(2).plus(HUB_DEPTH.plus(BUMP_WIDTH).div(2));
 }

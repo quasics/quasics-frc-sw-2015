@@ -8,7 +8,6 @@ import static edu.wpi.first.units.Units.Meters;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotController;
@@ -96,12 +95,14 @@ public class SimulationDrivebase extends AbstractDrivebase {
 
   @Override
   public void updateStartingPosition(Pose2d pose) {
-    super.updateStartingPosition(pose);
+    final Rotation2d facing = pose.getRotation();
 
-    m_gyroSim.setAngle(0);
+    m_gyroSim.setAngle(facing.getDegrees());
     m_driveSim.setPose(pose);
     m_leftEncoderSim.setDistance(0);
     m_rightEncoderSim.setDistance(0);
+
+    super.updateStartingPosition(pose);
   }
 
   @Override

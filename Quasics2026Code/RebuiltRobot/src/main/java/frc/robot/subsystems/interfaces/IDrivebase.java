@@ -39,6 +39,8 @@ public interface IDrivebase {
    */
   void arcadeDrive(LinearVelocity forwardspeed, AngularVelocity turnspeed);
 
+  void arcadeDrive(double forwardPercent, double turnPercent);
+
   /**
    * Drives the robot using "tank drive" style controls. (That is, one parameter
    * controls the speed of the left side of the drivebase, and the other
@@ -154,6 +156,11 @@ public interface IDrivebase {
 
     @Override
     public void arcadeDrive(LinearVelocity forwardspeed, AngularVelocity turnspeed) {
+      // No-op.
+    }
+
+    @Override
+    public void arcadeDrive(double forwardPercent, double turnPercent) {
       // No-op.
     }
 

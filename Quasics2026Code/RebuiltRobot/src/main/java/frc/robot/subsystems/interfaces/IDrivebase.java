@@ -112,6 +112,10 @@ public interface IDrivebase {
 
   LinearVelocity getRightVelocity();
 
+  default ChassisSpeeds getCurrentSpeeds() {
+    return new ChassisSpeeds(getLeftVelocity(), getRightVelocity(), getTurnRate());
+    }
+
   /**
    * Tries to enable/disable breaking mode, if supported by the underlying
    * hardware.

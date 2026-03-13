@@ -4,12 +4,15 @@
 
 package frc.robot.utils;
 
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.real.AbstractDrivebase;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.controllers.PPLTVController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /** Add your docs here. */
 public class PathPlannerHelper {
@@ -56,4 +59,10 @@ public class PathPlannerHelper {
         abstractDrivebase);
     return new PathPlannerAuto("MoveForward1");
   }
+  public static Command autoChooser() {
+    System.out.println("AutoChooser is being called!");
+        SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
+     SmartDashboard.putData("Auto Chooser", autoChooser);
+     return autoChooser.getSelected();
+      }
 }

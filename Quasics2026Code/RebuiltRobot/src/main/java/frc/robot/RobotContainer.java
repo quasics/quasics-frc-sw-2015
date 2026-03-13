@@ -46,6 +46,7 @@ import frc.robot.subsystems.interfaces.IClimber;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.IIndexer;
 import frc.robot.subsystems.interfaces.IVision;
+import frc.robot.subsystems.real.AbstractDrivebase;
 import frc.robot.subsystems.real.Lighting;
 import frc.robot.subsystems.real.LightingBuffer;
 import frc.robot.subsystems.real.NovaDriveBase;
@@ -549,7 +550,8 @@ public class RobotContainer {
     // TODO: Implement functionality for autonomous mode.
     m_drivebase.resetOdometry(new Pose2d(new Translation2d(3.879, 3.942), new Rotation2d(0)));
     //return Commands.print("Just sit there");
-    // Autos.exampleAuto((AbstractDrivebase) m_drivebase);
-    return PathPlannerHelper.autoChooser();
+    //Autos.exampleAuto((AbstractDrivebase) m_drivebase);
+    System.out.println("Returning the AutoChooser");
+    return PathPlannerHelper.autoChooser((AbstractDrivebase)m_drivebase);
   }
 }

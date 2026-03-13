@@ -118,6 +118,10 @@ public interface IDrivebase {
    * Convenience function, used to help the drive team tell the robot where it was
    * actually positioned on the field.
    * 
+   * Note that this should only be called at the *very* beginning of the match (at
+   * latest), as it is intended to overwrite any data used for odometry-based
+   * positioning (i.e., encoder values, gyro offsets, etc).
+   * 
    * @param pose robot pose, as established pre-match
    */
   void updateStartingPosition(Pose2d pose);

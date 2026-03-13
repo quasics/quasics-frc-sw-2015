@@ -17,7 +17,8 @@ import frc.robot.utils.TargetPositioningUtils;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AlignToHub extends Command {
-  final static Angle tolerance = Degrees.of(1);
+  final static Angle TOLERANCE = Degrees.of(1);
+
   IDrivebase m_drivebase;
   Rotation2d m_goalAngle;
   final PIDController m_pid;
@@ -57,6 +58,6 @@ public class AlignToHub extends Command {
   public boolean isFinished() {
     Rotation2d currentAngle = m_drivebase.getEstimatedPose().getRotation();
     Rotation2d error = m_goalAngle.minus(currentAngle);
-    return error.getMeasure().abs(Degrees) <= tolerance.abs(Degrees);
+    return error.getMeasure().abs(Degrees) <= TOLERANCE.abs(Degrees);
   }
 }

@@ -58,7 +58,7 @@ public abstract class AbstractDrivebase
   // error-out.
   private final DifferentialDrive m_robotDrive;
 
-  private final DifferentialDriveOdometry m_odometry;
+  private DifferentialDriveOdometry m_odometry;
   private final DifferentialDrivePoseEstimator m_poseEstimator;
 
   // Thoughts on this from Robert: Might be helpful for driveteam to have a
@@ -85,6 +85,15 @@ public abstract class AbstractDrivebase
     m_poseEstimator = new DifferentialDrivePoseEstimator(
         m_kinematics, new Rotation2d(), 0, 0, new Pose2d());
     SmartDashboard.putData("Field", m_field);
+  }
+
+  @Override
+  public void updateStartingPosition(Pose2d pose) {
+    getGyro().reset();
+    getLeftEncoder().reset();
+    getRightEncoder().reset();
+
+    m_odometry = new DifferentialDriveOdometry(new Rotation2d(), 0, 0, pose);
   }
 
   public void drivePID(ChassisSpeeds chassisSpeeds) {
@@ -167,6 +176,11 @@ public abstract class AbstractDrivebase
   public void arcadeDrive(
       LinearVelocity forwardspeed, AngularVelocity turnspeed) {
     m_robotDrive.arcadeDrive(forwardspeed.magnitude(), turnspeed.magnitude());
+  }
+
+  @Override
+  public void arcadeDrive(double forwardPercent, double turnPercent) {
+    m_robotDrive.arcadeDrive(forwardPercent, turnPercent);
   }
 
   @Override

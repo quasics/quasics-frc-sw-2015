@@ -6,6 +6,9 @@ package frc.robot.subsystems.simulated;
 
 import static edu.wpi.first.units.Units.Meters;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotController;
@@ -89,6 +92,16 @@ public class SimulationDrivebase extends AbstractDrivebase {
   @Override
   protected final TrivialEncoder getRightEncoder() {
     return m_rightEncoder;
+  }
+
+  @Override
+  public void updateStartingPosition(Pose2d pose) {
+    super.updateStartingPosition(pose);
+
+    m_gyroSim.setAngle(0);
+    m_driveSim.setPose(pose);
+    m_leftEncoderSim.setDistance(0);
+    m_rightEncoderSim.setDistance(0);
   }
 
   @Override

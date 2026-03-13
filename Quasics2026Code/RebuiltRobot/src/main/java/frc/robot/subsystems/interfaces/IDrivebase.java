@@ -39,6 +39,8 @@ public interface IDrivebase {
    */
   void arcadeDrive(LinearVelocity forwardspeed, AngularVelocity turnspeed);
 
+  void arcadeDrive(double forwardPercent, double turnPercent);
+
   /**
    * Drives the robot using "tank drive" style controls. (That is, one parameter
    * controls the speed of the left side of the drivebase, and the other
@@ -117,6 +119,18 @@ public interface IDrivebase {
     }
 
   /**
+   * Convenience function, used to help the drive team tell the robot where it was
+   * actually positioned on the field.
+   * 
+   * Note that this should only be called at the *very* beginning of the match (at
+   * latest), as it is intended to overwrite any data used for odometry-based
+   * positioning (i.e., encoder values, gyro offsets, etc).
+   * 
+   * @param pose robot pose, as established pre-match
+   */
+  void updateStartingPosition(Pose2d pose);
+
+  /**
    * Tries to enable/disable breaking mode, if supported by the underlying
    * hardware.
    * 
@@ -150,6 +164,11 @@ public interface IDrivebase {
 
     @Override
     public void arcadeDrive(LinearVelocity forwardspeed, AngularVelocity turnspeed) {
+      // No-op.
+    }
+
+    @Override
+    public void arcadeDrive(double forwardPercent, double turnPercent) {
       // No-op.
     }
 
@@ -256,6 +275,11 @@ public interface IDrivebase {
     @Override
     public void setSpeed(ChassisSpeeds speed) {
       // Intentionally empty
+    }
+
+    @Override
+    public void updateStartingPosition(Pose2d pose) {
+      // No-op.
     }
   }
 }

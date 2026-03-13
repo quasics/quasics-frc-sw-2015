@@ -546,6 +546,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return PathPlannerHelper.autoChooser(m_drivebase);
+    return Autos.doNothingAtHub(m_drivebase);
+    // TODO: Fix this return PathPlannerHelper.autoChooser(m_drivebase);
   }
 }

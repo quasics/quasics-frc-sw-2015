@@ -110,6 +110,7 @@ public final class Constants {
 
   public static class Ratios {
     public static final double ENCODERTOHOODRATIO = 9;
+    public static final double KICKERPULLEYRATIO = 1.4;
   }
 
   /**

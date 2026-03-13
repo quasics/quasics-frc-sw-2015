@@ -8,8 +8,6 @@ import static edu.wpi.first.units.Units.Degrees;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.AbsoluteEncoderConfig;
-import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.units.measure.Angle;
@@ -69,43 +67,6 @@ public class RealShooterHood extends SubsystemBase implements IShooterHood {
   public void stop() {
     m_hood.set(0);
   }
-
-  @Override
-  public double getCurrentAngle(){
-
-    double currentAngleDegrees = m_throughBoreEncoder.getPosition() * 360;
-    
-    return currentAngleDegrees;
-
-  }
-
-
-
-  @Override
-  public void stopHood(){
-
-    m_hood.set(0);
-
-  }
-
-
-
-  @Override
-  public void moveHoodIn(double speed){
-
-    m_hood.set(Math.abs(speed));
-
-  }
-
-
-
-  @Override
-  public void moveHoodOut(double speed){
-
-    m_hood.set(-Math.abs(speed));
-
-  }
-
 
 
 

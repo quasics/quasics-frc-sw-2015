@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.DriveteamConstants;
 import frc.robot.Constants.PwmPortIds;
+import frc.robot.commands.AlignToHub;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.PivotHoodToPosition;
 import frc.robot.commands.RunClimber;
@@ -344,6 +345,7 @@ public class RobotContainer {
     SmartDashboard.putData("LinearSpeedCommand", new LinearSpeedCommand(m_drivebase));
     SmartDashboard.putData("CMD: Testing encoders",
         Commands.sequence(new DriveForDistance(m_drivebase, .25, Meters.of(2))));
+    SmartDashboard.putData("Align to Hub", new AlignToHub(m_drivebase));
   }
 
   private void addSysIdButtonsToSmartDashboard() {

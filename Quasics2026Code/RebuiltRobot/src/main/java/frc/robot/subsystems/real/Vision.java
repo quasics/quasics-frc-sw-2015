@@ -38,6 +38,7 @@ public class Vision extends SubsystemBase implements IVision {
   private Pose3d latestPose3d = new Pose3d();
   protected Pose2d latestPose2d = new Pose2d();
   private Translation3d robotToCamTrl = new Translation3d(0.0762, -0.17145, 0.53975);
+  // up 20.25, offset 2.25 inches behind center, 8.5 inches
   private Rotation3d robotToCameraRot = new Rotation3d();
   private Transform3d robotToCamera = new Transform3d(robotToCamTrl, robotToCameraRot);
 

@@ -170,6 +170,11 @@ public abstract class AbstractDrivebase
   }
 
   @Override
+  public void arcadeDrive(double forwardPercent, double turnPercent) {
+    m_robotDrive.arcadeDrive(forwardPercent, turnPercent);
+  }
+
+  @Override
   public void setSpeeds(LinearVelocity leftSpeed, LinearVelocity rightSpeed) {
     m_leftMotor.set(mpsToPercent(leftSpeed));
     m_rightMotor.set(mpsToPercent(rightSpeed));

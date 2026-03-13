@@ -58,6 +58,10 @@ public abstract class AbstractDrivebase
   // error-out.
   private final DifferentialDrive m_robotDrive;
 
+  //
+  // Position estimation support.
+  //
+
   private DifferentialDriveOdometry m_odometry;
   private final DifferentialDrivePoseEstimator m_poseEstimator;
 
@@ -94,6 +98,12 @@ public abstract class AbstractDrivebase
     getRightEncoder().reset();
 
     m_odometry = new DifferentialDriveOdometry(new Rotation2d(), 0, 0, pose);
+
+    m_poseEstimator.resetPosition(
+        getGyro().getRotation2d(),
+        getLeftDistance().in(Meters),
+        getRightDistance().in(Meters),
+        pose);
   }
 
   public void drivePID(ChassisSpeeds chassisSpeeds) {

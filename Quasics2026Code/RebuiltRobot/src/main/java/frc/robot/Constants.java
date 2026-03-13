@@ -255,8 +255,8 @@ public final class Constants {
      */
     public static final Distance MID_BUMP2_Y = FIELD_WIDTH.div(2).plus(HUB_DEPTH.plus(BUMP_WIDTH).div(2));
 
-    public static final Distance RED_STARTING_LINE = ALLIANCE_WALL_TO_HUB_CENTER.minus(HUB_DEPTH);
-    public static final Distance BLUE_STARTING_LINE = FIELD_LENGTH.minus(ALLIANCE_WALL_TO_HUB_CENTER.minus(HUB_DEPTH));
+    public static final Distance BLUE_STARTING_LINE = ALLIANCE_WALL_TO_HUB_CENTER.minus(HUB_DEPTH);
+    public static final Distance RED_STARTING_LINE = FIELD_LENGTH.minus(ALLIANCE_WALL_TO_HUB_CENTER.minus(HUB_DEPTH));
   }
 
   /**

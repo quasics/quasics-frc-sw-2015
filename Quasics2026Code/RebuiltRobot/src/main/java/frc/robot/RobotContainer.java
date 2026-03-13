@@ -207,7 +207,7 @@ public class RobotContainer {
     // each other directly)
     m_vision.setReferencePositionSupplier(() -> {
       if (m_drivebase != null) {
-        return m_drivebase.getEstimatedPose();
+        return m_drivebase.getOdometryPose();
       } else {
         return null;
       }

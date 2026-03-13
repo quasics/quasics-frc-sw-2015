@@ -12,6 +12,9 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import frc.robot.subsystems.real.Vision;
+
+import static edu.wpi.first.units.Units.Degrees;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
@@ -78,14 +81,14 @@ public class SimulatedVision extends Vision {
     // FINDME(Rylie): This should ideally match the "robotToCameraTr"
     // translation being used in the base ("Vision") subsystem class's code, or else
     // the simulator will generate incorrect data.
-    Translation3d robotToCameraTr = new Translation3d(0.0762, -0.17145, 0.53975);
+    Translation3d robotToCameraTr = new Translation3d(-0.05175, -0.2159, 0.51435);
 
     // What is the angling of the camera, relative to the drive base?
     //
     // FINDME(Rylie): This is currently not actually set. It should reflect any
     // actual "robotToCamera" rotation being used in the base ("Vision")
     // subsystem class's code, or else the simulator will generate incorrect data.
-    Rotation3d robotToCameraRot = new Rotation3d();
+    Rotation3d robotToCameraRot = new Rotation3d(Degrees.of(0), Degrees.of(-15), Degrees.of(0));
 
     // Create the overall transformation used to convert data from the robot's
     // perspective to the camera's.

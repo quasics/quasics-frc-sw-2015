@@ -15,6 +15,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.logging.Logger;
 import frc.robot.logging.Logger.Verbosity;
 import frc.robot.subsystems.interfaces.IVision;
+
+import static edu.wpi.first.units.Units.Degrees;
+
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -37,9 +40,9 @@ public class Vision extends SubsystemBase implements IVision {
   protected PhotonPoseEstimator photonEstimator;
   private Pose3d latestPose3d = new Pose3d();
   protected Pose2d latestPose2d = new Pose2d();
-  private Translation3d robotToCamTrl = new Translation3d(0.0762, -0.17145, 0.53975);
+  private Translation3d robotToCamTrl = new Translation3d(0.05175, -0.2159, 0.51435);
   // up 20.25, offset 2.25 inches behind center, 8.5 inches
-  private Rotation3d robotToCameraRot = new Rotation3d();
+  private Rotation3d robotToCameraRot = new Rotation3d(Degrees.of(0), Degrees.of(-15), Degrees.of(0));
   private Transform3d robotToCamera = new Transform3d(robotToCamTrl, robotToCameraRot);
 
   private final Logger m_logger = new Logger(Logger.Verbosity.Info, "Vision");

@@ -31,7 +31,7 @@ public class AlignToHub extends Command {
   /** Creates a new AlignToHub. */
   public AlignToHub(IDrivebase drivebase) {
     m_drivebase = drivebase;
-    m_pid = new PIDController(0.004, 0.002, 0);
+    m_pid = new PIDController(0.0035, 0.0, 0);
     m_pid.enableContinuousInput(-180, 180);
 
     m_supplier = () -> {
@@ -56,6 +56,7 @@ public class AlignToHub extends Command {
   public void execute() {
     Rotation2d currentAngle = m_supplier.get().getRotation();
     Rotation2d error = m_goalAngle.minus(currentAngle);
+    error = error.unaryMinus();
     double rotationPercent = m_pid.calculate(0.0, error.getDegrees());
     m_drivebase.arcadeDrive(0, rotationPercent);
   }
@@ -71,13 +72,12 @@ public class AlignToHub extends Command {
   public boolean isFinished() {
     Rotation2d currentAngle = m_supplier.get().getRotation();
     Rotation2d error = m_goalAngle.minus(currentAngle);
-    m_Logger.log(
+    System.out.print(
         String.format(
             "Current: %3.4f, Target: %3.4f, Err: %3.4f\n",
             currentAngle.getDegrees(),
             m_goalAngle.getDegrees(),
-            error.getDegrees()),
-        Logger.Verbosity.Debug);
+            error.getDegrees()));
     return error.getMeasure().abs(Degrees) <= TOLERANCE.abs(Degrees);
   }
 }

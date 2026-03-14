@@ -4,18 +4,18 @@
 
 package frc.robot.utils;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.controllers.PPLTVController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.interfaces.IDrivebase;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.controllers.PPLTVController;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /** Add your docs here. */
 public class PathPlannerHelper {
@@ -43,19 +43,23 @@ public class PathPlannerHelper {
       e.printStackTrace();
     }
 
-    AutoBuilder.configure(drivebase::getOdometryPose,
-        drivebase::resetOdometry, drivebase::getSpeed,
-        (speeds, feedforwards) -> drivebase.driveWithPid(speeds),
+    AutoBuilder.configure(drivebase::getOdometryPose, drivebase::resetOdometry,
+        drivebase::getSpeed,
+        (speeds, feedforwards)
+            -> drivebase.driveWithPid(speeds),
         new PPLTVController(0.02), config, () -> {
+          System.out.println("Autos: " + AutoBuilder.getAllAutoNames());
+          System.out.println(
+              "Is AutoBuilder Configured: " + AutoBuilder.isConfigured());
           var alliance = DriverStation.getAlliance();
           if (alliance.isPresent()) {
             return alliance.get() == DriverStation.Alliance.Red;
           }
           return false;
-        },
-        drivebase.asSubsystem());
+        }, drivebase.asSubsystem());
     m_chooser = AutoBuilder.buildAutoChooser();
-    // TODO: call setDefaultOption, setOption and add in non-path-planner options.
+    // TODO: call setDefaultOption, setOption and add in non-path-planner
+    // options.
     SmartDashboard.putData("Auto Chooser", m_chooser);
   }
 
@@ -70,7 +74,8 @@ public class PathPlannerHelper {
   }
 
   public static Command doNothingAtHub(IDrivebase drivebase) {
-    drivebase.resetOdometry(new Pose2d(new Translation2d(3.879, 3.942), new Rotation2d(0)));
+    drivebase.resetOdometry(
+        new Pose2d(new Translation2d(3.879, 3.942), new Rotation2d(0)));
     return Commands.print("Just sit there");
   }
 }

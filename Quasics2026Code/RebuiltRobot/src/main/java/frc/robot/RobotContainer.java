@@ -4,6 +4,12 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.RPM;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -15,11 +21,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.DriveteamConstants;
 import frc.robot.Constants.PwmPortIds;
 import frc.robot.commands.AlignToHub;
@@ -38,13 +44,13 @@ import frc.robot.commands.lighting.RainbowLighting;
 import frc.robot.commands.testing.DriveForDistance;
 import frc.robot.commands.testing.FlywheelDialIn;
 import frc.robot.commands.testing.LinearSpeedCommand;
-import frc.robot.subsystems.interfaces.IIntake;
-import frc.robot.subsystems.interfaces.IShooterHood;
-import frc.robot.subsystems.interfaces.ILighting;
-import frc.robot.subsystems.interfaces.IShooter;
 import frc.robot.subsystems.interfaces.IClimber;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.IIndexer;
+import frc.robot.subsystems.interfaces.IIntake;
+import frc.robot.subsystems.interfaces.ILighting;
+import frc.robot.subsystems.interfaces.IShooter;
+import frc.robot.subsystems.interfaces.IShooterHood;
 import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.subsystems.real.Lighting;
 import frc.robot.subsystems.real.LightingBuffer;
@@ -59,15 +65,8 @@ import frc.robot.subsystems.real.Vision;
 import frc.robot.subsystems.simulated.SimulatedVision;
 import frc.robot.subsystems.simulated.SimulationDrivebase;
 import frc.robot.utils.PathPlannerHelper;
-
-import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.RPM;
-
 import java.util.List;
 import java.util.function.Supplier;
-
-import com.pathplanner.lib.auto.NamedCommands;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -75,11 +74,12 @@ import com.pathplanner.lib.auto.NamedCommands;
  * actually be handled in the {@link Robot} periodic methods (other than the
  * scheduler calls). Instead, the structure of the robot (including subsystems,
  * commands, and trigger mappings) should be declared here.
- * 
+ *
  * TODO: Matt should clean up this comment.
  */
 public class RobotContainer {
-  private static final int SIDE_LIGHTING_LENGTH = Constants.LIGHTING_TOTAL_LENGTH / 2;
+  private static final int SIDE_LIGHTING_LENGTH =
+      Constants.LIGHTING_TOTAL_LENGTH / 2;
 
   //
   // Support for a limited mechanism of establishing per-robot configuration
@@ -89,15 +89,11 @@ public class RobotContainer {
   /**
    * Names of Quasics robots on which this code might be executed.
    */
-  enum RobotName {
-    Simulated,
-    Lizzie,
-    Sally
-  }
+  enum RobotName { Simulated, Lizzie, Sally }
 
   /**
-   * Identifies the default robot that we'll assume is in use when we're not under
-   * simulation.
+   * Identifies the default robot that we'll assume is in use when we're not
+   * under simulation.
    */
   private static final RobotName DEFAULT_ROBOT_NAME = RobotName.Lizzie;
 
@@ -105,7 +101,8 @@ public class RobotContainer {
    * The robot name we'll *actually* use while executing (which will account for
    * simulation).
    */
-  private static final RobotName ROBOT_NAME = Robot.isReal() ? DEFAULT_ROBOT_NAME : RobotName.Simulated;
+  private static final RobotName ROBOT_NAME =
+      Robot.isReal() ? DEFAULT_ROBOT_NAME : RobotName.Simulated;
 
   private static final boolean ENABLE_SHOOTER_TEST_CMDS = true;
   private static final boolean ENABLE_INDEXER_TEST_CMDS = true;
@@ -147,7 +144,9 @@ public class RobotContainer {
     case Sally, Simulated -> new IClimber.NullClimber();
   };
 
-  /** Primary lighting control (owns the LED strip and will partition it out). */
+  /**
+   * Primary lighting control (owns the LED strip and will partition it out).
+   */
   private final ILighting m_primaryLighting;
 
   /** Subset of lighting targeted for the left side of the robot. */
@@ -161,15 +160,17 @@ public class RobotContainer {
   //
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final Joystick m_driverController = new Joystick(DriveteamConstants.DRIVER_JOYSTICK_ID);
-  private final Joystick m_operatorController = new Joystick(DriveteamConstants.OPERATOR_JOYSTICK_ID);
+  private final Joystick m_driverController =
+      new Joystick(DriveteamConstants.DRIVER_JOYSTICK_ID);
+  private final Joystick m_operatorController =
+      new Joystick(DriveteamConstants.OPERATOR_JOYSTICK_ID);
 
   /** Deadband range for reading data from driver/operator controllers. */
   private final double DEADBAND_CONSTANT = 0.08;
 
   /**
-   * Iff true, switch drive is active (i.e., logical forward/backward for driving
-   * the robot are swapped).
+   * Iff true, switch drive is active (i.e., logical forward/backward for
+   * driving the robot are swapped).
    */
   private boolean m_switchDrive = false;
 
@@ -180,13 +181,12 @@ public class RobotContainer {
    * commands.
    */
   public RobotContainer() {
-    System.out.println(
-        "******************\n" +
-            "Setting up robot for " + ROBOT_NAME + "\n" +
-            "******************\n");
+    System.out.println("******************\n"
+        + "Setting up robot for " + ROBOT_NAME + "\n"
+        + "******************\n");
 
-    // Don't warn about joysticks not being plugged in when working on a robot where
-    // we frequently aren't worried about it.
+    // Don't warn about joysticks not being plugged in when working on a robot
+    // where we frequently aren't worried about it.
     if (ROBOT_NAME == RobotName.Sally || ROBOT_NAME == RobotName.Sally) {
       DriverStation.silenceJoystickConnectionWarning(true);
     }
@@ -198,8 +198,10 @@ public class RobotContainer {
     m_leftSideLighting = allocateSideLighting(true);
     m_rightSideLighting = allocateSideLighting(false);
 
-    m_leftSideLighting.setAsDefaultCommand(new RainbowLighting(m_leftSideLighting));
-    m_rightSideLighting.setAsDefaultCommand(new RainbowLighting(m_rightSideLighting));
+    m_leftSideLighting.setAsDefaultCommand(
+        new RainbowLighting(m_leftSideLighting));
+    m_rightSideLighting.setAsDefaultCommand(
+        new RainbowLighting(m_rightSideLighting));
 
     // Connect cross-subsystem suppliers (so that the systems don't know about
     // each other directly)
@@ -229,29 +231,24 @@ public class RobotContainer {
     configureOperatorButtons();
 
     SmartDashboard.putData("Simple start (blue)",
-        Autos.generateSampleStartingCommand(
-            m_drivebase, m_shooter,
-            new Pose2d(
-                Constants.RebuiltFieldData.BLUE_STARTING_LINE,
+        Autos.generateSampleStartingCommand(m_drivebase, m_shooter,
+            new Pose2d(Constants.RebuiltFieldData.BLUE_STARTING_LINE,
                 Constants.RebuiltFieldData.MID_BUMP1_Y,
                 new Rotation2d(Constants.RebuiltFieldData.FACING_BLUE))));
 
     SmartDashboard.putData("Simple start (red)",
-        Autos.generateSampleStartingCommand(
-            m_drivebase, m_shooter,
-            new Pose2d(
-                Constants.RebuiltFieldData.RED_STARTING_LINE,
+        Autos.generateSampleStartingCommand(m_drivebase, m_shooter,
+            new Pose2d(Constants.RebuiltFieldData.RED_STARTING_LINE,
                 Constants.RebuiltFieldData.MID_BUMP2_Y,
                 new Rotation2d(Constants.RebuiltFieldData.FACING_RED))));
 
-    NamedCommands.registerCommand("Shooter", new RunShooterForTime(m_shooter, 480, 120, true, 4));
+    NamedCommands.registerCommand(
+        "Shooter", new RunShooterForTime(m_shooter, 480, 120, true, 4));
     // NamedCommands.registerCommand("");
   }
 
   private ILighting allocatePrimaryLighting() {
-    return new Lighting(
-        PwmPortIds.LIGHTING_ID,
-        Constants.LIGHTING_TOTAL_LENGTH,
+    return new Lighting(PwmPortIds.LIGHTING_ID, Constants.LIGHTING_TOTAL_LENGTH,
         List.of(SIDE_LIGHTING_LENGTH, SIDE_LIGHTING_LENGTH));
   }
 
@@ -268,7 +265,8 @@ public class RobotContainer {
       return new ILighting.NullLighting();
     }
 
-    return new LightingBuffer(realLighting.getSubViews().get(targetIndex), isLeftSide);
+    return new LightingBuffer(
+        realLighting.getSubViews().get(targetIndex), isLeftSide);
   }
 
   private void addShooterTestCommandsToSmartDashboard() {
@@ -282,16 +280,15 @@ public class RobotContainer {
     SmartDashboard.putData("Run Flywheel @ 15% speed, Kicker @ 50% speed",
         new RunShooter(m_shooter, 0.15, .50, true));
     SmartDashboard.putData("Jam", runKickerReverse());
-    SmartDashboard.putData("3500 RPM",
-        new RunShooterPID(m_shooter, RPM.of(3500), .387, 1));
-    SmartDashboard.putData("3300 RPM",
-        new RunShooterPID(m_shooter, RPM.of(3300), .387, 1));
-    SmartDashboard.putData("2700 RPM",
-        new RunShooterPID(m_shooter, RPM.of(2700), .387, 1));
-    SmartDashboard.putData("3050 RPM",
-        new RunShooterPID(m_shooter, RPM.of(3050), .387, 1));
+    SmartDashboard.putData(
+        "3500 RPM", new RunShooterPID(m_shooter, RPM.of(3500), .387, 1));
+    SmartDashboard.putData(
+        "3300 RPM", new RunShooterPID(m_shooter, RPM.of(3300), .387, 1));
+    SmartDashboard.putData(
+        "2700 RPM", new RunShooterPID(m_shooter, RPM.of(2700), .387, 1));
+    SmartDashboard.putData(
+        "3050 RPM", new RunShooterPID(m_shooter, RPM.of(3050), .387, 1));
     SmartDashboard.putData("Dial in Shooter", new FlywheelDialIn(m_shooter));
-
   }
 
   private void addIntakeTestCommandsToSmartDashboard() {
@@ -299,23 +296,25 @@ public class RobotContainer {
       return;
     }
 
-    SmartDashboard.putData("Run Intake Rollers", new RunIntakeRollers(m_intake, 0.1, true));
+    SmartDashboard.putData(
+        "Run Intake Rollers", new RunIntakeRollers(m_intake, 0.1, true));
     SmartDashboard.putData("Run Indexer", new RunIndexer(m_indexer, 0.1, true));
     // SmartDashboard.putData("Extend Intake", new InstantCommand(() ->
     // m_intake.setExtensionSpeed(0.5)));
     // SmartDashboard.putData("Extend Intake", new InstantCommand(() ->
     // m_intake.setExtensionSpeed(-0.5)));
-    SmartDashboard.putData("Extend Intake",
-        new RunIntakeExtension(m_intake, 0.10, false));
-    SmartDashboard.putData("Retract Intake",
-        new RunIntakeExtension(m_intake, 0.20, true));
+    SmartDashboard.putData(
+        "Extend Intake", new RunIntakeExtension(m_intake, 0.10, false));
+    SmartDashboard.putData(
+        "Retract Intake", new RunIntakeExtension(m_intake, 0.20, true));
   }
 
   private void addIndexerTestCommandsToSmartDashboard() {
     if (m_indexer == null || !ENABLE_INDEXER_TEST_CMDS) {
       return;
     }
-    SmartDashboard.putData("Reverse Indexer", new RunIndexer(m_indexer, 0.1, false));
+    SmartDashboard.putData(
+        "Reverse Indexer", new RunIndexer(m_indexer, 0.1, false));
     // TODO: Index Jam Prevention Sequence Low Priority
   }
 
@@ -335,29 +334,26 @@ public class RobotContainer {
     if (m_climber == null) {
       return;
     }
-    SmartDashboard.putData("Run climber @ 10%",
-        new RunClimber(m_climber, .1));
-    SmartDashboard.putData("Run climber @ - 2.5%",
-        new RunClimber(m_climber, .025));
+    SmartDashboard.putData("Run climber @ 10%", new RunClimber(m_climber, .1));
+    SmartDashboard.putData(
+        "Run climber @ - 2.5%", new RunClimber(m_climber, .025));
   }
 
   private void addDrivebaseTestCommandsToSmartDashboard() {
     if (m_drivebase == null) {
       return;
     }
+    SmartDashboard.putData("Braking on", new InstantCommand(() -> {
+      m_drivebase.setBreakingMode(true);
+    }, (Subsystem) m_drivebase));
+    SmartDashboard.putData("Braking off", new InstantCommand(() -> {
+      m_drivebase.setBreakingMode(false);
+    }, (Subsystem) m_drivebase));
     SmartDashboard.putData(
-        "Braking on",
-        new InstantCommand(() -> {
-          m_drivebase.setBreakingMode(true);
-        }, (Subsystem) m_drivebase));
-    SmartDashboard.putData(
-        "Braking off",
-        new InstantCommand(() -> {
-          m_drivebase.setBreakingMode(false);
-        }, (Subsystem) m_drivebase));
-    SmartDashboard.putData("LinearSpeedCommand", new LinearSpeedCommand(m_drivebase));
+        "LinearSpeedCommand", new LinearSpeedCommand(m_drivebase));
     SmartDashboard.putData("CMD: Testing encoders",
-        Commands.sequence(new DriveForDistance(m_drivebase, .25, Meters.of(2))));
+        Commands.sequence(
+            new DriveForDistance(m_drivebase, .25, Meters.of(2))));
     SmartDashboard.putData("Align to Hub", new AlignToHub(m_drivebase));
   }
 
@@ -376,23 +372,31 @@ public class RobotContainer {
 
     // Drivebase characterization support
     if (m_drivebase != null) {
-      SmartDashboard.putData("(LIN) Drivebase QF", m_drivebase.sysIdQuasistatic(m_drivebase, IDrivebase.Mode.Linear,
-          Direction.kForward));
-      SmartDashboard.putData("(LIN) Drivebase QR", m_drivebase.sysIdQuasistatic(m_drivebase, IDrivebase.Mode.Linear,
-          Direction.kReverse));
-      SmartDashboard.putData("(LIN) Drivebase DF", m_drivebase.sysIdDynamic(m_drivebase, IDrivebase.Mode.Linear,
-          Direction.kForward));
-      SmartDashboard.putData("(LIN) Drivebase DR", m_drivebase.sysIdDynamic(m_drivebase, IDrivebase.Mode.Linear,
-          Direction.kReverse));
+      SmartDashboard.putData("(LIN) Drivebase QF",
+          m_drivebase.sysIdQuasistatic(
+              m_drivebase, IDrivebase.Mode.Linear, Direction.kForward));
+      SmartDashboard.putData("(LIN) Drivebase QR",
+          m_drivebase.sysIdQuasistatic(
+              m_drivebase, IDrivebase.Mode.Linear, Direction.kReverse));
+      SmartDashboard.putData("(LIN) Drivebase DF",
+          m_drivebase.sysIdDynamic(
+              m_drivebase, IDrivebase.Mode.Linear, Direction.kForward));
+      SmartDashboard.putData("(LIN) Drivebase DR",
+          m_drivebase.sysIdDynamic(
+              m_drivebase, IDrivebase.Mode.Linear, Direction.kReverse));
 
       SmartDashboard.putData("(ANG) Drivebase QF",
-          m_drivebase.sysIdQuasistatic(m_drivebase, IDrivebase.Mode.Angular, Direction.kForward));
+          m_drivebase.sysIdQuasistatic(
+              m_drivebase, IDrivebase.Mode.Angular, Direction.kForward));
       SmartDashboard.putData("(ANG) Drivebase QR",
-          m_drivebase.sysIdQuasistatic(m_drivebase, IDrivebase.Mode.Angular, Direction.kReverse));
-      SmartDashboard.putData("(ANG) Drivebase DF", m_drivebase.sysIdDynamic(m_drivebase, IDrivebase.Mode.Angular,
-          Direction.kForward));
-      SmartDashboard.putData("(ANG) Drivebase DR", m_drivebase.sysIdDynamic(m_drivebase, IDrivebase.Mode.Angular,
-          Direction.kReverse));
+          m_drivebase.sysIdQuasistatic(
+              m_drivebase, IDrivebase.Mode.Angular, Direction.kReverse));
+      SmartDashboard.putData("(ANG) Drivebase DF",
+          m_drivebase.sysIdDynamic(
+              m_drivebase, IDrivebase.Mode.Angular, Direction.kForward));
+      SmartDashboard.putData("(ANG) Drivebase DR",
+          m_drivebase.sysIdDynamic(
+              m_drivebase, IDrivebase.Mode.Angular, Direction.kReverse));
     }
   }
 
@@ -407,8 +411,9 @@ public class RobotContainer {
   }
 
   private Command runKickerReverse() {
-    return Commands.sequence(new RunShooterForTime(m_shooter, 0, 0.75, false, 2), new WaitCommand(0.5),
-        new RunShooter(m_shooter, .15, .50, true));
+    return Commands.sequence(
+        new RunShooterForTime(m_shooter, 0, 0.75, false, 2),
+        new WaitCommand(0.5), new RunShooter(m_shooter, .15, .50, true));
   }
 
   private void configureArcadeDriving() {
@@ -441,8 +446,9 @@ public class RobotContainer {
     };
 
     // Set up arcade driving as the default command for the drivebase.
-    ((Subsystem) m_drivebase).setDefaultCommand(
-        new ArcadeDrive(linearDrivingStick, rotationDrivingStick, m_drivebase));
+    ((Subsystem) m_drivebase)
+        .setDefaultCommand(new ArcadeDrive(
+            linearDrivingStick, rotationDrivingStick, m_drivebase));
   }
 
   /**
@@ -457,9 +463,9 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // Note that we're not saving the trigger in a variable. That's fine: this is a
-    // "just set it up and let it do its thing" sort of thing....
-    // new Trigger(() ->
+    // Note that we're not saving the trigger in a variable. That's fine: this
+    // is a "just set it up and let it do its thing" sort of thing.... new
+    // Trigger(() ->
     // m_driverController.getRawButton(Constants.LogitechDualshock.BButton)).onTrue(new
     // InstantCommand(() -> {m_switchDrive = !m_switchDrive;}));
 
@@ -469,61 +475,88 @@ public class RobotContainer {
   }
 
   private Command againstHubShot() {
-    return Commands.sequence(new PivotHoodToPosition(m_hood, 0.15, Degrees.of(5)),
+    return Commands.sequence(
+        new PivotHoodToPosition(m_hood, 0.15, Degrees.of(5)),
         new RunShooterPID(m_shooter, RPM.of(2700), .387, 1));
   }
 
   private Command towerShot() {
-    return Commands.sequence(new PivotHoodToPosition(m_hood, 0.15, Degrees.of(15)),
+    return Commands.sequence(
+        new PivotHoodToPosition(m_hood, 0.15, Degrees.of(15)),
         new RunShooterPID(m_shooter, RPM.of(3700), .387, 2));
   }
 
   private Command trenchShot() {
-    return Commands.sequence(new PivotHoodToPosition(m_hood, 0.15, Degrees.of(15)),
+    return Commands.sequence(
+        new PivotHoodToPosition(m_hood, 0.15, Degrees.of(15)),
         new RunShooterPID(m_shooter, RPM.of(3300), .387, 2));
   }
 
   private void configureDriverButtons() {
     if (m_intake != null) {
-      new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.LeftTrigger))
+      new Trigger(()
+                      -> m_driverController.getRawButton(
+                          Constants.LogitechDualshock.LeftTrigger))
           .whileTrue(new RunIntakeRollers(m_intake, 0.9, false));
-      new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.RightTrigger))
+      new Trigger(()
+                      -> m_driverController.getRawButton(
+                          Constants.LogitechDualshock.RightTrigger))
           .whileTrue(new RunIntakeRollers(m_intake, 0.9, true));
 
-      new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.XButton))
+      new Trigger(()
+                      -> m_driverController.getRawButton(
+                          Constants.LogitechDualshock.XButton))
           .whileTrue(new RunIntakeExtension(m_intake, 0.2, false));
-      new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.BButton))
+      new Trigger(()
+                      -> m_driverController.getRawButton(
+                          Constants.LogitechDualshock.BButton))
           .whileTrue(new RunIntakeExtension(m_intake, 0.1, true));
     }
 
     if (m_shooter != null) {
-      // FINDME(Rylie, Daniel): This isn't going to do what you think it will. It's
-      // going to capture the distance to the hub's center when the driver buttons are
-      // being set up (i.e., when the RobotContainer is being built). However, it's
-      // unlikely that this will be the robot's distance from the Hub when the driver
-      // actually *trigger* the command.
+      // FINDME(Rylie, Daniel): This isn't going to do what you think it will.
+      // It's going to capture the distance to the hub's center when the driver
+      // buttons are being set up (i.e., when the RobotContainer is being
+      // built). However, it's unlikely that this will be the robot's distance
+      // from the Hub when the driver actually *trigger* the command.
       //
-      // Suggestion: instead of getting the distance *here*, write a Command class
-      // that will get the distance while it is executing. This would at least be when
-      // the initialize() function is invoked, but it would be better to do it in
-      // execute() so that the target speed will be updated continuously (e.g., if the
-      // robot is actually *moving* while we're trying to shoot).
-      new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.AButton))
-          .whileTrue(new ShootBasedOnDistance(m_shooter, m_drivebase, 0.387, 2));
+      // Suggestion: instead of getting the distance *here*, write a Command
+      // class that will get the distance while it is executing. This would at
+      // least be when the initialize() function is invoked, but it would be
+      // better to do it in execute() so that the target speed will be updated
+      // continuously (e.g., if the robot is actually *moving* while we're
+      // trying to shoot).
+      new Trigger(()
+                      -> m_driverController.getRawButton(
+                          Constants.LogitechDualshock.AButton))
+          .whileTrue(
+              new ShootBasedOnDistance(m_shooter, m_drivebase, 0.387, 2));
     }
   }
 
   private void configureOperatorButtons() {
     if (m_shooter != null) {
-      new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kX.value))
+      new Trigger(()
+                      -> m_operatorController.getRawButton(
+                          XboxController.Button.kX.value))
           .whileTrue(towerShot());
-      new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kB.value)).whileTrue(againstHubShot());
-      new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kA.value)).whileTrue(trenchShot());
+      new Trigger(()
+                      -> m_operatorController.getRawButton(
+                          XboxController.Button.kB.value))
+          .whileTrue(againstHubShot());
+      new Trigger(()
+                      -> m_operatorController.getRawButton(
+                          XboxController.Button.kA.value))
+          .whileTrue(trenchShot());
     }
     if (m_indexer != null) {
-      new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kLeftBumper.value))
+      new Trigger(()
+                      -> m_operatorController.getRawButton(
+                          XboxController.Button.kLeftBumper.value))
           .whileTrue(new RunIndexer(m_indexer, 0.5, true));
-      new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kRightBumper.value))
+      new Trigger(()
+                      -> m_operatorController.getRawButton(
+                          XboxController.Button.kRightBumper.value))
           .whileTrue(new RunIndexer(m_indexer, 0.6, false));
     }
   }
@@ -554,7 +587,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return PathPlannerHelper.doNothingAtHub(m_drivebase);
-    // return m_autos.getAuto();
+    return m_autos.getAuto();
   }
 }

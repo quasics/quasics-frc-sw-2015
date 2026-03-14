@@ -40,6 +40,7 @@ public class RealClimber extends SubsystemBase implements IClimber {
   }
 
   private void directionSelectionChanged(Integer direction) {
+    m_logger.log(Logger.Verbosity.Info, "Direction changed to " + direction);
     m_configuredDirection = direction;
   }
 

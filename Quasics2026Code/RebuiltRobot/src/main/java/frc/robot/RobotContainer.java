@@ -5,12 +5,10 @@
 package frc.robot;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -50,6 +48,7 @@ import frc.robot.subsystems.interfaces.IClimber;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.IIndexer;
 import frc.robot.subsystems.interfaces.IVision;
+import frc.robot.subsystems.real.AbstractDrivebase;
 import frc.robot.subsystems.real.Lighting;
 import frc.robot.subsystems.real.LightingBuffer;
 import frc.robot.subsystems.real.NovaDriveBase;
@@ -62,6 +61,7 @@ import frc.robot.subsystems.real.SparkDriveBase;
 import frc.robot.subsystems.real.Vision;
 import frc.robot.subsystems.simulated.SimulatedVision;
 import frc.robot.subsystems.simulated.SimulationDrivebase;
+import frc.robot.utils.PathPlannerHelper;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Feet;
@@ -72,6 +72,7 @@ import static edu.wpi.first.units.Units.Seconds;
 import java.util.List;
 import java.util.function.Supplier;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 /**
@@ -178,6 +179,9 @@ public class RobotContainer {
    */
   private boolean m_switchDrive = false;
 
+  // Just creating the Auto Selecter
+  // private final SendableChooser<Command> autoChooser;
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and
    * commands.
@@ -208,7 +212,7 @@ public class RobotContainer {
     // each other directly)
     m_vision.setReferencePositionSupplier(() -> {
       if (m_drivebase != null) {
-        return m_drivebase.getEstimatedPose();
+        return m_drivebase.getOdometryPose();
       } else {
         return null;
       }
@@ -557,9 +561,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // TODO: Implement functionality for autonomous mode.
-    m_drivebase.resetOdometry(new Pose2d(new Translation2d(3.879, 3.942), new Rotation2d(0)));
-    return Commands.print("Just sit there");
-    // Autos.exampleAuto((AbstractDrivebase) m_drivebase);
+    return Autos.doNothingAtHub(m_drivebase);
+    // TODO: Fix this return PathPlannerHelper.autoChooser(m_drivebase);
   }
 }

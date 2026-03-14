@@ -325,7 +325,7 @@ public abstract class AbstractDrivebase
     // m_logger.log("SetSpeed not yet implemented", Verbosity.Warn);
   }
 
-  // @Override
+  @Override
   public void driveWithPid(ChassisSpeeds speed) {
     setSpeed(speed);
   }
@@ -394,5 +394,10 @@ public abstract class AbstractDrivebase
     if (getVisionPose() != null) {
       m_poseEstimator.addVisionMeasurement(getVisionPose(), Timer.getFPGATimestamp());
     }
+  }
+
+  @Override
+  public SubsystemBase asSubsystem() {
+    return (SubsystemBase) this;
   }
 }

@@ -68,6 +68,8 @@ public class RealShooterHood extends SubsystemBase implements IShooterHood {
     m_hood.set(0);
   }
 
+
+
   @Override
   public void periodic() {
     m_logger.log("Current Angle: " + getCurrentAngle(), Verbosity.Debug);

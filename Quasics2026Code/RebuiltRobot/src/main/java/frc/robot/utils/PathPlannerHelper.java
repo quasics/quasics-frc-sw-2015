@@ -6,20 +6,23 @@ package frc.robot.utils;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.real.AbstractDrivebase;
+import frc.robot.subsystems.interfaces.IDrivebase;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.controllers.PPLTVController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /** Add your docs here. */
 public class PathPlannerHelper {
-
   public PathPlannerHelper() throws IllegalAccessException {
     throw new IllegalAccessException("Don't do that!! :(");
   }
 
-  public static Command getAutonomousCommand(AbstractDrivebase abstractDrivebase) {
-    // TODO: Make autos selectable fr/ dashboard
+  // TODO: Make sure this only happens once
+  public static boolean configureAutoBuilder(
+      IDrivebase drivebase) {
     com.pathplanner.lib.config.RobotConfig config = null;
     try {
       config = com.pathplanner.lib.config.RobotConfig.fromGUISettings();
@@ -27,33 +30,46 @@ public class PathPlannerHelper {
       System.out.println("Holonomic:" + config.isHolonomic);
       System.out.println("Mass (Kg):" + config.massKG);
       System.out.println("Moment of Inertia:" + config.MOI);
-      System.out.println("Wheel Radius:" + config.moduleConfig.wheelRadiusMeters);
+      System.out.println(
+          "Wheel Radius:" + config.moduleConfig.wheelRadiusMeters);
       System.out.println("Gearing:" + config.moduleConfig.driveMotor);
-      System.out.println("Max Speed:" + config.moduleConfig.maxDriveVelocityMPS);
+      System.out.println(
+          "Max Speed:" + config.moduleConfig.maxDriveVelocityMPS);
       System.out.println("Wheel COF:" + config.moduleConfig.wheelCOF);
       System.out.println("Drive Motor:" + config.moduleConfig.driveMotor);
-      System.out.println("Drive Current Limit:" + config.moduleConfig.driveCurrentLimit);
+      System.out.println(
+          "Drive Current Limit:" + config.moduleConfig.driveCurrentLimit);
 
     } catch (Exception e) {
       System.out.println("Hey! Listen!");
       e.printStackTrace();
     }
 
-    AutoBuilder.configure(
-        abstractDrivebase::getOdometryPose,
-        abstractDrivebase::resetOdometry,
-        abstractDrivebase::getSpeed,
-        (speeds, feedforwards) -> abstractDrivebase.driveWithPid(speeds),
-        new PPLTVController(0.02),
-        config,
-        () -> {
+    AutoBuilder.configure(drivebase::getOdometryPose,
+        drivebase::resetOdometry, drivebase::getSpeed,
+        (speeds, feedforwards) -> drivebase.driveWithPid(speeds),
+        new PPLTVController(0.02), config, () -> {
           var alliance = DriverStation.getAlliance();
           if (alliance.isPresent()) {
             return alliance.get() == DriverStation.Alliance.Red;
           }
           return false;
         },
-        abstractDrivebase);
-    return new PathPlannerAuto("MoveForward1");
+        drivebase.asSubsystem());
+    return true;
+  }
+
+  public static Command getAutonomousCommand(IDrivebase drivebase, String auto) {
+    configureAutoBuilder(drivebase);
+    return new PathPlannerAuto(auto);
+  }
+
+  public static Command autoChooser(IDrivebase drivebase) {
+    System.out.println("AutoChooser is being called!");
+    configureAutoBuilder(drivebase);
+    SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Chooser", autoChooser);
+    // DifferentialDrive.m_rightMotor.setSafetyEnabled(false);
+    return autoChooser.getSelected();
   }
 }

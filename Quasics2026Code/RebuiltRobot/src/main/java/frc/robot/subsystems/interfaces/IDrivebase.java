@@ -114,6 +114,10 @@ public interface IDrivebase {
 
   LinearVelocity getRightVelocity();
 
+  default ChassisSpeeds getCurrentSpeeds() {
+    return new ChassisSpeeds(getLeftVelocity(), getRightVelocity(), getTurnRate());
+    }
+
   /**
    * Convenience function, used to help the drive team tell the robot where it was
    * actually positioned on the field.
@@ -142,6 +146,10 @@ public interface IDrivebase {
   ChassisSpeeds getSpeed();
 
   void setSpeed(ChassisSpeeds speed);
+
+  void driveWithPid(ChassisSpeeds speed);
+
+  SubsystemBase asSubsystem();
 
   //////////////////////////////////////////////
 
@@ -270,7 +278,17 @@ public interface IDrivebase {
 
     @Override
     public void setSpeed(ChassisSpeeds speed) {
-      // Intentionally empty
+      // No-op.
+    }
+
+    @Override
+    public void driveWithPid(ChassisSpeeds speed) {
+      // No-op.
+    }
+
+    @Override
+    public SubsystemBase asSubsystem() {
+      return (SubsystemBase) this;
     }
 
     @Override

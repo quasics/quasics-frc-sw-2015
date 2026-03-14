@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -25,6 +26,7 @@ import frc.robot.Constants.DriveteamConstants;
 import frc.robot.Constants.PwmPortIds;
 import frc.robot.commands.AlignToHub;
 import frc.robot.commands.ArcadeDrive;
+import frc.robot.commands.Autos;
 import frc.robot.commands.PivotHoodToPosition;
 import frc.robot.commands.RunClimber;
 import frc.robot.commands.RunIndexer;
@@ -34,6 +36,8 @@ import frc.robot.commands.RunShooter;
 import frc.robot.commands.RunShooterForTime;
 import frc.robot.commands.RunShooterPID;
 import frc.robot.commands.ShootBasedOnDistance;
+import frc.robot.commands.ShootBasedOnDistanceAndTime;
+import frc.robot.commands.UpdateStartingPositionData;
 import frc.robot.commands.lighting.RainbowLighting;
 import frc.robot.commands.testing.DriveForDistance;
 import frc.robot.commands.testing.FlywheelDialIn;
@@ -60,8 +64,10 @@ import frc.robot.subsystems.simulated.SimulatedVision;
 import frc.robot.subsystems.simulated.SimulationDrivebase;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Feet;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Seconds;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -225,13 +231,23 @@ public class RobotContainer {
     configureDriverButtons();
     configureOperatorButtons();
 
+    SmartDashboard.putData("Simple start (blue)",
+        Autos.generateSampleStartingCommand(
+            m_drivebase, m_shooter,
+            new Pose2d(
+                Constants.RebuiltFieldData.BLUE_STARTING_LINE,
+                Constants.RebuiltFieldData.MID_BUMP1_Y,
+                new Rotation2d(Constants.RebuiltFieldData.FACING_BLUE))));
+
+    SmartDashboard.putData("Simple start (red)",
+        Autos.generateSampleStartingCommand(
+            m_drivebase, m_shooter,
+            new Pose2d(
+                Constants.RebuiltFieldData.RED_STARTING_LINE,
+                Constants.RebuiltFieldData.MID_BUMP2_Y,
+                new Rotation2d(Constants.RebuiltFieldData.FACING_RED))));
+
     NamedCommands.registerCommand("Shooter", new RunShooterForTime(m_shooter, 480, 120, true, 4));
-    // NamedCommands.registerCommand("");
-    // NamedCommands.registerCommand("");
-    // NamedCommands.registerCommand("");
-    // NamedCommands.registerCommand("");
-    // NamedCommands.registerCommand("");
-    // NamedCommands.registerCommand("");
     // NamedCommands.registerCommand("");
   }
 

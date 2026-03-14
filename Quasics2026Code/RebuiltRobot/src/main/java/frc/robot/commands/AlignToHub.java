@@ -64,13 +64,11 @@ public class AlignToHub extends Command {
     addRequirements((Subsystem) drivebase);
   }
 
-  // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     m_goalAngle = TargetPositioningUtils.getAngleToHubCenter(m_supplier.get());
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     Rotation2d currentAngle = m_supplier.get().getRotation();
@@ -79,13 +77,11 @@ public class AlignToHub extends Command {
     m_drivebase.arcadeDrive(0, rotationPercent);
   }
 
-  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     m_drivebase.stop();
   }
 
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     Rotation2d currentAngle = m_supplier.get().getRotation();

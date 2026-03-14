@@ -21,7 +21,7 @@ public class TurnUntilTargetInView extends Command {
   /** The ID of the target to look for. */
   private final int m_targetId;
 
-  Logger m_logger = new Logger("TurnUntilTargetInView", Logger.Verbosity.Error);
+  Logger m_logger = new Logger("TurnUntilTargetInView", Logger.Level.Error);
 
   /**
    * Constructor.
@@ -37,7 +37,7 @@ public class TurnUntilTargetInView extends Command {
     m_targetId = targetId;
     addRequirements(m_vision.asSubsystem(), m_drivebase.asSubsystem());
 
-    m_logger.setLevel(Logger.Verbosity.Warning);
+    m_logger.setLevel(Logger.Level.Warning);
   }
 
   @Override
@@ -64,7 +64,7 @@ public class TurnUntilTargetInView extends Command {
 
   @Override
   public boolean isFinished() {
-    m_logger.logFormatted(Logger.Verbosity.Debug, "Visible targets: %s",
+    m_logger.logFormatted(Logger.Level.Debug, "Visible targets: %s",
         m_vision.getVisibleTargets(m_drivebase.getEstimatedPose()));
     return m_vision.canSeeTargetWithId(
         m_drivebase.getEstimatedPose(), m_targetId);

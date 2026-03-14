@@ -195,7 +195,7 @@ public abstract class AbstractDrivebase
   //
   // TODO: Fix the bug outlined above.
   @Override
-  public void arcadeDrive(
+  public void arcadeDrive_speeds(
       LinearVelocity forwardspeed, AngularVelocity turnspeed) {
     m_robotDrive.arcadeDrive(forwardspeed.magnitude(), turnspeed.magnitude());
   }

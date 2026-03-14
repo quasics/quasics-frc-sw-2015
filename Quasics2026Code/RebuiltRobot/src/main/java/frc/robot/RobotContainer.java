@@ -68,6 +68,8 @@ import frc.robot.utils.PathPlannerHelper;
 import java.util.List;
 import java.util.function.Supplier;
 
+import javax.swing.RowFilter;
+
 /**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a "declarative" paradigm, very little robot logic should
@@ -333,9 +335,19 @@ public class RobotContainer {
     if (m_climber == null) {
       return;
     }
-    SmartDashboard.putData("Run climber @ 10%", new RunClimber(m_climber, .1));
+    SmartDashboard.putData("Run climber @ 10%", 
+      new RunClimber(m_climber, .1));
     SmartDashboard.putData("Run climber @ - 10%",
         new RunClimber(m_climber, -0.1));
+   
+    SmartDashboard.putData("Direction Climb Test",
+        new DiretionalTestClimber());
+  } 
+    private Command DirectionalTestClimber() {
+    return Commands.sequence(
+        new RunClimberForTime(m_climber, 0, 0.04, 0.5),
+       new RunClimberForTime(m_climber, 0, -0.04, 0.5));
+      // (Playstation/Logitech) y up, a down
   }
 
   private void addDrivebaseTestCommandsToSmartDashboard() {
@@ -505,7 +517,16 @@ public class RobotContainer {
           .whileTrue(new RunIntakeExtension(m_intake, 0.2, false));
       new Trigger(() -> m_driverController.getRawButton(
           Constants.LogitechDualshock.BButton))
-          .whileTrue(new RunIntakeExtension(m_intake, 0.1, true));
+          .whileTrue(new RunIntakeExtension(m_intake, 0.1, true));  
+    }
+    
+    if(m_climber != null) {
+      new Trigger(() -> m_driverController.getRawButton(    
+          Constants.LogitechDualshock.YButton)) 
+          .whileTrue(new RunClimber(m_climber, 0.1));
+      new Trigger(() -> m_driverController.getRawButton(
+          Constants.LogitechDualshock.AButton))
+        .whileTrue(new RunIntakeExtension(m_climber, -0.1));    
     }
   }
 

@@ -6,12 +6,15 @@ package frc.robot.commands;
 
 import static edu.wpi.first.units.Units.Degrees;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-
+import frc.robot.logging.Logger;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.utils.TargetPositioningUtils;
 
@@ -22,12 +25,22 @@ public class AlignToHub extends Command {
   IDrivebase m_drivebase;
   Rotation2d m_goalAngle;
   final PIDController m_pid;
+  Supplier<Pose2d> m_supplier;
+  Logger m_Logger;
 
   /** Creates a new AlignToHub. */
   public AlignToHub(IDrivebase drivebase) {
     m_drivebase = drivebase;
-    m_pid = new PIDController(0.002, 0, 0);
+    m_pid = new PIDController(0.004, 0.002, 0);
     m_pid.enableContinuousInput(-180, 180);
+
+    m_supplier = () -> {
+      // FINDME(Rylie): I'm pulling data from the odometry here, rather than the pose
+      // estimation, because I'm getting odd results from the latter. It looks like
+      // there may be some debugging required.
+      return m_drivebase.getOdometryPose();
+    };
+
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements((Subsystem) drivebase);
   }
@@ -35,13 +48,13 @@ public class AlignToHub extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_goalAngle = TargetPositioningUtils.getAngleToHubCenter(m_drivebase.getEstimatedPose());
+    m_goalAngle = TargetPositioningUtils.getAngleToHubCenter(m_supplier.get());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Rotation2d currentAngle = m_drivebase.getEstimatedPose().getRotation();
+    Rotation2d currentAngle = m_supplier.get().getRotation();
     Rotation2d error = m_goalAngle.minus(currentAngle);
     double rotationPercent = m_pid.calculate(0.0, error.getDegrees());
     m_drivebase.arcadeDrive(0, rotationPercent);
@@ -56,8 +69,15 @@ public class AlignToHub extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    Rotation2d currentAngle = m_drivebase.getEstimatedPose().getRotation();
+    Rotation2d currentAngle = m_supplier.get().getRotation();
     Rotation2d error = m_goalAngle.minus(currentAngle);
+    m_Logger.log(
+        String.format(
+            "Current: %3.4f, Target: %3.4f, Err: %3.4f\n",
+            currentAngle.getDegrees(),
+            m_goalAngle.getDegrees(),
+            error.getDegrees()),
+        Logger.Verbosity.Debug);
     return error.getMeasure().abs(Degrees) <= TOLERANCE.abs(Degrees);
   }
 }

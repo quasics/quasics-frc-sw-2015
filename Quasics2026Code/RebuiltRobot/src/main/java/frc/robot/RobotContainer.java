@@ -333,8 +333,8 @@ public class RobotContainer {
       return;
     }
     SmartDashboard.putData("Run climber @ 10%", new RunClimber(m_climber, .1));
-    SmartDashboard.putData(
-        "Run climber @ - 2.5%", new RunClimber(m_climber, .025));
+    SmartDashboard.putData("Run climber @ - 2.5%",
+        new RunClimber(m_climber, .025));
   }
 
   private void addDrivebaseTestCommandsToSmartDashboard() {

@@ -478,7 +478,7 @@ public class RobotContainer {
   private Command towerShot() {
     return Commands.sequence(
         new PivotHoodToPosition(m_hood, 0.15, Degrees.of(15)),
-        new RunShooterPID(m_shooter, RPM.of(3700), .387, 2));
+        new RunShooterPID(m_shooter, RPM.of(3600), .387, 2));
   }
 
   private Command trenchShot() {
@@ -503,6 +503,8 @@ public class RobotContainer {
           Constants.LogitechDualshock.BButton))
           .whileTrue(new RunIntakeExtension(m_intake, 0.1, true));
     }
+    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.StartButton))
+        .whileTrue(new AlignToHub(m_drivebase));
   }
 
   private void configureOperatorButtons() {
@@ -542,8 +544,6 @@ public class RobotContainer {
           XboxController.Button.kY.value))
           .whileTrue(
               new ShootBasedOnDistance(m_shooter, m_drivebase, 0.387, 2));
-      new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kA.value))
-          .whileTrue(new AlignToHub(m_drivebase));
     }
   }
 

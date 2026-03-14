@@ -174,7 +174,7 @@ public class RobotContainer {
    */
   private boolean m_switchDrive = false;
 
-  private final PathPlannerHelper m_autos = new PathPlannerHelper(m_drivebase);
+  private final Autos m_autos = new Autos(m_drivebase);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and

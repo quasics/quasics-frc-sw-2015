@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants;
+import frc.robot.logging.Logger;
 import frc.robot.subsystems.interfaces.IDrivebase;
 
 public class DriveForDistance extends Command {
@@ -27,6 +28,7 @@ public class DriveForDistance extends Command {
   private Distance m_targetDistance;
   private Distance m_lastReportedDistance;
   private double m_lastReportedTime;
+  Logger m_Logger = new Logger(Logger.Verbosity.Warn, "DriveForDistance");
 
   /**
    * Constructor.
@@ -82,14 +84,16 @@ public class DriveForDistance extends Command {
       final Time sampleTime = Seconds.of(now - m_lastReportedTime);
       final Distance movementSinceLastSample = currentDistance.minus(m_lastReportedDistance);
       final LinearVelocity sampleVelocity = movementSinceLastSample.div(sampleTime);
-      System.out.format(
-          "Reported left distance: %.4f m (delta: %.4f m, rawMotor: %.4f rotations, withGearing: %.4f rotations), velocity: %.4f m/s (sampled: %.2f)\n",
-          currentDistance.in(Meters),
-          movementSinceLastSample.in(Meters),
-          m_drivebase.getLeftRawDistance(),
-          m_drivebase.getLeftRawDistance() / GEARING_RATIO,
-          m_drivebase.getLeftVelocity().in(MetersPerSecond),
-          sampleVelocity.in(MetersPerSecond));
+      m_Logger.log(
+          String.format(
+              "Reported left distance: %.4f m (delta: %.4f m, rawMotor: %.4f rotations, withGearing: %.4f rotations), velocity: %.4f m/s (sampled: %.2f)\n",
+              currentDistance.in(Meters),
+              movementSinceLastSample.in(Meters),
+              m_drivebase.getLeftRawDistance(),
+              m_drivebase.getLeftRawDistance() / GEARING_RATIO,
+              m_drivebase.getLeftVelocity().in(MetersPerSecond),
+              sampleVelocity.in(MetersPerSecond)),
+          Logger.Verbosity.Debug);
     }
 
     // Retain values for next report.

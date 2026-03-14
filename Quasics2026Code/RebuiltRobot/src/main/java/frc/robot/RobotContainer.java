@@ -66,7 +66,6 @@ import static edu.wpi.first.units.Units.RPM;
 import java.util.List;
 import java.util.function.Supplier;
 
-import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 /**

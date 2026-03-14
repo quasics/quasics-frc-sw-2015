@@ -49,6 +49,7 @@ public class AlignToHub extends Command {
       // TODO: Add tuning values for Lizzie, based on its real behavior. (This can
       // also be done by performing characterization of angular movement, and feeding
       // the data into SysId.)
+      // FINDME(Rylie): Add appropriate values for Lizzie.
       m_pid = new PIDController(0.004, 0.0, 0);
     }
     m_pid.enableContinuousInput(-180, 180);

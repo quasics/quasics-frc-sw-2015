@@ -15,8 +15,13 @@ import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.IShooter;
 import frc.robot.utils.PathPlannerHelper;
 
+/**
+ * Helper class, which will build commands/command sequences for use in
+ * autonomous mode.
+ */
 public final class Autos {
   private final PathPlannerHelper m_autoHelper;
+
   /**
    * Generates a simple command sequence that could be used from either
    * alliance, anywhere on the starting line.

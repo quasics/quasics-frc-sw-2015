@@ -506,6 +506,26 @@ public class RobotContainer {
           Constants.LogitechDualshock.BButton))
           .whileTrue(new RunIntakeExtension(m_intake, 0.1, true));
     }
+  }
+
+  private void configureOperatorButtons() {
+    if (m_shooter != null) {
+      new Trigger(() -> m_operatorController.getRawButton(
+          XboxController.Button.kX.value))
+          .whileTrue(towerShot());
+      new Trigger(() -> m_operatorController.getRawButton(
+          XboxController.Button.kB.value))
+          .whileTrue(againstHubShot());
+      new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kA.value)).whileTrue(trenchShot());
+    }
+    if (m_indexer != null) {
+      new Trigger(() -> m_operatorController.getRawButton(
+          XboxController.Button.kLeftBumper.value))
+          .whileTrue(new RunIndexer(m_indexer, 0.5, true));
+      new Trigger(() -> m_operatorController.getRawButton(
+          XboxController.Button.kRightBumper.value))
+          .whileTrue(new RunIndexer(m_indexer, 0.6, false));
+    }
 
     if (m_shooter != null) {
       // FINDME(Rylie, Daniel): This isn't going to do what you think it will.
@@ -520,34 +540,13 @@ public class RobotContainer {
       // better to do it in execute() so that the target speed will be updated
       // continuously (e.g., if the robot is actually *moving* while we're
       // trying to shoot).
-      new Trigger(() -> m_driverController.getRawButton(
-          Constants.LogitechDualshock.AButton))
+      new Trigger(() -> m_operatorController.getRawButton(
+          XboxController.Button.kY.value))
           .whileTrue(
               new ShootBasedOnDistance(m_shooter, m_drivebase, 0.387, 2));
-      new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.YButton))
-          .whileTrue(new AlignToHub(m_drivebase));
-    }
-  }
-
-  private void configureOperatorButtons() {
-    if (m_shooter != null) {
-      new Trigger(() -> m_operatorController.getRawButton(
-          XboxController.Button.kX.value))
-          .whileTrue(towerShot());
-      new Trigger(() -> m_operatorController.getRawButton(
-          XboxController.Button.kB.value))
-          .whileTrue(againstHubShot());
-      new Trigger(() -> m_operatorController.getRawButton(
-          XboxController.Button.kA.value))
-          .whileTrue(trenchShot());
-    }
-    if (m_indexer != null) {
-      new Trigger(() -> m_operatorController.getRawButton(
-          XboxController.Button.kLeftBumper.value))
-          .whileTrue(new RunIndexer(m_indexer, 0.5, true));
-      new Trigger(() -> m_operatorController.getRawButton(
-          XboxController.Button.kRightBumper.value))
-          .whileTrue(new RunIndexer(m_indexer, 0.6, false));
+      // new Trigger(() ->
+      // m_operatorController.getRawButton(XboxController.Button.kA.value)).whileTrue(new
+      // AlignToHub(m_drivebase));
     }
   }
 

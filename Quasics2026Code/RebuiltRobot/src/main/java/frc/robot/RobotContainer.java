@@ -58,6 +58,7 @@ import frc.robot.subsystems.real.SparkDriveBase;
 import frc.robot.subsystems.real.Vision;
 import frc.robot.subsystems.simulated.SimulatedVision;
 import frc.robot.subsystems.simulated.SimulationDrivebase;
+import frc.robot.utils.PathPlannerHelper;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
@@ -172,8 +173,7 @@ public class RobotContainer {
    */
   private boolean m_switchDrive = false;
 
-  // Just creating the Auto Selecter
-  // private final SendableChooser<Command> autoChooser;
+  private final PathPlannerHelper m_autos = new PathPlannerHelper(m_drivebase);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and
@@ -554,7 +554,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return Autos.doNothingAtHub(m_drivebase);
-    // TODO: Fix this return PathPlannerHelper.autoChooser(m_drivebase);
+    return PathPlannerHelper.doNothingAtHub(m_drivebase);
+    // return m_autos.getAuto();
   }
 }

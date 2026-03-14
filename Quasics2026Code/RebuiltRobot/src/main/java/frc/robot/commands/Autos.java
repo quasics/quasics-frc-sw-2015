@@ -20,10 +20,6 @@ import frc.robot.utils.PathPlannerHelper;
 
 public final class Autos {
 
-  public static Command moveForward(IDrivebase drivebase) {
-    return PathPlannerHelper.getAutonomousCommand(drivebase, "MoveForward1");
-  }
-
   /**
    * Generates a simple command sequence that could be used from either alliance,
    * anywhere on the starting line.
@@ -48,11 +44,6 @@ public final class Autos {
             shooter, drivebase, 0.387, 2,
             Seconds.of(6)))
         .andThen(new PrintCommand("Done"));
-  }
-
-  public static Command doNothingAtHub(IDrivebase drivebase) {
-    drivebase.resetOdometry(new Pose2d(new Translation2d(3.879, 3.942), new Rotation2d(0)));
-    return Commands.print("Just sit there");
   }
 
   private Autos() {

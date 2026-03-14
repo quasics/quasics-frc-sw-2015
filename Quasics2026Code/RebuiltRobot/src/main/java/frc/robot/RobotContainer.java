@@ -172,7 +172,7 @@ public class RobotContainer {
    */
   private boolean m_switchDrive = false;
 
-  private final PathPlannerHelper m_autos = new PathPlannerHelper(m_drivebase);
+  private final Autos m_autos = new Autos(m_drivebase);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and
@@ -577,7 +577,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return m_autos.doNothingAtHub(m_drivebase);
-    // return m_autos.getAuto();
+    return m_autos.getAuto();
   }
 }

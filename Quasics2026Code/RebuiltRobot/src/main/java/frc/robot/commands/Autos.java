@@ -8,22 +8,24 @@ import static edu.wpi.first.units.Units.Feet;
 import static edu.wpi.first.units.Units.Seconds;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import frc.robot.commands.testing.DriveForDistance;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.IShooter;
 import frc.robot.utils.PathPlannerHelper;
 
+/**
+ * Helper class, which will build commands/command sequences for use in
+ * autonomous mode.
+ */
 public final class Autos {
+  private final PathPlannerHelper m_autoHelper;
 
   /**
-   * Generates a simple command sequence that could be used from either alliance,
-   * anywhere on the starting line.
-   * 
+   * Generates a simple command sequence that could be used from either
+   * alliance, anywhere on the starting line.
+   *
    * This sequence will:
    * <ul>
    * <li>Reset the robot's "known starting point" to (hopefully) match where the
@@ -33,7 +35,8 @@ public final class Autos {
    * <li>Shoot for 6 seconds
    * </ul>
    */
-  public static Command generateSampleStartingCommand(IDrivebase drivebase, IShooter shooter, Pose2d fieldPose) {
+  public static Command generateSampleStartingCommand(
+      IDrivebase drivebase, IShooter shooter, Pose2d fieldPose) {
     return new UpdateStartingPositionData(drivebase, fieldPose)
         .andThen(new PrintCommand("Moving"))
         .andThen(new DriveForDistance(drivebase, 0.25, Feet.of(4)))
@@ -41,12 +44,16 @@ public final class Autos {
         .andThen(new AlignToHub(drivebase))
         .andThen(new PrintCommand("Shooting"))
         .andThen(new ShootBasedOnDistanceAndTime(
-            shooter, drivebase, 0.387, 2,
-            Seconds.of(6)))
+            shooter, drivebase, 0.387, 2, Seconds.of(6)))
         .andThen(new PrintCommand("Done"));
   }
 
-  private Autos() {
-    throw new UnsupportedOperationException("This is a utility class!");
+  // TODO: Add a sequential command group.
+  public Command getAuto() {
+    return m_autoHelper.getAuto();
+  }
+
+  public Autos(IDrivebase drivebase) {
+    m_autoHelper = new PathPlannerHelper(drivebase);
   }
 }

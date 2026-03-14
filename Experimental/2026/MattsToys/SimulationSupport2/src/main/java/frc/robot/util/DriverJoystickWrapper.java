@@ -60,8 +60,7 @@ public final class DriverJoystickWrapper {
   private static final boolean DISABLED_IN_AUTONOMOUS = true;
 
   /** The preference key for saving/loading the drive control scheme. */
-  private static final String PREFERENCE_KEY_DRIVE_CONTROL_SCHEME =
-      "DriveControlScheme";
+  private static final String PREFERENCE_KEY_DRIVE_CONTROL_SCHEME = "DriveControlScheme";
 
   /** Enumeration of available drive control schemes. */
   public enum ControllerType {
@@ -168,8 +167,7 @@ public final class DriverJoystickWrapper {
   /** Sets up the drive control selection on the SmartDashboard. */
   private void addDriveControlSelectionToSmartDashboard() {
     // Build/install the chooser, establishing the saved scheme as the default
-    SendableChooser<ControllerType> driveInputChooser =
-        new SendableChooser<ControllerType>();
+    SendableChooser<ControllerType> driveInputChooser = new SendableChooser<ControllerType>();
     for (var option : ControllerType.values()) {
       if (option == currentControlScheme) {
         driveInputChooser.setDefaultOption(
@@ -178,7 +176,7 @@ public final class DriverJoystickWrapper {
         driveInputChooser.addOption(option.getControlSchemeName(), option);
       }
     }
-    SmartDashboard.putData("Drive control", driveInputChooser);
+    DashboardUtils.publishForDriveTeam("Drive control", driveInputChooser);
 
     // Register a listener to update the control scheme when the user makes a
     // selection
@@ -361,8 +359,7 @@ public final class DriverJoystickWrapper {
 
     return switch (currentControlScheme) {
       case KEYBOARD1, ALT_KEYBOARD1 -> {
-        boolean val =
-            m_primaryController.getRawButton(2); // Mapped to X key by default
+        boolean val = m_primaryController.getRawButton(2); // Mapped to X key by default
         yield val;
       }
       case LOGITECH_DUALSHOCK_CONTROLLER ->
@@ -382,8 +379,7 @@ public final class DriverJoystickWrapper {
 
     return switch (currentControlScheme) {
       case KEYBOARD1, ALT_KEYBOARD1 -> {
-        boolean val =
-            m_primaryController.getRawButton(1); // Mapped to Z key by default
+        boolean val = m_primaryController.getRawButton(1); // Mapped to Z key by default
         yield val;
       }
       case LOGITECH_DUALSHOCK_CONTROLLER ->

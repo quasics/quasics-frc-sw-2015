@@ -1,7 +1,15 @@
+// Copyright (c) 2025, Matthew J. Healy and other Quasics contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package frc.robot.util;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
+/**
+ * Simple logging utility, including volume control (which can be altered either
+ * programmatically or via a selector on the dashboard).
+ */
 public class Logger {
   /** Logging levels, controlling output. */
   public enum Level {
@@ -21,14 +29,16 @@ public class Logger {
   /** Name associated with the logger. */
   final String m_name;
 
-  final String m_label;
-
   /**
    * Current logging (output) threshold: anything less important than this will
    * not be logged.
    */
   Level m_level;
 
+  /**
+   * The dashboard selector that can be used to interactively change the threshold
+   * level for this logger.
+   */
   final SendableChooser<Level> m_levelChooser;
 
   /**
@@ -48,10 +58,16 @@ public class Logger {
     }
     m_levelChooser.setDefaultOption(level.name(), level);
 
-    m_label = name + " verbosity";
-
-    DashboardUtils.publish("Logging", m_label, m_levelChooser);
+    DashboardUtils.publish("Logging", getDashboardLabel(), m_levelChooser);
     m_levelChooser.onChange(this::loggingLevelChanged);
+  }
+
+  /**
+   * Returns the label associated with this logger's "volume control" on the
+   * dashboard.
+   */
+  private String getDashboardLabel() {
+    return m_name + " verbosity";
   }
 
   /**
@@ -72,7 +88,7 @@ public class Logger {
    * @param level new logging level to be applied
    */
   public void setLevel(Level level) {
-    var table = DashboardUtils.getNetworkTable("Logging", m_label);
+    var table = DashboardUtils.getNetworkTable("Logging", getDashboardLabel());
     table.getEntry("selected").setString(level.name());
 
     m_level = level;

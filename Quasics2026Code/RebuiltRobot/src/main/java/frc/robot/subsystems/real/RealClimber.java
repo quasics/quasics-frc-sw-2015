@@ -8,6 +8,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -17,6 +18,11 @@ import frc.robot.logging.Logger.Verbosity;
 import frc.robot.subsystems.interfaces.IClimber;
 
 public class RealClimber extends SubsystemBase implements IClimber {
+  static final String DIRECTION_PREFS_KEY = "ClimberDirection";
+  static final String NORMAL_DIRECTON_LABEL = "Normal";
+  static final int NORMAL_DIRECTION_VALUE = +1;
+  static final String INVERTED_DIRECTON_LABEL = "Inverted";
+  static final int INVERTED_DIRECTION_VALUE = -1;
 
   private SparkMax m_climber;
   private final Logger m_logger = new Logger(Verbosity.Info, "RealClimber");
@@ -33,8 +39,18 @@ public class RealClimber extends SubsystemBase implements IClimber {
     m_logger.log(Verbosity.Info,
         "CLIMBER: Creating climber on " + SparkMaxIds.CLIMBER_ID + " temp: " + m_climber.getMotorTemperature());
 
-    m_chooser.addOption("Normal", +1);
-    m_chooser.addOption("Inverted", -1);
+    // Try to load the configured direction from saved preferences (defaulting to
+    // +1).
+    m_configuredDirection = Preferences.getInt(DIRECTION_PREFS_KEY, +1);
+
+    m_chooser.addOption(NORMAL_DIRECTON_LABEL, NORMAL_DIRECTION_VALUE);
+    m_chooser.addOption(INVERTED_DIRECTON_LABEL, INVERTED_DIRECTION_VALUE);
+    if (m_configuredDirection > 0) {
+      m_chooser.setDefaultOption("Normal", NORMAL_DIRECTION_VALUE);
+    } else {
+      m_chooser.setDefaultOption("Inverted", INVERTED_DIRECTION_VALUE);
+    }
+
     Shuffleboard.getTab("Climber").add("Direction", m_chooser);
     m_chooser.onChange(this::directionSelectionChanged);
   }
@@ -42,6 +58,7 @@ public class RealClimber extends SubsystemBase implements IClimber {
   private void directionSelectionChanged(Integer direction) {
     m_logger.log(Logger.Verbosity.Info, "Direction changed to " + direction);
     m_configuredDirection = direction;
+    Preferences.setInt(DIRECTION_PREFS_KEY, m_configuredDirection);
   }
 
   @Override

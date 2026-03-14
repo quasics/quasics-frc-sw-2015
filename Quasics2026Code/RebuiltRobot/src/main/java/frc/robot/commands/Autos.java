@@ -11,7 +11,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.RunIntakeExtension;
 import frc.robot.commands.testing.DriveForDistance;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.IIntake;
@@ -34,8 +33,11 @@ public final class Autos {
    * This sequence will:
    * <ul>
    * <li>Reset the robot's "known starting point" to (hopefully) match where
-   * the drive team put it <li>Drive 4 feet forward <li>Turn and align with
-   * the aliance's hub <li>Shoot for 6 seconds
+   * the drive team put it
+   * <li>Drive 4 feet forward
+   * <li>Turn and align with
+   * the aliance's hub
+   * <li>Shoot for 6 seconds
    * </ul>
    */
   public static Command generateSampleStartingCommand(

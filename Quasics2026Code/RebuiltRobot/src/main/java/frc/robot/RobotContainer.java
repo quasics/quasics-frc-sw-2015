@@ -24,6 +24,7 @@ import frc.robot.Constants.DriveteamConstants;
 import frc.robot.Constants.PwmPortIds;
 import frc.robot.commands.AlignToHub;
 import frc.robot.commands.ArcadeDrive;
+import frc.robot.commands.Autos;
 import frc.robot.commands.PivotHoodToPosition;
 import frc.robot.commands.RunClimber;
 import frc.robot.commands.RunIndexer;
@@ -57,6 +58,7 @@ import frc.robot.subsystems.real.SparkDriveBase;
 import frc.robot.subsystems.real.Vision;
 import frc.robot.subsystems.simulated.SimulatedVision;
 import frc.robot.subsystems.simulated.SimulationDrivebase;
+import frc.robot.utils.PathPlannerHelper;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;

@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.Robot;
 import frc.robot.logging.Logger;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.utils.TargetPositioningUtils;
@@ -31,7 +32,14 @@ public class AlignToHub extends Command {
   /** Creates a new AlignToHub. */
   public AlignToHub(IDrivebase drivebase) {
     m_drivebase = drivebase;
-    m_pid = new PIDController(0.004, 0.002, 0);
+    if (Robot.isSimulation()) {
+      m_pid = new PIDController(0.004, 0.002, 0);
+    } else {
+      // TODO: Add tuning values for Lizzie, based on its real behavior. (This can
+      // also be done by performing characterization of angular movement, and feeding
+      // the data into SysId.)
+      m_pid = new PIDController(0.004, 0.0, 0);
+    }
     m_pid.enableContinuousInput(-180, 180);
 
     m_supplier = () -> {

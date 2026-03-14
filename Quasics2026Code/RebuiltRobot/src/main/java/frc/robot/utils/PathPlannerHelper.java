@@ -73,7 +73,7 @@ public class PathPlannerHelper {
     return m_chooser.getSelected();
   }
 
-  public static Command doNothingAtHub(IDrivebase drivebase) {
+  public Command doNothingAtHub(IDrivebase drivebase) {
     drivebase.resetOdometry(
         new Pose2d(new Translation2d(3.879, 3.942), new Rotation2d(0)));
     return Commands.print("Just sit there");

@@ -8,6 +8,9 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
 import frc.robot.logging.Logger;
@@ -18,6 +21,8 @@ public class RealClimber extends SubsystemBase implements IClimber {
 
   private SparkMax m_climber;
   private final Logger m_logger = new Logger(Verbosity.Info, "RealClimber");
+  private final SendableChooser<Integer> m_chooser = new SendableChooser<>();
+  private int m_configuredDirection = +1;
 
   private RelativeEncoder getEncoderClimber() {
     return m_climber.getEncoder();
@@ -28,11 +33,20 @@ public class RealClimber extends SubsystemBase implements IClimber {
     m_climber = new SparkMax(SparkMaxIds.CLIMBER_ID, MotorType.kBrushless);
     m_logger.log(Verbosity.Info,
         "CLIMBER: Creating climber on " + SparkMaxIds.CLIMBER_ID + " temp: " + m_climber.getMotorTemperature());
+
+    m_chooser.addOption("Normal", +1);
+    m_chooser.addOption("Inverted", -1);
+    Shuffleboard.getTab("Climber").add("Direction", m_chooser);
+    m_chooser.onChange(this::directionSelectionChanged);
+  }
+
+  private void directionSelectionChanged(Integer direction) {
+    m_configuredDirection = direction;
   }
 
   @Override
   public void setClimberSpeed(double speed) {
-    m_climber.set(speed);
+    m_climber.set(speed * m_configuredDirection);
   }
 
   @Override

@@ -38,7 +38,7 @@ public class AlignToHub extends Command {
   /** Supplier used to wrap the retrieval of position from the drivebase. */
   Supplier<Pose2d> m_supplier;
   /** Logging object for debugging output. */
-  Logger m_Logger = new Logger(Logger.Verbosity.Warn, "AlignToHub");
+  Logger m_Logger = new Logger(Logger.Verbosity.Debug, "AlignToHub");
 
   /** Creates a new AlignToHub. */
   public AlignToHub(IDrivebase drivebase) {
@@ -74,6 +74,14 @@ public class AlignToHub extends Command {
     Rotation2d currentAngle = m_supplier.get().getRotation();
     Rotation2d error = m_goalAngle.minus(currentAngle);
     double rotationPercent = m_pid.calculate(0.0, error.getDegrees());
+    m_Logger.log(
+        String.format(
+            "Current: %3.4f, Target: %3.4f, Err: %3.4f, Power: %3.4f",
+            currentAngle.getDegrees(),
+            m_goalAngle.getDegrees(),
+            error.getDegrees(),
+            rotationPercent),
+        Logger.Verbosity.Debug);
     m_drivebase.arcadeDrive(0, rotationPercent);
   }
 
@@ -86,13 +94,6 @@ public class AlignToHub extends Command {
   public boolean isFinished() {
     Rotation2d currentAngle = m_supplier.get().getRotation();
     Rotation2d error = m_goalAngle.minus(currentAngle);
-    m_Logger.log(
-        String.format(
-            "Current: %3.4f, Target: %3.4f, Err: %3.4f\n",
-            currentAngle.getDegrees(),
-            m_goalAngle.getDegrees(),
-            error.getDegrees()),
-        Logger.Verbosity.Debug);
     return error.getMeasure().abs(Degrees) <= TOLERANCE.abs(Degrees);
   }
 }

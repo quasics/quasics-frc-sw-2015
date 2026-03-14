@@ -3,6 +3,8 @@ package frc.robot.util;
 import java.util.HashSet;
 import java.util.Set;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -19,6 +21,24 @@ public class DashboardUtils {
 
   private static String getLookupLabel(String tabName, String label) {
     return tabName + "____" + label;
+  }
+
+  public static NetworkTable getNetworkTable(String tabName, String label) {
+    final String lookup = getLookupLabel(tabName, label);
+    if (!m_addedEntities.contains(lookup)) {
+      return null;
+    }
+
+    if (USE_SUB_TABS) {
+      return NetworkTableInstance.getDefault()
+          .getTable("Shuffleboard")
+          .getSubTable(tabName)
+          .getSubTable(label);
+    } else {
+      return NetworkTableInstance.getDefault()
+          .getTable("SmartDashboard")
+          .getSubTable(label);
+    }
   }
 
   /**

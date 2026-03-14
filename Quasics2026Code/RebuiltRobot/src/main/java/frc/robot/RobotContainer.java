@@ -334,8 +334,8 @@ public class RobotContainer {
       return;
     }
     SmartDashboard.putData("Run climber @ 10%", new RunClimber(m_climber, .1));
-    SmartDashboard.putData("Run climber @ - 2.5%",
-        new RunClimber(m_climber, -0.025));
+    SmartDashboard.putData("Run climber @ - 10%",
+        new RunClimber(m_climber, -0.1));
   }
 
   private void addDrivebaseTestCommandsToSmartDashboard() {
@@ -517,7 +517,8 @@ public class RobotContainer {
       new Trigger(() -> m_operatorController.getRawButton(
           XboxController.Button.kB.value))
           .whileTrue(againstHubShot());
-      new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kA.value)).whileTrue(trenchShot());
+      // new Trigger(() ->
+      // m_operatorController.getRawButton(XboxController.Button.kA.value)).whileTrue(trenchShot());
     }
     if (m_indexer != null) {
       new Trigger(() -> m_operatorController.getRawButton(
@@ -545,9 +546,8 @@ public class RobotContainer {
           XboxController.Button.kY.value))
           .whileTrue(
               new ShootBasedOnDistance(m_shooter, m_drivebase, 0.387, 2));
-      // new Trigger(() ->
-      // m_operatorController.getRawButton(XboxController.Button.kA.value)).whileTrue(new
-      // AlignToHub(m_drivebase));
+      new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kA.value))
+          .whileTrue(new AlignToHub(m_drivebase));
     }
   }
 

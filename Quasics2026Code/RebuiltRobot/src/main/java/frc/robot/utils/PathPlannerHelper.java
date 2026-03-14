@@ -4,6 +4,7 @@
 
 package frc.robot.utils;
 
+import static edu.wpi.first.units.Units.Degrees;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.controllers.PPLTVController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -44,8 +45,7 @@ public class PathPlannerHelper {
 
     AutoBuilder.configure(drivebase::getOdometryPose, drivebase::resetOdometry,
         drivebase::getSpeed,
-        (speeds, feedforwards)
-            -> drivebase.driveWithPid(speeds),
+        (speeds, feedforwards) -> drivebase.driveWithPid(speeds),
         new PPLTVController(0.02), config, () -> {
           System.out.println("Autos: " + AutoBuilder.getAllAutoNames());
           System.out.println(
@@ -79,7 +79,8 @@ public class PathPlannerHelper {
   // TODO: Must consider red/blue alliance positioning.
   public Command doNothingAtHub(IDrivebase drivebase) {
     drivebase.resetOdometry(
-        new Pose2d(new Translation2d(3.879, 3.942), new Rotation2d(0)));
+        // new Pose2d(new Translation2d(3.879, 3.942), new Rotation2d(0)));
+        new Pose2d(new Translation2d(13, 4), new Rotation2d(Degrees.of(180))));
     return Commands.print("Just sit there");
   }
 }

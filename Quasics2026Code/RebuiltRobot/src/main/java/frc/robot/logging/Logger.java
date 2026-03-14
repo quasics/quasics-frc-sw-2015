@@ -59,15 +59,37 @@ public class Logger {
     }
   }
 
-  public void log(String out, Verbosity verbosity) {
+  /**
+   * Logs the specified message.
+   * 
+   * @param verbosity priority associated with the message
+   * @param out       message to be logged
+   */
+  public void log(Verbosity verbosity, String out) {
     if (verbosity.ordinal() >= m_level.ordinal()) {
       System.out.println(m_name + " [" + verbosity + "]: " + out);
     }
   }
 
-  public void logError(String out, Verbosity verbosity) {
+  public void logError(Verbosity verbosity, String out) {
     if (verbosity.ordinal() >= m_level.ordinal()) {
       System.err.println(m_name + " [" + verbosity + "]: " + out);
+    }
+  }
+
+  /**
+   * Convenience function for handling formatted output (without having to
+   * actually apply formatting if the output won't get logged).
+   * 
+   * @param verbosity output level associated with this message
+   * @param format    formatting string to be used
+   * @param args      objects to be applied to the formatting string
+   * 
+   * @see java.lang.String#format(String, Object...)
+   */
+  public void logFormatted(Verbosity verbosity, String format, Object... args) {
+    if (verbosity.ordinal() >= m_level.ordinal()) {
+      log(verbosity, String.format(format, args));
     }
   }
 }

@@ -47,10 +47,10 @@ public class ArcadeDrive extends Command {
 
     if (USE_SPEED_INPUTS_DIRECTLY) {
       m_logger.log(
+          Verbosity.Debug,
           String.format(
               "linearSpeedPercent = %0.3f, angularVelocityPercent = %0.3f",
-              linearSpeedPercent, angularVelocityPercent),
-          Verbosity.Debug);
+              linearSpeedPercent, angularVelocityPercent));
       m_drivebase.arcadeDrive(linearSpeedPercent, angularVelocityPercent);
     } else {
       // Taking the values from the speed suppliers as a "% of top speed", and
@@ -64,11 +64,13 @@ public class ArcadeDrive extends Command {
       final LinearVelocity linearSpeed = AbstractDrivebase.getMaxMotorLinearSpeed().times(linearSpeedPercent);
       final AngularVelocity angularVelocity = AbstractDrivebase.getMaxMotorTurnSpeed().times(angularVelocityPercent);
 
-      m_logger.log(
-          String.format(
-              "linearSpeedPercent = %0.3f, angularVelocityPercent = %0.3f, linearSpeed = %s, angularVelocity = ",
-              linearSpeedPercent, angularVelocityPercent, linearSpeed.toShortString(), angularVelocity.toShortString()),
-          Verbosity.Debug);
+      // m_logger.log(
+      // Verbosity.Debug,
+      // String.format(
+      // "linearSpeedPercent = %0.3f, angularVelocityPercent = %0.3f, linearSpeed =
+      // %s, angularVelocity = ",
+      // linearSpeedPercent, angularVelocityPercent, linearSpeed.toShortString(),
+      // angularVelocity.toShortString()));
       m_drivebase.arcadeDrive_speeds(linearSpeed, angularVelocity);
     }
   }

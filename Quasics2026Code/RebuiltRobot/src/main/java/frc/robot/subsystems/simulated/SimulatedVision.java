@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import frc.robot.subsystems.real.Vision;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inches;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -81,7 +82,7 @@ public class SimulatedVision extends Vision {
     // FINDME(Rylie): This should ideally match the "robotToCameraTr"
     // translation being used in the base ("Vision") subsystem class's code, or else
     // the simulator will generate incorrect data.
-    Translation3d robotToCameraTr = new Translation3d(-0.05175, -0.2159, 0.51435);
+    Translation3d robotToCameraTr = new Translation3d(Inches.of(-2.25), Inches.of(-8.5), Inches.of(20.25));
 
     // What is the angling of the camera, relative to the drive base?
     //

@@ -10,20 +10,24 @@ import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
+import frc.robot.logging.Logger;
+import frc.robot.logging.Logger.Verbosity;
 import frc.robot.subsystems.interfaces.IClimber;
 
 public class RealClimber extends SubsystemBase implements IClimber {
 
-  private static SparkMax m_climber;
-  double RawPos;
+  private SparkMax m_climber;
+  private final Logger m_logger = new Logger(Verbosity.Info, "RealClimber");
 
-  public static RelativeEncoder getEncoderClimber() {
+  private RelativeEncoder getEncoderClimber() {
     return m_climber.getEncoder();
   }
 
   /** Creates a new RealClimber. */
   public RealClimber() {
     m_climber = new SparkMax(SparkMaxIds.CLIMBER_ID, MotorType.kBrushless);
+    m_logger.log("CLIMBER: Creating climber on " + SparkMaxIds.CLIMBER_ID + " temp: " + m_climber.getMotorTemperature(),
+        Verbosity.Info);
   }
 
   @Override

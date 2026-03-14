@@ -329,12 +329,13 @@ public class RobotContainer {
   }
 
   private void addClimberTestCommandsToSmartDashboard() {
+    System.out.println("CLIMBER: " + m_climber);
     if (m_climber == null) {
       return;
     }
     SmartDashboard.putData("Run climber @ 10%", new RunClimber(m_climber, .1));
     SmartDashboard.putData("Run climber @ - 2.5%",
-        new RunClimber(m_climber, .025));
+        new RunClimber(m_climber, -0.025));
   }
 
   private void addDrivebaseTestCommandsToSmartDashboard() {

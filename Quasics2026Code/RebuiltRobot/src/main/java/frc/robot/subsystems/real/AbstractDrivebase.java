@@ -184,6 +184,16 @@ public abstract class AbstractDrivebase
         Constants.MAX_LINEAR_DRIVE_SPEED.in(MetersPerSecond)));
   }
 
+  // FINDME(Robert, Rylie): This isn't doing what you think it is, or at least
+  // what the parameters would suggest. LinearVelocity and AngularVelocity are
+  // expressed in units like "meters/sec" and "degrees/second" (e.g., "2 m/s" and
+  // "45 deg/sec"), but you're sending their magnitudes (e.g., "2" and "45") to a
+  // function that expects "percentage speed" values (i.e., [-1.0..+1.0]) for
+  // these. If you're going to write the function this way, then you should
+  // arguably figure out what the drive base's maximum speeds (really) are, and
+  // then convert the parameters into %ages of those maxima.
+  //
+  // TODO: Fix the bug outlined above.
   @Override
   public void arcadeDrive(
       LinearVelocity forwardspeed, AngularVelocity turnspeed) {

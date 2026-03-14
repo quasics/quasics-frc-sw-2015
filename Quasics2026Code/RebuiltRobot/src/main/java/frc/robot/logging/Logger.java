@@ -21,6 +21,7 @@ public class Logger {
 
   public Logger(Verbosity verbosity, String name) {
     m_name = name;
+    m_level = verbosity;
 
     if (USE_SUB_PAGE_FOR_CHOOSERS) {
       var loggingTab = Shuffleboard.getTab("Logging");

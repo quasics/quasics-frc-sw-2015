@@ -11,6 +11,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.Constants;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.IShooter;
 import frc.robot.utils.ShooterCalculator;
@@ -59,7 +60,7 @@ public class ShootBasedOnDistance extends Command {
     final AngularVelocity velocityRPM = m_calculator.getSpeedToHitHubCenter(m_drivebase.getEstimatedPose());
     m_shooter.setFlywheelRPM(velocityRPM);
     if (m_timer.hasElapsed(m_kickerDelay)) {
-      m_shooter.setKickerSpeed(m_kickSpeed);
+      m_shooter.setKickerSpeed(m_kickSpeed * Constants.Ratios.KICKERPULLEYRATIO);
     }
   }
 

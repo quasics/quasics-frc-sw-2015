@@ -7,6 +7,7 @@ package frc.robot.commands.driving;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.interfaces.IDrivebasePlus;
 import frc.robot.subsystems.interfaces.IVision;
+import frc.robot.util.Logger;
 
 /**
  * A command that turns the robot in place until a target with a given ID is in
@@ -19,6 +20,8 @@ public class TurnUntilTargetInView extends Command {
   private final IDrivebasePlus m_drivebase;
   /** The ID of the target to look for. */
   private final int m_targetId;
+
+  Logger m_logger = new Logger("TurnUntilTargetInView", Logger.Verbosity.Error);
 
   /**
    * Constructor.
@@ -33,12 +36,14 @@ public class TurnUntilTargetInView extends Command {
     m_drivebase = drivebase;
     m_targetId = targetId;
     addRequirements(m_vision.asSubsystem(), m_drivebase.asSubsystem());
+
+    m_logger.setLevel(Logger.Verbosity.Warning);
   }
 
   @Override
   public void initialize() {
     if (m_vision.canSeeTargetWithId(
-            m_drivebase.getEstimatedPose(), m_targetId)) {
+        m_drivebase.getEstimatedPose(), m_targetId)) {
       // If we can already see the target, then we don't need to do anything.
       // (This is mostly to avoid a weird edge case where the command gets
       // scheduled, but then the target is immediately visible, which would
@@ -59,8 +64,8 @@ public class TurnUntilTargetInView extends Command {
 
   @Override
   public boolean isFinished() {
-    System.out.println("Visible targets: "
-        + m_vision.getVisibleTargets(m_drivebase.getEstimatedPose()));
+    m_logger.logFormatted(Logger.Verbosity.Debug, "Visible targets: %s",
+        m_vision.getVisibleTargets(m_drivebase.getEstimatedPose()));
     return m_vision.canSeeTargetWithId(
         m_drivebase.getEstimatedPose(), m_targetId);
   }

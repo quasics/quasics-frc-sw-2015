@@ -26,7 +26,7 @@ public class AlignToHub extends Command {
   Rotation2d m_goalAngle;
   final PIDController m_pid;
   Supplier<Pose2d> m_supplier;
-  Logger m_Logger;
+  Logger m_Logger = new Logger(Logger.Verbosity.Warn, "AlignToHub");
 
   /** Creates a new AlignToHub. */
   public AlignToHub(IDrivebase drivebase) {

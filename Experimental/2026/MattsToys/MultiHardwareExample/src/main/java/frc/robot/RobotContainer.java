@@ -7,7 +7,6 @@ package frc.robot;
 import static edu.wpi.first.units.Units.Inches;
 
 import com.ctre.phoenix6.hardware.TalonFX;
-
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -56,7 +55,8 @@ public class RobotContainer {
   public static final int LEFT_INTAKE_DEPLOYMENT_ID = 7;
 
   /** Selected hardware configuration. */
-  final HardwareConfig m_hardware = Robot.isSimulation() ? HardwareConfig.Simulated : HardwareConfig.Spark;
+  final HardwareConfig m_hardware =
+      Robot.isSimulation() ? HardwareConfig.Simulated : HardwareConfig.Spark;
 
   // Sets up a "single motor thing", based on the selected hardware
   // configuration.
@@ -64,20 +64,23 @@ public class RobotContainer {
     case Simulated -> new SingleMotorThingSim();
     case Spark -> new SingleMotorThingSpark(5, true);
     case SparkPair -> {
-      // Generate an example of a pair of motors being treated as a single (logical)
-      // entity (e.g., paired motors responsible for extending/retracting an intake,
-      // mounted in opposite directions from each other).
+      // Generate an example of a pair of motors being treated as a single
+      // (logical) entity (e.g., paired motors responsible for
+      // extending/retracting an intake, mounted in opposite directions from
+      // each other).
       yield new SingleMotorThingGroup(
-          new SingleMotorThingSpark(
-              RIGHT_INTAKE_DEPLOYMENT_ID, true),
+          new SingleMotorThingSpark(RIGHT_INTAKE_DEPLOYMENT_ID, true),
           new SingleMotorThingSpark(LEFT_INTAKE_DEPLOYMENT_ID, false));
     }
     case Talon -> new SingleMotorThingTalon(6);
     case TalonDirect -> {
       final TalonFX talon = new TalonFX(6);
-      final IMotorControllerPlus motorController = new TalonMotorControllerPlus(talon);
-      final TrivialEncoder encoder = new TalonEncoderWrapper(talon, Inches.of(6));
-      yield new SingleMotorThing(new SingleMotorThing.ConstructionData(motorController, encoder));
+      final IMotorControllerPlus motorController =
+          new TalonMotorControllerPlus(talon);
+      final TrivialEncoder encoder =
+          new TalonEncoderWrapper(talon, Inches.of(6));
+      yield new SingleMotorThing(
+          new SingleMotorThing.ConstructionData(motorController, encoder));
     }
     case Thrifty -> new SingleMotorThingNova(5);
     case Victor ->
@@ -111,24 +114,24 @@ public class RobotContainer {
     SmartDashboard.putData(label,
         new FunctionalCommand(
             // onInit (can't be null)
-            () -> {
-              m_singleMotorThing.setSpeed(percent);
-            },
+            ()
+                -> { m_singleMotorThing.setSpeed(percent); },
             // onExecute (can't be null)
-            () -> {
-              // No-op: speed was set in initialization
-            },
+            ()
+                -> {
+                    // No-op: speed was set in initialization
+                },
             // onEnd (can't be null)
-            (Boolean b) -> {
-              m_singleMotorThing.stop();
-            },
+            (Boolean b)
+                -> { m_singleMotorThing.stop(); },
             // isFinished (can't be null)
-            () -> false,
+            ()
+                -> false,
             // Dependency
             m_singleMotorThing.asSubsystem()));
   }
 
-  public Command getAutonomousCommand() {
+  public Command getAuto() {
     return Commands.print("No autonomous command configured");
   }
 }

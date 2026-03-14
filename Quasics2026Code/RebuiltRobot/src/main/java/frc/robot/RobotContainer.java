@@ -24,7 +24,6 @@ import frc.robot.Constants.DriveteamConstants;
 import frc.robot.Constants.PwmPortIds;
 import frc.robot.commands.AlignToHub;
 import frc.robot.commands.ArcadeDrive;
-import frc.robot.commands.Autos;
 import frc.robot.commands.PivotHoodToPosition;
 import frc.robot.commands.RunClimber;
 import frc.robot.commands.RunIndexer;
@@ -172,8 +171,7 @@ public class RobotContainer {
    */
   private boolean m_switchDrive = false;
 
-  // Just creating the Auto Selecter
-  // private final SendableChooser<Command> autoChooser;
+  private final PathPlannerHelper m_autos = new PathPlannerHelper(m_drivebase);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and
@@ -554,7 +552,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return Autos.doNothingAtHub(m_drivebase);
-    // TODO: Fix this return PathPlannerHelper.autoChooser(m_drivebase);
+    return PathPlannerHelper.doNothingAtHub(m_drivebase);
+    // return m_autos.getAuto();
   }
 }

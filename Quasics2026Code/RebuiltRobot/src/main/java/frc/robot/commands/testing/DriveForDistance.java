@@ -85,6 +85,7 @@ public class DriveForDistance extends Command {
       final Distance movementSinceLastSample = currentDistance.minus(m_lastReportedDistance);
       final LinearVelocity sampleVelocity = movementSinceLastSample.div(sampleTime);
       m_Logger.log(
+          Logger.Verbosity.Debug,
           String.format(
               "Reported left distance: %.4f m (delta: %.4f m, rawMotor: %.4f rotations, withGearing: %.4f rotations), velocity: %.4f m/s (sampled: %.2f)\n",
               currentDistance.in(Meters),
@@ -92,8 +93,7 @@ public class DriveForDistance extends Command {
               m_drivebase.getLeftRawDistance(),
               m_drivebase.getLeftRawDistance() / GEARING_RATIO,
               m_drivebase.getLeftVelocity().in(MetersPerSecond),
-              sampleVelocity.in(MetersPerSecond)),
-          Logger.Verbosity.Debug);
+              sampleVelocity.in(MetersPerSecond)));
     }
 
     // Retain values for next report.

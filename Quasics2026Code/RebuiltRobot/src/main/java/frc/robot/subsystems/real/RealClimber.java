@@ -26,8 +26,8 @@ public class RealClimber extends SubsystemBase implements IClimber {
   /** Creates a new RealClimber. */
   public RealClimber() {
     m_climber = new SparkMax(SparkMaxIds.CLIMBER_ID, MotorType.kBrushless);
-    m_logger.log("CLIMBER: Creating climber on " + SparkMaxIds.CLIMBER_ID + " temp: " + m_climber.getMotorTemperature(),
-        Verbosity.Info);
+    m_logger.log(Verbosity.Info,
+        "CLIMBER: Creating climber on " + SparkMaxIds.CLIMBER_ID + " temp: " + m_climber.getMotorTemperature());
   }
 
   @Override

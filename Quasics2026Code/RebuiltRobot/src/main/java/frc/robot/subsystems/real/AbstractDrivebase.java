@@ -209,8 +209,8 @@ public abstract class AbstractDrivebase
   public void setSpeeds(LinearVelocity leftSpeed, LinearVelocity rightSpeed) {
     m_leftMotor.set(mpsToPercent(leftSpeed));
     m_rightMotor.set(mpsToPercent(rightSpeed));
-    m_logger.log("Left Speed set to " + leftSpeed, Verbosity.Debug);
-    m_logger.log("Right Speed set to " + rightSpeed, Verbosity.Debug);
+    m_logger.log(Verbosity.Debug, "Left Speed set to " + leftSpeed);
+    m_logger.log(Verbosity.Debug, "Right Speed set to " + rightSpeed);
 
     m_robotDrive.feed();
   }
@@ -332,7 +332,7 @@ public abstract class AbstractDrivebase
     DifferentialDriveWheelSpeeds speedForMotor = m_kinematics.toWheelSpeeds(speed);
     setSpeeds(MetersPerSecond.of(speedForMotor.leftMetersPerSecond),
         MetersPerSecond.of(speedForMotor.rightMetersPerSecond));
-    // m_logger.log("SetSpeed not yet implemented", Verbosity.Warn);
+    // m_logger.log(Verbosity.Warn, "SetSpeed not yet implemented");
   }
 
   @Override

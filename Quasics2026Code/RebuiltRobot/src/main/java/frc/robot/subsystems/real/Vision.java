@@ -158,7 +158,7 @@ public class Vision extends SubsystemBase implements IVision {
     List<TargetData> listTargetData = new LinkedList<>();
     List<PhotonTrackedTarget> targets = results.getTargets();
     if (!results.hasTargets()) {
-      m_logger.log("NO TARGET DATA RETRIEVED", Verbosity.Info);
+      m_logger.log(Verbosity.Info, "NO TARGET DATA RETRIEVED");
       return listTargetData;
     }
     if (results.hasTargets()) {
@@ -176,7 +176,7 @@ public class Vision extends SubsystemBase implements IVision {
       }
     }
 
-    m_logger.log("TargetData: " + listTargetData, Verbosity.Info);
+    m_logger.log(Verbosity.Info, "TargetData: " + listTargetData);
     return listTargetData;
   }
 

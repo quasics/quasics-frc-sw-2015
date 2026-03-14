@@ -109,9 +109,11 @@ public class SimulationDrivebase extends AbstractDrivebase {
   public void simulationPeriodic() {
     // Log starting conditions
     m_logger.log(
-        "Left motor controller = " + getLeftLeader().get(), Verbosity.Debug);
+        Verbosity.Debug,
+        "Left motor controller = " + getLeftLeader().get());
     m_logger.log(
-        "Right motor controller = " + getRightLeader().get(), Verbosity.Debug);
+        Verbosity.Debug,
+        "Right motor controller = " + getRightLeader().get());
 
     // Update the simulation (m_driveSim), based on 1/50th of a second passing
     // TODO: Add abstractDriveBase getDriveSpeeds
@@ -132,8 +134,10 @@ public class SimulationDrivebase extends AbstractDrivebase {
 
     // Log the ending conditions
     m_logger.log(
-        "Left encoder = " + getLeftEncoder().getPosition(), Verbosity.Debug);
+        Verbosity.Debug,
+        "Left encoder = " + getLeftEncoder().getPosition());
     m_logger.log(
-        "Right encoder = " + getRightEncoder().getPosition(), Verbosity.Debug);
+        Verbosity.Debug,
+        "Right encoder = " + getRightEncoder().getPosition());
   }
 }

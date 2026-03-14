@@ -37,8 +37,21 @@ public interface IDrivebase {
    * @param turnspeed    turning speed (positive is clockwise, negative is
    *                     counterclockwise)
    */
-  void arcadeDrive(LinearVelocity forwardspeed, AngularVelocity turnspeed);
+  void arcadeDrive_speeds(LinearVelocity forwardspeed, AngularVelocity turnspeed);
 
+  /**
+   * Drives the robot using arcade controls. (That is, one parameter controls
+   * forward/backward speed, and the other controls turning speed.)
+   *
+   * The implementation is expected to combine these in a way that allows the
+   * robot to do both at the same time, and to turn in place when the forward
+   * speed is zero.
+   *
+   * @param forwardspeed forward/backward speed as a percentage of maximum
+   *                     velocity (positive is forward, negative is backward)
+   * @param turnspeed    turning speed as a percentage of maximum velocity
+   *                     (positive is clockwise, negative is counterclockwise)
+   */
   void arcadeDrive(double forwardPercent, double turnPercent);
 
   /**
@@ -116,7 +129,7 @@ public interface IDrivebase {
 
   default ChassisSpeeds getCurrentSpeeds() {
     return new ChassisSpeeds(getLeftVelocity(), getRightVelocity(), getTurnRate());
-    }
+  }
 
   /**
    * Convenience function, used to help the drive team tell the robot where it was
@@ -167,7 +180,7 @@ public interface IDrivebase {
     }
 
     @Override
-    public void arcadeDrive(LinearVelocity forwardspeed, AngularVelocity turnspeed) {
+    public void arcadeDrive_speeds(LinearVelocity forwardspeed, AngularVelocity turnspeed) {
       // No-op.
     }
 

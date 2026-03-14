@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.interfaces.IDrivebase;
 
-
 /** Add your docs here. */
 public class PathPlannerHelper {
   private SendableChooser<Command> m_chooser;
@@ -58,8 +57,8 @@ public class PathPlannerHelper {
           return false;
         }, drivebase.asSubsystem());
     m_chooser = AutoBuilder.buildAutoChooser();
-    // TODO: call setDefaultOption, setOption and add in non-path-planner
-    // options.
+    m_chooser.setDefaultOption("doNothingAtHub", doNothingAtHub(drivebase));
+
     SmartDashboard.putData("Auto Chooser", m_chooser);
   }
 

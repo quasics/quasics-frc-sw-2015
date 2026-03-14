@@ -7,13 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": null
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0
+            "pathName": "SitByHub"
           }
         }
       ]

@@ -587,7 +587,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return m_autos.doNothingAtHub(m_drivebase);
-    // return m_autos.getAuto();
+    return m_autos.getAuto();
   }
 }

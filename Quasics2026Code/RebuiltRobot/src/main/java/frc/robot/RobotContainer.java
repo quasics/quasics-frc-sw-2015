@@ -341,9 +341,9 @@ public class RobotContainer {
   } 
     private Command DirectionalTestClimber() {
     return Commands.sequence(
-        new RunClimberForTime(m_climber, 0, 0.04, 0.5),
-       new RunClimberForTime(m_climber, 0, -0.04, 0.5));
-      // (Playstation/Logitech) y up, a down
+        new RunClimberForTime(m_climber, 0.04, 0.5),
+       new RunClimberForTime(m_climber, -0.04, 0.5));
+      // (Playstation/Logitech) Y up, A down
   }
 
   private void addDrivebaseTestCommandsToSmartDashboard() {

@@ -59,6 +59,12 @@ public class Logger {
     }
   }
 
+  /**
+   * Logs the specified message.
+   * 
+   * @param verbosity priority associated with the message
+   * @param out       message to be logged
+   */
   public void log(Verbosity verbosity, String out) {
     if (verbosity.ordinal() >= m_level.ordinal()) {
       System.out.println(m_name + " [" + verbosity + "]: " + out);

@@ -32,6 +32,7 @@ import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.Autos;
 import frc.robot.commands.PivotHoodToPosition;
 import frc.robot.commands.RunClimber;
+import frc.robot.commands.RunClimberForTime;
 import frc.robot.commands.RunIndexer;
 import frc.robot.commands.RunIntakeExtension;
 import frc.robot.commands.RunIntakeRollers;
@@ -331,19 +332,17 @@ public class RobotContainer {
     if (m_climber == null) {
       return;
     }
-    SmartDashboard.putData("Run climber @ 10%", 
-      new RunClimber(m_climber, .1));
+    SmartDashboard.putData("Run climber @ 10%",
+        new RunClimber(m_climber, .1));
     SmartDashboard.putData("Run climber @ - 10%",
         new RunClimber(m_climber, -0.1));
-   
-    SmartDashboard.putData("Direction Climb Test",
-        new DiretionalTestClimber());
-  } 
-    private Command DirectionalTestClimber() {
-    return Commands.sequence(
-        new RunClimberForTime(m_climber, 0, 0.04, 0.5),
-       new RunClimberForTime(m_climber, 0, -0.04, 0.5));
-      // (Playstation/Logitech) y up, a down
+
+    // private Command DirectionalTestClimber() { return Commands.sequence(new
+    // RunClimberForTime(m_climber, 0, 0.04, 0.5),new RunClimberForTime(m_climber,
+    // 0, -0.04, 0.5));
+    // (Playstation/Logitech) y up, a down
+
+    // SmartDashboard.putData("Direction Climb Test", new DiretionalTestClimber());
   }
 
   private void addDrivebaseTestCommandsToSmartDashboard() {
@@ -499,6 +498,10 @@ public class RobotContainer {
         new RunShooterPID(m_shooter, RPM.of(3300), .387, 2));
   }
 
+  private Command jamFix() {
+    return Commands.parallel(new RunIndexer(m_indexer, 0.6, false), new RunShooter(m_shooter, 0, .387, false));
+  }
+
   private void configureDriverButtons() {
     if (m_intake != null) {
       new Trigger(() -> m_driverController.getRawButton(
@@ -513,16 +516,16 @@ public class RobotContainer {
           .whileTrue(new RunIntakeExtension(m_intake, 0.2, false));
       new Trigger(() -> m_driverController.getRawButton(
           Constants.LogitechDualshock.BButton))
-          .whileTrue(new RunIntakeExtension(m_intake, 0.1, true));  
+          .whileTrue(new RunIntakeExtension(m_intake, 0.1, true));
     }
-    
-    if(m_climber != null) {
-      new Trigger(() -> m_driverController.getRawButton(    
-          Constants.LogitechDualshock.YButton)) 
+
+    if (m_climber != null) {
+      new Trigger(() -> m_driverController.getRawButton(
+          Constants.LogitechDualshock.YButton))
           .whileTrue(new RunClimber(m_climber, 0.1));
       new Trigger(() -> m_driverController.getRawButton(
           Constants.LogitechDualshock.AButton))
-        .whileTrue(new RunIntakeExtension(m_climber, -0.1));    
+          .whileTrue(new RunClimber(m_climber, -0.1));
     }
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.StartButton))
         .whileTrue(new AlignToHub(m_drivebase));
@@ -536,8 +539,7 @@ public class RobotContainer {
       new Trigger(() -> m_operatorController.getRawButton(
           XboxController.Button.kB.value))
           .whileTrue(againstHubShot());
-      // new Trigger(() ->
-      // m_operatorController.getRawButton(XboxController.Button.kA.value)).whileTrue(trenchShot());
+      new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kA.value)).whileTrue(trenchShot());
     }
     if (m_indexer != null) {
       new Trigger(() -> m_operatorController.getRawButton(
@@ -545,7 +547,7 @@ public class RobotContainer {
           .whileTrue(new RunIndexer(m_indexer, 0.5, true));
       new Trigger(() -> m_operatorController.getRawButton(
           XboxController.Button.kRightBumper.value))
-          .whileTrue(new RunIndexer(m_indexer, 0.6, false));
+          .whileTrue(jamFix());
     }
 
     if (m_shooter != null) {

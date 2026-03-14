@@ -1,9 +1,12 @@
 package frc.robot.logging;
 
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Logger {
+  private final static boolean USE_SUB_PAGE_FOR_CHOOSERS = false;
+
   // Generally want to set verbosity per-subsystem
   public enum Verbosity {
     Debug, // Super duper debug - often want to set per-subsystem
@@ -19,7 +22,12 @@ public class Logger {
   public Logger(Verbosity verbosity, String name) {
     m_name = name;
 
-    SmartDashboard.putData(m_name + " Verbosity", m_chooser);
+    if (USE_SUB_PAGE_FOR_CHOOSERS) {
+      var loggingTab = Shuffleboard.getTab("Logging");
+      loggingTab.add(m_name + " Verbosity", m_chooser);
+    } else {
+      SmartDashboard.putData(m_name + " Verbosity", m_chooser);
+    }
 
     m_chooser.setDefaultOption(toString(verbosity), verbosity);
     m_chooser.addOption("Debug", Verbosity.Debug);

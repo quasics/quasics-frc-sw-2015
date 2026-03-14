@@ -46,11 +46,7 @@ public class AlignToHub extends Command {
     if (Robot.isSimulation()) {
       m_pid = new PIDController(0.004, 0.002, 0);
     } else {
-      // TODO: Add tuning values for Lizzie, based on its real behavior. (This can
-      // also be done by performing characterization of angular movement, and feeding
-      // the data into SysId.)
-      // FINDME(Rylie): Add appropriate values for Lizzie.
-      m_pid = new PIDController(0.004, 0.0, 0);
+      m_pid = new PIDController(0.0035, 0.0, 0);
     }
     m_pid.enableContinuousInput(-180, 180);
 
@@ -75,14 +71,13 @@ public class AlignToHub extends Command {
     Rotation2d error = m_goalAngle.minus(currentAngle);
     error = error.unaryMinus();
     double rotationPercent = m_pid.calculate(0.0, error.getDegrees());
-    m_Logger.log(
+    System.out.print(
         String.format(
             "Current: %3.4f, Target: %3.4f, Err: %3.4f, Power: %3.4f",
             currentAngle.getDegrees(),
             m_goalAngle.getDegrees(),
             error.getDegrees(),
-            rotationPercent),
-        Logger.Verbosity.Debug);
+            rotationPercent));
     m_drivebase.arcadeDrive(0, rotationPercent);
   }
 
@@ -95,12 +90,6 @@ public class AlignToHub extends Command {
   public boolean isFinished() {
     Rotation2d currentAngle = m_supplier.get().getRotation();
     Rotation2d error = m_goalAngle.minus(currentAngle);
-    System.out.print(
-        String.format(
-            "Current: %3.4f, Target: %3.4f, Err: %3.4f\n",
-            currentAngle.getDegrees(),
-            m_goalAngle.getDegrees(),
-            error.getDegrees()));
     return error.getMeasure().abs(Degrees) <= TOLERANCE.abs(Degrees);
   }
 }

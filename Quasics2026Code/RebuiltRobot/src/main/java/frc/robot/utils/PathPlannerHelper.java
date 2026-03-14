@@ -4,25 +4,24 @@
 
 package frc.robot.utils;
 
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.interfaces.IDrivebase;
-
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.controllers.PPLTVController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.subsystems.interfaces.IDrivebase;
+
 
 /** Add your docs here. */
 public class PathPlannerHelper {
-  public PathPlannerHelper() throws IllegalAccessException {
-    throw new IllegalAccessException("Don't do that!! :(");
-  }
+  private SendableChooser<Command> m_chooser;
 
-  // TODO: Make sure this only happens once
-  public static boolean configureAutoBuilder(
-      IDrivebase drivebase) {
+  public PathPlannerHelper(IDrivebase drivebase) {
     com.pathplanner.lib.config.RobotConfig config = null;
     try {
       config = com.pathplanner.lib.config.RobotConfig.fromGUISettings();
@@ -41,35 +40,42 @@ public class PathPlannerHelper {
           "Drive Current Limit:" + config.moduleConfig.driveCurrentLimit);
 
     } catch (Exception e) {
-      System.out.println("Hey! Listen!");
       e.printStackTrace();
     }
 
-    AutoBuilder.configure(drivebase::getOdometryPose,
-        drivebase::resetOdometry, drivebase::getSpeed,
-        (speeds, feedforwards) -> drivebase.driveWithPid(speeds),
+    AutoBuilder.configure(drivebase::getOdometryPose, drivebase::resetOdometry,
+        drivebase::getSpeed,
+        (speeds, feedforwards)
+            -> drivebase.driveWithPid(speeds),
         new PPLTVController(0.02), config, () -> {
+          System.out.println("Autos: " + AutoBuilder.getAllAutoNames());
+          System.out.println(
+              "Is AutoBuilder Configured: " + AutoBuilder.isConfigured());
           var alliance = DriverStation.getAlliance();
           if (alliance.isPresent()) {
             return alliance.get() == DriverStation.Alliance.Red;
           }
           return false;
-        },
-        drivebase.asSubsystem());
-    return true;
+        }, drivebase.asSubsystem());
+    m_chooser = AutoBuilder.buildAutoChooser();
+    // TODO: call setDefaultOption, setOption and add in non-path-planner
+    // options.
+    SmartDashboard.putData("Auto Chooser", m_chooser);
   }
 
-  public static Command getAutonomousCommand(IDrivebase drivebase, String auto) {
-    configureAutoBuilder(drivebase);
-    return new PathPlannerAuto(auto);
+  /**
+   * Get the auto command which is selected in our dropdown
+   *
+   * @return the auto command by the queried name
+   */
+  public Command getAuto() {
+    System.out.println("Auto chooser" + m_chooser.getSelected());
+    return m_chooser.getSelected();
   }
 
-  public static Command autoChooser(IDrivebase drivebase) {
-    System.out.println("AutoChooser is being called!");
-    configureAutoBuilder(drivebase);
-    SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
-    SmartDashboard.putData("Auto Chooser", autoChooser);
-    // DifferentialDrive.m_rightMotor.setSafetyEnabled(false);
-    return autoChooser.getSelected();
+  public Command doNothingAtHub(IDrivebase drivebase) {
+    drivebase.resetOdometry(
+        new Pose2d(new Translation2d(3.879, 3.942), new Rotation2d(0)));
+    return Commands.print("Just sit there");
   }
 }

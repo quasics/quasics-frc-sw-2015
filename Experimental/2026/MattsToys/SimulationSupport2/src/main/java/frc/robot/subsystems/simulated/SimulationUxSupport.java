@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.subsystems.interfaces.IClimber;
 import frc.robot.subsystems.interfaces.IElevator;
 import frc.robot.subsystems.interfaces.ISingleJointArm;
+import frc.robot.util.DashboardUtils;
 
 /**
  * Support for simulation user experience (UX).
@@ -39,8 +40,7 @@ public class SimulationUxSupport {
   private static final String ELEVATOR_KEY = IElevator.SUBSYSTEM_NAME + " Sim";
 
   /** Color used to mark a fixed target position for the elevator's reach. */
-  private static final Color8Bit FIXED_POSITION_COLOR =
-      new Color8Bit(0, 0, 255);
+  private static final Color8Bit FIXED_POSITION_COLOR = new Color8Bit(0, 0, 255);
 
   /**
    * Color used to mark the elevator's floor ("zero point", which may be
@@ -116,9 +116,8 @@ public class SimulationUxSupport {
         (SimElevator.getDefinedHeightForPosition(IElevator.ElevatorPosition.TOP)
             * 1.15) // Leave a little room at the top
     );
-    m_elevatorMech2d =
-        m_elevatorAndArmRootMech2d.getRoot("Root", 5, 0)
-            .append(new MechanismLigament2d(IElevator.SUBSYSTEM_NAME, 0, 90));
+    m_elevatorMech2d = m_elevatorAndArmRootMech2d.getRoot("Root", 5, 0)
+        .append(new MechanismLigament2d(IElevator.SUBSYSTEM_NAME, 0, 90));
     m_armMech2d = m_elevatorMech2d.append(
         new MechanismLigament2d(ISingleJointArm.SUBSYSTEM_NAME, ARM_LENGTH, 0));
 
@@ -127,9 +126,8 @@ public class SimulationUxSupport {
         ((SimClimber.MAX_HEIGHT - SimClimber.MIN_HEIGHT)
             * 1.15) // Leave a little room at the top
     );
-    m_climberMech2d =
-        m_climberRootMech2d.getRoot("Root", 5, 0)
-            .append(new MechanismLigament2d(IClimber.SUBSYSTEM_NAME, 0, 90));
+    m_climberMech2d = m_climberRootMech2d.getRoot("Root", 5, 0)
+        .append(new MechanismLigament2d(IClimber.SUBSYSTEM_NAME, 0, 90));
 
     // Render climber boundary markers
     addClimberMarkers();
@@ -259,6 +257,8 @@ public class SimulationUxSupport {
     }
   }
 
+  final static boolean PUBLISH_TO_SIMULATION_TAB = true;
+
   /**
    * Lazily publishes a mechanism to SmartDashboard if it hasn't already been
    * published.
@@ -267,9 +267,7 @@ public class SimulationUxSupport {
    * @param sendable item to publish
    */
   private static void lazyPublishToSmartDashboard(String key, Sendable item) {
-    if (!SmartDashboard.containsKey(key)) {
-      SmartDashboard.putData(key, item);
-    }
+    DashboardUtils.publish("Simulation", key, item);
   }
 
   /**
@@ -328,7 +326,7 @@ public class SimulationUxSupport {
    * doing so).
    *
    * @param label     label associated with the estimated pose (e.g.,
-   *     "Odometry")
+   *                  "Odometry")
    * @param robotPose current estimated pose of the robot
    */
   public void updateEstimatedRobotPose(String label, Pose2d robotPose) {

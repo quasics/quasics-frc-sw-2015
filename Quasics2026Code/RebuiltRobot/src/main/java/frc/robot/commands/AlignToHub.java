@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copyright (c) 2026, Quasics Robotics and other contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -19,14 +19,25 @@ import frc.robot.logging.Logger;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.utils.TargetPositioningUtils;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
+/**
+ * Command to make the robot automatically turn so that its heading is aligned
+ * with the center of our alliance's hub.
+ */
 public class AlignToHub extends Command {
-  final static Angle TOLERANCE = Degrees.of(1);
+  /** Tolerance for alignment. */
+  final static Angle TOLERANCE = Robot.isReal()
+      ? Degrees.of(4)
+      : Degrees.of(1);
 
+  /** Drivebase being controlled. */
   IDrivebase m_drivebase;
+  /** Angle we want to get to. (Set in initialize().) */
   Rotation2d m_goalAngle;
+  /** PID controller, used to set drivebase speeds. */
   final PIDController m_pid;
+  /** Supplier used to wrap the retrieval of position from the drivebase. */
   Supplier<Pose2d> m_supplier;
+  /** Logging object for debugging output. */
   Logger m_Logger = new Logger(Logger.Verbosity.Warn, "AlignToHub");
 
   /** Creates a new AlignToHub. */

@@ -69,11 +69,13 @@ public class AlignToHub extends Command {
   public void execute() {
     Rotation2d currentAngle = m_supplier.get().getRotation();
     Rotation2d error = m_goalAngle.minus(currentAngle);
-    error = error.unaryMinus();
+    if (Robot.isReal()) {
+      error = error.unaryMinus();
+    }
     double rotationPercent = m_pid.calculate(0.0, error.getDegrees());
     System.out.print(
         String.format(
-            "Current: %3.4f, Target: %3.4f, Err: %3.4f, Power: %3.4f",
+            "Current: %3.4f, Target: %3.4f, Err: %3.4f, Power: %3.4f \n",
             currentAngle.getDegrees(),
             m_goalAngle.getDegrees(),
             error.getDegrees(),

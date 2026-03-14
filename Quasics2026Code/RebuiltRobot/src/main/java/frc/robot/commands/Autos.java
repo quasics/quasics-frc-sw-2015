@@ -10,8 +10,11 @@ import static edu.wpi.first.units.Units.Seconds;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.RunIntakeExtension;
 import frc.robot.commands.testing.DriveForDistance;
 import frc.robot.subsystems.interfaces.IDrivebase;
+import frc.robot.subsystems.interfaces.IIntake;
 import frc.robot.subsystems.interfaces.IShooter;
 import frc.robot.utils.PathPlannerHelper;
 
@@ -21,6 +24,8 @@ import frc.robot.utils.PathPlannerHelper;
  */
 public final class Autos {
   private final PathPlannerHelper m_autoHelper;
+  IIntake m_Intake;
+  IShooter m_Shooter;
 
   /**
    * Generates a simple command sequence that could be used from either
@@ -28,11 +33,9 @@ public final class Autos {
    *
    * This sequence will:
    * <ul>
-   * <li>Reset the robot's "known starting point" to (hopefully) match where the
-   * drive team put it
-   * <li>Drive 4 feet forward
-   * <li>Turn and align with the aliance's hub
-   * <li>Shoot for 6 seconds
+   * <li>Reset the robot's "known starting point" to (hopefully) match where
+   * the drive team put it <li>Drive 4 feet forward <li>Turn and align with
+   * the aliance's hub <li>Shoot for 6 seconds
    * </ul>
    */
   public static Command generateSampleStartingCommand(
@@ -50,7 +53,16 @@ public final class Autos {
 
   // TODO: Add a sequential command group.
   public Command getAuto() {
-    return m_autoHelper.getAuto();
+    Command autoCommand;
+    switch (m_autoHelper.getAutoName()) {
+      case "BackOutAndShoot1":
+        autoCommand = new RunShooterForTime(m_Shooter, 5, 2, true, 5);
+
+      default:
+        autoCommand = null;
+    }
+
+    return new SequentialCommandGroup(m_autoHelper.getAuto(), autoCommand);
   }
 
   public Autos(IDrivebase drivebase) {

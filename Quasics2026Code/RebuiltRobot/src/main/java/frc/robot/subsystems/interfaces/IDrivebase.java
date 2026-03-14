@@ -23,6 +23,9 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import java.util.function.Supplier;
 
+/**
+ * Interface for drive base functionality.
+ */
 public interface IDrivebase {
   /**
    * Drives the robot using arcade controls. (That is, one parameter controls

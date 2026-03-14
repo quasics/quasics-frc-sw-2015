@@ -88,7 +88,7 @@ public class Logger {
    */
   public void log(Verbosity level, String output) {
     if (level.ordinal() <= m_level.ordinal()) {
-      System.out.format("[%s] %s\n", m_name, output);
+      System.out.format("%s [%s] %s\n", m_name, level.name(), output);
     }
   }
 

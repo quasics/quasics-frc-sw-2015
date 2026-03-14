@@ -61,7 +61,6 @@ public class AlignToHub extends Command {
       return m_drivebase.getOdometryPose();
     };
 
-    // Use addRequirements() here to declare subsystem dependencies.
     addRequirements((Subsystem) drivebase);
   }
 

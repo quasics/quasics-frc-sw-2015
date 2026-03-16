@@ -110,8 +110,8 @@ public final class Autos {
           Degrees.of(15), leftBumpPose));
 
       Pose2d hubPose = switch (alliance) {
-        case Red -> new Pose2d(new Translation2d(12.989, 4.035), new Rotation2d(Degrees.of(0)));
-        case Blue -> new Pose2d(new Translation2d(3.552, 4.035), new Rotation2d(Degrees.of(180)));
+        case Red -> new Pose2d(new Translation2d(12.989, 4.035), new Rotation2d(Degrees.of(180)));
+        case Blue -> new Pose2d(new Translation2d(3.552, 4.035), new Rotation2d(Degrees.of(0)));
       };
       m_sequenceChooser.addOption("Hub", hubAuto(m_drivebase, m_shooter, m_hood, 15, hubPose));
 

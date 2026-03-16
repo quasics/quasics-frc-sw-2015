@@ -97,7 +97,10 @@ public class RobotContainer {
    */
   private static final boolean OVERRIDE_DEFAULT_LIGHTING_WHILE_DISABLED = false;
 
+  /** Default robot configuration under simulation. */
   private static final RobotConfigLibrary.Robot DEFAULT_SIMULATION_ROBOT = RobotConfigLibrary.Robot.Simulation;
+
+  /** Default robot configuration when deploying to real hardware. */
   private static final RobotConfigLibrary.Robot DEFAULT_LIVE_ROBOT = RobotConfigLibrary.Robot.Sally;
 
   /**

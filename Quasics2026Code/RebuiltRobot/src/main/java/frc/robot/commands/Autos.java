@@ -94,6 +94,7 @@ public final class Autos {
     Optional<Alliance> optionalAlliance = DriverStation.getAlliance();
     if (optionalAlliance.isPresent()) {
       Alliance alliance = optionalAlliance.get();
+      System.out.println("Alliance is " + alliance);
       Pose2d leftTrenchPose = switch (alliance) {
         case Red -> new Pose2d(new Translation2d(12.57, 0.634), new Rotation2d(Degrees.of(0)));
         case Blue -> new Pose2d(new Translation2d(3.971, 7.436), new Rotation2d(Degrees.of(180)));
@@ -130,8 +131,11 @@ public final class Autos {
     }
   }
 
-  public Autos(IDrivebase drivebase) {
+  public Autos(IDrivebase drivebase, IShooter shooter, IShooterHood hood) {
     m_autoHelper = new PathPlannerHelper(drivebase);
+    m_drivebase = drivebase;
+    m_shooter = shooter;
+    m_hood = hood;
     configureSequenceSelector();
     SmartDashboard.putData("Sequence Chooser", m_sequenceChooser);
   }

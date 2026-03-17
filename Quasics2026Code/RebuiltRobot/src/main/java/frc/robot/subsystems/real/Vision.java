@@ -16,9 +16,6 @@ import frc.robot.logging.Logger;
 import frc.robot.logging.Logger.Verbosity;
 import frc.robot.subsystems.interfaces.IVision;
 
-import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.Inches;
-
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -41,15 +38,14 @@ public class Vision extends SubsystemBase implements IVision {
   protected PhotonPoseEstimator photonEstimator;
   private Pose3d latestPose3d = new Pose3d();
   protected Pose2d latestPose2d = new Pose2d();
-  private Translation3d robotToCamTrl = new Translation3d(Inches.of(-2.25), Inches.of(-8.5), Inches.of(20.25));
-  // up 20.25, offset 2.25 inches behind center, 8.5 inches
-  private Rotation3d robotToCameraRot = new Rotation3d(Degrees.of(0), Degrees.of(-15), Degrees.of(0));
-  private Transform3d robotToCamera = new Transform3d(robotToCamTrl, robotToCameraRot);
+  private final Transform3d robotToCamera;
 
   private final Logger m_logger = new Logger(Logger.Verbosity.Info, "Vision");
 
   /** Constructor. */
-  public Vision() {
+  public Vision(Translation3d robotToCameraTranslation, Rotation3d robotToCameraRotation3d) {
+    robotToCamera = new Transform3d(robotToCameraTranslation, robotToCameraRotation3d);
+
     AprilTagFieldLayout tagLayout = null;
     try {
       tagLayout = AprilTagFieldLayout.loadFromResource(

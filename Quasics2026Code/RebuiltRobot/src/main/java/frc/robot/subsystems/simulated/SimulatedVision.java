@@ -13,9 +13,6 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import frc.robot.subsystems.real.Vision;
 
-import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.Inches;
-
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
@@ -45,8 +42,19 @@ public class SimulatedVision extends Vision {
   private PhotonCameraSim cameraSim;
   private static final AprilTagFields FIELD_LAYOUT = AprilTagFields.k2026RebuiltAndymark;
 
-  /** Creates a new SimulatedVision. */
-  public SimulatedVision() {
+  /**
+   * Creates a new SimulatedVision.
+   * 
+   * @param robotToCameraTranslation translation (offsets in 3D space) from the
+   *                                 robot's "center of base and forward" position
+   *                                 to the camera
+   * @param robotToCameraRotation3d  rotation (offset angles in 3D space) from the
+   *                                 robot's "center of base and straight forward"
+   *                                 position to the camera
+   */
+  public SimulatedVision(Translation3d robotToCameraTranslation, Rotation3d robotToCameraRotation3d) {
+    super(robotToCameraTranslation, robotToCameraRotation3d);
+
     m_visionSim = new VisionSystemSim("main");
     AprilTagFieldLayout tagLayout = null;
     try {
@@ -77,26 +85,9 @@ public class SimulatedVision extends Vision {
     // configuration), and add it to the overall vision simulator.
     //
 
-    // Where is the camera located, relative to the center of the robot's base?
-    //
-    // FINDME(Rylie): This should ideally match the "robotToCameraTr"
-    // translation being used in the base ("Vision") subsystem class's code, or else
-    // the simulator will generate incorrect data.
-    Translation3d robotToCameraTr = new Translation3d(Inches.of(-2.25), Inches.of(-8.5), Inches.of(20.25));
-
-    // What is the angling of the camera, relative to the drive base?
-    //
-    // FINDME(Rylie): This is currently not actually set. It should reflect any
-    // actual "robotToCamera" rotation being used in the base ("Vision")
-    // subsystem class's code, or else the simulator will generate incorrect data.
-    Rotation3d robotToCameraRot = new Rotation3d(Degrees.of(0), Degrees.of(-15), Degrees.of(0));
-
     // Create the overall transformation used to convert data from the robot's
     // perspective to the camera's.
-    //
-    // FINDME(Rylie): This should ideally match the "robotToCamera"
-    // configuration being used in the base ("Vision") subsystem class's code.
-    Transform3d robotToCamera = new Transform3d(robotToCameraTr, robotToCameraRot);
+    Transform3d robotToCamera = new Transform3d(robotToCameraTranslation, robotToCameraRotation3d);
 
     // Allocate the camera simulation object.
     cameraSim = new PhotonCameraSim(camera, cameraProp);

@@ -5,11 +5,14 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
 
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -74,6 +77,12 @@ import java.util.function.Supplier;
 public class RobotContainer {
   private static final int SIDE_LIGHTING_LENGTH = Constants.LIGHTING_TOTAL_LENGTH / 2;
 
+  private static final Translation3d robotToCamTranslation = new Translation3d(Inches.of(-2.25), Inches.of(-8.5),
+      Inches.of(20.25));
+
+  // up 20.25, offset 2.25 inches behind center, 8.5 inches
+  private static final Rotation3d robotToCameraRot = new Rotation3d(Degrees.of(0), Degrees.of(-15), Degrees.of(0));
+
   //
   // Support for a limited mechanism of establishing per-robot configuration
   // control.
@@ -113,9 +122,9 @@ public class RobotContainer {
     case Simulated -> new SimulationDrivebase();
   };
   private final IVision m_vision = switch (ROBOT_NAME) {
-    case Lizzie -> new Vision();
+    case Lizzie -> new Vision(robotToCamTranslation, robotToCameraRot);
     case Sally -> new IVision.NullVision();
-    case Simulated -> new SimulatedVision();
+    case Simulated -> new SimulatedVision(robotToCamTranslation, robotToCameraRot);
   };
   private final IIntake m_intake = switch (ROBOT_NAME) {
     case Lizzie -> new RealIntake();

@@ -32,7 +32,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
  * Vision subsystem implementation.
  */
 public class Vision extends SubsystemBase implements IVision {
-  private static final AprilTagFields FIELD_LAYOUT = AprilTagFields.kDefaultField;
+  protected static final AprilTagFields FIELD_LAYOUT = AprilTagFields.k2026RebuiltWelded;
   private final AprilTagFieldLayout m_tagLayout;
   protected PhotonCamera camera = new PhotonCamera("PC_Camera");
   protected PhotonPoseEstimator photonEstimator;

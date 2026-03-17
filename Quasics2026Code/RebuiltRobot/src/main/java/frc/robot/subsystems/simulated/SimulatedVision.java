@@ -40,7 +40,6 @@ public class SimulatedVision extends Vision {
   private VisionSystemSim m_visionSim;
   private SimCameraProperties cameraProp;
   private PhotonCameraSim cameraSim;
-  private static final AprilTagFields FIELD_LAYOUT = AprilTagFields.k2026RebuiltAndymark;
 
   /**
    * Creates a new SimulatedVision.

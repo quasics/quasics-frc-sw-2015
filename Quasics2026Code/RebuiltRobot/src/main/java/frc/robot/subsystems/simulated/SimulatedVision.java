@@ -55,19 +55,10 @@ public class SimulatedVision extends Vision {
     super(robotToCameraTranslation, robotToCameraRotation3d);
 
     m_visionSim = new VisionSystemSim("main");
-    AprilTagFieldLayout tagLayout = null;
-    try {
-      tagLayout = AprilTagFieldLayout.loadFromResource(FIELD_LAYOUT.m_resourceFile);
-    } catch (IOException ioe) {
-      System.err.println(
-          "Warning: failed to load April Tags layout (" + FIELD_LAYOUT + ")");
-      ioe.printStackTrace();
-    }
-
-    if (tagLayout != null) {
-      m_visionSim.addAprilTags(tagLayout);
+    if (m_tagLayout != null) {
+      m_visionSim.addAprilTags(m_tagLayout);
     } else {
-      System.err.println("Warning: no April Tags layout loaded.");
+      System.err.println("Warning: no April Tags layout available for simulated vision.");
     }
 
     // Set up the properties selected for our simulated camera (e.g., 640x480
@@ -115,6 +106,7 @@ public class SimulatedVision extends Vision {
     if (drivePose != null) {
       m_visionSim.update(getDrivebasePose());
     }
+
     // 2. Update the simulator to reflect where the (purely) vision-based pose
     // estimate suggests that we are located.
     List<Pose2d> estimatedPoses = Collections.emptyList();
@@ -126,6 +118,7 @@ public class SimulatedVision extends Vision {
     if (estimatedPoses != null) {
       debugField.getObject("VisionEstimate").setPoses(estimatedPoses);
     } else {
+      // Don't have an estimated position
       debugField.getObject("VisionEstimate").setPoses(Collections.emptyList());
     }
   }

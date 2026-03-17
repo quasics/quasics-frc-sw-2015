@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.real;
 
+import static edu.wpi.first.units.Units.Meters;
+
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.thethriftybot.devices.ThriftyNova;
 import com.thethriftybot.devices.ThriftyNova.EncoderType;
@@ -18,6 +20,12 @@ import frc.robot.hardware.sensors.ThriftyEncoderWrapper;
 import frc.robot.hardware.sensors.TrivialEncoder;
 
 public class NovaDriveBase extends AbstractDrivebase {
+  /** Track width (distance between left and right wheels) in meters. */
+  // TODO: This should reflect the current robot (Lizzie), and not one from 2024.
+  // FINDME(Robert, Rylie): Update the track width to match Lizzie's dimensions.
+  // Otherwise, path following will be incorrect.
+  public static final Distance TRACK_WIDTH = Meters.of(0.5588); /* 22 inches (from 2024) */
+
   private final TrivialEncoder m_leftEncoder;
   private final TrivialEncoder m_rightEncoder;
 
@@ -72,7 +80,8 @@ public class NovaDriveBase extends AbstractDrivebase {
       ThriftyNova leftController, ThriftyNova rightController) {
     super(
         new ThriftyNovaMotorControllerPlus(leftController),
-        new ThriftyNovaMotorControllerPlus(rightController));
+        new ThriftyNovaMotorControllerPlus(rightController),
+        TRACK_WIDTH);
 
     // Configure followers to follow the leaders.
     configureMotorControllersForFollowing(

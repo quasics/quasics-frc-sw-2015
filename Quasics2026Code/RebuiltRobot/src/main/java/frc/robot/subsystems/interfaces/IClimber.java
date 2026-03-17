@@ -8,26 +8,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
  * Interface for controlling the climbing hardware.
+ * 
+ * (1 motor)
+ * Extend and retract the climber
  *
- * TODO: Define the climber interface (and then implement it).
+ * Need to talk to folks about limit switches, etc.
  */
-
 public interface IClimber {
-  void stopClimber();
-
-  // double getClimberPosition();
-  // ****************************************************
-
-  /*
-   * (1 motor)
-   * Extend and retract the climber
-   *
-   * Need to talk to folks about limit switches, etc.
-   */
-
-  default void stop() {
-    stopClimber();
-  }
+  void stop();
 
   double getClimberPosition();
 
@@ -38,9 +26,8 @@ public interface IClimber {
    * one.
    */
   public class NullClimber extends SubsystemBase implements IClimber {
-    // public NullClimber() {
     @Override
-    public void stopClimber() {
+    public void stop() {
     }
 
     @Override
@@ -51,7 +38,5 @@ public interface IClimber {
     public double getClimberPosition() {
       return 0;
     }
-
   }
-
 }

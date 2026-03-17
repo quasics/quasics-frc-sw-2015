@@ -46,7 +46,7 @@ public class AlignToHub extends Command {
     if (Robot.isSimulation()) {
       m_pid = new PIDController(0.004, 0.002, 0);
     } else {
-      m_pid = new PIDController(0.0035, 0.0, 0);
+      m_pid = new PIDController(0.004, 0.0, 0);
     }
     m_pid.enableContinuousInput(-180, 180);
 
@@ -80,7 +80,7 @@ public class AlignToHub extends Command {
             m_goalAngle.getDegrees(),
             error.getDegrees(),
             rotationPercent));
-    m_drivebase.arcadeDrive(0, rotationPercent);
+    m_drivebase.arcadeDrive(0, rotationPercent * 4);
   }
 
   @Override
@@ -92,6 +92,9 @@ public class AlignToHub extends Command {
   public boolean isFinished() {
     Rotation2d currentAngle = m_supplier.get().getRotation();
     Rotation2d error = m_goalAngle.minus(currentAngle);
+    System.out
+        .println(
+            "error degrees: " + error.getMeasure().abs(Degrees) + "\n tolerance degrees: " + TOLERANCE.abs(Degrees));
     return error.getMeasure().abs(Degrees) <= TOLERANCE.abs(Degrees);
   }
 }

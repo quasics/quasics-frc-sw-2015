@@ -5,14 +5,14 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
 
-import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -64,7 +64,6 @@ import frc.robot.subsystems.real.SparkDriveBase;
 import frc.robot.subsystems.real.Vision;
 import frc.robot.subsystems.simulated.SimulatedVision;
 import frc.robot.subsystems.simulated.SimulationDrivebase;
-import frc.robot.utils.PathPlannerHelper;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -74,12 +73,46 @@ import java.util.function.Supplier;
  * actually be handled in the {@link Robot} periodic methods (other than the
  * scheduler calls). Instead, the structure of the robot (including subsystems,
  * commands, and trigger mappings) should be declared here.
- *
- * TODO: Matt should clean up this comment.
  */
 public class RobotContainer {
   private static final int SIDE_LIGHTING_LENGTH =
       Constants.LIGHTING_TOTAL_LENGTH / 2;
+
+  //
+  // Camera positioning constants.
+  //
+  // TODO: These need to be updated to reflect the actual positioning of the
+  // camera on Lizzie.
+  //
+  // FINDME(Rylie): Take care of the updates needed here.
+  //
+
+  /**
+   * Translation (offsets in 3D space) from the robot's "center of base and
+   * forward" position to the camera. (Remember that +X is forward, +Y is to the
+   * *left*, and +Z is up!)
+   */
+  private static final Translation3d robotToCamTranslation = new Translation3d(
+      // X offset from the robot's center, along the line of travel (forward is
+      // positive)
+      Inches.of(-2.25),
+      // Y offset from the robot's center (*left* is positive, which isn't what
+      // you'd usually expect)
+      Inches.of(-8.5),
+      // Z offset from the robot's "center of base" (up is positive)
+      Inches.of(20.25));
+
+  /**
+   * Rrotation (offset angles in 3D space) from the robot's "center of base and
+   * straight forward" position to the camera.
+   */
+  private static final Rotation3d robotToCameraRot = new Rotation3d(
+      // Roll (relative to the plane of the robot's drive base)
+      Degrees.of(0),
+      // Pitch (relative to the plane of the robot's drive base)
+      Degrees.of(-15),
+      // Yaw (relative to "straight forward" on the robot)
+      Degrees.of(0));
 
   //
   // Support for a limited mechanism of establishing per-robot configuration
@@ -119,9 +152,10 @@ public class RobotContainer {
     case Simulated -> new SimulationDrivebase();
   };
   private final IVision m_vision = switch (ROBOT_NAME) {
-    case Lizzie -> new Vision();
+    case Lizzie -> new Vision(robotToCamTranslation, robotToCameraRot);
     case Sally -> new IVision.NullVision();
-    case Simulated -> new SimulatedVision();
+    case Simulated ->
+      new SimulatedVision(robotToCamTranslation, robotToCameraRot);
   };
   private final IIntake m_intake = switch (ROBOT_NAME) {
     case Lizzie -> new RealIntake();
@@ -174,7 +208,7 @@ public class RobotContainer {
    */
   private boolean m_switchDrive = false;
 
-  private final Autos m_autos = new Autos(m_drivebase);
+  private final Autos m_autos = new Autos(m_drivebase, m_shooter, m_hood);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and
@@ -230,17 +264,17 @@ public class RobotContainer {
     configureDriverButtons();
     configureOperatorButtons();
 
-    SmartDashboard.putData("Simple start (blue)",
-        Autos.generateSampleStartingCommand(m_drivebase, m_shooter,
-            new Pose2d(Constants.RebuiltFieldData.BLUE_STARTING_LINE,
-                Constants.RebuiltFieldData.MID_BUMP1_Y,
-                new Rotation2d(Constants.RebuiltFieldData.FACING_BLUE))));
+    // SmartDashboard.putData("Simple start (blue)",
+    // Autos.generateSampleStartingCommand(m_drivebase, m_shooter,
+    // new Pose2d(Constants.RebuiltFieldData.BLUE_STARTING_LINE,
+    // Constants.RebuiltFieldData.MID_BUMP1_Y,
+    // new Rotation2d(Constants.RebuiltFieldData.FACING_BLUE))));
 
-    SmartDashboard.putData("Simple start (red)",
-        Autos.generateSampleStartingCommand(m_drivebase, m_shooter,
-            new Pose2d(Constants.RebuiltFieldData.RED_STARTING_LINE,
-                Constants.RebuiltFieldData.MID_BUMP2_Y,
-                new Rotation2d(Constants.RebuiltFieldData.FACING_RED))));
+    // SmartDashboard.putData("Simple start (red)",
+    // Autos.generateSampleStartingCommand(m_drivebase, m_shooter,
+    // new Pose2d(Constants.RebuiltFieldData.RED_STARTING_LINE,
+    // Constants.RebuiltFieldData.MID_BUMP2_Y,
+    // new Rotation2d(Constants.RebuiltFieldData.FACING_RED))));
 
     NamedCommands.registerCommand(
         "Shooter", new RunShooterForTime(m_shooter, 480, 120, true, 4));
@@ -338,6 +372,14 @@ public class RobotContainer {
     SmartDashboard.putData("Run climber @ 10%", new RunClimber(m_climber, .1));
     SmartDashboard.putData(
         "Run climber @ - 10%", new RunClimber(m_climber, -0.1));
+
+    // private Command DirectionalTestClimber() { return Commands.sequence(new
+    // RunClimberForTime(m_climber, 0, 0.04, 0.5),new
+    // RunClimberForTime(m_climber, 0, -0.04, 0.5)); (Playstation/Logitech) y
+    // up, a down
+
+    // SmartDashboard.putData("Direction Climb Test", new
+    // DiretionalTestClimber());
   }
 
   private void addDrivebaseTestCommandsToSmartDashboard() {
@@ -484,13 +526,18 @@ public class RobotContainer {
   private Command towerShot() {
     return Commands.sequence(
         new PivotHoodToPosition(m_hood, 0.15, Degrees.of(15)),
-        new RunShooterPID(m_shooter, RPM.of(3700), .387, 2));
+        new RunShooterPID(m_shooter, RPM.of(3600), .387, 2));
   }
 
   private Command trenchShot() {
     return Commands.sequence(
         new PivotHoodToPosition(m_hood, 0.15, Degrees.of(15)),
         new RunShooterPID(m_shooter, RPM.of(3300), .387, 2));
+  }
+
+  private Command jamFix() {
+    return Commands.parallel(new RunIndexer(m_indexer, 0.6, false),
+        new RunShooter(m_shooter, 0, .6, false));
   }
 
   private void configureDriverButtons() {
@@ -513,6 +560,21 @@ public class RobotContainer {
                           Constants.LogitechDualshock.BButton))
           .whileTrue(new RunIntakeExtension(m_intake, 0.1, true));
     }
+
+    if (m_climber != null) {
+      new Trigger(()
+                      -> m_driverController.getRawButton(
+                          Constants.LogitechDualshock.YButton))
+          .whileTrue(new RunClimber(m_climber, 0.3));
+      new Trigger(()
+                      -> m_driverController.getRawButton(
+                          Constants.LogitechDualshock.AButton))
+          .whileTrue(new RunClimber(m_climber, -0.5));
+    }
+    new Trigger(()
+                    -> m_driverController.getRawButton(
+                        Constants.LogitechDualshock.StartButton))
+        .whileTrue(new AlignToHub(m_drivebase));
   }
 
   private void configureOperatorButtons() {
@@ -525,8 +587,10 @@ public class RobotContainer {
                       -> m_operatorController.getRawButton(
                           XboxController.Button.kB.value))
           .whileTrue(againstHubShot());
-      // new Trigger(() ->
-      // m_operatorController.getRawButton(XboxController.Button.kA.value)).whileTrue(trenchShot());
+      new Trigger(()
+                      -> m_operatorController.getRawButton(
+                          XboxController.Button.kA.value))
+          .whileTrue(trenchShot());
     }
     if (m_indexer != null) {
       new Trigger(()
@@ -536,7 +600,7 @@ public class RobotContainer {
       new Trigger(()
                       -> m_operatorController.getRawButton(
                           XboxController.Button.kRightBumper.value))
-          .whileTrue(new RunIndexer(m_indexer, 0.6, false));
+          .whileTrue(jamFix());
     }
 
     if (m_shooter != null) {
@@ -590,6 +654,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return m_autos.getAuto(m_drivebase, m_shooter, m_climber);
+    return m_autos.getSequenceAuto();
   }
 }

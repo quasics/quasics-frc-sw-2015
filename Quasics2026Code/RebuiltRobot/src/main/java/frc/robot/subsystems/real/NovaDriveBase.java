@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.real;
 
+import static edu.wpi.first.units.Units.Meters;
+
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.thethriftybot.devices.ThriftyNova;
 import com.thethriftybot.devices.ThriftyNova.EncoderType;
@@ -18,6 +20,12 @@ import frc.robot.hardware.sensors.ThriftyEncoderWrapper;
 import frc.robot.hardware.sensors.TrivialEncoder;
 
 public class NovaDriveBase extends AbstractDrivebase {
+  /** Track width (distance between left and right wheels) in meters. */
+  // TODO: This should reflect the current robot (Lizzie), and not one from 2024.
+  // FINDME(Robert, Rylie): Update the track width to match Lizzie's dimensions.
+  // Otherwise, path following will be incorrect.
+  public static final Distance TRACK_WIDTH = Meters.of(0.5588); /* 22 inches (from 2024) */
+
   private final TrivialEncoder m_leftEncoder;
   private final TrivialEncoder m_rightEncoder;
 
@@ -72,7 +80,8 @@ public class NovaDriveBase extends AbstractDrivebase {
       ThriftyNova leftController, ThriftyNova rightController) {
     super(
         new ThriftyNovaMotorControllerPlus(leftController),
-        new ThriftyNovaMotorControllerPlus(rightController));
+        new ThriftyNovaMotorControllerPlus(rightController),
+        TRACK_WIDTH);
 
     // Configure followers to follow the leaders.
     configureMotorControllersForFollowing(
@@ -84,6 +93,13 @@ public class NovaDriveBase extends AbstractDrivebase {
     // Configure the leading motors.
     //
 
+    // Configure the leaders so that they are *not* a follower of anything.
+    //
+    // This is important to do to ensure that the leader motor controllers are
+    // correctly configured even if they get swapped out.
+    leftController.follow(0);
+    rightController.follow(0);
+
     // Configure the encoder type. (Note that only the leaders need to know this,
     // since we won't read encoder data from the followers.)
     ThriftyNovaConfig configLeft = new ThriftyNovaConfig();
@@ -93,12 +109,6 @@ public class NovaDriveBase extends AbstractDrivebase {
     ThriftyNovaConfig configRight = new ThriftyNovaConfig();
     configRight.encoderType = EncoderType.INTERNAL;
     configRight.inverted = true;
-
-    // TODO: Configure the leaders so that they are *not* a follower of anything.
-    //
-    // FINDME(Robert): This is important to do to ensure that the leader motor
-    // controllers are correctly configured even if they get swapped out. It can be
-    // done with ~1 line of code per motor.
 
     // Apply the configuration settings to the motors.
     leftController.applyConfig(configLeft);

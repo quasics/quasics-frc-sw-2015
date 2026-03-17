@@ -22,6 +22,9 @@ import frc.robot.hardware.sensors.SparkMaxEncoderWrapper;
 import frc.robot.hardware.sensors.TrivialEncoder;
 
 public class SparkDriveBase extends AbstractDrivebase {
+  /** Track width (distance between left and right wheels) in meters. */
+  public static final Distance TRACK_WIDTH = Meters.of(0.5588); /* 22 inches (from 2024) */
+
   private final TrivialEncoder m_leftEncoder;
   private final TrivialEncoder m_rightEncoder;
 
@@ -59,7 +62,8 @@ public class SparkDriveBase extends AbstractDrivebase {
    */
   public SparkDriveBase(SparkMax leftLeader, SparkMax rightLeader) {
     super(new SparkMaxMotorControllerPlus(leftLeader),
-        new SparkMaxMotorControllerPlus(rightLeader));
+        new SparkMaxMotorControllerPlus(rightLeader),
+        TRACK_WIDTH);
 
     // Configure followers to follow the leaders.
     final SparkMax leftfollower = new SparkMax(SparkMaxIds.LEFT_FOLLOWER_ID, MotorType.kBrushless);

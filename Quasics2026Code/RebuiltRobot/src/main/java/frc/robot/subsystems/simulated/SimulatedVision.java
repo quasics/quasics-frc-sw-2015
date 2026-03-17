@@ -39,11 +39,12 @@ public class SimulatedVision extends Vision {
   private PhotonCameraSim cameraSim;
 
   /**
-   * Creates a new SimulatedVision.
+   * Constructor.
    * 
    * @param robotToCameraTranslation translation (offsets in 3D space) from the
    *                                 robot's "center of base and forward" position
-   *                                 to the camera
+   *                                 to the camera; remember that +X is forward,
+   *                                 +Y is to the *left*, and +Z is up
    * @param robotToCameraRotation3d  rotation (offset angles in 3D space) from the
    *                                 robot's "center of base and straight forward"
    *                                 position to the camera

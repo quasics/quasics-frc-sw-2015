@@ -42,7 +42,17 @@ public class Vision extends SubsystemBase implements IVision {
 
   private final Logger m_logger = new Logger(Logger.Verbosity.Info, "Vision");
 
-  /** Constructor. */
+  /**
+   * Constructor.
+   * 
+   * @param robotToCameraTranslation translation (offsets in 3D space) from the
+   *                                 robot's "center of base and forward" position
+   *                                 to the camera; remember that +X is forward,
+   *                                 +Y is to the *left*, and +Z is up
+   * @param robotToCameraRotation3d  rotation (offset angles in 3D space) from the
+   *                                 robot's "center of base and straight forward"
+   *                                 position to the camera
+   */
   public Vision(Translation3d robotToCameraTranslation, Rotation3d robotToCameraRotation3d) {
     robotToCamera = new Transform3d(robotToCameraTranslation, robotToCameraRotation3d);
 

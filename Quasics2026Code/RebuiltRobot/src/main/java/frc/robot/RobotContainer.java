@@ -77,11 +77,40 @@ import java.util.function.Supplier;
 public class RobotContainer {
   private static final int SIDE_LIGHTING_LENGTH = Constants.LIGHTING_TOTAL_LENGTH / 2;
 
-  private static final Translation3d robotToCamTranslation = new Translation3d(Inches.of(-2.25), Inches.of(-8.5),
+  //
+  // Camera positioning constants.
+  //
+  // TODO: These need to be updated to reflect the actual positioning of the
+  // camera on Lizzie.
+  //
+  // FINDME(Rylie): Take care of the updates needed here.
+  //
+
+  /**
+   * Translation (offsets in 3D space) from the robot's "center of base and
+   * forward" position to the camera.
+   */
+  private static final Translation3d robotToCamTranslation = new Translation3d(
+      // X offset from the robot's center, along the line of travel (forward is
+      // positive)
+      Inches.of(-2.25),
+      // Y offset from the robot's center (*left* is positive, which isn't what you'd
+      // usually expect)
+      Inches.of(-8.5),
+      // Z offset from the robot's "center of base" (up is positive)
       Inches.of(20.25));
 
-  // up 20.25, offset 2.25 inches behind center, 8.5 inches
-  private static final Rotation3d robotToCameraRot = new Rotation3d(Degrees.of(0), Degrees.of(-15), Degrees.of(0));
+  /**
+   * Rrotation (offset angles in 3D space) from the robot's "center of base and
+   * straight forward" position to the camera.
+   */
+  private static final Rotation3d robotToCameraRot = new Rotation3d(
+      // Roll (relative to the plane of the robot's drive base)
+      Degrees.of(0),
+      // Pitch (relative to the plane of the robot's drive base)
+      Degrees.of(-15),
+      // Yaw (relative to "straight forward" on the robot)
+      Degrees.of(0));
 
   //
   // Support for a limited mechanism of establishing per-robot configuration

@@ -84,11 +84,12 @@ public class NovaDriveBase extends AbstractDrivebase {
     // Configure the leading motors.
     //
 
-    // TODO: Configure the leaders so that they are *not* a follower of anything.
+    // Configure the leaders so that they are *not* a follower of anything.
     //
-    // FINDME(Robert): This is important to do to ensure that the leader motor
-    // controllers are correctly configured even if they get swapped out. It can be
-    // done with ~1 line of code per motor.
+    // This is important to do to ensure that the leader motor controllers are
+    // correctly configured even if they get swapped out.
+    leftController.follow(0);
+    rightController.follow(0);
 
     // Configure the encoder type. (Note that only the leaders need to know this,
     // since we won't read encoder data from the followers.)

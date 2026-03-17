@@ -88,7 +88,8 @@ public class RobotContainer {
 
   /**
    * Translation (offsets in 3D space) from the robot's "center of base and
-   * forward" position to the camera.
+   * forward" position to the camera. (Remember that +X is forward, +Y is to the
+   * *left*, and +Z is up!)
    */
   private static final Translation3d robotToCamTranslation = new Translation3d(
       // X offset from the robot's center, along the line of travel (forward is

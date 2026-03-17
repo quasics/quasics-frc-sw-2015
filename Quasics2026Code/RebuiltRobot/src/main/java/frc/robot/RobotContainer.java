@@ -10,8 +10,6 @@ import static edu.wpi.first.units.Units.RPM;
 
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -32,7 +30,6 @@ import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.Autos;
 import frc.robot.commands.PivotHoodToPosition;
 import frc.robot.commands.RunClimber;
-import frc.robot.commands.RunClimberForTime;
 import frc.robot.commands.RunIndexer;
 import frc.robot.commands.RunIntakeExtension;
 import frc.robot.commands.RunIntakeRollers;
@@ -66,8 +63,6 @@ import frc.robot.subsystems.simulated.SimulatedVision;
 import frc.robot.subsystems.simulated.SimulationDrivebase;
 import java.util.List;
 import java.util.function.Supplier;
-
-import javax.swing.RowFilter;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -171,7 +166,7 @@ public class RobotContainer {
    */
   private boolean m_switchDrive = false;
 
-  private final Autos m_autos = new Autos(m_drivebase);
+  private final Autos m_autos = new Autos(m_drivebase, m_shooter, m_hood);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and
@@ -227,17 +222,17 @@ public class RobotContainer {
     configureDriverButtons();
     configureOperatorButtons();
 
-    SmartDashboard.putData("Simple start (blue)",
-        Autos.generateSampleStartingCommand(m_drivebase, m_shooter,
-            new Pose2d(Constants.RebuiltFieldData.BLUE_STARTING_LINE,
-                Constants.RebuiltFieldData.MID_BUMP1_Y,
-                new Rotation2d(Constants.RebuiltFieldData.FACING_BLUE))));
+    // SmartDashboard.putData("Simple start (blue)",
+    // Autos.generateSampleStartingCommand(m_drivebase, m_shooter,
+    // new Pose2d(Constants.RebuiltFieldData.BLUE_STARTING_LINE,
+    // Constants.RebuiltFieldData.MID_BUMP1_Y,
+    // new Rotation2d(Constants.RebuiltFieldData.FACING_BLUE))));
 
-    SmartDashboard.putData("Simple start (red)",
-        Autos.generateSampleStartingCommand(m_drivebase, m_shooter,
-            new Pose2d(Constants.RebuiltFieldData.RED_STARTING_LINE,
-                Constants.RebuiltFieldData.MID_BUMP2_Y,
-                new Rotation2d(Constants.RebuiltFieldData.FACING_RED))));
+    // SmartDashboard.putData("Simple start (red)",
+    // Autos.generateSampleStartingCommand(m_drivebase, m_shooter,
+    // new Pose2d(Constants.RebuiltFieldData.RED_STARTING_LINE,
+    // Constants.RebuiltFieldData.MID_BUMP2_Y,
+    // new Rotation2d(Constants.RebuiltFieldData.FACING_RED))));
 
     NamedCommands.registerCommand(
         "Shooter", new RunShooterForTime(m_shooter, 480, 120, true, 4));
@@ -499,7 +494,7 @@ public class RobotContainer {
   }
 
   private Command jamFix() {
-    return Commands.parallel(new RunIndexer(m_indexer, 0.6, false), new RunShooter(m_shooter, 0, .387, false));
+    return Commands.parallel(new RunIndexer(m_indexer, 0.6, false), new RunShooter(m_shooter, 0, .6, false));
   }
 
   private void configureDriverButtons() {
@@ -522,10 +517,10 @@ public class RobotContainer {
     if (m_climber != null) {
       new Trigger(() -> m_driverController.getRawButton(
           Constants.LogitechDualshock.YButton))
-          .whileTrue(new RunClimber(m_climber, 0.1));
+          .whileTrue(new RunClimber(m_climber, 0.3));
       new Trigger(() -> m_driverController.getRawButton(
           Constants.LogitechDualshock.AButton))
-          .whileTrue(new RunClimber(m_climber, -0.1));
+          .whileTrue(new RunClimber(m_climber, -0.5));
     }
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.StartButton))
         .whileTrue(new AlignToHub(m_drivebase));
@@ -596,6 +591,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return m_autos.getAuto();
+    return m_autos.getSequenceAuto();
   }
 }

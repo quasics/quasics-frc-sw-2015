@@ -34,19 +34,15 @@ public class RunClimber extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
     m_climber.setClimberSpeed(m_climberSpeed);
     System.out.println("Climber Motor Rotation is: " + m_climber.getClimberPosition());
     System.out.println("Speed is: " + m_climberSpeed);
-
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-
-    m_climber.stopClimber();
-
+    m_climber.stop();
   }
 
 }

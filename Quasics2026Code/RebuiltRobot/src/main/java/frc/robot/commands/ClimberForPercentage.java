@@ -39,7 +39,7 @@ public class ClimberForPercentage extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    m_climber.stopClimber();
+    m_climber.stop();
   }
 
 }

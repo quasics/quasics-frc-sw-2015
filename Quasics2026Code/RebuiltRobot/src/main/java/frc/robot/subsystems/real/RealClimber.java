@@ -70,7 +70,7 @@ public class RealClimber extends SubsystemBase implements IClimber {
   }
 
   @Override
-  public void stopClimber() {
+  public void stop() {
     m_climber.set(0);
   }
 

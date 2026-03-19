@@ -58,7 +58,9 @@ public final class Constants {
     /** CAN ID for the Pigeon2 hardware. */
     public static final int PIGEON2_CAN_ID = 1;
 
+    /** CAN IDs for TalonFX devices. */
     public static class TalonFxIds {
+      /** Shooter CAN ID. */
       public static final int SHOOTER_ID = 11;
     }
 
@@ -69,16 +71,27 @@ public final class Constants {
     public static class SparkMaxIds {
       // Note: Drive base motor IDs are based on those Quasics has used over the
       // last couple of years.
+      /** Left leader (Spark) motor CAN ID. */
       public static final int LEFT_LEADER_ID = 2;
+      /** Left follower (Spark) motor CAN ID. */
       public static final int LEFT_FOLLOWER_ID = 1;
+      /** Right leader (Spark) motor CAN ID. */
       public static final int RIGHT_LEADER_ID = 4;
+      /** Right follower (Spark) motor CAN ID. */
       public static final int RIGHT_FOLLOWER_ID = 3;
+      /** Intake rollers (Spark) motor CAN ID. */
       public static final int INTAKE_ROLLERS_ID = 5;
+      /** Right intake deployment (Spark) motor CAN ID. */
       public static final int RIGHT_INTAKE_DEPLOYMENT_ID = 6;
+      /** Left intake deployment (Spark) motor CAN ID. */
       public static final int LEFT_INTAKE_DEPLOYMENT_ID = 7;
+      /** Indexer (Spark) motor CAN ID. */
       public static final int INDEXER_ID = 8;
+      /** Kicker wheel (Spark) motor CAN ID. */
       public static final int KICKER_ID = 9;
+      /** Shooter hool (Spark) motor CAN ID. */
       public static final int HOOD_ID = 10;
+      /** Climber (Spark) motor CAN ID. */
       public static final int CLIMBER_ID = 12;
     }
 
@@ -87,9 +100,13 @@ public final class Constants {
      * motors in Lizzie.)
      */
     public static class ThriftyNovaIds {
+      /** Left leader (Nova) motor CAN ID. */
       public static final int LEFT_LEADER_ID = 2;
+      /** Left follower (Nova) motor CAN ID. */
       public static final int LEFT_FOLLOWER_ID = 1;
+      /** Right leader (Nova) motor CAN ID. */
       public static final int RIGHT_LEADER_ID = 4;
+      /** Right follower (Nova) motor CAN ID. */
       public static final int RIGHT_FOLLOWER_ID = 3;
     }
   }

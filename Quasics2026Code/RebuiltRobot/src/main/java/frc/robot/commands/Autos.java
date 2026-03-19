@@ -89,6 +89,8 @@ public final class Autos {
   }
 
   // TODO: Add a sequential command group.
+  // FINDME(Robert, Rylie): are we actually using this code? (It looks like we
+  // aren't.) If not, should it be removed?
   public Command getAuto(
       IDrivebase drivebase, IShooter shooter, IClimber climber) {
     switch (m_autoHelper.getAutoName()) {

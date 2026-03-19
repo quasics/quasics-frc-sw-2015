@@ -559,7 +559,7 @@ public class RobotContainer {
     if (m_climber != null) {
       new Trigger(() -> m_driverController.getRawButton(
           Constants.LogitechDualshock.YButton))
-          .whileTrue(new RunClimber(m_climber, 0.3));
+          .whileTrue(new RunClimber(m_climber, 0.6));
       new Trigger(() -> m_driverController.getRawButton(
           Constants.LogitechDualshock.AButton))
           .whileTrue(new RunClimber(m_climber, -0.5));
@@ -567,6 +567,11 @@ public class RobotContainer {
     new Trigger(() -> m_driverController.getRawButton(
         Constants.LogitechDualshock.StartButton))
         .whileTrue(new AlignToHub(m_drivebase));
+  }
+
+  private Command shootDistance() {
+    return Commands.sequence(new PivotHoodToPosition(m_hood, 0.15, Degrees.of(15)),
+        new ShootBasedOnDistance(m_shooter, m_drivebase, 0.387, 2));
   }
 
   private void configureOperatorButtons() {
@@ -579,7 +584,7 @@ public class RobotContainer {
           .whileTrue(againstHubShot());
       new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kA.value)).whileTrue(trenchShot());
       new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kY.value))
-          .whileTrue(new ShootBasedOnDistance(m_shooter, m_drivebase, 0.387, 2));
+          .whileTrue(shootDistance());
     }
     if (m_indexer != null) {
       new Trigger(() -> m_operatorController.getRawButton(

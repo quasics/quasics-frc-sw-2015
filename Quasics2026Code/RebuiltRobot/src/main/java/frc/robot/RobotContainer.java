@@ -577,6 +577,9 @@ public class RobotContainer {
       new Trigger(() -> m_operatorController.getRawButton(
           XboxController.Button.kB.value))
           .whileTrue(againstHubShot());
+      new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kA.value)).whileTrue(trenchShot());
+      new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kY.value))
+          .whileTrue(new ShootBasedOnDistance(m_shooter, m_drivebase, 0.387, 2));
     }
     if (m_indexer != null) {
       new Trigger(() -> m_operatorController.getRawButton(
@@ -585,28 +588,6 @@ public class RobotContainer {
       new Trigger(() -> m_operatorController.getRawButton(
           XboxController.Button.kRightBumper.value))
           .whileTrue(jamFix());
-    }
-
-    if (m_shooter != null) {
-      // FINDME(Rylie, Daniel): This isn't going to do what you think it will.
-      // It's going to capture the distance to the hub's center when the driver
-      // buttons are being set up (i.e., when the RobotContainer is being
-      // built). However, it's unlikely that this will be the robot's distance
-      // from the Hub when the driver actually *trigger* the command.
-      //
-      // Suggestion: instead of getting the distance *here*, write a Command
-      // class that will get the distance while it is executing. This would at
-      // least be when the initialize() function is invoked, but it would be
-      // better to do it in execute() so that the target speed will be updated
-      // continuously (e.g., if the robot is actually *moving* while we're
-      // trying to shoot).
-      new Trigger(() -> m_operatorController.getRawButton(
-          XboxController.Button.kY.value))
-          .whileTrue(
-              new ShootBasedOnDistance(m_shooter, m_drivebase, 0.387, 2));
-      new Trigger(() -> m_operatorController.getRawButton(
-          XboxController.Button.kA.value))
-          .whileTrue(new AlignToHub(m_drivebase));
     }
   }
 

@@ -16,8 +16,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -34,7 +32,6 @@ import frc.robot.subsystems.interfaces.IIntake;
 import frc.robot.subsystems.interfaces.IShooter;
 import frc.robot.subsystems.interfaces.IShooterHood;
 import frc.robot.utils.PathPlannerHelper;
-import java.util.Optional;
 
 /**
  * Helper class, which will build commands/command sequences for use in
@@ -129,69 +126,32 @@ public final class Autos {
   }
 
   public void configureSequenceSelector() {
-    Optional<Alliance> optionalAlliance = DriverStation.getAlliance();
-    if (optionalAlliance.isPresent()) {
-      Alliance alliance = optionalAlliance.get();
-      System.out.println("Alliance is " + alliance);
-      Pose2d leftTrenchPose = switch (alliance) {
-        case Red ->
-          new Pose2d(
-              new Translation2d(12.57, 0.634), new Rotation2d(Degrees.of(0)));
-        case Blue ->
-          new Pose2d(
-              new Translation2d(3.971, 7.436), new Rotation2d(Degrees.of(180)));
-      };
-      m_sequenceChooser.addOption("Left Trench",
-          generateSampleStartingCommand(
-              m_drivebase, m_shooter, m_hood, Degrees.of(15), leftTrenchPose));
+    // RED Autos
+    m_sequenceChooser.addOption("RED Left Trench",
+        generateSampleStartingCommand(m_drivebase, m_shooter, m_hood, Degrees.of(15), new Pose2d(
+            new Translation2d(12.57, 0.634), new Rotation2d(Degrees.of(0)))));
+    m_sequenceChooser.addOption("RED Left Bump", generateSampleStartingCommand(
+        m_drivebase, m_shooter, m_hood, Degrees.of(15), new Pose2d(
+            new Translation2d(12.989, 2.011), new Rotation2d(Degrees.of(0)))));
+    m_sequenceChooser.addOption("RED Hub", hubAuto(m_drivebase, m_shooter, m_hood, 5,
+        new Pose2d(new Translation2d(12.989, 4.035), new Rotation2d(Degrees.of(180))), m_indexer));
+    m_sequenceChooser.addOption("RED Right Bump", generateSampleStartingCommand(m_drivebase, m_shooter, m_hood,
+        Degrees.of(15), new Pose2d(new Translation2d(12.989, 6.059), new Rotation2d(Degrees.of(0)))));
+    m_sequenceChooser.addOption("RED Right Trench", generateSampleStartingCommand(m_drivebase, m_shooter, m_hood,
+        Degrees.of(15), new Pose2d(new Translation2d(12.57, 7.436), new Rotation2d(Degrees.of(0)))));
 
-      Pose2d leftBumpPose = switch (alliance) {
-        case Red ->
-          new Pose2d(
-              new Translation2d(12.989, 2.011), new Rotation2d(Degrees.of(0)));
-        case Blue ->
-          new Pose2d(
-              new Translation2d(3.552, 6.059), new Rotation2d(Degrees.of(180)));
-      };
-      m_sequenceChooser.addOption("Left Bump",
-          generateSampleStartingCommand(
-              m_drivebase, m_shooter, m_hood, Degrees.of(15), leftBumpPose));
-
-      Pose2d hubPose = switch (alliance) {
-        case Red ->
-          new Pose2d(new Translation2d(12.989, 4.035),
-              new Rotation2d(Degrees.of(180)));
-        case Blue ->
-          new Pose2d(
-              new Translation2d(3.552, 4.035), new Rotation2d(Degrees.of(0)));
-      };
-      m_sequenceChooser.addOption(
-          "Hub", hubAuto(m_drivebase, m_shooter, m_hood, 15, hubPose, m_indexer));
-
-      Pose2d rightBumpPose = switch (alliance) {
-        case Red ->
-          new Pose2d(
-              new Translation2d(12.989, 6.059), new Rotation2d(Degrees.of(0)));
-        case Blue ->
-          new Pose2d(
-              new Translation2d(3.552, 2.011), new Rotation2d(Degrees.of(180)));
-      };
-      m_sequenceChooser.addOption("Right Bump",
-          generateSampleStartingCommand(
-              m_drivebase, m_shooter, m_hood, Degrees.of(15), rightBumpPose));
-
-      Pose2d rightTrenchPose = switch (alliance) {
-        case Red ->
-          new Pose2d(
-              new Translation2d(12.57, 7.436), new Rotation2d(Degrees.of(0)));
-        case Blue ->
-          new Pose2d(
-              new Translation2d(3.971, 0.634), new Rotation2d(Degrees.of(180)));
-      };
-      m_sequenceChooser.addOption("Right Trench",
-          generateSampleStartingCommand(
-              m_drivebase, m_shooter, m_hood, Degrees.of(15), rightTrenchPose));
-    }
+    // BLUE Autos
+    m_sequenceChooser.addOption("BLUE Left Trench", generateSampleStartingCommand(m_drivebase, m_shooter, m_hood,
+        Degrees.of(15), new Pose2d(new Translation2d(3.971, 7.436), new Rotation2d(Degrees.of(180)))));
+    m_sequenceChooser.addOption("BLUE Left Bump", generateSampleStartingCommand(
+        m_drivebase, m_shooter, m_hood, Degrees.of(15),
+        new Pose2d(new Translation2d(3.552, 6.059), new Rotation2d(Degrees.of(180)))));
+    m_sequenceChooser.addOption("BLUE Hub", hubAuto(m_drivebase, m_shooter, m_hood, 5,
+        new Pose2d(new Translation2d(3.552, 4.035), new Rotation2d(Degrees.of(0))), m_indexer));
+    m_sequenceChooser.addOption("BLUE Right Bump", generateSampleStartingCommand(m_drivebase, m_shooter, m_hood,
+        Degrees.of(15), new Pose2d(new Translation2d(3.552, 2.011), new Rotation2d(Degrees.of(180)))));
+    m_sequenceChooser.addOption("BLUE Right Trench", generateSampleStartingCommand(m_drivebase, m_shooter, m_hood,
+        Degrees.of(15), new Pose2d(new Translation2d(3.971, 0.634), new Rotation2d(Degrees.of(180)))));
   }
 
   public Autos(IDrivebase drivebase, IShooter shooter, IShooterHood hood, IIndexer indexer) {

@@ -206,7 +206,7 @@ public class RobotContainer {
    */
   private boolean m_switchDrive = false;
 
-  private final Autos m_autos = new Autos(m_drivebase, m_shooter, m_hood);
+  private final Autos m_autos = new Autos(m_drivebase, m_shooter, m_hood, m_indexer);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and
@@ -219,7 +219,7 @@ public class RobotContainer {
 
     // Don't warn about joysticks not being plugged in when working on a robot
     // where we frequently aren't worried about it.
-    if (ROBOT_NAME == RobotName.Sally || ROBOT_NAME == RobotName.Sally) {
+    if (ROBOT_NAME == RobotName.Sally || ROBOT_NAME == RobotName.Sally || true) {
       DriverStation.silenceJoystickConnectionWarning(true);
     }
 

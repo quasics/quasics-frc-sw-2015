@@ -40,7 +40,7 @@ public class RealShooter extends SubsystemBase implements IShooter {
 
   /** Creates a new RealShooter. */
   public RealShooter() {
-    m_kraken = new TalonFX(0);
+    m_kraken = new TalonFX(Constants.CanBusIds.TalonFxIds.SHOOTER_ID);
     // TalonFXConfiguration config = new TalonFXConfiguration();
     // m_kraken.getConfigurator().apply(config);
     var slot0Configs = new Slot0Configs();

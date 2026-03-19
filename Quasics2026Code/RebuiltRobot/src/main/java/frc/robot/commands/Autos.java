@@ -21,11 +21,15 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.testing.DriveForDistance;
 import frc.robot.subsystems.interfaces.IClimber;
 import frc.robot.subsystems.interfaces.IDrivebase;
+import frc.robot.subsystems.interfaces.IIndexer;
 import frc.robot.subsystems.interfaces.IIntake;
 import frc.robot.subsystems.interfaces.IShooter;
 import frc.robot.subsystems.interfaces.IShooterHood;
@@ -38,12 +42,12 @@ import java.util.Optional;
  */
 public final class Autos {
   private final PathPlannerHelper m_autoHelper;
-  IIntake m_Intake;
+  IIndexer m_indexer;
+  IIntake m_intake;
   IShooter m_shooter;
   IShooterHood m_hood;
   IDrivebase m_drivebase;
-  private SendableChooser<Command> m_sequenceChooser =
-      new SendableChooser<Command>();
+  private SendableChooser<Command> m_sequenceChooser = new SendableChooser<Command>();
 
   /**
    * Generates a simple command sequence that could be used from either
@@ -74,12 +78,20 @@ public final class Autos {
         .andThen(new PrintCommand("Done"));
   }
 
+  public Command indexAndShoot(IDrivebase drivebase, IShooter shooter, IIndexer indexer) {
+    return new ShootBasedOnDistanceAndTime(shooter, drivebase, .387, 2, Seconds.of(6))
+        .alongWith(waitBeforeIndexing(indexer));
+  }
+
+  public Command waitBeforeIndexing(IIndexer indexer) {
+    return new WaitCommand(2.5).andThen(new RunIndexerForTime(indexer, 0.1, true, 6));
+  }
+
   public Command hubAuto(IDrivebase drivebase, IShooter shooter,
-      IShooterHood hood, double hoodAngle, Pose2d fieldPose) {
+      IShooterHood hood, double hoodAngle, Pose2d fieldPose, IIndexer indexer) {
     return new UpdateStartingPositionData(drivebase, fieldPose)
         .andThen(new PivotHoodToPosition(hood, 0.15, Degrees.of(hoodAngle)))
-        .andThen(new ShootBasedOnDistanceAndTime(
-            shooter, drivebase, 0.387, 1, Seconds.of(6)));
+        .andThen(indexAndShoot(drivebase, shooter, indexer));
   }
 
   // TODO: Add a sequential command group.
@@ -104,13 +116,13 @@ public final class Autos {
             m_autoHelper.getAuto());
 
       // case "BackOutAndGrab":
-      //   return new SequentialCommandGroup(
-      //       AutoBuilder.buildAuto("BackOutAndShoot1"),
-      //       new RunShooterForTime(m_Shooter, 5, 2, true, 5),
-      //       AutoBuilder.buildAuto("GrabbingBalls_"),
-      //       new RunIntakeExtension(m_Intake, 2, true),
-      //       new RunIntakeRollers(m_Intake, 5, true),
-      //       AutoBuilder.buildAuto("JustBallGrabber_"));
+      // return new SequentialCommandGroup(
+      // AutoBuilder.buildAuto("BackOutAndShoot1"),
+      // new RunShooterForTime(m_shooter, 5, 2, true, 5),
+      // AutoBuilder.buildAuto("GrabbingBalls_"),
+      // new RunIntakeExtension(m_intake, 2, true),
+      // new RunIntakeRollers(m_intake, 5, true),
+      // AutoBuilder.buildAuto("JustBallGrabber_"));
       default:
         return null;
     }
@@ -154,7 +166,7 @@ public final class Autos {
               new Translation2d(3.552, 4.035), new Rotation2d(Degrees.of(0)));
       };
       m_sequenceChooser.addOption(
-          "Hub", hubAuto(m_drivebase, m_shooter, m_hood, 15, hubPose));
+          "Hub", hubAuto(m_drivebase, m_shooter, m_hood, 15, hubPose, m_indexer));
 
       Pose2d rightBumpPose = switch (alliance) {
         case Red ->
@@ -181,11 +193,13 @@ public final class Autos {
               m_drivebase, m_shooter, m_hood, Degrees.of(15), rightTrenchPose));
     }
   }
-  public Autos(IDrivebase drivebase, IShooter shooter, IShooterHood hood) {
+
+  public Autos(IDrivebase drivebase, IShooter shooter, IShooterHood hood, IIndexer indexer) {
     m_autoHelper = new PathPlannerHelper(drivebase);
     m_drivebase = drivebase;
     m_shooter = shooter;
     m_hood = hood;
+    m_indexer = indexer;
     configureSequenceSelector();
     SmartDashboard.putData("Sequence Chooser", m_sequenceChooser);
   }

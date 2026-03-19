@@ -58,6 +58,10 @@ public final class Constants {
     /** CAN ID for the Pigeon2 hardware. */
     public static final int PIGEON2_CAN_ID = 1;
 
+    public static class TalonFxIds {
+      public static final int SHOOTER_ID = 11;
+    }
+
     /**
      * CAN IDs for SparkMax motors used on any of the robots this year (generally
      * Lizzie or Sally).
@@ -75,7 +79,6 @@ public final class Constants {
       public static final int INDEXER_ID = 8;
       public static final int KICKER_ID = 9;
       public static final int HOOD_ID = 10;
-      public static final int SHOOTER_ID = 11;
       public static final int CLIMBER_ID = 12;
     }
 

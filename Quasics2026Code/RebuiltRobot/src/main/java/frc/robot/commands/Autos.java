@@ -127,6 +127,11 @@ public final class Autos {
     if (optionalAlliance.isPresent()) {
       Alliance alliance = optionalAlliance.get();
       System.out.println("Alliance is " + alliance);
+      // FINDME(Rylie, Alia): Suggestion - use named constants (vs. "magic numbers")
+      // for the various translation/rotation values during the setup below. (Among
+      // other things, if we wind up playing on an AndyMark field vs. a "welded"
+      // field, these numbers will be different; similarly, it makes it easier to spot
+      // errors if you're using names like "FACING_BLUE" vs numbers like "180".)
       Pose2d leftTrenchPose = switch (alliance) {
         case Red ->
           new Pose2d(

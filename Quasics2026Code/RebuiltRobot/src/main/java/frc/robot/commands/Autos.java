@@ -148,6 +148,8 @@ public final class Autos {
         Degrees.of(15), new Pose2d(new Translation2d(3.552, 2.011), new Rotation2d(Degrees.of(180)))));
     m_sequenceChooser.addOption("BLUE Right Trench", generateSampleStartingCommand(m_drivebase, m_shooter, m_hood,
         Degrees.of(15), new Pose2d(new Translation2d(3.971, 0.634), new Rotation2d(Degrees.of(180)))));
+    m_sequenceChooser.addOption("SIT BLUE BUMP", new UpdateStartingPositionData(m_drivebase,
+        new Pose2d(new Translation2d(3.552, 2.011), new Rotation2d(Degrees.of(0)))));
   }
 
   public Autos(IDrivebase drivebase, IShooter shooter, IShooterHood hood, IIndexer indexer) {

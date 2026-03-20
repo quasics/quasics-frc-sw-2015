@@ -559,7 +559,7 @@ public class RobotContainer {
     if (m_climber != null) {
       new Trigger(() -> m_driverController.getRawButton(
           Constants.LogitechDualshock.YButton))
-          .whileTrue(new RunClimber(m_climber, 0.6));
+          .whileTrue(new RunClimber(m_climber, 0.9));
       new Trigger(() -> m_driverController.getRawButton(
           Constants.LogitechDualshock.AButton))
           .whileTrue(new RunClimber(m_climber, -0.5));

@@ -40,6 +40,8 @@ public class AlignToHub extends Command {
   /** Logging object for debugging output. */
   Logger m_Logger = new Logger(Logger.Verbosity.Debug, "AlignToHub");
 
+  static final double feedforward = 0.185;
+
   /** Creates a new AlignToHub. */
   public AlignToHub(IDrivebase drivebase) {
     m_drivebase = drivebase;
@@ -80,7 +82,12 @@ public class AlignToHub extends Command {
             m_goalAngle.getDegrees(),
             error.getDegrees(),
             rotationPercent));
-    m_drivebase.arcadeDrive(0, rotationPercent * 3);
+    if (error.getDegrees() < 0) {
+      rotationPercent -= feedforward;
+    } else if (error.getDegrees() > 0) {
+      rotationPercent += feedforward;
+    }
+    m_drivebase.arcadeDrive(0, rotationPercent);
   }
 
   @Override

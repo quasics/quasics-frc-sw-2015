@@ -47,6 +47,7 @@ import frc.robot.commands.testing.DriveForDistance;
 import frc.robot.commands.testing.FlywheelDialIn;
 import frc.robot.commands.testing.LinearSpeedCommand;
 import frc.robot.commands.testing.RunFlywheelTimedTest;
+import frc.robot.commands.testing.RunKickerTimedTest;
 import frc.robot.subsystems.interfaces.IClimber;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.IIndexer;
@@ -310,6 +311,8 @@ public class RobotContainer {
 
     tab.add("Flywheel @ 1200RPM", new RunFlywheelTimedTest(m_shooter, RPM.of(1200), Seconds.of(3)));
     tab.add("Flywheel @ -1200RPM", new RunFlywheelTimedTest(m_shooter, RPM.of(-1200), Seconds.of(3)));
+    tab.add("Kicker @ 50%", new RunKickerTimedTest(m_shooter, +.5, Seconds.of(3)));
+    tab.add("Kicker @ -50%", new RunKickerTimedTest(m_shooter, -.5, Seconds.of(3)));
   }
 
   private void addShooterTestCommandsToSmartDashboard() {

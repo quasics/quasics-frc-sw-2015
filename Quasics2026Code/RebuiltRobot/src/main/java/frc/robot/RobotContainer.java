@@ -47,6 +47,7 @@ import frc.robot.commands.testing.DriveForDistance;
 import frc.robot.commands.testing.FlywheelDialIn;
 import frc.robot.commands.testing.LinearSpeedCommand;
 import frc.robot.commands.testing.RunFlywheelTimedTest;
+import frc.robot.commands.testing.RunIntakeRollersTimedTest;
 import frc.robot.commands.testing.RunKickerTimedTest;
 import frc.robot.subsystems.interfaces.IClimber;
 import frc.robot.subsystems.interfaces.IDrivebase;
@@ -309,10 +310,12 @@ public class RobotContainer {
   private void addSystemTestCommandsToDashboard() {
     var tab = Shuffleboard.getTab("System Test");
 
-    tab.add("Flywheel @ 1200RPM", new RunFlywheelTimedTest(m_shooter, RPM.of(1200), Seconds.of(3)));
+    tab.add("Flywheel @ +1200RPM", new RunFlywheelTimedTest(m_shooter, RPM.of(1200), Seconds.of(3)));
     tab.add("Flywheel @ -1200RPM", new RunFlywheelTimedTest(m_shooter, RPM.of(-1200), Seconds.of(3)));
-    tab.add("Kicker @ 50%", new RunKickerTimedTest(m_shooter, +.5, Seconds.of(3)));
+    tab.add("Kicker @ +50%", new RunKickerTimedTest(m_shooter, +.5, Seconds.of(3)));
     tab.add("Kicker @ -50%", new RunKickerTimedTest(m_shooter, -.5, Seconds.of(3)));
+    tab.add("Rollers @ +25%", new RunIntakeRollersTimedTest(m_intake, +.25, Seconds.of(3)));
+    tab.add("Rollers @ -25%", new RunIntakeRollersTimedTest(m_intake, -.25, Seconds.of(3)));
   }
 
   private void addShooterTestCommandsToSmartDashboard() {

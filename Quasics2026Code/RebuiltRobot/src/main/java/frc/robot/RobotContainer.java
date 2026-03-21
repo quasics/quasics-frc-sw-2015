@@ -46,6 +46,7 @@ import frc.robot.commands.lighting.RainbowLighting;
 import frc.robot.commands.testing.DriveForDistance;
 import frc.robot.commands.testing.FlywheelDialIn;
 import frc.robot.commands.testing.LinearSpeedCommand;
+import frc.robot.commands.testing.RunClimberTimedTest;
 import frc.robot.commands.testing.RunFlywheelTimedTest;
 import frc.robot.commands.testing.RunIndexerTimedTest;
 import frc.robot.commands.testing.RunIntakeExtenstionTimedTest;
@@ -322,6 +323,8 @@ public class RobotContainer {
     tab.add("Extension @ -15%", new RunIntakeExtenstionTimedTest(m_intake, -.15, Seconds.of(1.5)));
     tab.add("Indexer @ +25%", new RunIndexerTimedTest(m_indexer, +.25, Seconds.of(3)));
     tab.add("Indexer @ -25%", new RunIndexerTimedTest(m_indexer, -.25, Seconds.of(3)));
+    tab.add("Climber @ +10%", new RunClimberTimedTest(m_climber, +.10, Seconds.of(1)));
+    tab.add("Climber @ -10%", new RunClimberTimedTest(m_climber, +.10, Seconds.of(1)));
   }
 
   private void addShooterTestCommandsToSmartDashboard() {

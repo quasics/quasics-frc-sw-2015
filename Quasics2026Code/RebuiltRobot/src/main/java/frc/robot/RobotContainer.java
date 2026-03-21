@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Seconds;
 
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -16,6 +17,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -44,6 +46,7 @@ import frc.robot.commands.lighting.RainbowLighting;
 import frc.robot.commands.testing.DriveForDistance;
 import frc.robot.commands.testing.FlywheelDialIn;
 import frc.robot.commands.testing.LinearSpeedCommand;
+import frc.robot.commands.testing.RunFlywheelTimedTest;
 import frc.robot.subsystems.interfaces.IClimber;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.IIndexer;
@@ -255,6 +258,7 @@ public class RobotContainer {
 
     // Populate the smart dashboard.
     addButtonsToSmartDashboard();
+    addSystemTestCommandsToDashboard();
 
     // Configure the trigger bindings, etc.
     configureBindings();
@@ -299,6 +303,13 @@ public class RobotContainer {
 
     return new LightingBuffer(
         realLighting.getSubViews().get(targetIndex), isLeftSide);
+  }
+
+  private void addSystemTestCommandsToDashboard() {
+    var tab = Shuffleboard.getTab("System Test");
+
+    tab.add("Flywheel @ 1200RPM", new RunFlywheelTimedTest(m_shooter, RPM.of(1200), Seconds.of(3)));
+    tab.add("Flywheel @ -1200RPM", new RunFlywheelTimedTest(m_shooter, RPM.of(-1200), Seconds.of(3)));
   }
 
   private void addShooterTestCommandsToSmartDashboard() {

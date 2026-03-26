@@ -214,7 +214,7 @@ public class RobotContainer {
    */
   private boolean m_switchDrive = false;
 
-  private final Autos m_autos = new Autos(m_drivebase, m_shooter, m_hood, m_indexer);
+  private final Autos m_autos = new Autos(m_drivebase, m_shooter, m_hood, m_indexer, m_intake);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and

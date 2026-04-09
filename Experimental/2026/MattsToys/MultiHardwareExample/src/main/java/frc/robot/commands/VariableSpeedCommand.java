@@ -4,8 +4,6 @@
 
 package frc.robot.commands;
 
-import static edu.wpi.first.units.Units.RevolutionsPerSecond;
-
 import java.util.Map;
 
 import edu.wpi.first.math.MathUtil;

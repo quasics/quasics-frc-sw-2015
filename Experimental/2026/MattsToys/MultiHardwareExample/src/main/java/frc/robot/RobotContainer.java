@@ -64,36 +64,40 @@ public class RobotContainer {
 
   // Sets up a "single motor thing", based on the selected hardware
   // configuration.
-  final ISingleMotorThing m_singleMotorThing = switch (m_hardware) {
-    case Simulated -> new SingleMotorThingSim();
-    case Spark -> new SingleMotorThingSpark(5, true);
-    case SparkPair -> {
-      // Generate an example of a pair of motors being treated as a single
-      // (logical) entity (e.g., paired motors responsible for
-      // extending/retracting an intake, mounted in opposite directions from
-      // each other).
-      yield new SingleMotorThingGroup(
-          new SingleMotorThingSpark(RIGHT_INTAKE_DEPLOYMENT_ID, true),
-          new SingleMotorThingSpark(LEFT_INTAKE_DEPLOYMENT_ID, false));
-    }
-    case TalonPwm -> new SingleMotorThingTalonPwm(6);
-    case TalonCanDirect -> {
-      final TalonFX talon = new TalonFX(11);
-      final IMotorControllerPlus motorController = new TalonMotorControllerPlus(talon);
-      final TrivialEncoder encoder = new TalonEncoderWrapper(talon, Inches.of(6));
-      yield new SingleMotorThing(
-          new SingleMotorThing.ConstructionData(motorController, encoder));
-    }
-    case Thrifty -> new SingleMotorThingNova(5);
-    case Victor ->
-      // Sample of how to use the SingleMotorThing class without needing
-      // to derive a class for hardware-specific setup.
-      new SingleMotorThing(new SingleMotorThing.ConstructionData(
-          // Use a Victor motor controller...
-          new VictorSP(8),
-          // ...and a bog-standard WPILib encoder.
-          TrivialEncoder.forWpiLibEncoder(new Encoder(1, 2))));
-  };
+  final ISingleMotorThing m_singleMotorThing = allocateFixedSingleMotorThing(m_hardware);
+
+  static ISingleMotorThing allocateFixedSingleMotorThing(HardwareConfig config) {
+    return switch (config) {
+      case Simulated -> new SingleMotorThingSim();
+      case Spark -> new SingleMotorThingSpark(5, true);
+      case SparkPair -> {
+        // Generate an example of a pair of motors being treated as a single
+        // (logical) entity (e.g., paired motors responsible for
+        // extending/retracting an intake, mounted in opposite directions from
+        // each other).
+        yield new SingleMotorThingGroup(
+            new SingleMotorThingSpark(RIGHT_INTAKE_DEPLOYMENT_ID, true),
+            new SingleMotorThingSpark(LEFT_INTAKE_DEPLOYMENT_ID, false));
+      }
+      case TalonPwm -> new SingleMotorThingTalonPwm(6);
+      case TalonCanDirect -> {
+        final TalonFX talon = new TalonFX(11);
+        final IMotorControllerPlus motorController = new TalonMotorControllerPlus(talon);
+        final TrivialEncoder encoder = new TalonEncoderWrapper(talon, Inches.of(6));
+        yield new SingleMotorThing(
+            new SingleMotorThing.ConstructionData(motorController, encoder));
+      }
+      case Thrifty -> new SingleMotorThingNova(5);
+      case Victor ->
+        // Sample of how to use the SingleMotorThing class without needing
+        // to derive a class for hardware-specific setup.
+        new SingleMotorThing(new SingleMotorThing.ConstructionData(
+            // Use a Victor motor controller...
+            new VictorSP(8),
+            // ...and a bog-standard WPILib encoder.
+            TrivialEncoder.forWpiLibEncoder(new Encoder(1, 2))));
+    };
+  }
 
   /** Constructor. */
   public RobotContainer() {

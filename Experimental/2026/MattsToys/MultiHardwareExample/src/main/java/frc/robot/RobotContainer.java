@@ -9,10 +9,13 @@ import static edu.wpi.first.units.Units.Inches;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import frc.robot.commands.VariableSpeedCommand;
 import frc.robot.hardware.actuators.IMotorControllerPlus;
 import frc.robot.hardware.actuators.TalonMotorControllerPlus;
 import frc.robot.hardware.sensors.TalonEncoderWrapper;
@@ -95,6 +98,10 @@ public class RobotContainer {
   /** Constructor. */
   public RobotContainer() {
     System.out.println("Hardware configuration: " + m_hardware);
+
+    Shuffleboard.getTab(VariableSpeedCommand.TAB_NAME)
+        .add("Variable Speed", new VariableSpeedCommand(m_singleMotorThing))
+        .withWidget(BuiltInWidgets.kCommand);
 
     addPowerButton("Stop!", 0);
     addPowerButton("-10% power", -.10);

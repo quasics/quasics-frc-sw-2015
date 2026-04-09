@@ -85,6 +85,15 @@ public final class Autos {
         .andThen(indexAndShoot(drivebase, shooter, indexer));
   }
 
+  public Command hubBack(IDrivebase drivebase, IShooter shooter,
+      IShooterHood hood, double hoodAngle, Pose2d fieldPose, IIndexer indexer, IIntake intake) {
+    return new UpdateStartingPositionData(drivebase, fieldPose)
+        .andThen(new PivotHoodToPosition(hood, 0.15, Degrees.of(hoodAngle)))
+        .andThen(indexAndShoot(drivebase, shooter, indexer))
+        // .andThen(new DriveForDistance(m_drivebase, 0.25, Feet.of(-3)))
+        .andThen(new RunIntakeExtensionForTime(m_intake, 0.4, true, 5));
+  }
+
   // TODO: Add a sequential command group.
   // FINDME(Robert, Rylie): are we actually using this code? (It looks like we
   // aren't.) If not, should it be removed?
@@ -135,6 +144,8 @@ public final class Autos {
         Degrees.of(15), new Pose2d(new Translation2d(12.989, 6.059), new Rotation2d(Degrees.of(0)))));
     m_sequenceChooser.addOption("RED Right Trench", generateSampleStartingCommand(m_drivebase, m_shooter, m_hood,
         Degrees.of(15), new Pose2d(new Translation2d(12.57, 7.436), new Rotation2d(Degrees.of(0)))));
+    m_sequenceChooser.addOption("RED Hub then BACK", hubBack(m_drivebase, m_shooter, m_hood, 5,
+        new Pose2d(new Translation2d(12.989, 4.035), new Rotation2d(Degrees.of(180))), m_indexer, m_intake));
 
     // BLUE Autos
     m_sequenceChooser.addOption("BLUE Left Trench", generateSampleStartingCommand(m_drivebase, m_shooter, m_hood,
@@ -150,14 +161,19 @@ public final class Autos {
         Degrees.of(15), new Pose2d(new Translation2d(3.971, 0.634), new Rotation2d(Degrees.of(180)))));
     m_sequenceChooser.addOption("SIT BLUE BUMP", new UpdateStartingPositionData(m_drivebase,
         new Pose2d(new Translation2d(3.552, 2.011), new Rotation2d(Degrees.of(0)))));
+    m_sequenceChooser.addOption("BLUE Hub then BACK", hubBack(m_drivebase, m_shooter, m_hood, 5,
+        new Pose2d(new Translation2d(3.552, 4.035), new Rotation2d(Degrees.of(0))), m_indexer, m_intake));
+
+    m_sequenceChooser.addOption("TEST", new DriveForDistance(m_drivebase, 0.25, Feet.of(-3)));
   }
 
-  public Autos(IDrivebase drivebase, IShooter shooter, IShooterHood hood, IIndexer indexer) {
+  public Autos(IDrivebase drivebase, IShooter shooter, IShooterHood hood, IIndexer indexer, IIntake intake) {
     m_autoHelper = new PathPlannerHelper(drivebase);
     m_drivebase = drivebase;
     m_shooter = shooter;
     m_hood = hood;
     m_indexer = indexer;
+    m_intake = intake;
     configureSequenceSelector();
     SmartDashboard.putData("Sequence Chooser", m_sequenceChooser);
   }

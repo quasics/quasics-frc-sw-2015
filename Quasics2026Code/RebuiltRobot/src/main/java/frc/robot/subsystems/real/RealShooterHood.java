@@ -7,9 +7,8 @@ package frc.robot.subsystems.real;
 import static edu.wpi.first.units.Units.Degrees;
 
 import com.revrobotics.AbsoluteEncoder;
-import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-
+import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
@@ -17,8 +16,8 @@ import frc.robot.logging.Logger;
 import frc.robot.logging.Logger.Verbosity;
 import frc.robot.subsystems.interfaces.IShooterHood;
 
-public class RealShooterHood extends SubsystemBase implements IShooterHood {
 
+public class RealShooterHood extends SubsystemBase implements IShooterHood {
   private final SparkMax m_hood;
   private final AbsoluteEncoder m_throughBoreEncoder;
   private final Logger m_logger = new Logger(Verbosity.Info, "RealShooterHood");
@@ -44,8 +43,9 @@ public class RealShooterHood extends SubsystemBase implements IShooterHood {
   /*
    * Note: this doesn't currently handle running into a limit/hard stop (which
    * should probably be looked for in periodic()).
-   * 
-   * FINDME(Daniel): we should really ensure that the "hard stop" case is covered.
+   *
+   * FINDME(Daniel): we should really ensure that the "hard stop" case is
+   * covered.
    */
   @Override
   public void moveDown(double speed) {
@@ -55,8 +55,9 @@ public class RealShooterHood extends SubsystemBase implements IShooterHood {
   /*
    * Note: this doesn't currently handle running into a limit/hard stop (which
    * should probably be looked for in periodic()).
-   * 
-   * FINDME(Daniel): we should really ensure that the "hard stop" case is covered.
+   *
+   * FINDME(Daniel): we should really ensure that the "hard stop" case is
+   * covered.
    */
   @Override
   public void moveUp(double speed) {
@@ -71,6 +72,6 @@ public class RealShooterHood extends SubsystemBase implements IShooterHood {
   @Override
   public void periodic() {
     m_logger.log(Verbosity.Debug, "Current Angle: " + getCurrentAngle());
+    // System.out.println("Current Angle: " + getCurrentAngle());
   }
-
 }

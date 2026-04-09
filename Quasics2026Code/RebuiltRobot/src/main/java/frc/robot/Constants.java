@@ -29,22 +29,27 @@ public final class Constants {
   /** Radius of the drive base wheels. */
   public static final Distance WHEEL_RADIUS = Inches.of(3);
 
-  /** Gearing ratio for kitbots (which also happens to match what we're using). */
+  /**
+   * Gearing ratio for kitbots (which also happens to match what we're using).
+   */
   public static final KitbotGearing GEARING = KitbotGearing.k8p45;
 
   /** Gearing ratio for our robots this year. */
   public static final double DRIVEBASE_GEAR_RATIO = GEARING.value;
 
-  public static final LinearVelocity MAX_LINEAR_DRIVE_SPEED = MetersPerSecond.of(3);
-  public static final AngularVelocity MAX_ROTATIONAL_SPEED = RadiansPerSecond.of(2);
+  public static final LinearVelocity MAX_LINEAR_DRIVE_SPEED =
+      MetersPerSecond.of(3);
+  public static final AngularVelocity MAX_ROTATIONAL_SPEED =
+      RadiansPerSecond.of(2);
 
   /**
-   * Maximum length used in the lighting subsystem for the addressable LED strip.
+   * Maximum length used in the lighting subsystem for the addressable LED
+   * strip.
    */
   public static final int LIGHTING_TOTAL_LENGTH = 80;
 
-  // TODO: Calculate https://www.chiefdelphi.com/t/coefficient-of-friction/467778
-  // TODO: mass, moi, CoF, current draw, track width for auto
+  // TODO: Calculate
+  // https://www.chiefdelphi.com/t/coefficient-of-friction/467778
 
   public static class PwmPortIds {
     public static final int SIMULATED_LEFT_MOTOR_CHANNEL = 0;
@@ -65,8 +70,8 @@ public final class Constants {
     }
 
     /**
-     * CAN IDs for SparkMax motors used on any of the robots this year (generally
-     * Lizzie or Sally).
+     * CAN IDs for SparkMax motors used on any of the robots this year
+     * (generally Lizzie or Sally).
      */
     public static class SparkMaxIds {
       // Note: Drive base motor IDs are based on those Quasics has used over the
@@ -96,8 +101,8 @@ public final class Constants {
     }
 
     /**
-     * CAN IDs for ThriftyNova motors used this year. (This should just be the drive
-     * motors in Lizzie.)
+     * CAN IDs for ThriftyNova motors used this year. (This should just be the
+     * drive motors in Lizzie.)
      */
     public static class ThriftyNovaIds {
       /** Left leader (Nova) motor CAN ID. */
@@ -247,7 +252,8 @@ public final class Constants {
     public static final Distance FIELD_WIDTH = Inches.of(317.69);
     public static final Distance FIELD_LENGTH_CENTER = FIELD_LENGTH.div(2);
     public static final Distance FIELD_WIDTH_CENTER = FIELD_WIDTH.div(2);
-    public static final Distance ALLIANCE_WALL_TO_HUB_CENTER = Inches.of(182.11);
+    public static final Distance ALLIANCE_WALL_TO_HUB_CENTER =
+        Inches.of(182.11);
 
     /** Robot heading when facing the Blue alliance. */
     public static final Angle FACING_BLUE = Degrees.of(180);
@@ -265,19 +271,23 @@ public final class Constants {
     public static final Distance BUMP_WIDTH = Inches.of(73.0);
 
     /**
-     * Y-position of the mid-point on the lower bumps on the blue/red sides of the
-     * field.
+     * Y-position of the mid-point on the lower bumps on the blue/red sides of
+     * the field.
      */
-    public static final Distance MID_BUMP1_Y = FIELD_WIDTH.div(2).minus(HUB_DEPTH.plus(BUMP_WIDTH).div(2));
+    public static final Distance MID_BUMP1_Y =
+        FIELD_WIDTH.div(2).minus(HUB_DEPTH.plus(BUMP_WIDTH).div(2));
 
     /**
-     * Y-position of the mid-point on the upper bumps on the blue/red sides of the
-     * field.
+     * Y-position of the mid-point on the upper bumps on the blue/red sides of
+     * the field.
      */
-    public static final Distance MID_BUMP2_Y = FIELD_WIDTH.div(2).plus(HUB_DEPTH.plus(BUMP_WIDTH).div(2));
+    public static final Distance MID_BUMP2_Y =
+        FIELD_WIDTH.div(2).plus(HUB_DEPTH.plus(BUMP_WIDTH).div(2));
 
-    public static final Distance BLUE_STARTING_LINE = ALLIANCE_WALL_TO_HUB_CENTER.minus(HUB_DEPTH);
-    public static final Distance RED_STARTING_LINE = FIELD_LENGTH.minus(ALLIANCE_WALL_TO_HUB_CENTER.minus(HUB_DEPTH));
+    public static final Distance BLUE_STARTING_LINE =
+        ALLIANCE_WALL_TO_HUB_CENTER.minus(HUB_DEPTH);
+    public static final Distance RED_STARTING_LINE =
+        FIELD_LENGTH.minus(ALLIANCE_WALL_TO_HUB_CENTER.minus(HUB_DEPTH));
   }
 
   /**
@@ -294,17 +304,13 @@ public final class Constants {
   }
 
   /**
-   * Types of drivebases that we "know about" in the code. (Assumption is that all
-   * of the motors in the drivebase are of a common type.)
+   * Types of drivebases that we "know about" in the code. (Assumption is that
+   * all of the motors in the drivebase are of a common type.)
    */
   // TODO: Likely want configurable settings other than just this (track width,
   // etc): See RobotSettings.java in Reefscape code
-  public static enum DrivebaseMotors {
-    Unknown,
-    SparkMax,
-    ThriftyNova
-  }
+  public static enum DrivebaseMotors { Unknown, SparkMax, ThriftyNova }
 
-  // TODO: Make a com.pathplanner.lib.config.RobotConfig per robot we want to run
-  // auto on
+  // TODO: Make a com.pathplanner.lib.config.RobotConfig per robot we want to
+  // run auto on
 }

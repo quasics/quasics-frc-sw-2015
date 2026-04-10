@@ -6,11 +6,13 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.Inches;
 
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import edu.wpi.first.wpilibj.Preferences;
@@ -46,8 +48,12 @@ public class RobotContainer {
     ThriftyNova,
   }
 
+  private static final String MOTOR_TYPE_PREF_KEY = "MotorType";
+  private static final String MOTOR_ID_PREF_KEY = "MotorId";
+  private static final String MOTOR_INVERTED_PREF_KEY = "MotorInverted";
+
   private static MotorType getMotorTypeFromPreferences(MotorType defaultValue) {
-    String motorTypeString = Preferences.getString("MotorType", defaultValue.name());
+    String motorTypeString = Preferences.getString(MOTOR_TYPE_PREF_KEY, defaultValue.name());
     try {
       return MotorType.valueOf(motorTypeString);
     } catch (IllegalArgumentException e) {
@@ -58,11 +64,11 @@ public class RobotContainer {
   }
 
   private static int getMotorIdFromPreferences(int defaultValue) {
-    return Preferences.getInt("MotorId", defaultValue);
+    return Preferences.getInt(MOTOR_ID_PREF_KEY, defaultValue);
   }
 
   private static boolean getInvertedFromPreferences(boolean defaultValue) {
-    return Preferences.getBoolean("MotorInverted", defaultValue);
+    return Preferences.getBoolean(MOTOR_INVERTED_PREF_KEY, defaultValue);
   }
 
   /**
@@ -199,6 +205,7 @@ public class RobotContainer {
         "Motor Inverted",
         newValue -> {
           System.out.println("Motor Inverted changed to: " + newValue);
+          Preferences.setBoolean(MOTOR_INVERTED_PREF_KEY, newValue);
         });
 
     addConfigSelector(
@@ -207,6 +214,7 @@ public class RobotContainer {
         "Motor Type",
         newValue -> {
           System.out.println("Motor Type changed to: " + newValue);
+          Preferences.setString(MOTOR_TYPE_PREF_KEY, newValue.name());
         });
 
     addConfigSelector(
@@ -217,10 +225,32 @@ public class RobotContainer {
         "Motor Id",
         newValue -> {
           System.out.println("Motor Id changed to: " + newValue);
+          Preferences.setInt(MOTOR_ID_PREF_KEY, newValue);
         });
   }
 
-  static <T> void addConfigSelector(T[] array, T defaultValue, String label, Consumer<T> onChange) {
+  GenericEntry hiddenWarningEntry = null;
+  GenericEntry statusLightEntry;
+
+  <T> void addConfigSelector(T[] array, T defaultValue, String label, Consumer<T> onChange) {
+    if (hiddenWarningEntry == null) {
+      statusLightEntry = Shuffleboard.getTab("Config")
+          .add("Reset needed", true)
+          .withWidget(BuiltInWidgets.kBooleanBox)
+          .withPosition(0, 0)
+          .withSize(4, 1)
+          .withProperties(Map.of("Color when true", "Green", "Color when false", "Red"))
+          .getEntry();
+      hiddenWarningEntry = Shuffleboard.getTab("Config")
+          .add("Restart Alert", "")
+          .withWidget(BuiltInWidgets.kTextView)
+          .withPosition(1, 0)
+          .withSize(4, 1)
+          // This is the "highlight" — set the background to a specific color
+          .withProperties(Map.of("Background Color", "Orange"))
+          .getEntry();
+      hiddenWarningEntry.setString("");
+    }
     final SendableChooser<T> chooser = new SendableChooser<>();
     for (var element : array) {
       if (defaultValue.equals(element)) {
@@ -230,7 +260,15 @@ public class RobotContainer {
       }
     }
     Shuffleboard.getTab("Config").add(label, chooser);
-    chooser.onChange(onChange);
+    chooser.onChange(value -> {
+      // Post the new value back to the callback.
+      onChange.accept(value);
+
+      // Changing the configuration typically requires re-allocating hardware.
+      System.out.println("Signal the user to restart");
+      hiddenWarningEntry.setString("Restart the robot for changes to take effect.");
+      statusLightEntry.setBoolean(false);
+    });
   }
 
   private void addPowerButton(String label, double percent) {

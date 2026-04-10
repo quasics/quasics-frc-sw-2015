@@ -6,15 +6,17 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.Inches;
 
-import java.util.Arrays;
-import java.util.Map;
+import java.util.function.Consumer;
+import java.util.stream.IntStream;
 
 import com.ctre.phoenix6.hardware.TalonFX;
+
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -191,24 +193,44 @@ public class RobotContainer {
 
     SmartDashboard.putData(m_singleMotorThing.asSendable());
 
-    Shuffleboard.getTab("Config")
-        .add("Motor Type", SELECTED_MOTOR_TYPE.name())
-        .withWidget(BuiltInWidgets.kComboBoxChooser)
-        .withProperties(
-            Map.of("choices", Arrays.stream(MotorType.values())
-                .map(Enum::name)
-                .toArray(String[]::new)));
+    addConfigSelector(
+        new Boolean[] { true, false },
+        SELECTED_MOTOR_INVERTED,
+        "Motor Inverted",
+        newValue -> {
+          System.out.println("Motor Inverted changed to: " + newValue);
+        });
 
-    Shuffleboard.getTab("Config")
-        .add("Motor Id", String.valueOf(SELECTED_MOTOR_ID))
-        .withWidget(BuiltInWidgets.kComboBoxChooser)
-        .withProperties(
-            Map.of("choices", new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" }));
+    addConfigSelector(
+        MotorType.values(),
+        SELECTED_MOTOR_TYPE,
+        "Motor Type",
+        newValue -> {
+          System.out.println("Motor Type changed to: " + newValue);
+        });
 
-    Shuffleboard.getTab("Config")
-        .add("Motor Inverted", SELECTED_MOTOR_INVERTED)
-        .withWidget(BuiltInWidgets.kComboBoxChooser)
-        .withProperties(Map.of("choices", new Boolean[] { false, true }));
+    addConfigSelector(
+        IntStream.rangeClosed(1, 15)
+            .boxed()
+            .toArray(Integer[]::new),
+        SELECTED_MOTOR_ID,
+        "Motor Id",
+        newValue -> {
+          System.out.println("Motor Id changed to: " + newValue);
+        });
+  }
+
+  static <T> void addConfigSelector(T[] array, T defaultValue, String label, Consumer<T> onChange) {
+    final SendableChooser<T> chooser = new SendableChooser<>();
+    for (var element : array) {
+      if (defaultValue.equals(element)) {
+        chooser.setDefaultOption(String.valueOf(element), element);
+      } else {
+        chooser.addOption(String.valueOf(element), element);
+      }
+    }
+    Shuffleboard.getTab("Config").add(label, chooser);
+    chooser.onChange(onChange);
   }
 
   private void addPowerButton(String label, double percent) {

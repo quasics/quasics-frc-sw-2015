@@ -188,6 +188,9 @@ public class SimDrivebase extends DrivebaseBase {
 
   /**
    * Configures the "starting point" selector.
+   * 
+   * TODO: Extract this into a separate class, to allow its (easier) reuse in
+   * future games.
    *
    * @param game if non-null, specifies the game for which starting positions
    *             should have the prefix removed from their names when shown to

@@ -43,8 +43,24 @@ public class SingleMotorThingTalonPwm extends SingleMotorThing {
         TrivialEncoder.forWpiLibEncoder(rawEncoder));
   }
 
-  /** Creates a new SingleMotorThingTalon. */
+  /**
+   * Creates a new SingleMotorThingTalon (assumed to not be inverted).
+   * 
+   * @param channel  PWM channel for the TalonFX.
+   * @param inverted Whether the motor should be inverted.
+   */
   public SingleMotorThingTalonPwm(int channel) {
+    this(channel, false);
+  }
+
+  /**
+   * Creates a new SingleMotorThingTalon.
+   * 
+   * @param channel  PWM channel for the TalonFX.
+   * @param inverted Whether the motor should be inverted.
+   */
+  public SingleMotorThingTalonPwm(int channel, boolean inverted) {
     super(getStuffForBaseClassSetup(channel));
+    super.controller.setInverted(inverted);
   }
 }

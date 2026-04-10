@@ -97,7 +97,7 @@ public class RobotContainer {
     };
   }
 
-  /** Supported hardware configurations. */
+  /** Supported (fixed) hardware configurations. */
   enum HardwareConfig {
     /** Simulated motor only. */
     Simulated,
@@ -119,7 +119,8 @@ public class RobotContainer {
   }
 
   /**
-   * Sets up a "single motor thing", based on the selected hardware configuration.
+   * Demonstrates how to set up a "single motor thing" in a number of ways, based
+   * on the selected hardware configuration.
    * 
    * @param HardwareConfig the (fixed/template) hardware configuration to use
    */

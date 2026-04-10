@@ -6,9 +6,13 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.Inches;
 
+import java.util.Arrays;
+import java.util.Map;
+
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -33,6 +37,58 @@ import frc.robot.subsystems.simulation.SingleMotorThingSim;
  * commands.
  */
 public class RobotContainer {
+  enum MotorType {
+    SparkPwm,
+    SparkMax,
+    TalonFX,
+    ThriftyNova,
+  }
+
+  private static MotorType getMotorTypeFromPreferences(MotorType defaultValue) {
+    String motorTypeString = Preferences.getString("MotorType", defaultValue.name());
+    try {
+      return MotorType.valueOf(motorTypeString);
+    } catch (IllegalArgumentException e) {
+      System.err.println("Invalid MotorType in preferences: " + motorTypeString
+          + ". Defaulting to " + defaultValue.name() + ".");
+      return defaultValue;
+    }
+  }
+
+  private static int getMotorIdFromPreferences(int defaultValue) {
+    return Preferences.getInt("MotorId", defaultValue);
+  }
+
+  private static boolean getInvertedFromPreferences(boolean defaultValue) {
+    return Preferences.getBoolean("MotorInverted", defaultValue);
+  }
+
+  /**
+   * Allocates a "single motor thing" based on the specified motor type, ID, and
+   * inversion setting.
+   * 
+   * This method can be used to create "single motor things" with different
+   * hardware configurations (e.g., based on preferences or other runtime
+   * conditions) without needing to modify the main RobotContainer constructor or
+   * create multiple fixed configurations in the HardwareConfig enum.
+   * 
+   * @param motorType target motor type
+   * @param motorId   ID for the motor (e.g., PWM channel, CAN ID, etc., depending
+   *                  on the motor type)
+   * @param inverted  whether the motor should be inverted
+   * @return an ISingleMotorThing instance configured according to the specified
+   *         parameters
+   */
+  static ISingleMotorThing allocateSingleMotorThing(MotorType motorType, int motorId, boolean inverted) {
+    System.out.println("Allocating single motor thing: " + motorType + ", ID: " + motorId + ", Inverted: " + inverted);
+    return switch (motorType) {
+      case SparkPwm -> new SingleMotorThingSpark(motorId, inverted);
+      case SparkMax -> new SingleMotorThingSpark(motorId, inverted);
+      case TalonFX -> new SingleMotorThingTalonPwm(motorId, inverted);
+      case ThriftyNova -> new SingleMotorThingNova(motorId, inverted);
+    };
+  }
+
   /** Supported hardware configurations. */
   enum HardwareConfig {
     /** Simulated motor only. */
@@ -54,18 +110,11 @@ public class RobotContainer {
     Victor,
   }
 
-  public static final int RIGHT_INTAKE_DEPLOYMENT_ID = 6;
-  public static final int LEFT_INTAKE_DEPLOYMENT_ID = 7;
-
-  /** Selected hardware configuration. */
-  final HardwareConfig m_hardware = Robot.isSimulation()
-      ? HardwareConfig.Simulated
-      : HardwareConfig.TalonCanDirect;
-
-  // Sets up a "single motor thing", based on the selected hardware
-  // configuration.
-  final ISingleMotorThing m_singleMotorThing = allocateFixedSingleMotorThing(m_hardware);
-
+  /**
+   * Sets up a "single motor thing", based on the selected hardware configuration.
+   * 
+   * @param HardwareConfig the (fixed/template) hardware configuration to use
+   */
   static ISingleMotorThing allocateFixedSingleMotorThing(HardwareConfig config) {
     return switch (config) {
       case Simulated -> new SingleMotorThingSim();
@@ -99,6 +148,29 @@ public class RobotContainer {
     };
   }
 
+  private static final int DEFAULT_MOTOR_ID = 1;
+  private static final MotorType DEFAULT_MOTOR_TYPE = MotorType.SparkMax;
+  private static final boolean DEFAULT_MOTOR_INVERTED = false;
+
+  private static final MotorType SELECTED_MOTOR_TYPE = getMotorTypeFromPreferences(DEFAULT_MOTOR_TYPE);
+  private static final int SELECTED_MOTOR_ID = getMotorIdFromPreferences(DEFAULT_MOTOR_ID);
+  private static final boolean SELECTED_MOTOR_INVERTED = getInvertedFromPreferences(DEFAULT_MOTOR_INVERTED);
+
+  public static final int RIGHT_INTAKE_DEPLOYMENT_ID = 6;
+  public static final int LEFT_INTAKE_DEPLOYMENT_ID = 7;
+
+  /** Selected hardware configuration. */
+  final HardwareConfig m_hardware = Robot.isSimulation()
+      ? HardwareConfig.Simulated
+      : HardwareConfig.TalonCanDirect;
+
+  // Sets up a "single motor thing", based on the selected hardware
+  // configuration.
+  final ISingleMotorThing m_singleMotorThing = allocateSingleMotorThing(
+      SELECTED_MOTOR_TYPE,
+      SELECTED_MOTOR_ID,
+      SELECTED_MOTOR_INVERTED);
+
   /** Constructor. */
   public RobotContainer() {
     System.out.println("Hardware configuration: " + m_hardware);
@@ -118,6 +190,25 @@ public class RobotContainer {
     addPowerButton("+100% power", +1.0);
 
     SmartDashboard.putData(m_singleMotorThing.asSendable());
+
+    Shuffleboard.getTab("Config")
+        .add("Motor Type", SELECTED_MOTOR_TYPE.name())
+        .withWidget(BuiltInWidgets.kComboBoxChooser)
+        .withProperties(
+            Map.of("choices", Arrays.stream(MotorType.values())
+                .map(Enum::name)
+                .toArray(String[]::new)));
+
+    Shuffleboard.getTab("Config")
+        .add("Motor Id", String.valueOf(SELECTED_MOTOR_ID))
+        .withWidget(BuiltInWidgets.kComboBoxChooser)
+        .withProperties(
+            Map.of("choices", new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" }));
+
+    Shuffleboard.getTab("Config")
+        .add("Motor Inverted", SELECTED_MOTOR_INVERTED)
+        .withWidget(BuiltInWidgets.kComboBoxChooser)
+        .withProperties(Map.of("choices", new Boolean[] { false, true }));
   }
 
   private void addPowerButton(String label, double percent) {

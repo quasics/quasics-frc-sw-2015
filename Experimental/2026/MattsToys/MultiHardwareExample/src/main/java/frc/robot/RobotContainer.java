@@ -35,6 +35,7 @@ import frc.robot.subsystems.real.SingleMotorThingNova;
 import frc.robot.subsystems.real.SingleMotorThingSpark;
 import frc.robot.subsystems.real.SingleMotorThingTalonPwm;
 import frc.robot.subsystems.simulation.SingleMotorThingSim;
+import frc.robot.util.DashboardUtils;
 
 /**
  * The container for the robot. Contains/configures subsystems, OI devices, and
@@ -199,7 +200,10 @@ public class RobotContainer {
     addPowerButton("+100% power", +1.0);
 
     SmartDashboard.putData(m_singleMotorThing.asSendable());
+    setupSubsystemConfigSelectors();
+  }
 
+  private void setupSubsystemConfigSelectors() {
     addConfigSelector(
         new Boolean[] { true, false },
         SELECTED_MOTOR_INVERTED,
@@ -230,19 +234,20 @@ public class RobotContainer {
         });
   }
 
-  GenericEntry hiddenWarningEntry = null;
-  GenericEntry statusLightEntry;
+  private GenericEntry hiddenWarningEntry = null;
+  private GenericEntry statusLightEntry;
+  static final String CONFIG_TAB_NAME = "Config";
 
   <T> void addConfigSelector(T[] array, T defaultValue, String label, Consumer<T> onChange) {
     if (hiddenWarningEntry == null) {
-      statusLightEntry = Shuffleboard.getTab("Config")
+      statusLightEntry = Shuffleboard.getTab(CONFIG_TAB_NAME)
           .add("Reset needed", true)
           .withWidget(BuiltInWidgets.kBooleanBox)
           .withPosition(0, 0)
           .withSize(4, 1)
           .withProperties(Map.of("Color when true", "Green", "Color when false", "Red"))
           .getEntry();
-      hiddenWarningEntry = Shuffleboard.getTab("Config")
+      hiddenWarningEntry = Shuffleboard.getTab(CONFIG_TAB_NAME)
           .add("Restart Alert", "")
           .withWidget(BuiltInWidgets.kTextView)
           .withPosition(1, 0)
@@ -252,24 +257,20 @@ public class RobotContainer {
           .getEntry();
       hiddenWarningEntry.setString("");
     }
-    final SendableChooser<T> chooser = new SendableChooser<>();
-    for (var element : array) {
-      if (defaultValue.equals(element)) {
-        chooser.setDefaultOption(String.valueOf(element), element);
-      } else {
-        chooser.addOption(String.valueOf(element), element);
-      }
-    }
-    Shuffleboard.getTab("Config").add(label, chooser);
-    chooser.onChange(value -> {
-      // Post the new value back to the callback.
-      onChange.accept(value);
+    DashboardUtils.addConfigSelector(
+        CONFIG_TAB_NAME,
+        array,
+        defaultValue,
+        label,
+        value -> {
+          // Post the new value back to the callback.
+          onChange.accept(value);
 
-      // Changing the configuration typically requires re-allocating hardware.
-      System.out.println("Signal the user to restart");
-      hiddenWarningEntry.setString("Restart the robot for changes to take effect.");
-      statusLightEntry.setBoolean(false);
-    });
+          // Changing the configuration typically requires re-allocating hardware.
+          System.out.println("Signal the user to restart");
+          hiddenWarningEntry.setString("Restart the robot for changes to take effect.");
+          statusLightEntry.setBoolean(false);
+        });
   }
 
   private void addPowerButton(String label, double percent) {

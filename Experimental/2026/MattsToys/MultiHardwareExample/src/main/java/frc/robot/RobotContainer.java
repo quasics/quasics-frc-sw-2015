@@ -150,28 +150,15 @@ public class RobotContainer {
         });
   }
 
-  private GenericEntry hiddenWarningEntry = null;
-  private GenericEntry statusLightEntry;
   static final String CONFIG_TAB_NAME = "Config";
+  private Consumer<Boolean> warningTrigger;
+  private boolean m_restartNeeded = false;
 
   <T> void addConfigSelector(T[] array, T defaultValue, String label, Consumer<T> onChange) {
-    if (hiddenWarningEntry == null) {
-      statusLightEntry = Shuffleboard.getTab(CONFIG_TAB_NAME)
-          .add("Reset needed", true)
-          .withWidget(BuiltInWidgets.kBooleanBox)
-          .withPosition(0, 0)
-          .withSize(4, 1)
-          .withProperties(Map.of("Color when true", "Green", "Color when false", "Red"))
-          .getEntry();
-      hiddenWarningEntry = Shuffleboard.getTab(CONFIG_TAB_NAME)
-          .add("Restart Alert", "")
-          .withWidget(BuiltInWidgets.kTextView)
-          .withPosition(1, 0)
-          .withSize(4, 1)
-          // This is the "highlight" — set the background to a specific color
-          .withProperties(Map.of("Background Color", "Orange"))
-          .getEntry();
-      hiddenWarningEntry.setString("");
+    if (warningTrigger == null) {
+      warningTrigger = DashboardUtils.addWarningIndicator(CONFIG_TAB_NAME, "Reset needed", "Restart alert", () -> {
+        return m_restartNeeded ? "Restart the robot for changes to take effect." : "";
+      });
     }
     DashboardUtils.addConfigSelector(
         CONFIG_TAB_NAME,
@@ -183,9 +170,9 @@ public class RobotContainer {
           onChange.accept(value);
 
           // Changing the configuration typically requires re-allocating hardware.
+          m_restartNeeded = true;
           System.out.println("Signal the user to restart");
-          hiddenWarningEntry.setString("Restart the robot for changes to take effect.");
-          statusLightEntry.setBoolean(false);
+          warningTrigger.accept(false);
         });
   }
 

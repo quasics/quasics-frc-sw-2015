@@ -4,8 +4,12 @@
 
 package frc.robot.util;
 
+import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -42,4 +46,28 @@ public class DashboardUtils {
     chooser.onChange(onChange);
   }
 
+  static public Consumer<Boolean> addWarningIndicator(String tabName, String lightTitle, String textTitle,
+      Supplier<String> textSupplier) {
+    GenericEntry statusLightEntry = Shuffleboard.getTab(tabName)
+        .add(lightTitle, true)
+        .withWidget(BuiltInWidgets.kBooleanBox)
+        .withPosition(0, 0)
+        .withSize(4, 1)
+        .withProperties(Map.of("Color when true", "Green", "Color when false", "Red"))
+        .getEntry();
+    GenericEntry hiddenWarningEntry = Shuffleboard.getTab(tabName)
+        .add(textTitle, "")
+        .withWidget(BuiltInWidgets.kTextView)
+        .withPosition(1, 0)
+        .withSize(4, 1)
+        // This is the "highlight" — set the background to a specific color
+        .withProperties(Map.of("Background Color", "Orange"))
+        .getEntry();
+    hiddenWarningEntry.setString(textSupplier.get());
+
+    return (Boolean b) -> {
+      statusLightEntry.setBoolean(b);
+      hiddenWarningEntry.setString(textSupplier.get());
+    };
+  }
 }

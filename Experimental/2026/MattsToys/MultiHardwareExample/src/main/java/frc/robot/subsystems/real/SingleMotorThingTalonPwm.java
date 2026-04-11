@@ -18,8 +18,7 @@ import frc.robot.subsystems.implementation.SingleMotorThing;
  * controllers.
  *
  * Note that all of the "actual functionality" takes place in the base class;
- * this class only exists
- * to set up the hardware-specific stuff.
+ * this class only exists to set up the hardware-specific stuff.
  */
 public class SingleMotorThingTalonPwm extends SingleMotorThing {
   /** Wheel diameter on this implementation of a SingleMotorThing. */

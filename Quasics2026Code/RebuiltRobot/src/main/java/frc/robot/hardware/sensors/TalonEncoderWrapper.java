@@ -56,8 +56,8 @@ public class TalonEncoderWrapper implements TrivialEncoder {
   //
 
   @Override
-  public void close() throws IOException {
-    // No-op: close the motor controller, which will also close the encoder.
+  public double getRawPosition() {
+    return m_motorController.getPosition().getValueAsDouble();
   }
 
   @Override
@@ -82,7 +82,7 @@ public class TalonEncoderWrapper implements TrivialEncoder {
   //
 
   @Override
-  public double getRawPosition() {
-    return m_motorController.getPosition().getValueAsDouble();
+  public void close() throws IOException {
+    // No-op: close the motor controller, which will also close the encoder.
   }
 }

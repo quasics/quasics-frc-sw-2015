@@ -14,6 +14,10 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+/**
+ * Utility class for common dashboard-related tasks, such as adding selectors
+ * and warning indicators.
+ */
 public class DashboardUtils {
   /**
    * Utility method for adding simple value selectors (with a callback) to the
@@ -46,6 +50,30 @@ public class DashboardUtils {
     chooser.onChange(onChange);
   }
 
+  /**
+   * A utility method for adding a warning indicator to the dashboard.
+   * 
+   * The indicator consists of a boolean box (which changes color based on the
+   * boolean value) and a text view (which displays a warning message when the
+   * boolean value is false).
+   * 
+   * The method returns a Consumer<Boolean> that can be used to update the status
+   * of the warning indicator. When the consumer is called with a boolean value,
+   * it updates the boolean box and the text view accordingly.
+   * 
+   * The text for the warning message is supplied by the textSupplier, which is
+   * called each time the consumer is invoked to get the latest warning message.
+   * 
+   * @param tabName      name of the tab on the dashboard to which the warning
+   *                     indicator will be added
+   * @param lightTitle   name associated with the boolean box (status light)
+   * @param textTitle    name associated with the text view (warning message)
+   * @param textSupplier supplies the text to be displayed in the warning message;
+   *                     this is called each time the consumer is invoked to get
+   *                     the latest warning message
+   * @return a Consumer<Boolean> that can be used to update the status of the
+   *         warning indicator
+   */
   static public Consumer<Boolean> addWarningIndicator(String tabName, String lightTitle, String textTitle,
       Supplier<String> textSupplier) {
     GenericEntry statusLightEntry = Shuffleboard.getTab(tabName)

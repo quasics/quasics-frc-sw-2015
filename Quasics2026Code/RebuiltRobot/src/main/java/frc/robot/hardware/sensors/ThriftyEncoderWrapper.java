@@ -70,6 +70,8 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
     m_gearing = gearing;
 
     final Distance wheelCircumference = wheelOuterDiameter.times(Math.PI);
+    // TODO: Replace the use of "Constants.DRIVEBASE_GEAR_RATIO" with the "gearing"
+    // parameter, once we've confirmed that the code is working correctly.
     m_distanceScalingFactorForGearing = wheelCircumference.div(Constants.DRIVEBASE_GEAR_RATIO).in(Meters);
     m_velocityScalingFactor = m_distanceScalingFactorForGearing / 60;
     if (USE_SPARK_CALCULATIONS) {

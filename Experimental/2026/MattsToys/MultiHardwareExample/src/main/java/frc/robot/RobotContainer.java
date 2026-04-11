@@ -28,17 +28,37 @@ import frc.robot.util.DashboardUtils;
  * commands.
  */
 public class RobotContainer {
+  /**
+   * Enum representing the different types of motors/configurations that can be
+   * used.
+   */
   enum MotorType {
+    /** PWM-controlled SparkMax. */
     SparkPwm,
+    /** CAN-controlled SparkMax. */
     SparkMax,
+    /** CAN-controlled TalonFX. */
     TalonFX,
+    /** CAN-controlled ThriftyNova. */
     ThriftyNova,
   }
 
+  /** Preference key for motor type configuration setting. */
   private static final String MOTOR_TYPE_PREF_KEY = "MotorType";
+  /** Preference key for motor ID configuration setting. */
   private static final String MOTOR_ID_PREF_KEY = "MotorId";
+  /** Preference key for motor inversion configuration setting. */
   private static final String MOTOR_INVERTED_PREF_KEY = "MotorInverted";
 
+  /**
+   * Utility method for reading the motor type from preferences, with error
+   * handling to fall back to a default value if the preference is not set or is
+   * invalid.
+   * 
+   * @param defaultValue default motor type to use if the preference is not set or
+   *                     is invalid
+   * @return the motor type read from preferences, or the default value if invalid
+   */
   private static MotorType getMotorTypeFromPreferences(MotorType defaultValue) {
     String motorTypeString = Preferences.getString(MOTOR_TYPE_PREF_KEY, defaultValue.name());
     try {
@@ -50,10 +70,29 @@ public class RobotContainer {
     }
   }
 
+  /**
+   * Utility method for reading the motor ID from preferences, with error
+   * handling to fall back to a default value if the preference is not set or is
+   * invalid.
+   * 
+   * @param defaultValue default motor ID to use if the preference is not set or
+   *                     is invalid
+   * @return the motor ID read from preferences, or the default value if invalid
+   */
   private static int getMotorIdFromPreferences(int defaultValue) {
     return Preferences.getInt(MOTOR_ID_PREF_KEY, defaultValue);
   }
 
+  /**
+   * Utility method for reading the motor inversion setting from preferences, with
+   * error handling to fall back to a default value if the preference is not set
+   * or is invalid.
+   * 
+   * @param defaultValue default motor inversion setting to use if the preference
+   *                     is not set or is invalid
+   * @return the motor inversion setting read from preferences, or the default
+   *         value if invalid
+   */
   private static boolean getInvertedFromPreferences(boolean defaultValue) {
     return Preferences.getBoolean(MOTOR_INVERTED_PREF_KEY, defaultValue);
   }
@@ -84,16 +123,36 @@ public class RobotContainer {
     };
   }
 
-  private static final int DEFAULT_MOTOR_ID = 1;
+  /**
+   * Default motor type to use if the preference is not set or is invalid.
+   */
   private static final MotorType DEFAULT_MOTOR_TYPE = MotorType.SparkMax;
+
+  /**
+   * Default motor ID (CAN, PWM, etc.) to use if the preference is not set or is
+   * invalid.
+   */
+  private static final int DEFAULT_MOTOR_ID = 1;
+
+  /**
+   * Default motor inversion setting to use if the preference is not set or is
+   * invalid.
+   */
   private static final boolean DEFAULT_MOTOR_INVERTED = false;
 
+  /** Selected motor type read from preferences. */
   private static final MotorType SELECTED_MOTOR_TYPE = getMotorTypeFromPreferences(DEFAULT_MOTOR_TYPE);
+
+  /** Selected motor ID read from preferences. */
   private static final int SELECTED_MOTOR_ID = getMotorIdFromPreferences(DEFAULT_MOTOR_ID);
+
+  /** Selected motor inversion setting read from preferences. */
   private static final boolean SELECTED_MOTOR_INVERTED = getInvertedFromPreferences(DEFAULT_MOTOR_INVERTED);
 
-  // Sets up a "single motor thing", based on the selected hardware
-  // configuration.
+  /**
+   * The "single motor thing" subsystem, allocated based on the selected motor
+   * type, ID, and inversion setting from preferences.
+   */
   final ISingleMotorThing m_singleMotorThing = allocateSingleMotorThing(
       SELECTED_MOTOR_TYPE,
       SELECTED_MOTOR_ID,
@@ -101,10 +160,7 @@ public class RobotContainer {
 
   /** Constructor. */
   public RobotContainer() {
-    Shuffleboard.getTab(VariableSpeedCommand.TAB_NAME)
-        .add("Variable Speed", new VariableSpeedCommand(m_singleMotorThing))
-        .withWidget(BuiltInWidgets.kCommand);
-
+    // Simple power control buttons for testing the motor.
     addPowerButton("Stop!", 0);
     addPowerButton("-10% power", -.10);
     addPowerButton("-25% power", -.25);
@@ -115,10 +171,25 @@ public class RobotContainer {
     addPowerButton("+50% power", +.5);
     addPowerButton("+100% power", +1.0);
 
+    // Add the single motor thing to the dashboard so we can see its status and
+    // control it with any built-in controls we set up in the subsystem.
     SmartDashboard.putData(m_singleMotorThing.asSendable());
+
+    // Variable-speed control for testing the motor, with a slider to specify the
+    // speed.
+    Shuffleboard.getTab(VariableSpeedCommand.TAB_NAME)
+        .add("Variable Speed", new VariableSpeedCommand(m_singleMotorThing))
+        .withWidget(BuiltInWidgets.kCommand);
+
+    // "Subsystem configuration" tab setup.
     setupSubsystemConfigSelectors();
   }
 
+  /**
+   * Set up configuration selectors for motor type, ID, and inversion, with
+   * callbacks that update the preferences and signal the user to restart the
+   * robot for changes to take effect.
+   */
   private void setupSubsystemConfigSelectors() {
     addConfigSelector(
         new Boolean[] { true, false },
@@ -150,10 +221,48 @@ public class RobotContainer {
         });
   }
 
+  /** Name for the configuration tab. */
   static final String CONFIG_TAB_NAME = "Config";
+
+  /**
+   * Warning trigger for configuration changes; will update the configuration tab
+   * to indicate that a restart is needed.
+   */
   private Consumer<Boolean> warningTrigger;
+
+  /**
+   * Whether a restart is needed for configuration changes to take effect.
+   */
   private boolean m_restartNeeded = false;
 
+  /**
+   * Utility method for adding a configuration selector to the dashboard, with a
+   * callback that updates the configuration and signals the user to restart if
+   * necessary.
+   * 
+   * Note that this method is specific to this example, since it assumes that any
+   * configuration change will require a restart, and it also assumes that the
+   * warning indicator is set up in a specific way. However, it demonstrates how
+   * to create a reusable utility method that encapsulates common patterns for
+   * configuration selectors and user feedback.
+   * 
+   * In a more complex robot codebase, you might want to create a more flexible
+   * and robust configuration management system, but this serves as a simple
+   * example of how to handle configuration changes and user feedback in a
+   * consistent way.
+   * 
+   * This method also "lazily initializes" the warning trigger the first time it's
+   * needed, which allows us to avoid setting up the warning indicator if no
+   * configuration selectors are added.
+   * 
+   * @param <T>          underlying data type for selections
+   * @param array        array of values to show to the user
+   * @param defaultValue default value (to be initially selected)
+   * @param label        label associated with the selector
+   * @param onChange     callback to be invoked when the selection is changed;
+   *                     should update the relevant configuration based on the new
+   *                     value
+   */
   <T> void addConfigSelector(T[] array, T defaultValue, String label, Consumer<T> onChange) {
     if (warningTrigger == null) {
       warningTrigger = DashboardUtils.addWarningIndicator(CONFIG_TAB_NAME, "Reset needed", "Restart alert", () -> {

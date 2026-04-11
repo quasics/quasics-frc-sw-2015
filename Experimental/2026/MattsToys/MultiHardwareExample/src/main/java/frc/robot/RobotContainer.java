@@ -4,11 +4,9 @@
 
 package frc.robot;
 
-import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
-import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;

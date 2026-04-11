@@ -28,7 +28,13 @@ import java.io.IOException;
  * which this wrapper will do.
  */
 public class TalonEncoderWrapper implements TrivialEncoder {
+  /** Wrapped TalonFX motor controller, providing access to encoder data. */
   final TalonFX m_motorController;
+
+  /**
+   * Distance travelled per turn of the outer wheel. (Used to convert
+   * "revolutions" to linear distance, etc.)
+   */
   final Distance m_outerCircumference;
 
   /**
@@ -45,6 +51,11 @@ public class TalonEncoderWrapper implements TrivialEncoder {
     m_outerCircumference = outerDiameter.times(Math.PI);
   }
 
+  //
+  // TrivialEncoder implementation
+  //
+
+  @Override
   public void close() throws IOException {
     // No-op: close the motor controller, which will also close the encoder.
   }

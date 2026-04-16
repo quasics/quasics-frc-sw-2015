@@ -22,80 +22,52 @@ import frc.robot.utils.PathPlannerHelper;
  * autonomous mode.
  */
 public final class Autos {
-  private final PathPlannerHelper m_autoHelper;
-  IIntake m_Intake;
-  IShooter m_Shooter;
+    private final PathPlannerHelper m_autoHelper;
+    IIntake m_Intake;
+    IShooter m_Shooter;
 
-  /**
-   * Generates a simple command sequence that could be used from either
-   * alliance, anywhere on the starting line.
-   *
-   * This sequence will:
-   * <ul>
-   * <li>Reset the robot's "known starting point" to (hopefully) match where
-   * the drive team put it
-   * <li>Drive 4 feet forward
-   * <li>Turn and align with
-   * the aliance's hub
-   * <li>Shoot for 6 seconds
-   * </ul>
-   */
-  public static Command generateSampleStartingCommand(
-      IDrivebase drivebase, IShooter shooter, Pose2d fieldPose) {
-    return new UpdateStartingPositionData(drivebase, fieldPose)
-        .andThen(new PrintCommand("Moving"))
-        .andThen(new DriveForDistance(drivebase, 0.25, Feet.of(4)))
-        .andThen(new PrintCommand("Aligning"))
-        .andThen(new AlignToHub(drivebase))
-        .andThen(new PrintCommand("Shooting"))
-        .andThen(new ShootBasedOnDistanceAndTime(
-            shooter, drivebase, 0.387, 2, Seconds.of(6)))
-        .andThen(new PrintCommand("Done"));
-  }
-
-<<<<<<< HEAD
-  public Command indexAndShoot(IDrivebase drivebase, IShooter shooter, IIndexer indexer) {
-    return new ShootBasedOnDistanceAndTime(shooter, drivebase, .387, 2, Seconds.of(6))
-        .alongWith(waitBeforeIndexing(indexer));
-  }
-
-  public Command waitBeforeIndexing(IIndexer indexer) {
-    return new WaitCommand(2.5).andThen(new RunIndexerForTime(indexer, 0.1, true, 6));
-  }
-
-  public Command hubAuto(IDrivebase drivebase, IShooter shooter,
-      IShooterHood hood, double hoodAngle, Pose2d fieldPose, IIndexer indexer) {
-    return new UpdateStartingPositionData(drivebase, fieldPose)
-        .andThen(new PivotHoodToPosition(hood, 0.15, Degrees.of(hoodAngle)))
-        .andThen(indexAndShoot(drivebase, shooter, indexer));
-  }
-
-  public Command hubBack(IDrivebase drivebase, IShooter shooter,
-      IShooterHood hood, double hoodAngle, Pose2d fieldPose, IIndexer indexer, IIntake intake) {
-    return new UpdateStartingPositionData(drivebase, fieldPose)
-        .andThen(new PivotHoodToPosition(hood, 0.15, Degrees.of(hoodAngle)))
-        .andThen(indexAndShoot(drivebase, shooter, indexer));
-        // .andThen(new DriveForDistance(m_drivebase, 0.25, Feet.of(-3)))
-        // .andThen(new RunIntakeExtensionForTime(m_intake, 0.4, true, 5));
-  }
-
-=======
->>>>>>> 9cd7142cbdab303151b3daa66ae2fb62df52e4e3
-  // TODO: Add a sequential command group.
-  public Command getAuto() {
-    Command autoCommand;
-    switch (m_autoHelper.getAutoName()) {
-      case "BackOutAndShoot1":
-        autoCommand = new RunShooterForTime(m_Shooter, 5, 2, true, 5);
-
-      default:
-        autoCommand = null;
+    /**
+     * Generates a simple command sequence that could be used from either
+     * alliance, anywhere on the starting line.
+     *
+     * This sequence will:
+     * <ul>
+     * <li>Reset the robot's "known starting point" to (hopefully) match where
+     * the drive team put it
+     * <li>Drive 4 feet forward
+     * <li>Turn and align with
+     * the aliance's hub
+     * <li>Shoot for 6 seconds
+     * </ul>
+     */
+    public static Command generateSampleStartingCommand(
+            IDrivebase drivebase, IShooter shooter, Pose2d fieldPose) {
+        return new UpdateStartingPositionData(drivebase, fieldPose)
+                .andThen(new PrintCommand("Moving"))
+                .andThen(new DriveForDistance(drivebase, 0.25, Feet.of(4)))
+                .andThen(new PrintCommand("Aligning"))
+                .andThen(new AlignToHub(drivebase))
+                .andThen(new PrintCommand("Shooting"))
+                .andThen(new ShootBasedOnDistanceAndTime(
+                        shooter, drivebase, 0.387, 2, Seconds.of(6)))
+                .andThen(new PrintCommand("Done"));
     }
 
-    return new SequentialCommandGroup(m_autoHelper.getAuto(), autoCommand);
-  }
+    // TODO: Add a sequential command group.
+    public Command getAuto() {
+        Command autoCommand;
+        switch (m_autoHelper.getAutoName()) {
+            case "BackOutAndShoot1":
+                autoCommand = new RunShooterForTime(m_Shooter, 5, 2, true, 5);
 
-  public Autos(IDrivebase drivebase) {
-    m_autoHelper = new PathPlannerHelper(drivebase);
-  }
+            default:
+                autoCommand = null;
+        }
+
+        return new SequentialCommandGroup(m_autoHelper.getAuto(), autoCommand);
+    }
+
+    public Autos(IDrivebase drivebase) {
+        m_autoHelper = new PathPlannerHelper(drivebase);
+    }
 }

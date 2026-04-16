@@ -96,9 +96,9 @@ public class DriveForDistance extends Command {
               sampleVelocity.in(MetersPerSecond)));
     }
 
-    //Testing velocity
-    System.out.println("Current time " + now  + "   /   Distance Driven" + currentDistance);
-    System.out.println("Expected Speed: " + currentDistance/now);
+    // Testing velocity
+    System.out.println("Current time " + now + "   /   Distance Driven" + currentDistance);
+    System.out.println("Expected Speed: " + currentDistance.div(now));
 
     // Retain values for next report.
     m_lastReportedDistance = currentDistance;

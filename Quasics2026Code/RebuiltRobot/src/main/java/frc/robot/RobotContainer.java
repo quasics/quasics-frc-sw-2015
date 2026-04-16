@@ -335,7 +335,12 @@ public class RobotContainer {
       new RunClimber(m_climber, .1));
     SmartDashboard.putData("Run climber @ - 10%",
         new RunClimber(m_climber, -0.1));
-   
+
+//********************** */
+    SmartDashboard.putData("Drive forward like a lot", 
+      new DriveForDistance(m_drivebase, .2, meters.of(4)));
+         //**************** */
+    
     SmartDashboard.putData("Direction Climb Test",
         new DiretionalTestClimber());
   } 
@@ -360,7 +365,7 @@ public class RobotContainer {
         "LinearSpeedCommand", new LinearSpeedCommand(m_drivebase));
     SmartDashboard.putData("CMD: Testing encoders",
         Commands.sequence(
-            new DriveForDistance(m_drivebase, .25, Meters.of(2))));
+            new DriveForDistance(m_drivebase, .25, Meters.of(5))));
     SmartDashboard.putData("Align to Hub", new AlignToHub(m_drivebase));
   }
 

@@ -21,7 +21,7 @@ import frc.robot.subsystems.implementation.SingleMotorThing;
  * this class only exists
  * to set up the hardware-specific stuff.
  */
-public class SingleMotorThingTalonPwm extends SingleMotorThing {
+public class SingleMotorThingTalon extends SingleMotorThing {
   /** Wheel diameter on this implementation of a SingleMotorThing. */
   final static Distance WHEEL_DIAMETER = Inches.of(4);
 
@@ -44,7 +44,7 @@ public class SingleMotorThingTalonPwm extends SingleMotorThing {
   }
 
   /** Creates a new SingleMotorThingTalon. */
-  public SingleMotorThingTalonPwm(int channel) {
+  public SingleMotorThingTalon(int channel) {
     super(getStuffForBaseClassSetup(channel));
   }
 }

@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems.real;
 
-import static edu.wpi.first.units.Units.Meters;
-
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.thethriftybot.devices.ThriftyNova;
 import com.thethriftybot.devices.ThriftyNova.EncoderType;
@@ -20,10 +18,6 @@ import frc.robot.hardware.sensors.ThriftyEncoderWrapper;
 import frc.robot.hardware.sensors.TrivialEncoder;
 
 public class NovaDriveBase extends AbstractDrivebase {
-  /** Track width (distance between left and right wheels) in meters. */
-  public static final Distance TRACK_WIDTH =
-      Meters.of(0.546); /* 21.5 inches (updated to 2026) */
-
   private final TrivialEncoder m_leftEncoder;
   private final TrivialEncoder m_rightEncoder;
 
@@ -76,8 +70,9 @@ public class NovaDriveBase extends AbstractDrivebase {
    */
   public NovaDriveBase(
       ThriftyNova leftController, ThriftyNova rightController) {
-    super(new ThriftyNovaMotorControllerPlus(leftController),
-        new ThriftyNovaMotorControllerPlus(rightController), TRACK_WIDTH);
+    super(
+        new ThriftyNovaMotorControllerPlus(leftController),
+        new ThriftyNovaMotorControllerPlus(rightController));
 
     // Configure followers to follow the leaders.
     configureMotorControllersForFollowing(
@@ -89,15 +84,8 @@ public class NovaDriveBase extends AbstractDrivebase {
     // Configure the leading motors.
     //
 
-    // Configure the leaders so that they are *not* a follower of anything.
-    //
-    // This is important to do to ensure that the leader motor controllers are
-    // correctly configured even if they get swapped out.
-    leftController.follow(0);
-    rightController.follow(0);
-
-    // Configure the encoder type. (Note that only the leaders need to know
-    // this, since we won't read encoder data from the followers.)
+    // Configure the encoder type. (Note that only the leaders need to know this,
+    // since we won't read encoder data from the followers.)
     ThriftyNovaConfig configLeft = new ThriftyNovaConfig();
     configLeft.encoderType = EncoderType.INTERNAL;
     configLeft.inverted = false;
@@ -106,19 +94,23 @@ public class NovaDriveBase extends AbstractDrivebase {
     configRight.encoderType = EncoderType.INTERNAL;
     configRight.inverted = true;
 
+    // TODO: Configure the leaders so that they are *not* a follower of anything.
+    //
+    // FINDME(Robert): This is important to do to ensure that the leader motor
+    // controllers are correctly configured even if they get swapped out. It can be
+    // done with ~1 line of code per motor.
+
     // Apply the configuration settings to the motors.
     leftController.applyConfig(configLeft);
     rightController.applyConfig(configRight);
 
     //
-    // Set up the TrivialEncoders we'll use to handle accessing the data from
-    // the motors.
+    // Set up the TrivialEncoders we'll use to handle accessing the data from the
+    // motors.
     //
     final Distance wheelDiam = Constants.WHEEL_RADIUS.times(2);
-    m_leftEncoder = new ThriftyEncoderWrapper(
-        leftController, wheelDiam, Constants.DRIVEBASE_GEAR_RATIO);
-    m_rightEncoder = new ThriftyEncoderWrapper(
-        leftController, wheelDiam, Constants.DRIVEBASE_GEAR_RATIO);
+    m_leftEncoder = new ThriftyEncoderWrapper(leftController, wheelDiam, Constants.DRIVEBASE_GEAR_RATIO);
+    m_rightEncoder = new ThriftyEncoderWrapper(leftController, wheelDiam, Constants.DRIVEBASE_GEAR_RATIO);
 
     //
     // Set up the gyro.
@@ -148,9 +140,8 @@ public class NovaDriveBase extends AbstractDrivebase {
     try (ThriftyNova follower = new ThriftyNova(followerId)) {
       // Configure the motor to follow the leader
       //
-      // Pass second parameter of 'true' to invert the direction (i.e., to run
-      // in the opposite direction as the leader): this isn't wanted for the
-      // drive base.
+      // Pass second parameter of 'true' to invert the direction (i.e., to run in the
+      // opposite direction as the leader): this isn't wanted for the drive base.
       follower.follow(leaderId);
     } catch (Exception e) {
       // Something went wrong when releasing the follower: log the error.

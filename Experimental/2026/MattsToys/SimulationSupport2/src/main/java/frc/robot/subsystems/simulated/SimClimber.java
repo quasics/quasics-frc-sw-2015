@@ -5,12 +5,8 @@
 package frc.robot.subsystems.simulated;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.Preferences;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.IClimber;
-import frc.robot.util.Logger;
 import frc.robot.util.config.ClimberConfig;
 import java.io.IOException;
 
@@ -34,21 +30,13 @@ public class SimClimber extends SubsystemBase implements IClimber {
    * If true, simulate limit switches that stop the climber from moving beyond
    * its physical limits.
    */
-  private static final boolean SIMULATE_LIMIT_SWITCHES = false;
-
-  private static final boolean WRAP_AROUND_AT_MAX_HEIGHT = true;
+  private static final boolean SIMULATE_LIMIT_SWITCHES = true;
 
   /** Acceptable error for PID control. */
   private static final double ACCEPTABLE_ERROR = 0.05;
 
   /** Amount to move the climber per simulation cycle when in manual mode. */
-  private static final double MANUAL_DELTA_PER_CYCLE = 0.01;
-
-  static final String DIRECTION_PREFS_KEY = "ClimberDirection";
-  static final String NORMAL_DIRECTON_LABEL = "Normal";
-  static final int NORMAL_DIRECTION_VALUE = +1;
-  static final String INVERTED_DIRECTON_LABEL = "Inverted";
-  static final int INVERTED_DIRECTION_VALUE = -1;
+  private static final double MANUAL_DELTA_PER_CYCLE = 0.1;
 
   //
   // Exposed for simulation purposes
@@ -59,10 +47,6 @@ public class SimClimber extends SubsystemBase implements IClimber {
 
   /** Minimum height of the climber (in meters). */
   public static final double MIN_HEIGHT = 0.0;
-
-  //
-  // Data members
-  //
 
   /** Current target position (when under PID control) */
   Position m_targetPosition = Position.DontCare;
@@ -76,11 +60,6 @@ public class SimClimber extends SubsystemBase implements IClimber {
   /** PID controller for automatic positioning. */
   private PIDController m_pidController = new PIDController(1, 0, 0);
 
-  private final Logger m_logger = new Logger("SimClimber", Logger.Level.Info);
-
-  private final SendableChooser<Integer> m_chooser = new SendableChooser<>();
-  private int m_configuredDirection = +1;
-
   /**
    * Constructor.
    *
@@ -93,27 +72,6 @@ public class SimClimber extends SubsystemBase implements IClimber {
     // Note that I'm ignoring the feedforward term here, since we're simulating
     // the built-in PID on the motor controller, which doesn't have a
     // feedforward component.
-
-    // Try to load the configured direction from saved preferences (defaulting to
-    // +1).
-    m_configuredDirection = Preferences.getInt(DIRECTION_PREFS_KEY, +1);
-
-    m_chooser.addOption(NORMAL_DIRECTON_LABEL, NORMAL_DIRECTION_VALUE);
-    m_chooser.addOption(INVERTED_DIRECTON_LABEL, INVERTED_DIRECTION_VALUE);
-    if (m_configuredDirection > 0) {
-      m_chooser.setDefaultOption("Normal", NORMAL_DIRECTION_VALUE);
-    } else {
-      m_chooser.setDefaultOption("Inverted", INVERTED_DIRECTION_VALUE);
-    }
-
-    Shuffleboard.getTab("Climber").add("Direction", m_chooser);
-    m_chooser.onChange(this::directionSelectionChanged);
-  }
-
-  private void directionSelectionChanged(Integer direction) {
-    m_logger.log(Logger.Level.Info, "Direction changed to " + direction);
-    m_configuredDirection = direction;
-    Preferences.setInt(DIRECTION_PREFS_KEY, m_configuredDirection);
   }
 
   /**
@@ -140,21 +98,15 @@ public class SimClimber extends SubsystemBase implements IClimber {
       case Idle -> SimulationUxSupport.DeviceStatus.Idle;
       case Rising, Descending -> SimulationUxSupport.DeviceStatus.Manual;
       case PidControlled ->
-        (Math.abs(m_currentHeight - getHeightForPosition(m_targetPosition)) < ACCEPTABLE_ERROR)
+        (Math.abs(m_currentHeight - getHeightForPosition(m_targetPosition))
+            < ACCEPTABLE_ERROR)
             ? SimulationUxSupport.DeviceStatus.AtSetpoint
             : SimulationUxSupport.DeviceStatus.NotAtSetpoint;
     };
 
-    double displayedHeight;
-    if (WRAP_AROUND_AT_MAX_HEIGHT && m_currentHeight > MAX_HEIGHT) {
-      displayedHeight = (2 * MAX_HEIGHT) - m_currentHeight;
-    } else {
-      displayedHeight = m_currentHeight;
-    }
-
     // Update any simulated display elements here, if needed
     SimulationUxSupport.instance.updateClimber(
-        displayedHeight, getHeightForPosition(m_targetPosition), status);
+        m_currentHeight, getHeightForPosition(m_targetPosition), status);
   }
 
   @Override
@@ -165,33 +117,36 @@ public class SimClimber extends SubsystemBase implements IClimber {
         // Simple PID control to move to target position. (Simulating built-in
         // PID on motor controller; we'd do this in periodic(), otherwise.)
         double targetHeight = getHeightForPosition(m_targetPosition);
-        double output = m_pidController.calculate(m_currentHeight, targetHeight);
-        m_currentHeight += output * 0.02; // Simulate movement over the 20ms interval
+        double output =
+            m_pidController.calculate(m_currentHeight, targetHeight);
+        m_currentHeight +=
+            output * 0.02; // Simulate movement over the 20ms interval
         if (Math.abs(m_currentHeight - targetHeight) < ACCEPTABLE_ERROR) {
           m_currentHeight = targetHeight;
           m_state = State.Idle;
         }
         break;
-
       case Rising:
-        if (WRAP_AROUND_AT_MAX_HEIGHT) {
-          m_currentHeight = m_currentHeight + (MANUAL_DELTA_PER_CYCLE * m_configuredDirection);
-        } else {
-          m_currentHeight = Math.min(m_currentHeight + (MANUAL_DELTA_PER_CYCLE * m_configuredDirection), MAX_HEIGHT);
+        m_currentHeight =
+            Math.max(m_currentHeight + MANUAL_DELTA_PER_CYCLE, MAX_HEIGHT);
+        if (m_currentHeight >= MAX_HEIGHT) {
+          if (SIMULATE_LIMIT_SWITCHES) {
+            m_state = State.Idle;
+          }
         }
         break;
       case Descending:
-        m_currentHeight = Math.max(m_currentHeight - (MANUAL_DELTA_PER_CYCLE * m_configuredDirection), MIN_HEIGHT);
+        m_currentHeight =
+            Math.max(m_currentHeight + MANUAL_DELTA_PER_CYCLE, MAX_HEIGHT);
+        if (m_currentHeight >= MAX_HEIGHT) {
+          if (SIMULATE_LIMIT_SWITCHES) {
+            m_state = State.Idle;
+          }
+        }
         break;
       case Idle:
         // Do nothing....
         break;
-    }
-
-    if ((m_currentHeight >= MAX_HEIGHT) || (m_currentHeight <= MIN_HEIGHT)) {
-      if (SIMULATE_LIMIT_SWITCHES) {
-        m_state = State.Idle;
-      }
     }
 
     updateSimulatedDisplay();

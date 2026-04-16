@@ -16,7 +16,7 @@ import frc.robot.subsystems.interfaces.ISingleMotorThing;
  * handled by a "leaf" derived class).
  *
  * @see frc.robot.subsystems.real.SingleMotorThingSpark
- * @see frc.robot.subsystems.real.SingleMotorThingTalonPwm
+ * @see frc.robot.subsystems.real.SingleMotorThingTalon
  */
 public class SingleMotorThing
     extends SubsystemBase implements ISingleMotorThing {

@@ -63,14 +63,13 @@ public class RealClimber extends SubsystemBase implements IClimber {
 
   @Override
   public void setClimberSpeed(double speed) {
-    // m_logger.logFormatted(Logger.Verbosity.Info, "Setting climber speed to %0.2f
-    // (%s)", speed,
-    // m_configuredDirection > 0 ? "Normal" : "Inverted");
+    m_logger.logFormatted(Logger.Verbosity.Info, "Setting climber speed to %0.2f (%s)", speed,
+        m_configuredDirection > 0 ? "Normal" : "Inverted");
     m_climber.set(speed * m_configuredDirection);
   }
 
   @Override
-  public void stop() {
+  public void stopClimber() {
     m_climber.set(0);
   }
 

@@ -40,15 +40,13 @@ public class AlignToHub extends Command {
   /** Logging object for debugging output. */
   Logger m_Logger = new Logger(Logger.Verbosity.Debug, "AlignToHub");
 
-  static final double feedforward = 0.185;
-
   /** Creates a new AlignToHub. */
   public AlignToHub(IDrivebase drivebase) {
     m_drivebase = drivebase;
     if (Robot.isSimulation()) {
       m_pid = new PIDController(0.004, 0.002, 0);
     } else {
-      m_pid = new PIDController(0.0045, 0.0, 0.0001);
+      m_pid = new PIDController(0.004, 0.0, 0);
     }
     m_pid.enableContinuousInput(-180, 180);
 
@@ -82,12 +80,7 @@ public class AlignToHub extends Command {
             m_goalAngle.getDegrees(),
             error.getDegrees(),
             rotationPercent));
-    if (error.getDegrees() < 0) {
-      rotationPercent -= feedforward;
-    } else if (error.getDegrees() > 0) {
-      rotationPercent += feedforward;
-    }
-    m_drivebase.arcadeDrive(0, rotationPercent);
+    m_drivebase.arcadeDrive(0, rotationPercent * 4);
   }
 
   @Override

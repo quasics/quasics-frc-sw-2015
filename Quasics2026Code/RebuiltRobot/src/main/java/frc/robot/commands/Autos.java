@@ -89,9 +89,9 @@ public final class Autos {
       IShooterHood hood, double hoodAngle, Pose2d fieldPose, IIndexer indexer, IIntake intake) {
     return new UpdateStartingPositionData(drivebase, fieldPose)
         .andThen(new PivotHoodToPosition(hood, 0.15, Degrees.of(hoodAngle)))
-        .andThen(indexAndShoot(drivebase, shooter, indexer))
+        .andThen(indexAndShoot(drivebase, shooter, indexer));
         // .andThen(new DriveForDistance(m_drivebase, 0.25, Feet.of(-3)))
-        .andThen(new RunIntakeExtensionForTime(m_intake, 0.4, true, 5));
+        // .andThen(new RunIntakeExtensionForTime(m_intake, 0.4, true, 5));
   }
 
   // TODO: Add a sequential command group.

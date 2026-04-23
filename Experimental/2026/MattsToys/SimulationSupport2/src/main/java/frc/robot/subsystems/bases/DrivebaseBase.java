@@ -68,12 +68,6 @@ public class DrivebaseBase extends SubsystemBase implements IDrivebasePlus {
   /** Encoder ticks per revolution. */
   public static final int ENCODER_TICKS_PER_REVOLUTION = -4096;
 
-  /** Wheel diameter in inches. */
-  public static final Distance WHEEL_DIAMETER = Inches.of(6);
-
-  /** Gearing ratio from motor to wheel. */
-  public static final double GEAR_RATIO = 8.45;
-
   /** Zero linear velocity. (A potentially useful constant.) */
   public static final LinearVelocity ZERO_MPS = MetersPerSecond.of(0.0);
 

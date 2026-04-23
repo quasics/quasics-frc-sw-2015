@@ -39,9 +39,11 @@ public class CANSparkMaxDrivebase extends DrivebaseBase {
   public CANSparkMaxDrivebase(DriveConfig config) {
     this(config,
         new SparkMax(
-            QuasicsDrivebaseCanIds.LEFT_LEADER_ID, MotorType.kBrushless),
+            config.motorIdMap().get(DriveConfig.MotorUnit.LeftLeader),
+            MotorType.kBrushless),
         new SparkMax(
-            QuasicsDrivebaseCanIds.RIGHT_LEADER_ID, MotorType.kBrushless),
+            config.motorIdMap().get(DriveConfig.MotorUnit.RightLeader),
+            MotorType.kBrushless),
         new Pigeon2(QuasicsDrivebaseCanIds.PIGEON2_CAN_ID));
   }
 
@@ -84,9 +86,17 @@ public class CANSparkMaxDrivebase extends DrivebaseBase {
     rightLeader.configure(rightLeaderConfig, ResetMode.kNoResetSafeParameters,
         PersistMode.kNoPersistParameters);
 
-    // Configure the other motors to follow their respective leaders.
-    configureMotorToFollow(QuasicsDrivebaseCanIds.LEFT_FOLLOWER_ID, leftLeader);
-    configureMotorToFollow(
-        QuasicsDrivebaseCanIds.RIGHT_FOLLOWER_ID, rightLeader);
+    // Configure the other motors (if we have them) to follow their respective
+    // leaders.
+    if (config.motorIdMap().containsKey(DriveConfig.MotorUnit.LeftFollower)) {
+      configureMotorToFollow(
+          config.motorIdMap().get(DriveConfig.MotorUnit.LeftFollower),
+          leftLeader);
+    }
+    if (config.motorIdMap().containsKey(DriveConfig.MotorUnit.RightFollower)) {
+      configureMotorToFollow(
+          config.motorIdMap().get(DriveConfig.MotorUnit.RightFollower),
+          rightLeader);
+    }
   }
 }

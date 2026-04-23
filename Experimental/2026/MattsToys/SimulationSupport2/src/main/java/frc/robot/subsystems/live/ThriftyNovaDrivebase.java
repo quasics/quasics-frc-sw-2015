@@ -34,8 +34,12 @@ public class ThriftyNovaDrivebase extends DrivebaseBase {
    */
   public ThriftyNovaDrivebase(DriveConfig config) {
     this(config,
-        new ThriftyNova(QuasicsDrivebaseCanIds.LEFT_LEADER_ID, MotorType.NEO),
-        new ThriftyNova(QuasicsDrivebaseCanIds.RIGHT_LEADER_ID, MotorType.NEO),
+        new ThriftyNova(
+            config.motorIdMap().get(DriveConfig.MotorUnit.LeftLeader),
+            MotorType.NEO),
+        new ThriftyNova(
+            config.motorIdMap().get(DriveConfig.MotorUnit.RightLeader),
+            MotorType.NEO),
         new Pigeon2(QuasicsDrivebaseCanIds.PIGEON2_CAN_ID));
   }
 
@@ -72,8 +76,16 @@ public class ThriftyNovaDrivebase extends DrivebaseBase {
     leftLeader.applyConfig(leftMotorConfig);
     rightLeader.applyConfig(rightMotorConfig);
 
-    // Configure the other motors to follow their leader
-    configureFollower(QuasicsDrivebaseCanIds.LEFT_FOLLOWER_ID, leftLeader);
-    configureFollower(QuasicsDrivebaseCanIds.RIGHT_FOLLOWER_ID, rightLeader);
+    // Configure the other motors (if we have them) to follow their leader
+    if (driveConfig.motorIdMap().containsKey(DriveConfig.MotorUnit.LeftFollower)) {
+      configureFollower(
+          driveConfig.motorIdMap().get(DriveConfig.MotorUnit.LeftFollower),
+          leftLeader);
+    }
+    if (driveConfig.motorIdMap().containsKey(DriveConfig.MotorUnit.RightFollower)) {
+      configureFollower(
+          driveConfig.motorIdMap().get(DriveConfig.MotorUnit.RightFollower),
+          rightLeader);
+    }
   }
 }

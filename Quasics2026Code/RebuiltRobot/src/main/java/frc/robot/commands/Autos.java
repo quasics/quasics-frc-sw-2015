@@ -38,7 +38,8 @@ public final class Autos {
   IShooter m_shooter;
   IShooterHood m_hood;
   IDrivebase m_drivebase;
-  private SendableChooser<Command> m_sequenceChooser = new SendableChooser<Command>();
+  private SendableChooser<Command> m_sequenceChooser =
+      new SendableChooser<Command>();
 
   /**
    * Generates a simple command sequence that could be used from either
@@ -69,13 +70,16 @@ public final class Autos {
         .andThen(new PrintCommand("Done"));
   }
 
-  public Command indexAndShoot(IDrivebase drivebase, IShooter shooter, IIndexer indexer) {
-    return new ShootBasedOnDistanceAndTime(shooter, drivebase, .387, 2, Seconds.of(6))
+  public Command indexAndShoot(
+      IDrivebase drivebase, IShooter shooter, IIndexer indexer) {
+    return new ShootBasedOnDistanceAndTime(
+        shooter, drivebase, .387, 2, Seconds.of(6))
         .alongWith(waitBeforeIndexing(indexer));
   }
 
   public Command waitBeforeIndexing(IIndexer indexer) {
-    return new WaitCommand(2.5).andThen(new RunIndexerForTime(indexer, 0.1, true, 6));
+    return new WaitCommand(2.5).andThen(
+        new RunIndexerForTime(indexer, 0.1, true, 6));
   }
 
   public Command hubAuto(IDrivebase drivebase, IShooter shooter,
@@ -86,7 +90,8 @@ public final class Autos {
   }
 
   public Command hubBack(IDrivebase drivebase, IShooter shooter,
-      IShooterHood hood, double hoodAngle, Pose2d fieldPose, IIndexer indexer, IIntake intake) {
+      IShooterHood hood, double hoodAngle, Pose2d fieldPose, IIndexer indexer,
+      IIntake intake) {
     return new UpdateStartingPositionData(drivebase, fieldPose)
         .andThen(new PivotHoodToPosition(hood, 0.15, Degrees.of(hoodAngle)))
         .andThen(indexAndShoot(drivebase, shooter, indexer))
@@ -117,6 +122,12 @@ public final class Autos {
             new RunShooterForTime(shooter, 5, 2, true, 5),
             m_autoHelper.getAuto());
 
+      case "ShootAndGrabBalls":
+        return new SequentialCommandGroup(
+            new ShootBasedOnDistanceAndTime(
+                shooter, drivebase, 0.387, 2, Seconds.of(5)),
+            m_autoHelper.getAuto, );
+
       // case "BackOutAndGrab":
       // return new SequentialCommandGroup(
       // AutoBuilder.buildAuto("BackOutAndShoot1"),
@@ -133,41 +144,78 @@ public final class Autos {
   public void configureSequenceSelector() {
     // RED Autos
     m_sequenceChooser.addOption("RED Left Trench",
-        generateSampleStartingCommand(m_drivebase, m_shooter, m_hood, Degrees.of(15), new Pose2d(
-            new Translation2d(12.57, 0.634), new Rotation2d(Degrees.of(0)))));
-    m_sequenceChooser.addOption("RED Left Bump", generateSampleStartingCommand(
-        m_drivebase, m_shooter, m_hood, Degrees.of(15), new Pose2d(
-            new Translation2d(12.989, 2.011), new Rotation2d(Degrees.of(0)))));
-    m_sequenceChooser.addOption("RED Hub", hubAuto(m_drivebase, m_shooter, m_hood, 5,
-        new Pose2d(new Translation2d(12.989, 4.035), new Rotation2d(Degrees.of(180))), m_indexer));
-    m_sequenceChooser.addOption("RED Right Bump", generateSampleStartingCommand(m_drivebase, m_shooter, m_hood,
-        Degrees.of(15), new Pose2d(new Translation2d(12.989, 6.059), new Rotation2d(Degrees.of(0)))));
-    m_sequenceChooser.addOption("RED Right Trench", generateSampleStartingCommand(m_drivebase, m_shooter, m_hood,
-        Degrees.of(15), new Pose2d(new Translation2d(12.57, 7.436), new Rotation2d(Degrees.of(0)))));
-    m_sequenceChooser.addOption("RED Hub then BACK", hubBack(m_drivebase, m_shooter, m_hood, 5,
-        new Pose2d(new Translation2d(12.989, 4.035), new Rotation2d(Degrees.of(180))), m_indexer, m_intake));
+        generateSampleStartingCommand(m_drivebase, m_shooter, m_hood,
+            Degrees.of(15),
+            new Pose2d(new Translation2d(12.57, 0.634),
+                new Rotation2d(Degrees.of(0)))));
+    m_sequenceChooser.addOption("RED Left Bump",
+        generateSampleStartingCommand(m_drivebase, m_shooter, m_hood,
+            Degrees.of(15),
+            new Pose2d(new Translation2d(12.989, 2.011),
+                new Rotation2d(Degrees.of(0)))));
+    m_sequenceChooser.addOption("RED Hub",
+        hubAuto(m_drivebase, m_shooter, m_hood, 5,
+            new Pose2d(new Translation2d(12.989, 4.035),
+                new Rotation2d(Degrees.of(180))),
+            m_indexer));
+    m_sequenceChooser.addOption("RED Right Bump",
+        generateSampleStartingCommand(m_drivebase, m_shooter, m_hood,
+            Degrees.of(15),
+            new Pose2d(new Translation2d(12.989, 6.059),
+                new Rotation2d(Degrees.of(0)))));
+    m_sequenceChooser.addOption("RED Right Trench",
+        generateSampleStartingCommand(m_drivebase, m_shooter, m_hood,
+            Degrees.of(15),
+            new Pose2d(new Translation2d(12.57, 7.436),
+                new Rotation2d(Degrees.of(0)))));
+    m_sequenceChooser.addOption("RED Hub then BACK",
+        hubBack(m_drivebase, m_shooter, m_hood, 5,
+            new Pose2d(new Translation2d(12.989, 4.035),
+                new Rotation2d(Degrees.of(180))),
+            m_indexer, m_intake));
 
     // BLUE Autos
-    m_sequenceChooser.addOption("BLUE Left Trench", generateSampleStartingCommand(m_drivebase, m_shooter, m_hood,
-        Degrees.of(15), new Pose2d(new Translation2d(3.971, 7.436), new Rotation2d(Degrees.of(180)))));
-    m_sequenceChooser.addOption("BLUE Left Bump", generateSampleStartingCommand(
-        m_drivebase, m_shooter, m_hood, Degrees.of(15),
-        new Pose2d(new Translation2d(3.552, 6.059), new Rotation2d(Degrees.of(180)))));
-    m_sequenceChooser.addOption("BLUE Hub", hubAuto(m_drivebase, m_shooter, m_hood, 5,
-        new Pose2d(new Translation2d(3.552, 4.035), new Rotation2d(Degrees.of(0))), m_indexer));
-    m_sequenceChooser.addOption("BLUE Right Bump", generateSampleStartingCommand(m_drivebase, m_shooter, m_hood,
-        Degrees.of(15), new Pose2d(new Translation2d(3.552, 2.011), new Rotation2d(Degrees.of(180)))));
-    m_sequenceChooser.addOption("BLUE Right Trench", generateSampleStartingCommand(m_drivebase, m_shooter, m_hood,
-        Degrees.of(15), new Pose2d(new Translation2d(3.971, 0.634), new Rotation2d(Degrees.of(180)))));
-    m_sequenceChooser.addOption("SIT BLUE BUMP", new UpdateStartingPositionData(m_drivebase,
-        new Pose2d(new Translation2d(3.552, 2.011), new Rotation2d(Degrees.of(0)))));
-    m_sequenceChooser.addOption("BLUE Hub then BACK", hubBack(m_drivebase, m_shooter, m_hood, 5,
-        new Pose2d(new Translation2d(3.552, 4.035), new Rotation2d(Degrees.of(0))), m_indexer, m_intake));
+    m_sequenceChooser.addOption("BLUE Left Trench",
+        generateSampleStartingCommand(m_drivebase, m_shooter, m_hood,
+            Degrees.of(15),
+            new Pose2d(new Translation2d(3.971, 7.436),
+                new Rotation2d(Degrees.of(180)))));
+    m_sequenceChooser.addOption("BLUE Left Bump",
+        generateSampleStartingCommand(m_drivebase, m_shooter, m_hood,
+            Degrees.of(15),
+            new Pose2d(new Translation2d(3.552, 6.059),
+                new Rotation2d(Degrees.of(180)))));
+    m_sequenceChooser.addOption("BLUE Hub",
+        hubAuto(m_drivebase, m_shooter, m_hood, 5,
+            new Pose2d(
+                new Translation2d(3.552, 4.035), new Rotation2d(Degrees.of(0))),
+            m_indexer));
+    m_sequenceChooser.addOption("BLUE Right Bump",
+        generateSampleStartingCommand(m_drivebase, m_shooter, m_hood,
+            Degrees.of(15),
+            new Pose2d(new Translation2d(3.552, 2.011),
+                new Rotation2d(Degrees.of(180)))));
+    m_sequenceChooser.addOption("BLUE Right Trench",
+        generateSampleStartingCommand(m_drivebase, m_shooter, m_hood,
+            Degrees.of(15),
+            new Pose2d(new Translation2d(3.971, 0.634),
+                new Rotation2d(Degrees.of(180)))));
+    m_sequenceChooser.addOption("SIT BLUE BUMP",
+        new UpdateStartingPositionData(m_drivebase,
+            new Pose2d(new Translation2d(3.552, 2.011),
+                new Rotation2d(Degrees.of(0)))));
+    m_sequenceChooser.addOption("BLUE Hub then BACK",
+        hubBack(m_drivebase, m_shooter, m_hood, 5,
+            new Pose2d(
+                new Translation2d(3.552, 4.035), new Rotation2d(Degrees.of(0))),
+            m_indexer, m_intake));
 
-    m_sequenceChooser.addOption("TEST", new DriveForDistance(m_drivebase, 0.25, Feet.of(-3)));
+    m_sequenceChooser.addOption(
+        "TEST", new DriveForDistance(m_drivebase, 0.25, Feet.of(-3)));
   }
 
-  public Autos(IDrivebase drivebase, IShooter shooter, IShooterHood hood, IIndexer indexer, IIntake intake) {
+  public Autos(IDrivebase drivebase, IShooter shooter, IShooterHood hood,
+      IIndexer indexer, IIntake intake) {
     m_autoHelper = new PathPlannerHelper(drivebase);
     m_drivebase = drivebase;
     m_shooter = shooter;

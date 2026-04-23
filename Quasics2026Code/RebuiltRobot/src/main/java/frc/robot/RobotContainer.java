@@ -83,7 +83,8 @@ import java.util.function.Supplier;
  * commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  private static final int SIDE_LIGHTING_LENGTH = Constants.LIGHTING_TOTAL_LENGTH / 2;
+  private static final int SIDE_LIGHTING_LENGTH =
+      Constants.LIGHTING_TOTAL_LENGTH / 2;
 
   //
   // Camera positioning constants.
@@ -129,9 +130,7 @@ public class RobotContainer {
   /**
    * Names of Quasics robots on which this code might be executed.
    */
-  enum RobotName {
-    Simulated, Lizzie, Sally
-  }
+  enum RobotName { Simulated, Lizzie, Sally }
 
   /**
    * Identifies the default robot that we'll assume is in use when we're not
@@ -143,7 +142,8 @@ public class RobotContainer {
    * The robot name we'll *actually* use while executing (which will account for
    * simulation).
    */
-  private static final RobotName ROBOT_NAME = Robot.isReal() ? DEFAULT_ROBOT_NAME : RobotName.Simulated;
+  private static final RobotName ROBOT_NAME =
+      Robot.isReal() ? DEFAULT_ROBOT_NAME : RobotName.Simulated;
 
   private static final boolean ENABLE_SHOOTER_TEST_CMDS = true;
   private static final boolean ENABLE_INDEXER_TEST_CMDS = true;
@@ -202,8 +202,10 @@ public class RobotContainer {
   //
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final Joystick m_driverController = new Joystick(DriveteamConstants.DRIVER_JOYSTICK_ID);
-  private final Joystick m_operatorController = new Joystick(DriveteamConstants.OPERATOR_JOYSTICK_ID);
+  private final Joystick m_driverController =
+      new Joystick(DriveteamConstants.DRIVER_JOYSTICK_ID);
+  private final Joystick m_operatorController =
+      new Joystick(DriveteamConstants.OPERATOR_JOYSTICK_ID);
 
   /** Deadband range for reading data from driver/operator controllers. */
   private final double DEADBAND_CONSTANT = 0.08;
@@ -214,7 +216,8 @@ public class RobotContainer {
    */
   private boolean m_switchDrive = false;
 
-  private final Autos m_autos = new Autos(m_drivebase, m_shooter, m_hood, m_indexer, m_intake);
+  private final Autos m_autos =
+      new Autos(m_drivebase, m_shooter, m_hood, m_indexer, m_intake);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and
@@ -227,7 +230,8 @@ public class RobotContainer {
 
     // Don't warn about joysticks not being plugged in when working on a robot
     // where we frequently aren't worried about it.
-    if (ROBOT_NAME == RobotName.Sally || ROBOT_NAME == RobotName.Sally || true) {
+    if (ROBOT_NAME == RobotName.Sally || ROBOT_NAME == RobotName.Sally
+        || true) {
       DriverStation.silenceJoystickConnectionWarning(true);
     }
 
@@ -285,7 +289,10 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
         "Shooter", new RunShooterForTime(m_shooter, 480, 120, true, 4));
-    // NamedCommands.registerCommand("");
+
+    NamedCommands.registerCommand("IntakeDown",
+        new RunIntakeExtension(
+            m_intake, DEADBAND_CONSTANT, ENABLE_HOOD_TEST_CMDS));
   }
 
   private ILighting allocatePrimaryLighting() {
@@ -313,20 +320,33 @@ public class RobotContainer {
   private void addSystemTestCommandsToDashboard() {
     var tab = Shuffleboard.getTab("System Test");
 
-    tab.add("Flywheel @ +1200RPM", new RunFlywheelTimedTest(m_shooter, RPM.of(1200), Seconds.of(3)));
-    tab.add("Flywheel @ -1200RPM", new RunFlywheelTimedTest(m_shooter, RPM.of(-1200), Seconds.of(3)));
-    tab.add("Kicker @ +50%", new RunKickerTimedTest(m_shooter, +.5, Seconds.of(3)));
-    tab.add("Kicker @ -50%", new RunKickerTimedTest(m_shooter, -.5, Seconds.of(3)));
-    tab.add("Rollers @ +25%", new RunIntakeRollersTimedTest(m_intake, +.25, Seconds.of(3)));
-    tab.add("Rollers @ -25%", new RunIntakeRollersTimedTest(m_intake, -.25, Seconds.of(3)));
-    tab.add("Extension @ +15%", new RunIntakeExtenstionTimedTest(m_intake, +.15, Seconds.of(1.5)));
-    tab.add("Extension @ -15%", new RunIntakeExtenstionTimedTest(m_intake, -.15, Seconds.of(1.5)));
-    tab.add("Indexer @ +25%", new RunIndexerTimedTest(m_indexer, +.25, Seconds.of(3)));
-    tab.add("Indexer @ -25%", new RunIndexerTimedTest(m_indexer, -.25, Seconds.of(3)));
-    tab.add("Climber @ +10%", new RunClimberTimedTest(m_climber, +.10, Seconds.of(1)));
-    tab.add("Climber @ -10%", new RunClimberTimedTest(m_climber, +.10, Seconds.of(1)));
+    tab.add("Flywheel @ +1200RPM",
+        new RunFlywheelTimedTest(m_shooter, RPM.of(1200), Seconds.of(3)));
+    tab.add("Flywheel @ -1200RPM",
+        new RunFlywheelTimedTest(m_shooter, RPM.of(-1200), Seconds.of(3)));
+    tab.add(
+        "Kicker @ +50%", new RunKickerTimedTest(m_shooter, +.5, Seconds.of(3)));
+    tab.add(
+        "Kicker @ -50%", new RunKickerTimedTest(m_shooter, -.5, Seconds.of(3)));
+    tab.add("Rollers @ +25%",
+        new RunIntakeRollersTimedTest(m_intake, +.25, Seconds.of(3)));
+    tab.add("Rollers @ -25%",
+        new RunIntakeRollersTimedTest(m_intake, -.25, Seconds.of(3)));
+    tab.add("Extension @ +15%",
+        new RunIntakeExtenstionTimedTest(m_intake, +.15, Seconds.of(1.5)));
+    tab.add("Extension @ -15%",
+        new RunIntakeExtenstionTimedTest(m_intake, -.15, Seconds.of(1.5)));
+    tab.add("Indexer @ +25%",
+        new RunIndexerTimedTest(m_indexer, +.25, Seconds.of(3)));
+    tab.add("Indexer @ -25%",
+        new RunIndexerTimedTest(m_indexer, -.25, Seconds.of(3)));
+    tab.add("Climber @ +10%",
+        new RunClimberTimedTest(m_climber, +.10, Seconds.of(1)));
+    tab.add("Climber @ -10%",
+        new RunClimberTimedTest(m_climber, +.10, Seconds.of(1)));
     tab.add("Hood to 5", new PivotHoodToPosition(m_hood, 0.15, Degrees.of(5)));
-    tab.add("Hood to 25", new PivotHoodToPosition(m_hood, 0.15, Degrees.of(25)));
+    tab.add(
+        "Hood to 25", new PivotHoodToPosition(m_hood, 0.15, Degrees.of(25)));
   }
 
   private void addShooterTestCommandsToSmartDashboard() {
@@ -349,7 +369,8 @@ public class RobotContainer {
     SmartDashboard.putData(
         "3050 RPM", new RunShooterPID(m_shooter, RPM.of(3050), .387, 1));
     SmartDashboard.putData("Dial in Shooter", new FlywheelDialIn(m_shooter));
-    SmartDashboard.putData("Shooter Test", new RunShooter(m_shooter, 0.3, 0, true));
+    SmartDashboard.putData(
+        "Shooter Test", new RunShooter(m_shooter, 0.3, 0, true));
   }
 
   private void addIntakeTestCommandsToSmartDashboard() {
@@ -569,57 +590,74 @@ public class RobotContainer {
 
   private void configureDriverButtons() {
     if (m_intake != null) {
-      new Trigger(() -> m_driverController.getRawButton(
-          Constants.LogitechDualshock.LeftTrigger))
+      new Trigger(()
+                      -> m_driverController.getRawButton(
+                          Constants.LogitechDualshock.LeftTrigger))
           .whileTrue(new RunIntakeRollers(m_intake, 0.55, false));
-      new Trigger(() -> m_driverController.getRawButton(
-          Constants.LogitechDualshock.RightTrigger))
+      new Trigger(()
+                      -> m_driverController.getRawButton(
+                          Constants.LogitechDualshock.RightTrigger))
           .whileTrue(new RunIntakeRollers(m_intake, 0.55, true));
 
-      new Trigger(() -> m_driverController.getRawButton(
-          Constants.LogitechDualshock.XButton))
+      new Trigger(()
+                      -> m_driverController.getRawButton(
+                          Constants.LogitechDualshock.XButton))
           .whileTrue(new RunIntakeExtension(m_intake, 0.2, false));
-      new Trigger(() -> m_driverController.getRawButton(
-          Constants.LogitechDualshock.BButton))
+      new Trigger(()
+                      -> m_driverController.getRawButton(
+                          Constants.LogitechDualshock.BButton))
           .whileTrue(new RunIntakeExtension(m_intake, 0.1, true));
     }
 
     if (m_climber != null) {
-      new Trigger(() -> m_driverController.getRawButton(
-          Constants.LogitechDualshock.YButton))
+      new Trigger(()
+                      -> m_driverController.getRawButton(
+                          Constants.LogitechDualshock.YButton))
           .whileTrue(new RunClimber(m_climber, 0.9));
-      new Trigger(() -> m_driverController.getRawButton(
-          Constants.LogitechDualshock.AButton))
+      new Trigger(()
+                      -> m_driverController.getRawButton(
+                          Constants.LogitechDualshock.AButton))
           .whileTrue(new RunClimber(m_climber, -0.5));
     }
-    new Trigger(() -> m_driverController.getRawButton(
-        Constants.LogitechDualshock.StartButton))
+    new Trigger(()
+                    -> m_driverController.getRawButton(
+                        Constants.LogitechDualshock.StartButton))
         .whileTrue(new AlignToHub(m_drivebase));
   }
 
   private Command shootDistance() {
-    return Commands.sequence(new PivotHoodToPosition(m_hood, 0.15, Degrees.of(15)),
+    return Commands.sequence(
+        new PivotHoodToPosition(m_hood, 0.15, Degrees.of(15)),
         new ShootBasedOnDistance(m_shooter, m_drivebase, 0.387, 2));
   }
 
   private void configureOperatorButtons() {
     if (m_shooter != null) {
-      new Trigger(() -> m_operatorController.getRawButton(
-          XboxController.Button.kX.value))
+      new Trigger(()
+                      -> m_operatorController.getRawButton(
+                          XboxController.Button.kX.value))
           .whileTrue(towerShot());
-      new Trigger(() -> m_operatorController.getRawButton(
-          XboxController.Button.kB.value))
+      new Trigger(()
+                      -> m_operatorController.getRawButton(
+                          XboxController.Button.kB.value))
           .whileTrue(againstHubShot());
-      new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kA.value)).whileTrue(trenchShot());
-      new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kY.value))
+      new Trigger(()
+                      -> m_operatorController.getRawButton(
+                          XboxController.Button.kA.value))
+          .whileTrue(trenchShot());
+      new Trigger(()
+                      -> m_operatorController.getRawButton(
+                          XboxController.Button.kY.value))
           .whileTrue(shootDistance());
     }
     if (m_indexer != null) {
-      new Trigger(() -> m_operatorController.getRawButton(
-          XboxController.Button.kLeftBumper.value))
+      new Trigger(()
+                      -> m_operatorController.getRawButton(
+                          XboxController.Button.kLeftBumper.value))
           .whileTrue(new RunIndexer(m_indexer, 0.5, true));
-      new Trigger(() -> m_operatorController.getRawButton(
-          XboxController.Button.kRightBumper.value))
+      new Trigger(()
+                      -> m_operatorController.getRawButton(
+                          XboxController.Button.kRightBumper.value))
           .whileTrue(jamFix());
     }
   }

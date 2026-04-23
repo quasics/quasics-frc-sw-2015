@@ -18,9 +18,10 @@ import frc.robot.subsystems.implementation.SingleMotorThing;
  * controllers.
  *
  * Note that all of the "actual functionality" takes place in the base class;
- * this class only exists to set up the hardware-specific stuff.
+ * this class only exists
+ * to set up the hardware-specific stuff.
  */
-public class SingleMotorThingTalonPwm extends SingleMotorThing {
+public class SingleMotorThingTalon extends SingleMotorThing {
   /** Wheel diameter on this implementation of a SingleMotorThing. */
   final static Distance WHEEL_DIAMETER = Inches.of(4);
 
@@ -42,24 +43,8 @@ public class SingleMotorThingTalonPwm extends SingleMotorThing {
         TrivialEncoder.forWpiLibEncoder(rawEncoder));
   }
 
-  /**
-   * Creates a new SingleMotorThingTalon (assumed to not be inverted).
-   * 
-   * @param channel  PWM channel for the TalonFX.
-   * @param inverted Whether the motor should be inverted.
-   */
-  public SingleMotorThingTalonPwm(int channel) {
-    this(channel, false);
-  }
-
-  /**
-   * Creates a new SingleMotorThingTalon.
-   * 
-   * @param channel  PWM channel for the TalonFX.
-   * @param inverted Whether the motor should be inverted.
-   */
-  public SingleMotorThingTalonPwm(int channel, boolean inverted) {
+  /** Creates a new SingleMotorThingTalon. */
+  public SingleMotorThingTalon(int channel) {
     super(getStuffForBaseClassSetup(channel));
-    super.controller.setInverted(inverted);
   }
 }

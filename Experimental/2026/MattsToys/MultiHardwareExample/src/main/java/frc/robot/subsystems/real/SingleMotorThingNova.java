@@ -27,9 +27,6 @@ public class SingleMotorThingNova extends SingleMotorThing {
 
   /**
    * Builds the actual hardware wrappers that will be passed to the base class.
-   * 
-   * @param deviceID CAN ID for the Thrifty Nova
-   * @param inverted Whether the motor should be configured as inverted
    */
   static ConstructionData getStuffForBaseClassSetup(int deviceID, boolean inverted) {
     ThriftyNova motorController = new ThriftyNova(deviceID); // , ThriftyNova.MotorType.NEO
@@ -48,21 +45,10 @@ public class SingleMotorThingNova extends SingleMotorThing {
         new ThriftyEncoderWrapper(motorController, WHEEL_DIAMETER));
   }
 
-  /**
-   * Creates a new SingleMotorThingNova (assumed to not be inverted).
-   * 
-   * @param deviceID CAN ID for the Thrifty Nova
-   */
   public SingleMotorThingNova(int deviceID) {
     this(deviceID, false);
   }
 
-  /**
-   * Creates a new SingleMotorThingNova (assumed to not be inverted).
-   * 
-   * @param deviceID CAN ID for the Thrifty Nova
-   * @param inverted Whether the motor should be configured as inverted
-   */
   public SingleMotorThingNova(int deviceID, boolean inverted) {
     super(getStuffForBaseClassSetup(deviceID, inverted));
     System.out.println("Set up SingleMotorThingNova!");

@@ -30,11 +30,6 @@ public class SparkMaxEncoderWrapper implements TrivialEncoder {
   }
 
   @Override
-  public double getRawPosition() {
-    return encoder.getPosition();
-  }
-
-  @Override
   public void reset() {
     encoder.setPosition(0);
   }

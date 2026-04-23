@@ -16,6 +16,9 @@ import frc.robot.logging.Logger;
 import frc.robot.logging.Logger.Verbosity;
 import frc.robot.subsystems.interfaces.IVision;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inches;
+
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -32,30 +35,21 @@ import org.photonvision.targeting.PhotonTrackedTarget;
  * Vision subsystem implementation.
  */
 public class Vision extends SubsystemBase implements IVision {
-  protected static final AprilTagFields FIELD_LAYOUT = AprilTagFields.k2026RebuiltWelded;
-  protected final AprilTagFieldLayout m_tagLayout;
+  private static final AprilTagFields FIELD_LAYOUT = AprilTagFields.kDefaultField;
+  private final AprilTagFieldLayout m_tagLayout;
   protected PhotonCamera camera = new PhotonCamera("PC_Camera");
   protected PhotonPoseEstimator photonEstimator;
   private Pose3d latestPose3d = new Pose3d();
   protected Pose2d latestPose2d = new Pose2d();
-  private final Transform3d robotToCamera;
+  private Translation3d robotToCamTrl = new Translation3d(Inches.of(-2.25), Inches.of(-8.5), Inches.of(20.25));
+  // up 20.25, offset 2.25 inches behind center, 8.5 inches
+  private Rotation3d robotToCameraRot = new Rotation3d(Degrees.of(0), Degrees.of(-15), Degrees.of(0));
+  private Transform3d robotToCamera = new Transform3d(robotToCamTrl, robotToCameraRot);
 
   private final Logger m_logger = new Logger(Logger.Verbosity.Info, "Vision");
 
-  /**
-   * Constructor.
-   * 
-   * @param robotToCameraTranslation translation (offsets in 3D space) from the
-   *                                 robot's "center of base and forward" position
-   *                                 to the camera; remember that +X is forward,
-   *                                 +Y is to the *left*, and +Z is up
-   * @param robotToCameraRotation3d  rotation (offset angles in 3D space) from the
-   *                                 robot's "center of base and straight forward"
-   *                                 position to the camera
-   */
-  public Vision(Translation3d robotToCameraTranslation, Rotation3d robotToCameraRotation3d) {
-    robotToCamera = new Transform3d(robotToCameraTranslation, robotToCameraRotation3d);
-
+  /** Constructor. */
+  public Vision() {
     AprilTagFieldLayout tagLayout = null;
     try {
       tagLayout = AprilTagFieldLayout.loadFromResource(

@@ -110,7 +110,7 @@ public class ClimberForPosition extends Command {
   @Override
   public void end(boolean interrupted) {
     if (totalRunDistance >= m_go) {
-      m_climber.stop();
+      m_climber.stopClimber();
     }
 
   }

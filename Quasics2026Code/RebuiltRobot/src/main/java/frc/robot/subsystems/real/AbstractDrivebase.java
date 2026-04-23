@@ -40,6 +40,10 @@ import java.util.function.Supplier;
 
 public abstract class AbstractDrivebase
     extends SubsystemBase implements IDrivebase {
+  /** Track width (distance between left and right wheels) in meters. */
+  // TODO: this should come from a robot config
+  public static final Distance TRACK_WIDTH = Meters.of(0.5588); /* 22 inches (from 2024) */
+
   /** Kinematics calculator for the drivebase. */
   private final DifferentialDriveKinematics m_kinematics;
 
@@ -76,8 +80,8 @@ public abstract class AbstractDrivebase
 
   /** Creates a new AbstractDrivebase. */
   public AbstractDrivebase(IMotorControllerPlus leftController,
-      IMotorControllerPlus rightController, Distance trackWidth) {
-    m_kinematics = new DifferentialDriveKinematics(trackWidth);
+      IMotorControllerPlus rightController) {
+    m_kinematics = new DifferentialDriveKinematics(TRACK_WIDTH.in(Meters));
     m_leftMotor = leftController;
     m_rightMotor = rightController;
     m_robotDrive = new DifferentialDrive(m_leftMotor, m_rightMotor);

@@ -6,10 +6,12 @@ package frc.robot.hardware.sensors;
 
 import static edu.wpi.first.units.Units.Seconds;
 
+import java.io.IOException;
+
 import com.ctre.phoenix6.hardware.TalonFX;
+
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
-import java.io.IOException;
 
 /**
  * Convenience wrapper, allowing a TalonFX to be read in the same (general)
@@ -39,7 +41,7 @@ public class TalonEncoderWrapper implements TrivialEncoder {
 
   /**
    * Constructor.
-   *
+   * 
    * @param motorController the TalonFX motor controller whose encoder we want to
    *                        wrap
    * @param outerDiameter   the outer diameter of the wheel being turned by the
@@ -54,11 +56,6 @@ public class TalonEncoderWrapper implements TrivialEncoder {
   //
   // TrivialEncoder implementation
   //
-
-  @Override
-  public double getRawPosition() {
-    return m_motorController.getPosition().getValueAsDouble();
-  }
 
   @Override
   public Distance getPosition() {

@@ -8,7 +8,6 @@ import static edu.wpi.first.units.Units.Meters;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotController;
@@ -28,9 +27,6 @@ import frc.robot.logging.Logger.Verbosity;
 import frc.robot.subsystems.real.AbstractDrivebase;
 
 public class SimulationDrivebase extends AbstractDrivebase {
-  /** Track width (distance between left and right wheels) in meters. */
-  public static final Distance TRACK_WIDTH = Meters.of(0.5588); /* 22 inches (from 2024) */
-
   private static final int GYRO_CHANNEL = 0;
   private static final int LEFT_ENCODER_CHANNEL_A = 1;
   private static final int LEFT_ENCODER_CHANNEL_B = 2;
@@ -58,8 +54,7 @@ public class SimulationDrivebase extends AbstractDrivebase {
   public SimulationDrivebase() {
     super(IMotorControllerPlus.forPWMMotorController(new PWMSparkMax(
         PwmPortIds.SIMULATED_LEFT_MOTOR_CHANNEL)),
-        IMotorControllerPlus.forPWMMotorController(new PWMSparkMax(PwmPortIds.SIMULATED_RIGHT_MOTOR_CHANNEL)),
-        TRACK_WIDTH);
+        IMotorControllerPlus.forPWMMotorController(new PWMSparkMax(PwmPortIds.SIMULATED_RIGHT_MOTOR_CHANNEL)));
     AnalogGyro gyro = new AnalogGyro(GYRO_CHANNEL);
     m_gyroSim = new AnalogGyroSim(gyro);
     m_gyro = IGyro.wrapGyro(gyro);

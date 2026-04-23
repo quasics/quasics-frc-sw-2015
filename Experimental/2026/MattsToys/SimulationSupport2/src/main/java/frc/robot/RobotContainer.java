@@ -26,7 +26,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.commands.ManualClimberControlCommand;
 import frc.robot.commands.MoveClimberToPositionCommand;
 import frc.robot.commands.driving.ArcadeDrive;
 import frc.robot.commands.driving.BaseChoreoTrajectoryCommand;
@@ -98,10 +97,7 @@ public class RobotContainer {
    */
   private static final boolean OVERRIDE_DEFAULT_LIGHTING_WHILE_DISABLED = false;
 
-  /** Default robot configuration under simulation. */
   private static final RobotConfigLibrary.Robot DEFAULT_SIMULATION_ROBOT = RobotConfigLibrary.Robot.Simulation;
-
-  /** Default robot configuration when deploying to real hardware. */
   private static final RobotConfigLibrary.Robot DEFAULT_LIVE_ROBOT = RobotConfigLibrary.Robot.Sally;
 
   /**
@@ -208,25 +204,17 @@ public class RobotContainer {
 
     publish(
         "Commands",
-        "Climb: Extend (Manual)",
-        new ManualClimberControlCommand(m_climber, true));
-    publish(
-        "Commands",
-        "Climb: Retract (Manual)",
-        new ManualClimberControlCommand(m_climber, false));
-    publish(
-        "Commands",
-        "Climb: Extend (PID)",
+        "Climb: Extend",
         new MoveClimberToPositionCommand(
             m_climber, IClimber.Position.Extended, false));
     publish(
         "Commands",
-        "Climb: Retract (PID)",
+        "Climb: Retract",
         new MoveClimberToPositionCommand(
             m_climber, IClimber.Position.Retracted, false));
     publish(
         "Commands",
-        "Climb: Pull up (PID)",
+        "Climb: Pull up",
         new MoveClimberToPositionCommand(
             m_climber, IClimber.Position.PulledUp, true));
     publish(

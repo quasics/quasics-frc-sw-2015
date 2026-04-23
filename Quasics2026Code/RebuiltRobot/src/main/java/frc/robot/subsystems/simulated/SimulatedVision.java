@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.simulated;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -11,6 +13,10 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import frc.robot.subsystems.real.Vision;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inches;
+
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import org.photonvision.simulation.PhotonCameraSim;
@@ -37,26 +43,24 @@ public class SimulatedVision extends Vision {
   private VisionSystemSim m_visionSim;
   private SimCameraProperties cameraProp;
   private PhotonCameraSim cameraSim;
+  private static final AprilTagFields FIELD_LAYOUT = AprilTagFields.k2026RebuiltAndymark;
 
-  /**
-   * Constructor.
-   * 
-   * @param robotToCameraTranslation translation (offsets in 3D space) from the
-   *                                 robot's "center of base and forward" position
-   *                                 to the camera; remember that +X is forward,
-   *                                 +Y is to the *left*, and +Z is up
-   * @param robotToCameraRotation3d  rotation (offset angles in 3D space) from the
-   *                                 robot's "center of base and straight forward"
-   *                                 position to the camera
-   */
-  public SimulatedVision(Translation3d robotToCameraTranslation, Rotation3d robotToCameraRotation3d) {
-    super(robotToCameraTranslation, robotToCameraRotation3d);
-
+  /** Creates a new SimulatedVision. */
+  public SimulatedVision() {
     m_visionSim = new VisionSystemSim("main");
-    if (m_tagLayout != null) {
-      m_visionSim.addAprilTags(m_tagLayout);
+    AprilTagFieldLayout tagLayout = null;
+    try {
+      tagLayout = AprilTagFieldLayout.loadFromResource(FIELD_LAYOUT.m_resourceFile);
+    } catch (IOException ioe) {
+      System.err.println(
+          "Warning: failed to load April Tags layout (" + FIELD_LAYOUT + ")");
+      ioe.printStackTrace();
+    }
+
+    if (tagLayout != null) {
+      m_visionSim.addAprilTags(tagLayout);
     } else {
-      System.err.println("Warning: no April Tags layout available for simulated vision.");
+      System.err.println("Warning: no April Tags layout loaded.");
     }
 
     // Set up the properties selected for our simulated camera (e.g., 640x480
@@ -73,9 +77,26 @@ public class SimulatedVision extends Vision {
     // configuration), and add it to the overall vision simulator.
     //
 
+    // Where is the camera located, relative to the center of the robot's base?
+    //
+    // FINDME(Rylie): This should ideally match the "robotToCameraTr"
+    // translation being used in the base ("Vision") subsystem class's code, or else
+    // the simulator will generate incorrect data.
+    Translation3d robotToCameraTr = new Translation3d(Inches.of(-2.25), Inches.of(-8.5), Inches.of(20.25));
+
+    // What is the angling of the camera, relative to the drive base?
+    //
+    // FINDME(Rylie): This is currently not actually set. It should reflect any
+    // actual "robotToCamera" rotation being used in the base ("Vision")
+    // subsystem class's code, or else the simulator will generate incorrect data.
+    Rotation3d robotToCameraRot = new Rotation3d(Degrees.of(0), Degrees.of(-15), Degrees.of(0));
+
     // Create the overall transformation used to convert data from the robot's
     // perspective to the camera's.
-    Transform3d robotToCamera = new Transform3d(robotToCameraTranslation, robotToCameraRotation3d);
+    //
+    // FINDME(Rylie): This should ideally match the "robotToCamera"
+    // configuration being used in the base ("Vision") subsystem class's code.
+    Transform3d robotToCamera = new Transform3d(robotToCameraTr, robotToCameraRot);
 
     // Allocate the camera simulation object.
     cameraSim = new PhotonCameraSim(camera, cameraProp);
@@ -104,7 +125,6 @@ public class SimulatedVision extends Vision {
     if (drivePose != null) {
       m_visionSim.update(getDrivebasePose());
     }
-
     // 2. Update the simulator to reflect where the (purely) vision-based pose
     // estimate suggests that we are located.
     List<Pose2d> estimatedPoses = Collections.emptyList();
@@ -116,7 +136,6 @@ public class SimulatedVision extends Vision {
     if (estimatedPoses != null) {
       debugField.getObject("VisionEstimate").setPoses(estimatedPoses);
     } else {
-      // Don't have an estimated position
       debugField.getObject("VisionEstimate").setPoses(Collections.emptyList());
     }
   }

@@ -76,8 +76,8 @@ public class PathPlannerHelper {
     return m_chooser.getSelected().getName();
   }
 
+  // TODO: Must consider red/blue alliance positioning.
   public Command doNothingAtHub(IDrivebase drivebase) {
-    // TODO: Must consider red/blue alliance positioning.
     drivebase.resetOdometry(
         // new Pose2d(new Translation2d(3.879, 3.942), new Rotation2d(0)));
         new Pose2d(new Translation2d(13, 4), new Rotation2d(Degrees.of(180))));

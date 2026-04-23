@@ -6,7 +6,6 @@ package frc.robot.subsystems.real;
 
 import static edu.wpi.first.units.Units.Meters;
 
-import com.ctre.phoenix6.hardware.Pigeon2;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -14,18 +13,15 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj.AnalogGyro;
 import frc.robot.Constants;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
 import frc.robot.hardware.actuators.SparkMaxMotorControllerPlus;
 import frc.robot.hardware.sensors.IGyro;
-import frc.robot.hardware.sensors.Pigeon2Wrapper;
 import frc.robot.hardware.sensors.SparkMaxEncoderWrapper;
 import frc.robot.hardware.sensors.TrivialEncoder;
 
 public class SparkDriveBase extends AbstractDrivebase {
-  /** Track width (distance between left and right wheels) in meters. */
-  public static final Distance TRACK_WIDTH = Meters.of(0.5588); /* 22 inches (from 2024) */
-
   private final TrivialEncoder m_leftEncoder;
   private final TrivialEncoder m_rightEncoder;
 
@@ -63,8 +59,7 @@ public class SparkDriveBase extends AbstractDrivebase {
    */
   public SparkDriveBase(SparkMax leftLeader, SparkMax rightLeader) {
     super(new SparkMaxMotorControllerPlus(leftLeader),
-        new SparkMaxMotorControllerPlus(rightLeader),
-        TRACK_WIDTH);
+        new SparkMaxMotorControllerPlus(rightLeader));
 
     // Configure followers to follow the leaders.
     final SparkMax leftfollower = new SparkMax(SparkMaxIds.LEFT_FOLLOWER_ID, MotorType.kBrushless);
@@ -117,8 +112,14 @@ public class SparkDriveBase extends AbstractDrivebase {
     m_rightEncoder = new SparkMaxEncoderWrapper(rightLeader.getEncoder());
 
     // Configure the gyro.
-    Pigeon2 rawGyro = new Pigeon2(Constants.CanBusIds.PIGEON2_CAN_ID);
-    m_gryo = new Pigeon2Wrapper(rawGyro);
+    //
+    // TODO: Switch this to use the gyro that we're actually going to be using
+    // on the test bed (Sally).
+    //
+    // FINDME(Robert): This needs to be updated, since Sally has a Pigeon2, not an
+    // AnalogGyro.
+    AnalogGyro gyro = new AnalogGyro(0);
+    m_gryo = IGyro.wrapGyro(gyro);
   }
 
   /**

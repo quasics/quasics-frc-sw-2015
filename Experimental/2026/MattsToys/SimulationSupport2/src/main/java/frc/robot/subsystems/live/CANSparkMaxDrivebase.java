@@ -75,9 +75,8 @@ public class CANSparkMaxDrivebase extends DrivebaseBase {
     configureSparkMaxEncoderForDistance(
         rightLeaderConfig, config.wheelRadius(), config.gearing());
 
-    // We need to invert one side of the drivetrain so that positive voltages
-    // result in both sides moving forward. Depending on how your robot's
-    // gearbox is constructed, you might have to invert the left side instead.
+    // We may need to invert one side of the drivetrain so that positive voltages
+    // result in both sides moving forward.
     rightLeaderConfig.inverted(config.orientation().isRightInverted());
     leftLeaderConfig.inverted(config.orientation().isLeftInverted());
 

@@ -96,7 +96,8 @@ public final class RobotConfigLibrary {
    * Drive config shared by our simulated drive base hardware (in multiple robot
    * configurations).
    */
-  private final static DriveConfig SIMULATED_DRIVE_BASE_CONFIG = new DriveConfig(DriveType.Simulated,
+  private final static DriveConfig SIMULATED_DRIVE_BASE_CONFIG = new DriveConfig(
+      DriveType.Simulated,
       // Wheel radius
       Inches.of(3),
       Meters.of(0.381 * 2), // Trackwidth
@@ -302,7 +303,9 @@ public final class RobotConfigLibrary {
     PowerDistributor power = new PowerDistributor(ModuleType.kRev);
 
     return new RobotConfig(false,
-        new DriveConfig(DriveType.ThriftyNova, Inches.of(3), // Wheel radius
+        new DriveConfig(
+            DriveType.ThriftyNova,
+            Inches.of(3), // Wheel radius
             Meters.of(0.5588) /* 22 in (from 2024) */,
             8.45, // Gearing (from 2024),
             DriveOrientation.RightInverted,
@@ -324,7 +327,9 @@ public final class RobotConfigLibrary {
     PowerDistributor power = new PowerDistributor(ModuleType.kRev);
 
     return new RobotConfig(false,
-        new DriveConfig(DriveType.CanSparkMax, Inches.of(3), // Wheel radius
+        new DriveConfig(
+            DriveType.CanSparkMax,
+            Inches.of(3), // Wheel radius
             Meters.of(0.5588) /* 22 in (from 2024) */,
             8.45, // Gearing (from 2024),
             DriveOrientation.RightInverted,
@@ -342,7 +347,8 @@ public final class RobotConfigLibrary {
   }
 
   private static RobotConfig generateAmeliaConfig() {
-    final DriveConfig drive = new DriveConfig(DriveType.CanSparkMax,
+    final DriveConfig drive = new DriveConfig(
+        DriveType.CanSparkMax,
         Inches.of(3), // Wheel radius
         Meters.of(0.5628) /* 22 in (from 27Feb2025) */,
         10.71, // Gearing (from 15Mar2025)
@@ -371,7 +377,9 @@ public final class RobotConfigLibrary {
 
   private static RobotConfig generate2026Config() {
     // TODO: Update 2026 drive configuration data with real numbers.
-    final DriveConfig drive = new DriveConfig(DriveType.ThriftyNova, Inches.of(3),
+    final DriveConfig drive = new DriveConfig(
+        DriveType.ThriftyNova,
+        Inches.of(3),
         Inches.of(20.25), // Hand-wavy.....
         8.45, DriveOrientation.RightInverted,
         new PIDConfig(0.29613), // Left PID

@@ -71,9 +71,9 @@ public class CANSparkMaxDrivebase extends DrivebaseBase {
     configureAsNotFollowing(rightLeaderConfig);
 
     configureSparkMaxEncoderForDistance(
-        leftLeaderConfig, config.wheelRadius(), config.gearing());
+        leftLeaderConfig, config.wheelDiameter(), config.gearing());
     configureSparkMaxEncoderForDistance(
-        rightLeaderConfig, config.wheelRadius(), config.gearing());
+        rightLeaderConfig, config.wheelDiameter(), config.gearing());
 
     // We may need to invert one side of the drivetrain so that positive voltages
     // result in both sides moving forward.

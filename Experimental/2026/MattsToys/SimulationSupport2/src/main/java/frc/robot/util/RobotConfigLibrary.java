@@ -11,6 +11,7 @@ import static edu.wpi.first.units.Units.Volts;
 
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import frc.robot.constants.robots.QuasicsSparkMaxConstants;
+import frc.robot.constants.robots.QuasicsThriftyNovaConstants;
 import frc.robot.constants.robots.RebuiltRobotConstants;
 import frc.robot.constants.robots.SimulationPorts;
 import frc.robot.util.config.ArmConfig;
@@ -53,8 +54,10 @@ public final class RobotConfigLibrary {
     Simulation,
     /** Simulation-only */
     SimulationWithTwoCameras,
-    /** "Naked" drivebase used by the coding sub-team */
-    Sally,
+    /** "Naked" drivebase used by the coding sub-team, using SparkMax controllers */
+    SallySpark,
+    /** "Naked" drivebase used by the coding sub-team, using SparkMax controllers */
+    SallyNova,
     // /** 2025 ("Reefscape") robot */
     Amelia,
     // /** 2026 ("Rebuilt") robot */
@@ -174,7 +177,8 @@ public final class RobotConfigLibrary {
         Robot.SimulationWithTwoCameras, generateTwoCameraSimulationConfig());
 
     // Real robot hardware
-    map.put(Robot.Sally, generateSallyConfig());
+    map.put(Robot.SallySpark, generateSallySparkConfig());
+    map.put(Robot.SallyNova, generateSallyNovaConfig());
     map.put(Robot.Amelia, generateAmeliaConfig());
     map.put(Robot.Lizzie, generate2026Config());
 
@@ -294,7 +298,29 @@ public final class RobotConfigLibrary {
         NO_FLYWHEEL, NO_HOOD, NO_POWER_DISTRIBUTOR);
   }
 
-  private static RobotConfig generateSallyConfig() {
+  private static RobotConfig generateSallyNovaConfig() {
+    PowerDistributor power = new PowerDistributor(ModuleType.kRev);
+
+    return new RobotConfig(false,
+        new DriveConfig(DriveType.ThriftyNova, Inches.of(3), // Wheel radius
+            Meters.of(0.5588) /* 22 in (from 2024) */,
+            8.45, // Gearing (from 2024),
+            DriveOrientation.RightInverted,
+            // TODO: Update DriveConfig data for Sally in 2026
+            // configuration/profile, including independent left/right PID.
+            new PIDConfig(0.29613), // Left PID (from 2024)
+            new PIDConfig(0.29613), // Right PID (from 2024)
+            // TODO: Add kS value for Sally's drivebase.
+            new DriveFeedForwardConfig(Volts.of(0.19529),
+                0.01, // Linear data (from 2024)
+                Volts.of(0.19529), 0.01), // Angular data (FAKE)
+            Map.of(DriveConfig.MotorUnit.LeftLeader, QuasicsThriftyNovaConstants.QuasicsDrivebaseCanIds.LEFT_LEADER_ID,
+                DriveConfig.MotorUnit.RightLeader, QuasicsThriftyNovaConstants.QuasicsDrivebaseCanIds.RIGHT_LEADER_ID)),
+        NO_CAMERA, NO_ELEVATOR, NO_ARM, NO_LIGHTING, NO_CANDLE, NO_CLIMBER,
+        NO_FLYWHEEL, NO_HOOD, power);
+  }
+
+  private static RobotConfig generateSallySparkConfig() {
     PowerDistributor power = new PowerDistributor(ModuleType.kRev);
 
     return new RobotConfig(false,

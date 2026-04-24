@@ -60,9 +60,6 @@ public class SimDrivebase extends DrivebaseBase {
   /** Encoder ticks per revolution. */
   protected static final int ENCODER_TICKS_PER_REVOLUTION = -4096;
 
-  /** Wheel diameter in inches. */
-  protected static final Distance WHEEL_DIAMETER = Inches.of(6);
-
   //
   // Simulation-specific fields
   //
@@ -90,11 +87,15 @@ public class SimDrivebase extends DrivebaseBase {
   public SimDrivebase(DriveConfig config) {
     this(config,
         // Left encoder
-        getSimulatedEncoderPair(SimulationPorts.DIO.LEFT_ENCODER_A_PORT,
+        getSimulatedEncoderPair(
+            config,
+            SimulationPorts.DIO.LEFT_ENCODER_A_PORT,
             SimulationPorts.DIO.LEFT_ENCODER_B_PORT,
             config.orientation().isLeftInverted()),
         // Right encoder
-        getSimulatedEncoderPair(SimulationPorts.DIO.RIGHT_ENCODER_A_PORT,
+        getSimulatedEncoderPair(
+            config,
+            SimulationPorts.DIO.RIGHT_ENCODER_A_PORT,
             SimulationPorts.DIO.RIGHT_ENCODER_B_PORT,
             config.orientation().isRightInverted()),
         // Gyro
@@ -129,13 +130,13 @@ public class SimDrivebase extends DrivebaseBase {
             // Drive motor type and count (per side)
             DCMotor.getNEO(2),
             // Gear ratio
-            GEAR_RATIO,
+            config.gearing(),
             // Moment of intertia (joules/(kg*m^2))
             MOMENT_OF_INERTIA,
             // Robot mass (kg)
             SIMULATED_ROBOT_MASS.in(Kilograms),
             // Wheel radius (m)
-            WHEEL_DIAMETER.in(Meters) / 2,
+            config.wheelRadius().in(Meters) / 2,
             // Track width (m)
             config.trackWidth().in(Meters),
             // configure for no noise in measurements
@@ -155,11 +156,11 @@ public class SimDrivebase extends DrivebaseBase {
             // Drive motor type and count (per side)
             DCMotor.getNEO(2),
             // Gear ratio
-            GEAR_RATIO,
+            config.gearing(),
             // Track width (m)
             config.trackWidth().in(Meters),
             // Wheel radius (m)
-            WHEEL_DIAMETER.in(Meters) / 2,
+            config.wheelRadius().in(Meters) / 2,
             // configure for no noise in measurements
             null));
 
@@ -179,9 +180,9 @@ public class SimDrivebase extends DrivebaseBase {
    * @return the simulated encoder pair
    */
   protected static SimulatedEncoderPair getSimulatedEncoderPair(
-      int portId1, int portId2, boolean inverted) {
+      DriveConfig config, int portId1, int portId2, boolean inverted) {
     Encoder e = WpiLibSupportFunctions.getConfiguredEncoder(portId1, portId2,
-        inverted, WHEEL_DIAMETER, ENCODER_TICKS_PER_REVOLUTION);
+        inverted, config.wheelDiameter(), ENCODER_TICKS_PER_REVOLUTION);
     EncoderSim sim = new EncoderSim(e);
     return new SimulatedEncoderPair(e, sim);
   }

@@ -83,4 +83,8 @@ public record DriveConfig(DriveType driveType, Distance wheelRadius,
     this(driveType, wheelRadius, trackWidth, gearing, orientation, commonPid,
         commonPid, feedForward, getDefaultMotorIdMap(driveType));
   }
+
+  public Distance wheelDiameter() {
+    return wheelRadius.times(2);
+  }
 }

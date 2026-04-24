@@ -36,9 +36,6 @@ public class PWMSparkMaxDrivebase extends DrivebaseBase {
   /** Encoder ticks per revolution. */
   protected static final int ENCODER_TICKS_PER_REVOLUTION = -4096;
 
-  /** Wheel diameter in inches. */
-  protected static final Distance WHEEL_DIAMETER = Inches.of(6);
-
   /** Creates a new Drivebase. */
   public PWMSparkMaxDrivebase(DriveConfig config) {
     super(config,
@@ -50,13 +47,13 @@ public class PWMSparkMaxDrivebase extends DrivebaseBase {
             WpiLibSupportFunctions.getConfiguredEncoder(
                 SimulationPorts.DIO.LEFT_ENCODER_A_PORT,
                 SimulationPorts.DIO.LEFT_ENCODER_B_PORT,
-                config.orientation().isLeftInverted(), WHEEL_DIAMETER,
+                config.orientation().isLeftInverted(), config.wheelDiameter(),
                 ENCODER_TICKS_PER_REVOLUTION)),
         TrivialEncoder.forWpiLibEncoder(
             WpiLibSupportFunctions.getConfiguredEncoder(
                 SimulationPorts.DIO.RIGHT_ENCODER_A_PORT,
                 SimulationPorts.DIO.RIGHT_ENCODER_B_PORT,
-                config.orientation().isRightInverted(), WHEEL_DIAMETER,
+                config.orientation().isRightInverted(), config.wheelDiameter(),
                 ENCODER_TICKS_PER_REVOLUTION)),
         IGyro.wrapGyro(new AnalogGyro(SimulationPorts.Channel.GYRO_PORT)),
         true);

@@ -32,114 +32,114 @@ import frc.robot.utils.PathPlannerHelper;
  * autonomous mode.
  */
 public final class Autos {
-  private final PathPlannerHelper m_autoHelper;
-  IIndexer m_indexer;
-  IIntake m_intake;
-  IShooter m_shooter;
-  IShooterHood m_hood;
-  IDrivebase m_drivebase;
-  private SendableChooser<Command> m_sequenceChooser =
-      new SendableChooser<Command>();
-
-  /**
-   * Generates a simple command sequence that could be used from either
-   * alliance, anywhere on the starting line.
-   *
-   * This sequence will:
-   * <ul>
-   * <li>Reset the robot's "known starting point" to (hopefully) match where
-   * the drive team put it
-   * <li>Drive 4 feet forward
-   * <li>Turn and align with
-   * the aliance's hub
-   * <li>Shoot for 6 seconds
-   * </ul>
-   */
-  public Command generateSampleStartingCommand(IDrivebase drivebase,
-      IShooter shooter, IShooterHood hood, Angle shooterAngle,
-      Pose2d fieldPose) {
-    return new UpdateStartingPositionData(drivebase, fieldPose)
-        .andThen(new PrintCommand("Moving"))
-        .andThen(new DriveForDistance(drivebase, 0.25, Feet.of(4)))
-        .andThen(new PrintCommand("Aligning"))
-        .andThen(new AlignToHub(drivebase))
-        .andThen(new PivotHoodToPosition(hood, 0, Degrees.of(15)))
-        .andThen(new PrintCommand("Shooting"))
-        .andThen(new ShootBasedOnDistanceAndTime(
-            shooter, drivebase, 0.387, 2, Seconds.of(6)))
-        .andThen(new PrintCommand("Done"));
-  }
-
-  public Command indexAndShoot(
-      IDrivebase drivebase, IShooter shooter, IIndexer indexer) {
-    return new ShootBasedOnDistanceAndTime(
-        shooter, drivebase, .387, 2, Seconds.of(6))
-        .alongWith(waitBeforeIndexing(indexer));
-  }
-
-  public Command waitBeforeIndexing(IIndexer indexer) {
-    return new WaitCommand(2.5).andThen(
-        new RunIndexerForTime(indexer, 0.1, true, 6));
-  }
-
-  public Command hubAuto(IDrivebase drivebase, IShooter shooter,
-      IShooterHood hood, double hoodAngle, Pose2d fieldPose, IIndexer indexer) {
-    return new UpdateStartingPositionData(drivebase, fieldPose)
-        .andThen(new PivotHoodToPosition(hood, 0.15, Degrees.of(hoodAngle)))
-        .andThen(indexAndShoot(drivebase, shooter, indexer));
-  }
-
-  public Command hubBack(IDrivebase drivebase, IShooter shooter,
-      IShooterHood hood, double hoodAngle, Pose2d fieldPose, IIndexer indexer,
-      IIntake intake) {
-    return new UpdateStartingPositionData(drivebase, fieldPose)
-        .andThen(new PivotHoodToPosition(hood, 0.15, Degrees.of(hoodAngle)))
-        .andThen(indexAndShoot(drivebase, shooter, indexer))
-        // .andThen(new DriveForDistance(m_drivebase, 0.25, Feet.of(-3)))
-        .andThen(new RunIntakeExtensionForTime(m_intake, 0.4, true, 5));
-  }
-
-  // TODO: Add a sequential command group.
-  // FINDME(Robert, Rylie): are we actually using this code? (It looks like we
-  // aren't.) If not, should it be removed?
-  public Command getAuto(
-      IDrivebase drivebase, IShooter shooter, IClimber climber) {
-    switch (m_autoHelper.getAutoName()) {
-      // Speed values are placeholders until I know what units they use.
-      case "BackOutAndShoot1":
-        return new SequentialCommandGroup(m_autoHelper.getAuto(),
-            new ShootBasedOnDistanceAndTime(
-                shooter, drivebase, 0.387, 2, Seconds.of(5)));
-
-      case "Climb and Shoot":
-        return new SequentialCommandGroup(
-            new ShootBasedOnDistanceAndTime(
-                shooter, drivebase, 0.387, 2, Seconds.of(5)),
-            m_autoHelper.getAuto(), new ClimberForPercentage(climber, 1));
-
-      case "ShootAndMoveBack":
-        return new SequentialCommandGroup(
-            new RunShooterForTime(shooter, 5, 2, true, 5),
-            m_autoHelper.getAuto());
-
-      case "ShootAndGrabBalls":
-        return new SequentialCommandGroup(
-            new ShootBasedOnDistanceAndTime(
-                shooter, drivebase, 0.387, 2, Seconds.of(5)),
-            m_autoHelper.getAuto, );
-
-      // case "BackOutAndGrab":
-      // return new SequentialCommandGroup(
-      // AutoBuilder.buildAuto("BackOutAndShoot1"),
-      // new RunShooterForTime(m_shooter, 5, 2, true, 5),
-      // AutoBuilder.buildAuto("GrabbingBalls_"),
-      // new RunIntakeExtension(m_intake, 2, true),
-      // new RunIntakeRollers(m_intake, 5, true),
-      // AutoBuilder.buildAuto("JustBallGrabber_"));
-      default:
-        return null;
-    }
     private final PathPlannerHelper m_autoHelper;
+    IIndexer m_indexer;
+    IIntake m_intake;
+    IShooter m_shooter;
+    IShooterHood m_hood;
+    IDrivebase m_drivebase;
+    private SendableChooser<Command> m_sequenceChooser = new SendableChooser<Command>();
+
+    /**
+     * Generates a simple command sequence that could be used from either
+     * alliance, anywhere on the starting line.
+     *
+     * This sequence will:
+     * <ul>
+     * <li>Reset the robot's "known starting point" to (hopefully) match where
+     * the drive team put it
+     * <li>Drive 4 feet forward
+     * <li>Turn and align with
+     * the aliance's hub
+     * <li>Shoot for 6 seconds
+     * </ul>
+     */
+    public Command generateSampleStartingCommand(IDrivebase drivebase,
+            IShooter shooter, IShooterHood hood, Angle shooterAngle,
+            Pose2d fieldPose) {
+        return new UpdateStartingPositionData(drivebase, fieldPose)
+                .andThen(new PrintCommand("Moving"))
+                .andThen(new DriveForDistance(drivebase, 0.25, Feet.of(4)))
+                .andThen(new PrintCommand("Aligning"))
+                .andThen(new AlignToHub(drivebase))
+                .andThen(new PivotHoodToPosition(hood, 0, Degrees.of(15)))
+                .andThen(new PrintCommand("Shooting"))
+                .andThen(new ShootBasedOnDistanceAndTime(
+                        shooter, drivebase, 0.387, 2, Seconds.of(6)))
+                .andThen(new PrintCommand("Done"));
+    }
+
+    public Command indexAndShoot(
+            IDrivebase drivebase, IShooter shooter, IIndexer indexer) {
+        return new ShootBasedOnDistanceAndTime(
+                shooter, drivebase, .387, 2, Seconds.of(6))
+                .alongWith(waitBeforeIndexing(indexer));
+    }
+
+    public Command waitBeforeIndexing(IIndexer indexer) {
+        return new WaitCommand(2.5);
+        // .andThen(new RunIndexerForTime(indexer, 0.1, true, 6));
+    }
+
+    public Command hubAuto(IDrivebase drivebase, IShooter shooter,
+            IShooterHood hood, double hoodAngle, Pose2d fieldPose, IIndexer indexer) {
+        return new UpdateStartingPositionData(drivebase, fieldPose)
+                .andThen(new PivotHoodToPosition(hood, 0.15, Degrees.of(hoodAngle)))
+                .andThen(indexAndShoot(drivebase, shooter, indexer));
+    }
+
+    public Command hubBack(IDrivebase drivebase, IShooter shooter,
+            IShooterHood hood, double hoodAngle, Pose2d fieldPose, IIndexer indexer,
+            IIntake intake) {
+        return new UpdateStartingPositionData(drivebase, fieldPose)
+                .andThen(new PivotHoodToPosition(hood, 0.15, Degrees.of(hoodAngle)))
+                .andThen(indexAndShoot(drivebase, shooter, indexer));
+        // .andThen(new DriveForDistance(m_drivebase, 0.25, Feet.of(-3)))
+        // .andThen(new RunIntakeExtensionForTime(m_intake, 0.4, true, 5));
+    }
+
+    // TODO: Add a sequential command group.
+    // FINDME(Robert, Rylie): are we actually using this code? (It looks like we
+    // aren't.) If not, should it be removed?
+    public Command getAuto(
+            IDrivebase drivebase, IShooter shooter, IClimber climber) {
+        switch (m_autoHelper.getAutoName()) {
+            // Speed values are placeholders until I know what units they use.
+            case "BackOutAndShoot1":
+                return new SequentialCommandGroup(m_autoHelper.getAuto(),
+                        new ShootBasedOnDistanceAndTime(
+                                shooter, drivebase, 0.387, 2, Seconds.of(5)));
+
+            case "Climb and Shoot":
+                return new SequentialCommandGroup(
+                        new ShootBasedOnDistanceAndTime(
+                                shooter, drivebase, 0.387, 2, Seconds.of(5)),
+                        m_autoHelper.getAuto(), new ClimberForPercentage(climber, 1));
+
+            case "ShootAndMoveBack":
+                return new SequentialCommandGroup(
+                        new RunShooterForTime(shooter, 5, 2, true, 5),
+                        m_autoHelper.getAuto());
+
+            case "ShootAndGrabBalls":
+                return new SequentialCommandGroup(
+                        new ShootBasedOnDistanceAndTime(
+                                shooter, drivebase, 0.387, 2, Seconds.of(5)),
+                        m_autoHelper.getAuto());
+
+            // case "BackOutAndGrab":
+            // return new SequentialCommandGroup(
+            // AutoBuilder.buildAuto("BackOutAndShoot1"),
+            // new RunShooterForTime(m_shooter, 5, 2, true, 5),
+            // AutoBuilder.buildAuto("GrabbingBalls_"),
+            // new RunIntakeExtension(m_intake, 2, true),
+            // new RunIntakeRollers(m_intake, 5, true),
+            // AutoBuilder.buildAuto("JustBallGrabber_"));
+            default:
+                return null;
+        }
+    }
+
     IIntake m_Intake;
     IShooter m_Shooter;
 
@@ -158,126 +158,124 @@ public final class Autos {
      * </ul>
      */
     public static Command generateSampleStartingCommand(
-        IDrivebase drivebase, IShooter shooter, Pose2d fieldPose) {
-      return new UpdateStartingPositionData(drivebase, fieldPose)
-          .andThen(new PrintCommand("Moving"))
-          .andThen(new DriveForDistance(drivebase, 0.25, Feet.of(4)))
-          .andThen(new PrintCommand("Aligning"))
-          .andThen(new AlignToHub(drivebase))
-          .andThen(new PrintCommand("Shooting"))
-          .andThen(new ShootBasedOnDistanceAndTime(
-              shooter, drivebase, 0.387, 2, Seconds.of(6)))
-          .andThen(new PrintCommand("Done"));
->>>>>>> 8d118796e31126d6eea818fccdf689822599a765
+            IDrivebase drivebase, IShooter shooter, Pose2d fieldPose) {
+        return new UpdateStartingPositionData(drivebase, fieldPose)
+                .andThen(new PrintCommand("Moving"))
+                .andThen(new DriveForDistance(drivebase, 0.25, Feet.of(4)))
+                .andThen(new PrintCommand("Aligning"))
+                .andThen(new AlignToHub(drivebase))
+                .andThen(new PrintCommand("Shooting"))
+                .andThen(new ShootBasedOnDistanceAndTime(
+                        shooter, drivebase, 0.387, 2, Seconds.of(6)))
+                .andThen(new PrintCommand("Done"));
     }
 
     public void configureSequenceSelector() {
-      // RED Autos
-      m_sequenceChooser.addOption("RED Left Trench",
-          generateSampleStartingCommand(m_drivebase, m_shooter, m_hood,
-              Degrees.of(15),
-              new Pose2d(new Translation2d(12.57, 0.634),
-                  new Rotation2d(Degrees.of(0)))));
-      m_sequenceChooser.addOption("RED Left Bump",
-          generateSampleStartingCommand(m_drivebase, m_shooter, m_hood,
-              Degrees.of(15),
-              new Pose2d(new Translation2d(12.989, 2.011),
-                  new Rotation2d(Degrees.of(0)))));
-      m_sequenceChooser.addOption("RED Hub",
-          hubAuto(m_drivebase, m_shooter, m_hood, 5,
-              new Pose2d(new Translation2d(12.989, 4.035),
-                  new Rotation2d(Degrees.of(180))),
-              m_indexer));
-      m_sequenceChooser.addOption("RED Right Bump",
-          generateSampleStartingCommand(m_drivebase, m_shooter, m_hood,
-              Degrees.of(15),
-              new Pose2d(new Translation2d(12.989, 6.059),
-                  new Rotation2d(Degrees.of(0)))));
-      m_sequenceChooser.addOption("RED Right Trench",
-          generateSampleStartingCommand(m_drivebase, m_shooter, m_hood,
-              Degrees.of(15),
-              new Pose2d(new Translation2d(12.57, 7.436),
-                  new Rotation2d(Degrees.of(0)))));
-      m_sequenceChooser.addOption("RED Hub then BACK",
-          hubBack(m_drivebase, m_shooter, m_hood, 5,
-              new Pose2d(new Translation2d(12.989, 4.035),
-                  new Rotation2d(Degrees.of(180))),
-              m_indexer, m_intake));
+        // RED Autos
+        m_sequenceChooser.addOption("RED Left Trench",
+                generateSampleStartingCommand(m_drivebase, m_shooter, m_hood,
+                        Degrees.of(15),
+                        new Pose2d(new Translation2d(12.57, 0.634),
+                                new Rotation2d(Degrees.of(0)))));
+        m_sequenceChooser.addOption("RED Left Bump",
+                generateSampleStartingCommand(m_drivebase, m_shooter, m_hood,
+                        Degrees.of(15),
+                        new Pose2d(new Translation2d(12.989, 2.011),
+                                new Rotation2d(Degrees.of(0)))));
+        m_sequenceChooser.addOption("RED Hub",
+                hubAuto(m_drivebase, m_shooter, m_hood, 5,
+                        new Pose2d(new Translation2d(12.989, 4.035),
+                                new Rotation2d(Degrees.of(180))),
+                        m_indexer));
+        m_sequenceChooser.addOption("RED Right Bump",
+                generateSampleStartingCommand(m_drivebase, m_shooter, m_hood,
+                        Degrees.of(15),
+                        new Pose2d(new Translation2d(12.989, 6.059),
+                                new Rotation2d(Degrees.of(0)))));
+        m_sequenceChooser.addOption("RED Right Trench",
+                generateSampleStartingCommand(m_drivebase, m_shooter, m_hood,
+                        Degrees.of(15),
+                        new Pose2d(new Translation2d(12.57, 7.436),
+                                new Rotation2d(Degrees.of(0)))));
+        m_sequenceChooser.addOption("RED Hub then BACK",
+                hubBack(m_drivebase, m_shooter, m_hood, 5,
+                        new Pose2d(new Translation2d(12.989, 4.035),
+                                new Rotation2d(Degrees.of(180))),
+                        m_indexer, m_intake));
 
-      // BLUE Autos
-      m_sequenceChooser.addOption("BLUE Left Trench",
-          generateSampleStartingCommand(m_drivebase, m_shooter, m_hood,
-              Degrees.of(15),
-              new Pose2d(new Translation2d(3.971, 7.436),
-                  new Rotation2d(Degrees.of(180)))));
-      m_sequenceChooser.addOption("BLUE Left Bump",
-          generateSampleStartingCommand(m_drivebase, m_shooter, m_hood,
-              Degrees.of(15),
-              new Pose2d(new Translation2d(3.552, 6.059),
-                  new Rotation2d(Degrees.of(180)))));
-      m_sequenceChooser.addOption("BLUE Hub",
-          hubAuto(m_drivebase, m_shooter, m_hood, 5,
-              new Pose2d(new Translation2d(3.552, 4.035),
-                  new Rotation2d(Degrees.of(0))),
-              m_indexer));
-      m_sequenceChooser.addOption("BLUE Right Bump",
-          generateSampleStartingCommand(m_drivebase, m_shooter, m_hood,
-              Degrees.of(15),
-              new Pose2d(new Translation2d(3.552, 2.011),
-                  new Rotation2d(Degrees.of(180)))));
-      m_sequenceChooser.addOption("BLUE Right Trench",
-          generateSampleStartingCommand(m_drivebase, m_shooter, m_hood,
-              Degrees.of(15),
-              new Pose2d(new Translation2d(3.971, 0.634),
-                  new Rotation2d(Degrees.of(180)))));
-      m_sequenceChooser.addOption("SIT BLUE BUMP",
-          new UpdateStartingPositionData(m_drivebase,
-              new Pose2d(new Translation2d(3.552, 2.011),
-                  new Rotation2d(Degrees.of(0)))));
-      m_sequenceChooser.addOption("BLUE Hub then BACK",
-          hubBack(m_drivebase, m_shooter, m_hood, 5,
-              new Pose2d(new Translation2d(3.552, 4.035),
-                  new Rotation2d(Degrees.of(0))),
-              m_indexer, m_intake));
+        // BLUE Autos
+        m_sequenceChooser.addOption("BLUE Left Trench",
+                generateSampleStartingCommand(m_drivebase, m_shooter, m_hood,
+                        Degrees.of(15),
+                        new Pose2d(new Translation2d(3.971, 7.436),
+                                new Rotation2d(Degrees.of(180)))));
+        m_sequenceChooser.addOption("BLUE Left Bump",
+                generateSampleStartingCommand(m_drivebase, m_shooter, m_hood,
+                        Degrees.of(15),
+                        new Pose2d(new Translation2d(3.552, 6.059),
+                                new Rotation2d(Degrees.of(180)))));
+        m_sequenceChooser.addOption("BLUE Hub",
+                hubAuto(m_drivebase, m_shooter, m_hood, 5,
+                        new Pose2d(new Translation2d(3.552, 4.035),
+                                new Rotation2d(Degrees.of(0))),
+                        m_indexer));
+        m_sequenceChooser.addOption("BLUE Right Bump",
+                generateSampleStartingCommand(m_drivebase, m_shooter, m_hood,
+                        Degrees.of(15),
+                        new Pose2d(new Translation2d(3.552, 2.011),
+                                new Rotation2d(Degrees.of(180)))));
+        m_sequenceChooser.addOption("BLUE Right Trench",
+                generateSampleStartingCommand(m_drivebase, m_shooter, m_hood,
+                        Degrees.of(15),
+                        new Pose2d(new Translation2d(3.971, 0.634),
+                                new Rotation2d(Degrees.of(180)))));
+        m_sequenceChooser.addOption("SIT BLUE BUMP",
+                new UpdateStartingPositionData(m_drivebase,
+                        new Pose2d(new Translation2d(3.552, 2.011),
+                                new Rotation2d(Degrees.of(0)))));
+        m_sequenceChooser.addOption("BLUE Hub then BACK",
+                hubBack(m_drivebase, m_shooter, m_hood, 5,
+                        new Pose2d(new Translation2d(3.552, 4.035),
+                                new Rotation2d(Degrees.of(0))),
+                        m_indexer, m_intake));
 
-      m_sequenceChooser.addOption(
-          "TEST", new DriveForDistance(m_drivebase, 0.25, Feet.of(-3)));
+        m_sequenceChooser.addOption(
+                "TEST", new DriveForDistance(m_drivebase, 0.25, Feet.of(-3)));
     }
 
     public Autos(IDrivebase drivebase, IShooter shooter, IShooterHood hood,
-        IIndexer indexer, IIntake intake) {
-      m_autoHelper = new PathPlannerHelper(drivebase);
-      m_drivebase = drivebase;
-      m_shooter = shooter;
-      m_hood = hood;
-      m_indexer = indexer;
-      m_intake = intake;
-      configureSequenceSelector();
-      SmartDashboard.putData("Sequence Chooser", m_sequenceChooser);
+            IIndexer indexer, IIntake intake) {
+        m_autoHelper = new PathPlannerHelper(drivebase);
+        m_drivebase = drivebase;
+        m_shooter = shooter;
+        m_hood = hood;
+        m_indexer = indexer;
+        m_intake = intake;
+        configureSequenceSelector();
+        SmartDashboard.putData("Sequence Chooser", m_sequenceChooser);
     }
 
     public Command getSequenceAuto() {
-      Command autoCommand = null;
-      autoCommand = m_sequenceChooser.getSelected();
-      return autoCommand;
+        Command autoCommand = null;
+        autoCommand = m_sequenceChooser.getSelected();
+        return autoCommand;
     }
+
     // TODO: Add a sequential command group.
     public Command getAuto() {
-      Command autoCommand;
-      switch (m_autoHelper.getAutoName()) {
-        case "BackOutAndShoot1":
-          autoCommand = new RunShooterForTime(m_Shooter, 5, 2, true, 5);
+        Command autoCommand;
+        switch (m_autoHelper.getAutoName()) {
+            case "BackOutAndShoot1":
+                autoCommand = new RunShooterForTime(m_Shooter, 5, 2, true, 5);
 
-        default:
-          autoCommand = null;
-      }
+            default:
+                autoCommand = null;
+        }
 
-      return new SequentialCommandGroup(m_autoHelper.getAuto(), autoCommand);
+        return new SequentialCommandGroup(m_autoHelper.getAuto(), autoCommand);
     }
 
     public Autos(IDrivebase drivebase) {
-      m_autoHelper = new PathPlannerHelper(drivebase);
+        m_autoHelper = new PathPlannerHelper(drivebase);
     }
->>>>>>> 8d118796e31126d6eea818fccdf689822599a765
-  }
 }

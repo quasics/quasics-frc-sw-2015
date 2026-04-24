@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Seconds;
 
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -18,6 +19,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -46,6 +48,12 @@ import frc.robot.commands.lighting.RainbowLighting;
 import frc.robot.commands.testing.DriveForDistance;
 import frc.robot.commands.testing.FlywheelDialIn;
 import frc.robot.commands.testing.LinearSpeedCommand;
+import frc.robot.commands.testing.RunClimberTimedTest;
+import frc.robot.commands.testing.RunFlywheelTimedTest;
+import frc.robot.commands.testing.RunIndexerTimedTest;
+import frc.robot.commands.testing.RunIntakeExtenstionTimedTest;
+import frc.robot.commands.testing.RunIntakeRollersTimedTest;
+import frc.robot.commands.testing.RunKickerTimedTest;
 import frc.robot.subsystems.interfaces.IClimber;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.IIndexer;
@@ -68,7 +76,6 @@ import frc.robot.subsystems.simulated.SimulatedVision;
 import frc.robot.subsystems.simulated.SimulationDrivebase;
 import java.util.List;
 import java.util.function.Supplier;
-import javax.swing.RowFilter;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -306,39 +313,22 @@ public class RobotContainer {
         realLighting.getSubViews().get(targetIndex), isLeftSide);
   }
 
-  /*
-   * private void addSystemTestCommandsToDashboard() {
-   * var tab = Shuffleboard.getTab("System Test");
-   * 
-   * tab.add("Flywheel @ +1200RPM",
-   * new RunFlywheelTimedTest(m_shooter, RPM.of(1200), Seconds.of(3)));
-   * tab.add("Flywheel @ -1200RPM",
-   * new RunFlywheelTimedTest(m_shooter, RPM.of(-1200), Seconds.of(3)));
-   * tab.add(
-   * "Kicker @ +50%", new RunKickerTimedTest(m_shooter, +.5, Seconds.of(3)));
-   * tab.add(
-   * "Kicker @ -50%", new RunKickerTimedTest(m_shooter, -.5, Seconds.of(3)));
-   * tab.add("Rollers @ +25%",
-   * new RunIntakeRollersTimedTest(m_intake, +.25, Seconds.of(3)));
-   * tab.add("Rollers @ -25%",
-   * new RunIntakeRollersTimedTest(m_intake, -.25, Seconds.of(3)));
-   * tab.add("Extension @ +15%",
-   * new RunIntakeExtenstionTimedTest(m_intake, +.15, Seconds.of(1.5)));
-   * tab.add("Extension @ -15%",
-   * new RunIntakeExtenstionTimedTest(m_intake, -.15, Seconds.of(1.5)));
-   * tab.add("Indexer @ +25%",
-   * new RunIndexerTimedTest(m_indexer, +.25, Seconds.of(3)));
-   * tab.add("Indexer @ -25%",
-   * new RunIndexerTimedTest(m_indexer, -.25, Seconds.of(3)));
-   * tab.add("Climber @ +10%",
-   * new RunClimberTimedTest(m_climber, +.10, Seconds.of(1)));
-   * tab.add("Climber @ -10%",
-   * new RunClimberTimedTest(m_climber, +.10, Seconds.of(1)));
-   * tab.add("Hood to 5", new PivotHoodToPosition(m_hood, 0.15, Degrees.of(5)));
-   * tab.add(
-   * "Hood to 25", new PivotHoodToPosition(m_hood, 0.15, Degrees.of(25)));
-   * }
-   */
+  private void addSystemTestCommandsToDashboard() {
+    var tab = Shuffleboard.getTab("System Test");
+
+    tab.add("Flywheel @ +1200RPM", new RunFlywheelTimedTest(m_shooter, RPM.of(1200), Seconds.of(3)));
+    tab.add("Flywheel @ -1200RPM", new RunFlywheelTimedTest(m_shooter, RPM.of(-1200), Seconds.of(3)));
+    tab.add("Kicker @ +50%", new RunKickerTimedTest(m_shooter, +.5, Seconds.of(3)));
+    tab.add("Kicker @ -50%", new RunKickerTimedTest(m_shooter, -.5, Seconds.of(3)));
+    tab.add("Rollers @ +25%", new RunIntakeRollersTimedTest(m_intake, +.25, Seconds.of(3)));
+    tab.add("Rollers @ -25%", new RunIntakeRollersTimedTest(m_intake, -.25, Seconds.of(3)));
+    tab.add("Extension @ +15%", new RunIntakeExtenstionTimedTest(m_intake, +.15, Seconds.of(1.5)));
+    tab.add("Extension @ -15%", new RunIntakeExtenstionTimedTest(m_intake, -.15, Seconds.of(1.5)));
+    tab.add("Indexer @ +25%", new RunIndexerTimedTest(m_indexer, +.25, Seconds.of(3)));
+    tab.add("Indexer @ -25%", new RunIndexerTimedTest(m_indexer, -.25, Seconds.of(3)));
+    tab.add("Climber @ +10%", new RunClimberTimedTest(m_climber, +.10, Seconds.of(1)));
+    tab.add("Climber @ -10%", new RunClimberTimedTest(m_climber, +.10, Seconds.of(1)));
+  }
 
   private void addShooterTestCommandsToSmartDashboard() {
     if (m_shooter == null || !ENABLE_SHOOTER_TEST_CMDS) {
@@ -499,6 +489,7 @@ public class RobotContainer {
     addClimberTestCommandsToSmartDashboard();
     addDrivebaseTestCommandsToSmartDashboard();
     addSysIdButtonsToSmartDashboard();
+    addSystemTestCommandsToDashboard();
   }
 
   private Command runKickerReverse() {

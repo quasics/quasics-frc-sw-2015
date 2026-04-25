@@ -19,7 +19,6 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -27,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.commands.ManualClimberControlCommand;
 import frc.robot.commands.MoveClimberToPositionCommand;
 import frc.robot.commands.driving.ArcadeDrive;
 import frc.robot.commands.driving.BaseChoreoTrajectoryCommand;
@@ -205,17 +205,25 @@ public class RobotContainer {
 
     publish(
         "Commands",
-        "Climb: Extend",
+        "Climb: Extend (Manual)",
+        new ManualClimberControlCommand(m_climber, true));
+    publish(
+        "Commands",
+        "Climb: Retract (Manual)",
+        new ManualClimberControlCommand(m_climber, false));
+    publish(
+        "Commands",
+        "Climb: Extend (PID)",
         new MoveClimberToPositionCommand(
             m_climber, IClimber.Position.Extended, false));
     publish(
         "Commands",
-        "Climb: Retract",
+        "Climb: Retract (PID)",
         new MoveClimberToPositionCommand(
             m_climber, IClimber.Position.Retracted, false));
     publish(
         "Commands",
-        "Climb: Pull up",
+        "Climb: Pull up (PID)",
         new MoveClimberToPositionCommand(
             m_climber, IClimber.Position.PulledUp, true));
     publish(
@@ -510,38 +518,6 @@ public class RobotContainer {
         new FollowTrajectoryCommand(
             m_drivebase, generateTrajectory(TrajectoryShape.SCurve)));
     DashboardUtils.publishForDriveTeam("Autonomous Command", m_autoCommandChooser);
-  }
-
-  private void addSystemTestCommandsToDashboard() {
-    var tab = Shuffleboard.getTab("System Test");
-
-    tab.add("Flywheel @ +1200RPM",
-        new RunFlywheelTimedTest(m_shooter, RPM.of(1200), Seconds.of(3)));
-    tab.add("Flywheel @ -1200RPM",
-        new RunFlywheelTimedTest(m_shooter, RPM.of(-1200), Seconds.of(3)));
-    tab.add(
-        "Kicker @ +50%", new RunKickerTimedTest(m_shooter, +.5, Seconds.of(3)));
-    tab.add(
-        "Kicker @ -50%", new RunKickerTimedTest(m_shooter, -.5, Seconds.of(3)));
-    tab.add("Rollers @ +25%",
-        new RunIntakeRollersTimedTest(m_intake, +.25, Seconds.of(3)));
-    tab.add("Rollers @ -25%",
-        new RunIntakeRollersTimedTest(m_intake, -.25, Seconds.of(3)));
-    tab.add("Extension @ +15%",
-        new RunIntakeExtenstionTimedTest(m_intake, +.15, Seconds.of(1.5)));
-    tab.add("Extension @ -15%",
-        new RunIntakeExtenstionTimedTest(m_intake, -.15, Seconds.of(1.5)));
-    tab.add("Indexer @ +25%",
-        new RunIndexerTimedTest(m_indexer, +.25, Seconds.of(3)));
-    tab.add("Indexer @ -25%",
-        new RunIndexerTimedTest(m_indexer, -.25, Seconds.of(3)));
-    tab.add("Climber @ +10%",
-        new RunClimberTimedTest(m_climber, +.10, Seconds.of(1)));
-    tab.add("Climber @ -10%",
-        new RunClimberTimedTest(m_climber, +.10, Seconds.of(1)));
-    tab.add("Hood to 5", new PivotHoodToPosition(m_hood, 0.15, Degrees.of(5)));
-    tab.add(
-        "Hood to 25", new PivotHoodToPosition(m_hood, 0.15, Degrees.of(25)));
   }
 
   /** Configures any additional bindings that are needed. */

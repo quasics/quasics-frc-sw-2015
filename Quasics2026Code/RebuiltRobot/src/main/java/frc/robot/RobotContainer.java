@@ -329,6 +329,8 @@ public class RobotContainer {
     tab.add("Indexer @ -25%", new RunIndexerTimedTest(m_indexer, -.25, Seconds.of(3)));
     tab.add("Climber @ +10%", new RunClimberTimedTest(m_climber, +.10, Seconds.of(1)));
     tab.add("Climber @ -10%", new RunClimberTimedTest(m_climber, +.10, Seconds.of(1)));
+    tab.add("Hood to 5", new PivotHoodToPosition(m_hood, 0.15, Degrees.of(5)));
+    tab.add("Hood to 25", new PivotHoodToPosition(m_hood, 0.15, Degrees.of(25)));
   }
 
   private void addShooterTestCommandsToSmartDashboard() {

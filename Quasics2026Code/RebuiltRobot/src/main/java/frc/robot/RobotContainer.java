@@ -162,9 +162,10 @@ public class RobotContainer {
     case Simulated -> new SimulationDrivebase();
   };
   private final IVision m_vision = switch (ROBOT_NAME) {
-    case Lizzie -> new Vision();
+    case Lizzie -> new Vision(robotToCamTranslation, robotToCameraRot);
     case Sally -> new IVision.NullVision();
-    case Simulated -> new SimulatedVision();
+    case Simulated ->
+      new SimulatedVision(robotToCamTranslation, robotToCameraRot);
   };
   private final IIntake m_intake = switch (ROBOT_NAME) {
     case Lizzie -> new RealIntake();

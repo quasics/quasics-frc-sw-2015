@@ -18,6 +18,10 @@ import frc.robot.logging.Logger.Verbosity;
 import frc.robot.subsystems.interfaces.IShooterHood;
 
 public class RealShooterHood extends SubsystemBase implements IShooterHood {
+  /** The minimum angle supported for the real shooter hood (per Daniel). */
+  public static final Angle MIN_ANGLE = Degrees.of(45);
+  /** The maximum angle supported for the real shooter hood (per Daniel). */
+  public static final Angle MAX_ANGLE = Degrees.of(75);
 
   private final SparkMax m_hood;
   private final AbsoluteEncoder m_throughBoreEncoder;

@@ -5,16 +5,21 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Seconds;
 
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -43,6 +48,7 @@ import frc.robot.commands.lighting.RainbowLighting;
 import frc.robot.commands.testing.DriveForDistance;
 import frc.robot.commands.testing.FlywheelDialIn;
 import frc.robot.commands.testing.LinearSpeedCommand;
+import frc.robot.hardware.sensors.IGyro;
 import frc.robot.subsystems.interfaces.IClimber;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.IIndexer;
@@ -66,7 +72,6 @@ import frc.robot.subsystems.simulated.SimulationDrivebase;
 import java.util.List;
 import java.util.function.Supplier;
 import javax.swing.RowFilter;
-
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -178,6 +183,7 @@ public class RobotContainer {
     case Sally, Simulated -> new IClimber.NullClimber();
   };
 
+  private final IGyro m_angleSupplier = new IGyro() { return IGyro.getAngle; }
   /**
    * Primary lighting control (owns the LED strip and will partition it out).
    */
@@ -209,7 +215,6 @@ public class RobotContainer {
   private boolean m_switchDrive = false;
 
   private final Autos m_autos = new Autos(m_drivebase);
-
   /**
    * The container for the robot. Contains subsystems, OI devices, and
    * commands.
@@ -265,13 +270,13 @@ public class RobotContainer {
     configureOperatorButtons();
 
     SmartDashboard.putData("Simple start (blue)",
-        Autos.generateSampleStartingCommand(m_drivebase, m_shooter,
+        Autos.generateSampleStartingCommand(m_drivebase, m_shooter, m_hood,
             new Pose2d(Constants.RebuiltFieldData.BLUE_STARTING_LINE,
                 Constants.RebuiltFieldData.MID_BUMP1_Y,
                 new Rotation2d(Constants.RebuiltFieldData.FACING_BLUE))));
 
     SmartDashboard.putData("Simple start (red)",
-        Autos.generateSampleStartingCommand(m_drivebase, m_shooter,
+        Autos.generateSampleStartingCommand(m_drivebase, m_shooter, m_hood,
             new Pose2d(Constants.RebuiltFieldData.RED_STARTING_LINE,
                 Constants.RebuiltFieldData.MID_BUMP2_Y,
                 new Rotation2d(Constants.RebuiltFieldData.FACING_RED))));

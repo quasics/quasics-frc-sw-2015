@@ -78,8 +78,8 @@ public final class Autos {
   }
 
   public Command waitBeforeIndexing(IIndexer indexer) {
-    return new WaitCommand(2.5).andThen(
-        new RunIndexerForTime(indexer, 0.1, true, 6));
+    return new WaitCommand(2.5);
+    // .andThen(new RunIndexerForTime(indexer, 0.1, true, 6));
   }
 
   public Command hubAuto(IDrivebase drivebase, IShooter shooter,
@@ -94,9 +94,9 @@ public final class Autos {
       IIntake intake) {
     return new UpdateStartingPositionData(drivebase, fieldPose)
         .andThen(new PivotHoodToPosition(hood, 0.15, Degrees.of(hoodAngle)))
-        .andThen(indexAndShoot(drivebase, shooter, indexer))
-        // .andThen(new DriveForDistance(m_drivebase, 0.25, Feet.of(-3)))
-        .andThen(new RunIntakeExtensionForTime(m_intake, 0.4, true, 5));
+        .andThen(indexAndShoot(drivebase, shooter, indexer));
+    // .andThen(new DriveForDistance(m_drivebase, 0.25, Feet.of(-3)))
+    // .andThen(new RunIntakeExtensionForTime(m_intake, 0.4, true, 5));
   }
 
   // TODO: Add a sequential command group.

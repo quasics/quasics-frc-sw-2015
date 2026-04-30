@@ -55,8 +55,7 @@ public class RobotContainer {
   public static final int LEFT_INTAKE_DEPLOYMENT_ID = 7;
 
   /** Selected hardware configuration. */
-  final HardwareConfig m_hardware =
-      Robot.isSimulation() ? HardwareConfig.Simulated : HardwareConfig.Spark;
+  final HardwareConfig m_hardware = Robot.isSimulation() ? HardwareConfig.Simulated : HardwareConfig.Spark;
 
   // Sets up a "single motor thing", based on the selected hardware
   // configuration.
@@ -75,10 +74,8 @@ public class RobotContainer {
     case Talon -> new SingleMotorThingTalon(6);
     case TalonDirect -> {
       final TalonFX talon = new TalonFX(6);
-      final IMotorControllerPlus motorController =
-          new TalonMotorControllerPlus(talon);
-      final TrivialEncoder encoder =
-          new TalonEncoderWrapper(talon, Inches.of(6));
+      final IMotorControllerPlus motorController = new TalonMotorControllerPlus(talon);
+      final TrivialEncoder encoder = new TalonEncoderWrapper(talon, Inches.of(6));
       yield new SingleMotorThing(
           new SingleMotorThing.ConstructionData(motorController, encoder));
     }
@@ -114,24 +111,24 @@ public class RobotContainer {
     SmartDashboard.putData(label,
         new FunctionalCommand(
             // onInit (can't be null)
-            ()
-                -> { m_singleMotorThing.setSpeed(percent); },
+            () -> {
+              m_singleMotorThing.setSpeed(percent);
+            },
             // onExecute (can't be null)
-            ()
-                -> {
-                    // No-op: speed was set in initialization
-                },
+            () -> {
+              // No-op: speed was set in initialization
+            },
             // onEnd (can't be null)
-            (Boolean b)
-                -> { m_singleMotorThing.stop(); },
+            (Boolean b) -> {
+              m_singleMotorThing.stop();
+            },
             // isFinished (can't be null)
-            ()
-                -> false,
+            () -> false,
             // Dependency
             m_singleMotorThing.asSubsystem()));
   }
 
-  public Command getAuto() {
+  public Command getAutonomousCommand() {
     return Commands.print("No autonomous command configured");
   }
 }

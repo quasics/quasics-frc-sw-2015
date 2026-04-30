@@ -48,6 +48,12 @@ import frc.robot.commands.lighting.RainbowLighting;
 import frc.robot.commands.testing.DriveForDistance;
 import frc.robot.commands.testing.FlywheelDialIn;
 import frc.robot.commands.testing.LinearSpeedCommand;
+import frc.robot.commands.testing.RunClimberTimedTest;
+import frc.robot.commands.testing.RunFlywheelTimedTest;
+import frc.robot.commands.testing.RunIndexerTimedTest;
+import frc.robot.commands.testing.RunIntakeExtenstionTimedTest;
+import frc.robot.commands.testing.RunIntakeRollersTimedTest;
+import frc.robot.commands.testing.RunKickerTimedTest;
 import frc.robot.hardware.sensors.IGyro;
 import frc.robot.subsystems.interfaces.IClimber;
 import frc.robot.subsystems.interfaces.IDrivebase;
@@ -72,6 +78,7 @@ import frc.robot.subsystems.simulated.SimulationDrivebase;
 import java.util.List;
 import java.util.function.Supplier;
 import javax.swing.RowFilter;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -158,9 +165,10 @@ public class RobotContainer {
     case Simulated -> new SimulationDrivebase();
   };
   private final IVision m_vision = switch (ROBOT_NAME) {
-    case Lizzie -> new Vision();
+    case Lizzie -> new Vision(robotToCamTranslation, robotToCameraRot);
     case Sally -> new IVision.NullVision();
-    case Simulated -> new SimulatedVision();
+    case Simulated ->
+      new SimulatedVision(robotToCamTranslation, robotToCameraRot);
   };
   private final IIntake m_intake = switch (ROBOT_NAME) {
     case Lizzie -> new RealIntake();
@@ -417,7 +425,7 @@ public class RobotContainer {
 
     // ********************** */
     SmartDashboard.putData("Drive forward like a lot",
-        new DriveForDistance(m_drivebase, .2, Meters.of(4)));
+        new DriveForDistance(m_drivebase, .2, Meters.of(2)));
     // **************** */
 
     // SmartDashboard.putData("Direction Climb Test", new
@@ -502,6 +510,7 @@ public class RobotContainer {
     addClimberTestCommandsToSmartDashboard();
     addDrivebaseTestCommandsToSmartDashboard();
     addSysIdButtonsToSmartDashboard();
+    addSystemTestCommandsToDashboard();
   }
 
   private Command runKickerReverse() {

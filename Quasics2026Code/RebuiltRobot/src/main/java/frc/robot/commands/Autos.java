@@ -38,7 +38,8 @@ public final class Autos {
   IShooter m_shooter;
   IShooterHood m_hood;
   IDrivebase m_drivebase;
-  private SendableChooser<Command> m_sequenceChooser = new SendableChooser<Command>();
+  private SendableChooser<Command> m_sequenceChooser =
+      new SendableChooser<Command>();
 
   /**
    * Generates a simple command sequence that could be used from either
@@ -54,7 +55,7 @@ public final class Autos {
    * <li>Shoot for 6 seconds
    * </ul>
    */
-  public Command generateSampleStartingCommand(IDrivebase drivebase,
+  public static Command generateSampleStartingCommand(IDrivebase drivebase,
       IShooter shooter, IShooterHood hood, Angle shooterAngle,
       Pose2d fieldPose) {
     return new UpdateStartingPositionData(drivebase, fieldPose)

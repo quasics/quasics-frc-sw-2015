@@ -38,8 +38,7 @@ public final class Autos {
   IShooter m_shooter;
   IShooterHood m_hood;
   IDrivebase m_drivebase;
-  private SendableChooser<Command> m_sequenceChooser =
-      new SendableChooser<Command>();
+  private SendableChooser<Command> m_sequenceChooser = new SendableChooser<Command>();
 
   /**
    * Generates a simple command sequence that could be used from either
@@ -122,11 +121,11 @@ public final class Autos {
             new RunShooterForTime(shooter, 5, 2, true, 5),
             m_autoHelper.getAuto());
 
-        //  case "ShootAndGrabBalls":
-        //    return new SequentialCommandGroup(
-        //        new ShootBasedOnDistanceAndTime(
-        //            shooter, drivebase, 0.387, 2, Seconds.of(5)),
-        //        m_autoHelper.getAuto(), );
+      // case "ShootAndGrabBalls":
+      // return new SequentialCommandGroup(
+      // new ShootBasedOnDistanceAndTime(
+      // shooter, drivebase, 0.387, 2, Seconds.of(5)),
+      // m_autoHelper.getAuto(), );
 
       // case "BackOutAndGrab":
       // return new SequentialCommandGroup(
@@ -140,9 +139,6 @@ public final class Autos {
         return null;
     }
   }
-  private final PathPlannerHelper m_autoHelper;
-  IIntake m_Intake;
-  IShooter m_Shooter;
 
   /**
    * Generates a simple command sequence that could be used from either
@@ -169,7 +165,7 @@ public final class Autos {
         .andThen(new ShootBasedOnDistanceAndTime(
             shooter, drivebase, 0.387, 2, Seconds.of(6)))
         .andThen(new PrintCommand("Done"));
-    //>>>>>>> 8d118796e31126d6eea818fccdf689822599a765
+    // >>>>>>> 8d118796e31126d6eea818fccdf689822599a765
   }
 
   public void configureSequenceSelector() {
@@ -262,12 +258,13 @@ public final class Autos {
     autoCommand = m_sequenceChooser.getSelected();
     return autoCommand;
   }
+
   // TODO: Add a sequential command group.
   public Command getAuto() {
     Command autoCommand;
     switch (m_autoHelper.getAutoName()) {
       case "BackOutAndShoot1":
-        autoCommand = new RunShooterForTime(m_Shooter, 5, 2, true, 5);
+        autoCommand = new RunShooterForTime(m_shooter, 5, 2, true, 5);
 
       default:
         autoCommand = null;

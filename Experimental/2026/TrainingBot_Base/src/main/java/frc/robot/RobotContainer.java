@@ -19,7 +19,7 @@ import frc.robot.Constants.LogitechGamePad;
 import frc.robot.commands.DriveForDistance;
 import frc.robot.commands.TankDrive;
 import frc.robot.subsystems.AbstractDrivebase;
-import frc.robot.subsystems.RealDrivebase;
+import frc.robot.subsystems.RealSparkDrivebase;
 import frc.robot.subsystems.SimulatedDrivebase;
 import java.util.function.Supplier;
 
@@ -55,7 +55,7 @@ public class RobotContainer {
     // Real vs. Simulation-specific configuration
     if (Robot.isReal()) {
       // Configuring the real robot.
-      m_driveBase = new RealDrivebase();
+      m_driveBase = new RealSparkDrivebase();
     } else {
       // Configuring the simulated robot
       m_driveBase = new SimulatedDrivebase();

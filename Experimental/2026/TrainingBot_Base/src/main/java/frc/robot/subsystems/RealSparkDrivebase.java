@@ -21,7 +21,7 @@ import edu.wpi.first.units.measure.Distance;
 
 /**
  * Defines an implementation of the drivebase subsystem that uses real hardware,
- * based on Quasics' standard drivebase configuration.
+ * based on Quasics' standard "Spark Max" drivebase configuration.
  */
 public class RealSparkDrivebase extends AbstractDrivebase {
   ////////////////////////////////////////////////////////////////////////////////

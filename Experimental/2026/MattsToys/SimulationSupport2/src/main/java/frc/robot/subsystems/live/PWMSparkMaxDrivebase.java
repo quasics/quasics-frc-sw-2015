@@ -4,9 +4,6 @@
 
 package frc.robot.subsystems.live;
 
-import static edu.wpi.first.units.Units.Inches;
-
-import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import frc.robot.constants.robots.SimulationPorts;

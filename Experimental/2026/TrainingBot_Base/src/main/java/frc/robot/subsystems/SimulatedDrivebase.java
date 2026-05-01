@@ -25,14 +25,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * An implementation of the drivebase subsystem that uses simulated hardware.
  */
 public class SimulatedDrivebase extends AbstractDrivebase {
-  public final int LEFT_DRIVE_PWM_ID = 0;
-  public final int RIGHT_DRIVE_PWM_ID = 1;
+  public static final int LEFT_DRIVE_PWM_ID = 0;
+  public static final int RIGHT_DRIVE_PWM_ID = 1;
 
-  public final int GYRO_CHANNEL = 0;
+  public static final int GYRO_CHANNEL = 0;
 
-  public final int LEFT_DRIVE_ENCODER_PORT_A = 0;
-  public final int LEFT_DRIVE_ENCODER_PORT_B = 1;
-  public final int RIGHT_DRIVE_ENCODER_PORT_A = 2;
+  public static final int LEFT_DRIVE_ENCODER_PORT_A = 0;
+  public static final int LEFT_DRIVE_ENCODER_PORT_B = 1;
+  public static final int RIGHT_DRIVE_ENCODER_PORT_A = 2;
   public static final int RIGHT_DRIVE_ENCODER_PORT_B = 3;
 
   public static final Distance kWheelRadius = Inches.of(6.0).div(2); // 6" diameter
@@ -40,8 +40,6 @@ public class SimulatedDrivebase extends AbstractDrivebase {
   public static final int kEncoderResolutionTicksPerRevolution = -4096;
 
   // "Hardware" allocation
-  private final PWMSparkMax m_left = new PWMSparkMax(LEFT_DRIVE_PWM_ID);
-  private final PWMSparkMax m_right = new PWMSparkMax(RIGHT_DRIVE_PWM_ID);
   private final Encoder m_leftEncoder = new Encoder(LEFT_DRIVE_ENCODER_PORT_A, LEFT_DRIVE_ENCODER_PORT_B);
   private final Encoder m_rightEncoder = new Encoder(RIGHT_DRIVE_ENCODER_PORT_A, RIGHT_DRIVE_ENCODER_PORT_B);
   private final AnalogGyro m_gyro = new AnalogGyro(GYRO_CHANNEL);
@@ -59,7 +57,7 @@ public class SimulatedDrivebase extends AbstractDrivebase {
   private final Field2d m_fieldSim = new Field2d();
 
   public SimulatedDrivebase() {
-    super();
+    super(new PWMSparkMax(LEFT_DRIVE_PWM_ID), new PWMSparkMax(RIGHT_DRIVE_PWM_ID));
 
     //////////////////////////////////////////
     // Finish hardware setup
@@ -68,7 +66,7 @@ public class SimulatedDrivebase extends AbstractDrivebase {
     // We need to invert one side of the drivetrain so that positive voltages
     // result in both sides moving forward. Depending on how your robot's
     // gearbox is constructed, you might have to invert the left side instead.
-    m_right.setInverted(true);
+    m_rightController.setInverted(true);
 
     // Set the distance per pulse (in meters) for the drive encoders. We can simply
     // use the distance traveled for one rotation of the wheel divided by the
@@ -88,16 +86,6 @@ public class SimulatedDrivebase extends AbstractDrivebase {
 
     // Add the simulated field to the smart dashboard
     SmartDashboard.putData("Field", m_fieldSim);
-  }
-
-  @Override
-  public void tankDrive(double leftPercentage, double rightPercentage) {
-    // Clamp speeds to the range [-1.0, 1.0].
-    leftPercentage = Math.max(-1.0, Math.min(1.0, leftPercentage));
-    rightPercentage = Math.max(-1.0, Math.min(1.0, rightPercentage));
-
-    m_left.set(leftPercentage);
-    m_right.set(rightPercentage);
   }
 
   @Override
@@ -132,8 +120,8 @@ public class SimulatedDrivebase extends AbstractDrivebase {
     // simulation, and write the simulated positions and velocities to our
     // simulated encoder and gyro. We negate the right side so that positive
     // voltages make the right side move forward.
-    m_drivetrainSimulator.setInputs(m_left.get() * RobotController.getInputVoltage(),
-        m_right.get() * RobotController.getInputVoltage());
+    m_drivetrainSimulator.setInputs(m_leftController.get() * RobotController.getInputVoltage(),
+        m_rightController.get() * RobotController.getInputVoltage());
 
     // Simulated clock ticks forward
     m_drivetrainSimulator.update(0.02);

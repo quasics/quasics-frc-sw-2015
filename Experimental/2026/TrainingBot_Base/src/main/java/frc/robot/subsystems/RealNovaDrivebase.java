@@ -26,22 +26,22 @@ import frc.robot.hardware.sensors.TrivialEncoder;
 public class RealNovaDrivebase extends AbstractDrivebase {
   static final Distance ANDYMARK_6IN_PLACTION_DIAMETER = Inches.of(6.0);
 
-  ThriftyNova leftLeader = new ThriftyNova(LEFT_LEADER_ID, MotorType.NEO);
-  ThriftyNova rightLeader = new ThriftyNova(RIGHT_LEADER_ID, MotorType.NEO);
-
-  TrivialEncoder leftEncoder = new ThriftyEncoderWrapper(leftLeader, ANDYMARK_6IN_PLACTION_DIAMETER);
-  TrivialEncoder rightEncoder = new ThriftyEncoderWrapper(rightLeader, ANDYMARK_6IN_PLACTION_DIAMETER);
+  final private TrivialEncoder leftEncoder;
+  final private TrivialEncoder rightEncoder;
 
   /** The gyro/ALU that we're using for direction identification. */
-  private final Pigeon2 m_rawGyro = new Pigeon2(PIGEON2_CAN_ID);
+  final private Pigeon2 m_rawGyro = new Pigeon2(PIGEON2_CAN_ID);
 
   public RealNovaDrivebase() {
-  }
+    // The base class (AbstractDrivebase) needs to know about the motor controllers.
+    super(new ThriftyNova(LEFT_LEADER_ID, MotorType.NEO), new ThriftyNova(RIGHT_LEADER_ID, MotorType.NEO));
 
-  @Override
-  public void tankDrive(double leftPercentage, double rightPercentage) {
-    leftLeader.set(leftPercentage);
-    rightLeader.set(rightPercentage);
+    // The motor controller variables are defined in the base class, but we need to
+    // use them here to create the encoders. Note that we know that they'll be of
+    // type
+    // ThriftyNova, so we can use them directly as such.
+    leftEncoder = new ThriftyEncoderWrapper((ThriftyNova) m_leftController, ANDYMARK_6IN_PLACTION_DIAMETER);
+    rightEncoder = new ThriftyEncoderWrapper((ThriftyNova) m_rightController, ANDYMARK_6IN_PLACTION_DIAMETER);
   }
 
   @Override
@@ -58,5 +58,4 @@ public class RealNovaDrivebase extends AbstractDrivebase {
   public double getHeadingInDegrees() {
     return m_rawGyro.getYaw().getValue().in(Degrees);
   }
-
 }

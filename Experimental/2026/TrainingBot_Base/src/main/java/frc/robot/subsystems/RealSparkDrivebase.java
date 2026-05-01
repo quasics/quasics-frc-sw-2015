@@ -37,14 +37,9 @@ public class RealSparkDrivebase extends AbstractDrivebase {
   // Hardware control/sensing.
   //
 
-  // Motors (we only need to control the leaders; the followers will... well,
-  // follow them).
-  final SparkMax m_leftLeader = new SparkMax(LEFT_LEADER_ID, MotorType.kBrushless);
-  final SparkMax m_rightLeader = new SparkMax(RIGHT_LEADER_ID, MotorType.kBrushless);
-
   // Encoders
-  private final RelativeEncoder m_leftEncoder = m_leftLeader.getEncoder();
-  private final RelativeEncoder m_rightEncoder = m_rightLeader.getEncoder();
+  private final RelativeEncoder m_leftEncoder;
+  private final RelativeEncoder m_rightEncoder;
 
   /** The gyro/ALU that we're using for direction identification. */
   private final Pigeon2 m_rawGyro = new Pigeon2(PIGEON2_CAN_ID);
@@ -53,7 +48,17 @@ public class RealSparkDrivebase extends AbstractDrivebase {
    * Constructor.
    */
   public RealSparkDrivebase() {
-    super();
+    super(new SparkMax(LEFT_LEADER_ID, MotorType.kBrushless), new SparkMax(RIGHT_LEADER_ID, MotorType.kBrushless));
+
+    // The motor controller variables are defined in the base class, but we need to
+    // use them here to finish configuring them, and to get the encoders. Note that
+    // we know that they'll be of type SparkMax, so we can use them directly as
+    // such.
+    SparkMax leftLeader = (SparkMax) m_leftController;
+    SparkMax rightLeader = (SparkMax) m_rightController;
+
+    m_leftEncoder = leftLeader.getEncoder();
+    m_rightEncoder = rightLeader.getEncoder();
 
     ////////////////////////////////////////
     // Configure the encoders.
@@ -79,16 +84,10 @@ public class RealSparkDrivebase extends AbstractDrivebase {
     rightConfig.encoder.velocityConversionFactor(velocityScalingFactor);
     rightConfig.inverted(true);
 
-    m_leftLeader.configure(
+    leftLeader.configure(
         leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    m_rightLeader.configure(
+    rightLeader.configure(
         rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-  }
-
-  @Override
-  public void tankDrive(double leftPercentage, double rightPercentage) {
-    m_leftLeader.set(leftPercentage);
-    m_rightLeader.set(rightPercentage);
   }
 
   @Override

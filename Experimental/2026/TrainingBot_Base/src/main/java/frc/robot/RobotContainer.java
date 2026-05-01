@@ -23,15 +23,17 @@ import frc.robot.subsystems.SimulatedDrivebase;
 import java.util.function.Supplier;
 
 /**
- * This class is where the bulk of the robot should be declared. Since
- * Command-based is a "declarative" paradigm, very little robot logic should
- * actually be handled in the {@link Robot} periodic methods (other than the
- * scheduler calls). Instead, the structure of the robot (including subsystems,
- * commands, and trigger mappings) should be declared here.
+ * This class is where the bulk of the robot should be declared.
+ * 
+ * Since Command-based is a "declarative" paradigm, very little robot logic
+ * should actually be handled in the {@link Robot} periodic methods (other than
+ * the scheduler calls). Instead, the structure of the robot (including
+ * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
-  private final AbstractDrivebase m_driveBase;
+  /////////////////////////////////////////////////////////////////////////////////
+  // The following variables are used to control how the robot is configured when
+  // running in simulation vs. on the real robot.
 
   // Establish how we'll control the robot's movement under simulation.
   private static final boolean USE_KEYBOARD_DRIVING_UNDER_SIMULATION = true;
@@ -42,16 +44,60 @@ public class RobotContainer {
       // 2) The robot isn't real, but we're *not* using the keyboard under simulation.
       Robot.isReal() || !USE_KEYBOARD_DRIVING_UNDER_SIMULATION;
 
-  private final CommandJoystick m_driverController = new CommandJoystick(0);
-
-  private final Supplier<Double> m_leftSupplier;
-  private final Supplier<Double> m_rightSupplier;
+  /////////////////////////////////////////////////////////////////////////////////
+  // The robot's subsystems are defined here.
+  //
+  // For this simple example, we only have a single subsystem (the drivebase), and
+  // a few commands to control it. In a more complex robot, you would likely have
+  // multiple subsystems defined here.
 
   /**
-   * The container for the robot. Contains subsystems, OI devices, and commands.
+   * The robot's drivebase, which supports all movement-related functionality,
+   * including related sensors.
+   */
+  private final AbstractDrivebase m_driveBase;
+
+  /////////////////////////////////////////////////////////////////////////////////
+  // The "Human Interface Devices" (HIDs) are defined here. These are the devices
+  // that the drivers will use to control the robot (e.g., joysticks, gamepads,
+  // etc.).
+  //
+  // We also define "supplier" objects for the joystick axes that will be used for
+  // driving, so that we can abstract away the specific controller/joystick
+  // configuration from the commands that use these values, which is a good thing
+  // since we want to be able to use the same commands in both simulation and on
+  // the real robot, even if the specific controller/joystick configuration is
+  // different in those two environments.
+  //
+  // This can also let us apply some transformations to the raw joystick values
+  // (e.g., inverting them, applying a deadband, supporting "turbo" and "turtle"
+  // modes, etc.) in a single place, without having to worry about that logic
+  // being duplicated across multiple commands.
+
+  /** The driver's controller. */
+  private final CommandJoystick m_driverController = new CommandJoystick(0);
+
+  /**
+   * A "supplier" object which will be used by commands to access the left
+   * joystick's Y-axis value.
+   */
+  private final Supplier<Double> m_leftSupplier;
+
+  /**
+   * A "supplier" object which will be used by commands to access the left
+   * joystick's Y-axis value.
+   */
+  private final Supplier<Double> m_rightSupplier;
+
+  /////////////////////////////////////////////////////////////////////////////////
+  // The folowing are the functions supported by the RobotContainer class, which
+  // are used to configure the robot's subsystems, commands, and trigger bindings.
+
+  /**
+   * Constructor.
    */
   public RobotContainer() {
-    // Real vs. Simulation-specific configuration
+    // Allocate our subsystems.
     if (Robot.isReal()) {
       // Configuring the real robot.
       m_driveBase = new RealNovaDrivebase();
@@ -69,7 +115,7 @@ public class RobotContainer {
     } else {
       // Note that we're assuming a keyboard-based controller is actually being
       // used in the simulation environment (for now), and thus we want to use
-      // axis 0&1 (from the "Keyboard 0" configuration).
+      // axis 0 & 1 (from the "Keyboard 0" configuration).
       m_leftSupplier = () -> m_driverController.getRawAxis(0);
       m_rightSupplier = () -> m_driverController.getRawAxis(1);
     }
@@ -99,7 +145,7 @@ public class RobotContainer {
     SmartDashboard.putData("-1m @ 10%", new DriveForDistance(m_driveBase, 0.10, Meters.of(-1)));
 
     // Another example, using a separate function to create/return the command
-    // (sequence) to be added behind a dashboard button.
+    // (in this case, a command sequence) to be added behind a dashboard button.
     SmartDashboard.putData("Move forward then backward", moveForwardThenBackward(m_driveBase));
   }
 
@@ -121,7 +167,7 @@ public class RobotContainer {
   }
 
   /**
-   * Use this method to define your trigger->command mappings.
+   * Defines any trigger->command mappings.
    *
    * Triggers can be created via the
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with
@@ -143,9 +189,9 @@ public class RobotContainer {
   }
 
   /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
+   * Returns the command to be executed in autonomous mode.
+   * 
+   * This will be invoked by the main {@link Robot} class.
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous

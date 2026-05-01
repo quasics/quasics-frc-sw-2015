@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Feet;
 import static edu.wpi.first.units.Units.Meters;
 
@@ -19,7 +18,7 @@ import frc.robot.Constants.LogitechGamePad;
 import frc.robot.commands.DriveForDistance;
 import frc.robot.commands.TankDrive;
 import frc.robot.subsystems.AbstractDrivebase;
-import frc.robot.subsystems.RealSparkDrivebase;
+import frc.robot.subsystems.RealNovaDrivebase;
 import frc.robot.subsystems.SimulatedDrivebase;
 import java.util.function.Supplier;
 
@@ -55,7 +54,7 @@ public class RobotContainer {
     // Real vs. Simulation-specific configuration
     if (Robot.isReal()) {
       // Configuring the real robot.
-      m_driveBase = new RealSparkDrivebase();
+      m_driveBase = new RealNovaDrivebase();
     } else {
       // Configuring the simulated robot
       m_driveBase = new SimulatedDrivebase();

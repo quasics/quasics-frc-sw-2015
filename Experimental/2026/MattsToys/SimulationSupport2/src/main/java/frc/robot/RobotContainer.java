@@ -19,11 +19,13 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.ManualClimberControlCommand;
@@ -72,6 +74,7 @@ import frc.robot.util.SysIdGenerator;
 import frc.robot.util.SysIdGenerator.DrivebaseProfilingMode;
 import frc.robot.util.config.RobotConfig;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
@@ -100,6 +103,11 @@ public class RobotContainer {
 
   private static final RobotConfigLibrary.Robot DEFAULT_SIMULATION_ROBOT = RobotConfigLibrary.Robot.Simulation;
   private static final RobotConfigLibrary.Robot DEFAULT_LIVE_ROBOT = RobotConfigLibrary.Robot.SallySpark;
+  private static final RobotConfigLibrary.Robot DEFAULT_ROBOT = Robot.isReal() ? DEFAULT_LIVE_ROBOT
+      : DEFAULT_SIMULATION_ROBOT;
+
+  private static final String CONFIG_TAB_NAME = "Config";
+  private static final String ROBOT_CONFIG_PREF_KEY = "RobotConfig";
 
   /**
    * The robot being targeted.
@@ -109,7 +117,7 @@ public class RobotContainer {
    * DriverStation.reportWarning()), or at least an indicator for the current
    * value.
    */
-  final RobotConfigLibrary.Robot m_robotSelection = Robot.isReal() ? DEFAULT_LIVE_ROBOT : DEFAULT_SIMULATION_ROBOT;
+  final RobotConfigLibrary.Robot m_robotSelection = getSelectedRobotFromPreferences();
 
   /** Selected robot's configuration data. */
   final RobotConfig m_robotConfig = RobotConfigLibrary.getConfig(m_robotSelection);
@@ -166,11 +174,21 @@ public class RobotContainer {
   /** The autonomous command chooser. */
   private final SendableChooser<Command> m_autoCommandChooser = new SendableChooser<Command>();
 
+  private final Consumer<Boolean> m_robotConfigChangeConsumer;
+
+  private boolean m_restartNeeded = false;
+
   /** Constructor. */
   public RobotContainer() {
     System.out.println("***\n*** Setting up for " + m_robotSelection + "\n***");
+
+    m_robotConfigChangeConsumer = addHardwareConfigurationOptionsToDashboard();
+
     configureDriving();
+
     setupAutonomousChooser();
+    addHardwareConfigurationToDashboard();
+
     configureDrivingCommands();
     configureSysIdCommands();
     configureElevatorCommands();
@@ -180,17 +198,66 @@ public class RobotContainer {
     maybeConfigureChoreoCommands();
     maybeConfigureClimberCommands();
     configureVisionCommands();
+
     configureBindings();
 
-    if (Robot.isSimulation()) {
+    if (Robot.isSimulation() && m_vision instanceof IPhotonVision) {
       new CameraSimulator(m_robotConfig, (IPhotonVision) m_vision);
     }
     if (m_drivebase instanceof SimDrivebase) {
       ((SimDrivebase) m_drivebase).setGame(GAME);
     }
+  }
+
+  /**
+   * Utility method for reading the motor ID from preferences, with error
+   * handling to fall back to a default value if the preference is not set or is
+   * invalid.
+   * 
+   * @param defaultValue default motor ID to use if the preference is not set or
+   *                     is invalid
+   * @return the motor ID read from preferences, or the default value if invalid
+   */
+  private static RobotConfigLibrary.Robot getSelectedRobotFromPreferences() {
+    String motorTypeString = Preferences.getString(ROBOT_CONFIG_PREF_KEY, DEFAULT_ROBOT.name());
+    try {
+      return RobotConfigLibrary.Robot.valueOf(motorTypeString);
+    } catch (IllegalArgumentException e) {
+      System.err.println("Invalid MotorType in preferences: " + motorTypeString
+          + ". Defaulting to " + DEFAULT_ROBOT + ".");
+      return DEFAULT_ROBOT;
+    }
+  }
+
+  private Consumer<Boolean> addHardwareConfigurationOptionsToDashboard() {
+    DashboardUtils.addConfigSelector(
+        CONFIG_TAB_NAME,
+        RobotConfigLibrary.Robot.values(),
+        m_robotSelection,
+        "Robot",
+        newValue -> {
+          System.out.println("Robot changed to: " + newValue);
+          Preferences.setString(ROBOT_CONFIG_PREF_KEY, newValue.name());
+          m_restartNeeded = true;
+          m_robotConfigChangeConsumer.accept(true);
+        });
+    return DashboardUtils.addWarningIndicator(
+        CONFIG_TAB_NAME, "RobotChangedTitle", "RobotChangedWarning", () -> {
+          return m_restartNeeded ? "Restart the robot for changes to take effect." : "";
+        });
+  }
+
+  private void addHardwareConfigurationToDashboard() {
     if (m_pdp != null) {
       publish("Hardware", m_pdp);
     }
+    publish("Hardware", "Drivebase type", (SubsystemBase) m_drivebase);
+    publish("Hardware", "Elevator", (SubsystemBase) m_elevator);
+    publish("Hardware", "Arm", (SubsystemBase) m_arm);
+    publish("Hardware", "Climber", (SubsystemBase) m_climber);
+    publish("Hardware", "Camera", (SubsystemBase) m_vision);
+    publish("Hardware", "Lighting", (SubsystemBase) m_lighting);
+    publish("Hardware", "CANdle", (SubsystemBase) m_candle);
   }
 
   private void configureVisionCommands() {

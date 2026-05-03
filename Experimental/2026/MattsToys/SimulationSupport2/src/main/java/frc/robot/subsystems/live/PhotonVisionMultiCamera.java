@@ -50,15 +50,6 @@ public class PhotonVisionMultiCamera extends SubsystemBase
    */
   protected final AprilTagFieldLayout m_tagLayout;
 
-  private static final boolean USE_REEFSCAPE_LAYOUT = true;
-  private static final boolean USE_ANDYMARK_CONFIG_FOR_REEFSCAPE = false;
-
-  private static final AprilTagFields FIELD_LAYOUT = USE_REEFSCAPE_LAYOUT
-      ? (USE_ANDYMARK_CONFIG_FOR_REEFSCAPE ? AprilTagFields.k2025ReefscapeAndyMark
-          : AprilTagFields.k2025ReefscapeWelded)
-      : AprilTagFields.k2024Crescendo // Fall back on last year's game
-  ;
-
   /** Entries for each of the cameras on the robot. */
   protected final List<CameraData> m_cameraData = new ArrayList<CameraData>();
 

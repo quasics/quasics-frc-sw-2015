@@ -302,21 +302,24 @@ public final class RobotConfigLibrary {
   private static RobotConfig generateSallyNovaConfig() {
     PowerDistributor power = new PowerDistributor(ModuleType.kRev);
 
+    // TODO: Update DriveConfig data for "Nova Sally" in 2026
+    // configuration/profile (PID, FF).
     return new RobotConfig(false,
         new DriveConfig(
             DriveType.ThriftyNova,
             Inches.of(3), // Wheel radius
-            Meters.of(0.5588) /* 22 in (from 2024) */,
+            Inches.of(22) /* From 2024 */,
             8.45, // Gearing (from 2024),
             DriveOrientation.RightInverted,
-            // TODO: Update DriveConfig data for Sally in 2026
-            // configuration/profile, including independent left/right PID.
-            new PIDConfig(0.29613), // Left PID (from 2024)
-            new PIDConfig(0.29613), // Right PID (from 2024)
-            // TODO: Add kS value for Sally's drivebase.
-            new DriveFeedForwardConfig(Volts.of(0.19529),
-                0.01, // Linear data (from 2024)
-                Volts.of(0.19529), 0.01), // Angular data (FAKE)
+            new PIDConfig(0.29613),
+            new PIDConfig(0.29613),
+            new DriveFeedForwardConfig(
+                // Linear data
+                Volts.of(0.19529),
+                0.01,
+                // Angular data
+                Volts.of(0.19529),
+                0.01),
             Map.of(DriveConfig.MotorUnit.LeftLeader, QuasicsThriftyNovaConstants.QuasicsDrivebaseCanIds.LEFT_LEADER_ID,
                 DriveConfig.MotorUnit.RightLeader, QuasicsThriftyNovaConstants.QuasicsDrivebaseCanIds.RIGHT_LEADER_ID)),
         NO_CAMERA, NO_ELEVATOR, NO_ARM, NO_LIGHTING, NO_CANDLE, NO_CLIMBER,
@@ -327,21 +330,24 @@ public final class RobotConfigLibrary {
     PowerDistributor power = new PowerDistributor(ModuleType.kRev);
 
     return new RobotConfig(false,
+        // TODO: Update DriveConfig data for "Spark Sally" in 2026
+        // configuration/profile, including independent left/right PID, drivebase kS,
+        // angular FF).
         new DriveConfig(
             DriveType.CanSparkMax,
             Inches.of(3), // Wheel radius
-            Meters.of(0.5588) /* 22 in (from 2024) */,
+            Inches.of(22), // From 2024
             8.45, // Gearing (from 2024),
             DriveOrientation.RightInverted,
-            // TODO: Update DriveConfig data for Sally in 2026
-            // configuration/profile, including independent left/right PID.
             new PIDConfig(0.29613), // Left PID (from 2024)
             new PIDConfig(0.29613), // Right PID (from 2024)
-            // TODO: Add kS value for Sally's drivebase.
-            new DriveFeedForwardConfig(Volts.of(0.19529),
-                0.01, // Linear data (from 2024)
-                Volts.of(0.19529), 0.01) // Angular data (FAKE)
-        ),
+            new DriveFeedForwardConfig(
+                // Linear data (from 2024)
+                Volts.of(0.19529),
+                0.01,
+                // Angular data (FAKE)
+                Volts.of(0.19529),
+                0.01)),
         NO_CAMERA, NO_ELEVATOR, NO_ARM, NO_LIGHTING, NO_CANDLE, NO_CLIMBER,
         NO_FLYWHEEL, NO_HOOD, power);
   }
@@ -350,7 +356,7 @@ public final class RobotConfigLibrary {
     final DriveConfig drive = new DriveConfig(
         DriveType.CanSparkMax,
         Inches.of(3), // Wheel radius
-        Meters.of(0.5628) /* 22 in (from 27Feb2025) */,
+        Inches.of(22), // From 2024
         10.71, // Gearing (from 15Mar2025)
         DriveOrientation.RightInverted,
         new PIDConfig(0.046218), // Left (from 27Feb2025)
@@ -375,8 +381,9 @@ public final class RobotConfigLibrary {
         NO_FLYWHEEL, NO_HOOD, power);
   }
 
+  // TODO: Update 2026 robot configuration data with real numbers (drive,
+  // flywheel).
   private static RobotConfig generate2026Config() {
-    // TODO: Update 2026 drive configuration data with real numbers.
     final DriveConfig drive = new DriveConfig(
         DriveType.ThriftyNova,
         Inches.of(3),
@@ -390,7 +397,6 @@ public final class RobotConfigLibrary {
             Volts.of(0.19529), 0.01) // Angular data (FAKE)
     );
 
-    // TODO: Update 2026 flywheel configuration data with real numbers.
     final FlywheelConfig flywheel = new FlywheelConfig(FlywheelConfig.FlywheelType.TalonFX,
         RebuiltRobotConstants.SparkMaxCanIds.FLYWHEEL_ID, false,
         new SimpleFeedForwardConfig(Volts.of(0.1), // kS

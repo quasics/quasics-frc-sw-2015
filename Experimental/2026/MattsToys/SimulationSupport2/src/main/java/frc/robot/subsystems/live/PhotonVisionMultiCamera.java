@@ -41,6 +41,8 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 /**
  * Vision processing implementation for a single/multiple cameras, using the
  * Photonvision libraries/server.
+ * 
+ * Note that this is based on the 2025 code, but hasn't been fully tested.
  */
 public class PhotonVisionMultiCamera extends SubsystemBase
     implements IPhotonVision, IVisionPlus, IPoseEstimator {

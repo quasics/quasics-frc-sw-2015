@@ -59,8 +59,7 @@ import frc.robot.subsystems.live.CANSparkMaxDrivebase;
 import frc.robot.subsystems.live.Candle;
 import frc.robot.subsystems.live.Lighting;
 import frc.robot.subsystems.live.LightingBuffer;
-import frc.robot.subsystems.live.PhotonVisionMultiCamera;
-import frc.robot.subsystems.live.PhotonVisionSingleCamera;
+import frc.robot.subsystems.live.PhotonVisionAnyCameras;
 import frc.robot.subsystems.live.ThriftyNovaDrivebase;
 import frc.robot.subsystems.simulated.CameraSimulator;
 import frc.robot.subsystems.simulated.SimCandle;
@@ -142,7 +141,7 @@ public class RobotContainer {
 
   /** Vision-processing subsystem. */
   final IVision m_vision = m_robotConfig.hasCamera()
-      ? new PhotonVisionMultiCamera(m_robotConfig)
+      ? new PhotonVisionAnyCameras(m_robotConfig)
       : new IVision.NullVision();
 
   /** Lighting subystem. */

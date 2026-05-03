@@ -109,14 +109,7 @@ public class RobotContainer {
   private static final String CONFIG_TAB_NAME = "Config";
   private static final String ROBOT_CONFIG_PREF_KEY = "RobotConfig";
 
-  /**
-   * The robot being targeted.
-   *
-   * TODO: Add selector support to the smart dashboard (and saving), along with
-   * a notification that it won't take affect until restart (e.g., using
-   * DriverStation.reportWarning()), or at least an indicator for the current
-   * value.
-   */
+  /** The robot being targeted. */
   final RobotConfigLibrary.Robot m_robotSelection = getSelectedRobotFromPreferences();
 
   /** Selected robot's configuration data. */

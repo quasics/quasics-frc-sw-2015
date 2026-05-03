@@ -401,9 +401,16 @@ public class PhotonVisionMultiCamera extends SubsystemBase
     // System.out.println("Targets: " + getVisibleTargets());
   }
 
+  ////////////////////////////////////////////////////////////////////////////////////////////////
+  //
+  // Closeable functions.
+  //
+  ////////////////////////////////////////////////////////////////////////////////////////////////
+
   @Override
   public void close() throws IOException {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'close'");
+    for (CameraData cameraData : m_cameraData) {
+      cameraData.camera().close();
+    }
   }
 }

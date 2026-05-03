@@ -87,6 +87,10 @@ import java.util.function.Supplier;
  * setup of a command-based robot project using the WPILib software library
  */
 public class RobotContainer {
+  //
+  // Static configuration constants
+  //
+
   private static final Game GAME = Game.Rebuilt;
 
   /** Whether to use arcade drive or tank drive for robot navigation. */
@@ -109,11 +113,19 @@ public class RobotContainer {
   private static final String CONFIG_TAB_NAME = "Config";
   private static final String ROBOT_CONFIG_PREF_KEY = "RobotConfig";
 
+  //
+  // Robot selection/configuration data
+  //
+
   /** The robot being targeted. */
   final RobotConfigLibrary.Robot m_robotSelection = getSelectedRobotFromPreferences();
 
   /** Selected robot's configuration data. */
   final RobotConfig m_robotConfig = RobotConfigLibrary.getConfig(m_robotSelection);
+
+  //
+  // Subsystems and hardware components
+  //
 
   /** The drivebase subsystem. */
   final IDrivebasePlus m_drivebase = allocateDrivebase(m_robotConfig);
@@ -164,8 +176,13 @@ public class RobotContainer {
   /** The autonomous command chooser. */
   private final SendableChooser<Command> m_autoCommandChooser = new SendableChooser<Command>();
 
+  /** Consumer for reporting robot configuration changes through the dashboard. */
   private final Consumer<Boolean> m_robotConfigChangeConsumer;
 
+  /**
+   * Tracks if the robot needs to be restarted for configuration changes to take
+   * effect.
+   */
   private boolean m_restartNeeded = false;
 
   /** Constructor. */

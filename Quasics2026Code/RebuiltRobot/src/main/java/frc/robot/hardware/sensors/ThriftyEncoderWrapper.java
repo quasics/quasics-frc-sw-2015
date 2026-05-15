@@ -18,6 +18,8 @@ import java.io.IOException;
  * way as a normal WPLib Encoder.
  */
 public class ThriftyEncoderWrapper implements TrivialEncoder {
+  private static final boolean DEBUG = false;
+
   /** Wrapped Thrifty Nova controller, providing access to encoder data. */
   final ThriftyNova m_motorController;
 
@@ -33,11 +35,7 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
    */
   final double m_gearing;
 
-  // TODO(Matt): Remove these pieces, once we've confirmed that the code is
-  // working correctly.
-  static final boolean USE_SPARK_CALCULATIONS = true;
   final double m_distanceScalingFactorForGearing;
-  final double m_velocityScalingFactor;
 
   /**
    * Constructor. (This assumes that the motor is directly connected to the
@@ -68,42 +66,31 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
     m_gearing = gearing;
 
     final Distance wheelCircumference = wheelOuterDiameter.times(Math.PI);
-    m_distanceScalingFactorForGearing =
-        wheelCircumference.div(Constants.DRIVEBASE_GEAR_RATIO).in(Meters);
-    m_velocityScalingFactor = m_distanceScalingFactorForGearing / 60;
-    if (USE_SPARK_CALCULATIONS) {
+    // scaling factor to convert from "revolutions" to "meters traveled by the
+    // wheel", accounting for gearing (e.g., if gearing is 8.45, then the wheel will
+    // only turn 1/8.45 of a revolution for every revolution of the motor)
+    m_distanceScalingFactorForGearing = wheelCircumference.div(Constants.DRIVEBASE_GEAR_RATIO).in(Meters);
+    if (DEBUG) {
       System.out.println("Wheel circumference: " + wheelCircumference);
       System.out.println("Using gear ratio: " + Constants.DRIVEBASE_GEAR_RATIO);
       System.out.println("Adjustment for gearing (m/rotation): "
           + m_distanceScalingFactorForGearing);
-      System.out.println("Velocity adj.: " + m_velocityScalingFactor);
     }
   }
 
   @Override
   public Distance getPosition() {
     final double currentRevolutions = m_motorController.getPosition();
-    if (USE_SPARK_CALCULATIONS) {
-      return Meters.of(currentRevolutions * m_distanceScalingFactorForGearing);
-    } else {
-      // revolutions * circumferenceTraveled/revolution / gearingRatio -->
-      // distance
-      return m_wheelCircumference.times(currentRevolutions / m_gearing);
-    }
+    return Meters.of(currentRevolutions * m_distanceScalingFactorForGearing);
   }
 
   @Override
   public LinearVelocity getVelocity() {
     final double currentRotationsPerSecond = m_motorController.getVelocity();
-    if (false) {
-      return MetersPerSecond.of(
-          currentRotationsPerSecond * m_velocityScalingFactor);
-    } else {
-      // (revs/sec) * circumferenceTraveled/rev / gearingRatio) --> (meters/sec)
-      final double metersPerRotation = m_wheelCircumference.in(Meters);
-      return MetersPerSecond.of(
-          currentRotationsPerSecond * metersPerRotation / m_gearing);
-    }
+    // (revs/sec) * circumferenceTraveled/rev / gearingRatio) --> (meters/sec)
+    final double metersPerRotation = m_wheelCircumference.in(Meters);
+    return MetersPerSecond.of(
+        currentRotationsPerSecond * metersPerRotation / m_gearing);
   }
 
   @Override
@@ -122,42 +109,3 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
     return m_motorController.getPosition();
   }
 }
-
-/*
- * Sample data from DriveForDistance.
- * TODO(Matt): Delete this, once we've confirmed that the class is working
- * correctly.
- *
- * Starting driving at 0.25 power, from 9.636e-05 m to 2.000e+00 m
- * teleopPeriodic(): 0.000556s
- * SmartDashboard.updateValues(): 0.069470s
- * robotPeriodic(): 0.001688s
- * LiveWindow.updateValues(): 0.000000s
- * Shuffleboard.update(): 0.000018s
- * Warning at edu.wpi.first.wpilibj.Tracer.lambda$printEpochs$0(Tracer.java:62):
- * teleopPeriodic(): 0.000556s
- * SmartDashboard.updateValues(): 0.069470s
- * robotPeriodic(): 0.001688s
- * LiveWindow.updateValues(): 0.000000s
- * Shuffleboard.update(): 0.000018s
- * Reported left distance: 0.0008 m (delta: 0.0007 m, raw: 0.5952 units),
- * velocity: 0.0002 m/s (sampled: 0.01)
- * Forward - isFinished --> false
- * Reported left distance: 0.0011 m (delta: 0.0003 m, raw: 0.8095 units),
- * velocity: 0.0002 m/s (sampled: 0.03)
- * Forward - isFinished --> false
- * . . . .
- * Reported left distance: 0.0437 m (delta: 0.0007 m, raw: 32.4048 units),
- * velocity: 0.0005 m/s (sampled: 0.03)
- * Forward - isFinished --> false
- * Reported left distance: 0.0445 m (delta: 0.0007 m, raw: 32.9524 units),
- * velocity: 0.0005 m/s (sampled: 0.04)
- * Forward - isFinished --> false
- * <interrupted>
- *
- * Raw motor rotations: 32.9524
- * Geared (wheel) rotations: 3.8997
- * Expected distance: 1.867 meters
- * Calculated distance: 0.0445 meters (off by x42)
- *
- */

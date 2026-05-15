@@ -10,7 +10,6 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import com.thethriftybot.devices.ThriftyNova;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
-import frc.robot.Constants;
 import java.io.IOException;
 
 /**
@@ -69,10 +68,10 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
     // scaling factor to convert from "revolutions" to "meters traveled by the
     // wheel", accounting for gearing (e.g., if gearing is 8.45, then the wheel will
     // only turn 1/8.45 of a revolution for every revolution of the motor)
-    m_distanceScalingFactorForGearing = wheelCircumference.div(Constants.DRIVEBASE_GEAR_RATIO).in(Meters);
+    m_distanceScalingFactorForGearing = wheelCircumference.div(gearing).in(Meters);
     if (DEBUG) {
       System.out.println("Wheel circumference: " + wheelCircumference);
-      System.out.println("Using gear ratio: " + Constants.DRIVEBASE_GEAR_RATIO);
+      System.out.println("Using gear ratio: " + gearing);
       System.out.println("Adjustment for gearing (m/rotation): "
           + m_distanceScalingFactorForGearing);
     }

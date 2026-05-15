@@ -32,7 +32,7 @@ public class DriveForDistance extends Command {
 
   /**
    * Constructor.
-   * 
+   *
    * @param drivebase drivebase being controlled
    * @param percent   percent speed to move at ([-1.0] to [+1.0]); this will be
    *                  normalized to match the direction associated with distance
@@ -40,7 +40,8 @@ public class DriveForDistance extends Command {
    *                  left-side encoder); negative distances indicate moving
    *                  backward
    */
-  public DriveForDistance(IDrivebase drivebase, double percent, Distance distance) {
+  public DriveForDistance(
+      IDrivebase drivebase, double percent, Distance distance) {
     m_drivebase = drivebase;
     m_distance = distance;
 
@@ -62,13 +63,14 @@ public class DriveForDistance extends Command {
 
     // Enable braking mode
     if (!m_drivebase.setBreakingMode(true)) {
-      System.err.println("*** Warning: couldn't enable braking mode for drivebase.");
+      System.err.println(
+          "*** Warning: couldn't enable braking mode for drivebase.");
       System.err.println("*** This may impact test data.");
     }
 
     // Debugging output (reporting starting conditions).
-    System.out.println(
-        "Starting driving at " + m_percent + " power, from " + m_lastReportedDistance + " to " + m_targetDistance);
+    System.out.println("Starting driving at " + m_percent + " power, from "
+        + m_lastReportedDistance + " to " + m_targetDistance);
   }
 
   static final double GEARING_RATIO = Constants.DRIVEBASE_GEAR_RATIO;
@@ -82,14 +84,15 @@ public class DriveForDistance extends Command {
     // Optional logging of current "step" in conditions.
     if (LOG_VELOCITY) {
       final Time sampleTime = Seconds.of(now - m_lastReportedTime);
-      final Distance movementSinceLastSample = currentDistance.minus(m_lastReportedDistance);
-      final LinearVelocity sampleVelocity = movementSinceLastSample.div(sampleTime);
-      m_Logger.log(
-          Logger.Verbosity.Debug,
-          String.format(
-              "Reported left distance: %.4f m (delta: %.4f m, rawMotor: %.4f rotations, withGearing: %.4f rotations), velocity: %.4f m/s (sampled: %.2f)\n",
-              currentDistance.in(Meters),
-              movementSinceLastSample.in(Meters),
+      final Distance movementSinceLastSample =
+          currentDistance.minus(m_lastReportedDistance);
+      final LinearVelocity sampleVelocity =
+          movementSinceLastSample.div(sampleTime);
+      m_Logger.log(Logger.Verbosity.Debug,
+          String.format("Reported left distance: %.4f m (delta: %.4f m, "
+                        + "rawMotor: %.4f rotations, withGearing: %.4f "
+                        + "rotations), velocity: %.4f m/s (sampled: %.2f)\n",
+              currentDistance.in(Meters), movementSinceLastSample.in(Meters),
               m_drivebase.getLeftRawDistance(),
               m_drivebase.getLeftRawDistance() / GEARING_RATIO,
               m_drivebase.getLeftVelocity().in(MetersPerSecond),
@@ -97,8 +100,11 @@ public class DriveForDistance extends Command {
     }
 
     // Testing velocity
-    System.out.println("Current time " + now + "   /   Distance Driven" + currentDistance);
+    System.out.println(
+        "Current time " + now + "   /   Distance Driven" + currentDistance);
     System.out.println("Expected Speed: " + currentDistance.div(now));
+    System.out.println("Encoder Velocity:"
+        + m_drivebase.getLeftVelocity().in(MetersPerSecond));
 
     // Retain values for next report.
     m_lastReportedDistance = currentDistance;

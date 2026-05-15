@@ -7,13 +7,11 @@ package frc.robot.hardware.sensors;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
-import java.io.IOException;
-
 import com.thethriftybot.devices.ThriftyNova;
-
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import frc.robot.Constants;
+import java.io.IOException;
 
 /**
  * Convenience wrapper, allowing a ThriftyNova to be read in the same (general)
@@ -30,8 +28,8 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
   final Distance m_wheelCircumference;
 
   /**
-   * Gear ratio for the drive base (e.g., "8.45" if it will take 8.45 revolutions
-   * of the motor to make the actual wheels turn 1 time).
+   * Gear ratio for the drive base (e.g., "8.45" if it will take 8.45
+   * revolutions of the motor to make the actual wheels turn 1 time).
    */
   final double m_gearing;
 
@@ -42,8 +40,8 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
   final double m_velocityScalingFactor;
 
   /**
-   * Constructor. (This assumes that the motor is directly connected to the wheel,
-   * or effectively having 1:1 gearing).
+   * Constructor. (This assumes that the motor is directly connected to the
+   * wheel, or effectively having 1:1 gearing).
    *
    * @param motorController    ThriftyNova object being wrapped for "normal" use
    * @param wheelOuterDiameter outer diameter of the wheel being turned by the
@@ -63,19 +61,21 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
    * @param gearing            gearing ratio from the motor to the wheel (e.g.,
    *                           8.45)
    */
-  public ThriftyEncoderWrapper(
-      ThriftyNova motorController, Distance wheelOuterDiameter, double gearing) {
+  public ThriftyEncoderWrapper(ThriftyNova motorController,
+      Distance wheelOuterDiameter, double gearing) {
     m_motorController = motorController;
     m_wheelCircumference = wheelOuterDiameter.times(Math.PI);
     m_gearing = gearing;
 
     final Distance wheelCircumference = wheelOuterDiameter.times(Math.PI);
-    m_distanceScalingFactorForGearing = wheelCircumference.div(Constants.DRIVEBASE_GEAR_RATIO).in(Meters);
+    m_distanceScalingFactorForGearing =
+        wheelCircumference.div(Constants.DRIVEBASE_GEAR_RATIO).in(Meters);
     m_velocityScalingFactor = m_distanceScalingFactorForGearing / 60;
     if (USE_SPARK_CALCULATIONS) {
       System.out.println("Wheel circumference: " + wheelCircumference);
       System.out.println("Using gear ratio: " + Constants.DRIVEBASE_GEAR_RATIO);
-      System.out.println("Adjustment for gearing (m/rotation): " + m_distanceScalingFactorForGearing);
+      System.out.println("Adjustment for gearing (m/rotation): "
+          + m_distanceScalingFactorForGearing);
       System.out.println("Velocity adj.: " + m_velocityScalingFactor);
     }
   }
@@ -86,7 +86,8 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
     if (USE_SPARK_CALCULATIONS) {
       return Meters.of(currentRevolutions * m_distanceScalingFactorForGearing);
     } else {
-      // revolutions * circumferenceTraveled/revolution / gearingRatio --> distance
+      // revolutions * circumferenceTraveled/revolution / gearingRatio -->
+      // distance
       return m_wheelCircumference.times(currentRevolutions / m_gearing);
     }
   }
@@ -94,12 +95,14 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
   @Override
   public LinearVelocity getVelocity() {
     final double currentRotationsPerSecond = m_motorController.getVelocity();
-    if (USE_SPARK_CALCULATIONS) {
-      return MetersPerSecond.of(currentRotationsPerSecond * m_velocityScalingFactor);
+    if (false) {
+      return MetersPerSecond.of(
+          currentRotationsPerSecond * m_velocityScalingFactor);
     } else {
       // (revs/sec) * circumferenceTraveled/rev / gearingRatio) --> (meters/sec)
       final double metersPerRotation = m_wheelCircumference.in(Meters);
-      return MetersPerSecond.of(currentRotationsPerSecond * metersPerRotation / m_gearing);
+      return MetersPerSecond.of(
+          currentRotationsPerSecond * metersPerRotation / m_gearing);
     }
   }
 
@@ -124,7 +127,7 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
  * Sample data from DriveForDistance.
  * TODO(Matt): Delete this, once we've confirmed that the class is working
  * correctly.
- * 
+ *
  * Starting driving at 0.25 power, from 9.636e-05 m to 2.000e+00 m
  * teleopPeriodic(): 0.000556s
  * SmartDashboard.updateValues(): 0.069470s
@@ -151,10 +154,10 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
  * velocity: 0.0005 m/s (sampled: 0.04)
  * Forward - isFinished --> false
  * <interrupted>
- * 
+ *
  * Raw motor rotations: 32.9524
  * Geared (wheel) rotations: 3.8997
  * Expected distance: 1.867 meters
  * Calculated distance: 0.0445 meters (off by x42)
- * 
+ *
  */

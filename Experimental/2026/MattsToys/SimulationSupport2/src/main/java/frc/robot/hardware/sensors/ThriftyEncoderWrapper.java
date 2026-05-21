@@ -17,6 +17,8 @@ import java.io.IOException;
  * way as a normal WPLib Encoder.
  */
 public class ThriftyEncoderWrapper implements TrivialEncoder {
+  private static final boolean DEBUG = false;
+
   /** Wrapped Thrifty Nova controller, providing access to encoder data. */
   final ThriftyNova m_motorController;
 
@@ -27,14 +29,16 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
   final Distance m_wheelCircumference;
 
   /**
-   * Gear ratio for the drive base (e.g., "8.45" if it will take 8.45 revolutions
-   * of the motor to make the actual wheels turn 1 time).
+   * Gear ratio for the drive base (e.g., "8.45" if it will take 8.45
+   * revolutions of the motor to make the actual wheels turn 1 time).
    */
   final double m_gearing;
 
+  final double m_distanceScalingFactorForGearing;
+
   /**
-   * Constructor. (This assumes that the motor is directly connected to the wheel,
-   * or effectively having 1:1 gearing).
+   * Constructor. (This assumes that the motor is directly connected to the
+   * wheel, or effectively having 1:1 gearing).
    *
    * @param motorController    ThriftyNova object being wrapped for "normal" use
    * @param wheelOuterDiameter outer diameter of the wheel being turned by the
@@ -54,18 +58,29 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
    * @param gearing            gearing ratio from the motor to the wheel (e.g.,
    *                           8.45)
    */
-  public ThriftyEncoderWrapper(
-      ThriftyNova motorController, Distance wheelOuterDiameter, double gearing) {
+  public ThriftyEncoderWrapper(ThriftyNova motorController,
+      Distance wheelOuterDiameter, double gearing) {
     m_motorController = motorController;
     m_wheelCircumference = wheelOuterDiameter.times(Math.PI);
     m_gearing = gearing;
+
+    final Distance wheelCircumference = wheelOuterDiameter.times(Math.PI);
+    // scaling factor to convert from "revolutions" to "meters traveled by the
+    // wheel", accounting for gearing (e.g., if gearing is 8.45, then the wheel will
+    // only turn 1/8.45 of a revolution for every revolution of the motor)
+    m_distanceScalingFactorForGearing = wheelCircumference.div(gearing).in(Meters);
+    if (DEBUG) {
+      System.out.println("Wheel circumference: " + wheelCircumference);
+      System.out.println("Using gear ratio: " + gearing);
+      System.out.println("Adjustment for gearing (m/rotation): "
+          + m_distanceScalingFactorForGearing);
+    }
   }
 
   @Override
   public Distance getPosition() {
     final double currentRevolutions = m_motorController.getPosition();
-    // revolutions * circumferenceTraveled/revolution / gearingRatio --> distance
-    return m_wheelCircumference.times(currentRevolutions / m_gearing);
+    return Meters.of(currentRevolutions * m_distanceScalingFactorForGearing);
   }
 
   @Override
@@ -73,7 +88,8 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
     final double currentRotationsPerSecond = m_motorController.getVelocity();
     // (revs/sec) * circumferenceTraveled/rev / gearingRatio) --> (meters/sec)
     final double metersPerRotation = m_wheelCircumference.in(Meters);
-    return MetersPerSecond.of(currentRotationsPerSecond * metersPerRotation / m_gearing);
+    return MetersPerSecond.of(
+        currentRotationsPerSecond * metersPerRotation / m_gearing);
   }
 
   @Override

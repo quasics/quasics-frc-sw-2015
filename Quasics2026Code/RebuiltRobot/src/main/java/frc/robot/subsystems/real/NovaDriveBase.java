@@ -110,6 +110,22 @@ public class NovaDriveBase extends AbstractDrivebase {
     leftController.applyConfig(configLeft);
     rightController.applyConfig(configRight);
 
+    // Ensure that we actually get voltage, vel, and position at 20 ms freq
+    // https://docs.thethriftybot.com/thrifty-nova/software-resources/configure-can-frequency
+    rightController.canFreq
+        .setFault(.25) // transmit faults every .25s (250ms) (4hz)
+        .setSensor(.01) // transmit encoder feedback every .01s (10ms) (100hz)
+        .setQuadSensor(.01) // same for external encoder feedback
+        .setControl(.02) // transmit control frames every .02s (20ms) (50hz)
+        .setCurrent(.20); // transmit current feedback every .2s (200ms) (5hz)
+
+    leftController.canFreq
+        .setFault(.25) // transmit faults every .25s (250ms) (4hz)
+        .setSensor(.01) // transmit encoder feedback every .01s (10ms) (100hz)
+        .setQuadSensor(.01) // same for external encoder feedback
+        .setControl(.02) // transmit control frames every .02s (20ms) (50hz)
+        .setCurrent(.20); // transmit current feedback every .2s (200ms) (5hz)
+
     //
     // Set up the TrivialEncoders we'll use to handle accessing the data from the
     // motors.

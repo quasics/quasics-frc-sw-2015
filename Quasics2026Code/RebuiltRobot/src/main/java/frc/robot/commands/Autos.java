@@ -88,6 +88,13 @@ public final class Autos {
                 .andThen(indexAndShoot(drivebase, shooter, indexer));
     }
 
+    public Command raiseLowerPivotCycle() {
+        return new RunIntakeExtensionForTime(m_intake, 0.4, true, 2)
+                .andThen(new WaitCommand(0.5))
+                .andThen(new RunIntakeExtensionForTime(m_intake, 0.4, false, 2))
+                .andThen(new WaitCommand(0.5));
+    }
+
     public Command hubBack(IDrivebase drivebase, IShooter shooter,
             IShooterHood hood, double hoodAngle, Pose2d fieldPose, IIndexer indexer,
             IIntake intake) {
@@ -194,10 +201,6 @@ public final class Autos {
                 generateSampleStartingCommand(m_drivebase, m_shooter, m_hood,
                         Degrees.of(15),
                         new Pose2d(new Translation2d(12.57, 7.436),
-                                new Rotation2d(Degrees.of(0)))));
-        m_sequenceChooser.addOption("SIT RED BUMP",
-                new UpdateStartingPositionData(m_drivebase,
-                        new Pose2d(new Translation2d(12.989, 6.059),
                                 new Rotation2d(Degrees.of(0)))));
         m_sequenceChooser.addOption("RED Hub then BACK",
                 hubBack(m_drivebase, m_shooter, m_hood, 5,

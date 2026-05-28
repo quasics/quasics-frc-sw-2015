@@ -231,6 +231,7 @@ public class RobotContainer {
 
     // Don't warn about joysticks not being plugged in when working on a robot
     // where we frequently aren't worried about it.
+    // FINDME(ROBERT): "If X or X" is the same as "if X"
     if (ROBOT_NAME == RobotName.Sally || ROBOT_NAME == RobotName.Sally) {
       DriverStation.silenceJoystickConnectionWarning(true);
     }

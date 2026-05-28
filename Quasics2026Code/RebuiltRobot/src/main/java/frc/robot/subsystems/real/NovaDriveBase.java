@@ -116,7 +116,7 @@ public class NovaDriveBase extends AbstractDrivebase {
     //
     final Distance wheelDiam = Constants.WHEEL_RADIUS.times(2);
     m_leftEncoder = new ThriftyEncoderWrapper(leftController, wheelDiam, Constants.DRIVEBASE_GEAR_RATIO);
-    m_rightEncoder = new ThriftyEncoderWrapper(leftController, wheelDiam, Constants.DRIVEBASE_GEAR_RATIO);
+    m_rightEncoder = new ThriftyEncoderWrapper(rightController, wheelDiam, Constants.DRIVEBASE_GEAR_RATIO);
 
     //
     // Set up the gyro.

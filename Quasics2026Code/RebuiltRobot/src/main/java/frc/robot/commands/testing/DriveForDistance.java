@@ -84,14 +84,12 @@ public class DriveForDistance extends Command {
     // Optional logging of current "step" in conditions.
     if (LOG_VELOCITY) {
       final Time sampleTime = Seconds.of(now - m_lastReportedTime);
-      final Distance movementSinceLastSample =
-          currentDistance.minus(m_lastReportedDistance);
-      final LinearVelocity sampleVelocity =
-          movementSinceLastSample.div(sampleTime);
+      final Distance movementSinceLastSample = currentDistance.minus(m_lastReportedDistance);
+      final LinearVelocity sampleVelocity = movementSinceLastSample.div(sampleTime);
       m_Logger.log(Logger.Verbosity.Debug,
           String.format("Reported left distance: %.4f m (delta: %.4f m, "
-                        + "rawMotor: %.4f rotations, withGearing: %.4f "
-                        + "rotations), velocity: %.4f m/s (sampled: %.2f)\n",
+              + "rawMotor: %.4f rotations, withGearing: %.4f "
+              + "rotations), velocity: %.4f m/s (sampled: %.2f)\n",
               currentDistance.in(Meters), movementSinceLastSample.in(Meters),
               m_drivebase.getLeftRawDistance(),
               m_drivebase.getLeftRawDistance() / GEARING_RATIO,
@@ -111,7 +109,7 @@ public class DriveForDistance extends Command {
     m_lastReportedTime = now;
 
     // Don't forget to "feed" the differential drivebase.
-    m_drivebase.setPercent(m_percent, m_percent);
+    // m_drivebase.setPercent(m_percent, m_percent);
   }
 
   @Override

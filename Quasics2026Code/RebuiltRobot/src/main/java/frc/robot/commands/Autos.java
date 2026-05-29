@@ -173,7 +173,6 @@ public final class Autos {
                                 .andThen(new ShootBasedOnDistanceAndTime(
                                                 shooter, drivebase, 0.387, 2, Seconds.of(6)))
                                 .andThen(new PrintCommand("Done"));
-                // >>>>>>> 8d118796e31126d6eea818fccdf689822599a765
         }
 
         public void configureSequenceSelector() {

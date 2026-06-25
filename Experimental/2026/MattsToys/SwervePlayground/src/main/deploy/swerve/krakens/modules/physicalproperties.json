@@ -5,10 +5,6 @@
     "angle motors.  This data is based on guesswork and should be updated with actual ",
     "measurements from the robot.",
     "",
-    "The gear ratio values are based on the 'Swerve X Gear Ratios (Flipped, Gears Below)' ",
-    "documentation from West Coast Products, which can be found at: ",
-    "https://docs.wcproducts.com/welcome/gearboxes/wcp-swerve-x/general-info/ratio-options",
-    "",
     "Weights and dimensions are in imperial units, because that's what YAGSL expects. (*shrug*)"
   ],
   "optimalVoltage": 12,
@@ -20,12 +16,30 @@
   },
   "conversionFactors": {
     "angle": {
+      "_comment": [
+        "The turning gear ratio is currently believed to be 13.3714, based on the 'Swerve X Gear Ratios (Flipped, Gears Below)' ",
+        "documentation from West Coast Products, which can be found at: ",
+        "https://docs.wcproducts.com/welcome/gearboxes/wcp-swerve-x/general-info/ratio-options",
+        "",
+        "However, given that we had to use 'Flipped drive ratios' to get the correct drive gear ratio, ",
+        "it is possible that the turning gear ratio is also different.  This should be verified with ",
+        "actual measurements from the robot, or discovering the answer in the documentation."
+      ],
       "gearRatio": 13.3714,
       "factor": 0
     },
     "drive": {
       "diameter": 4,
-      "gearRatio": 4.59,
+      "_comment": [
+        "The drive gear ratio could be 4.59, based on the 'Swerve X Gear Ratios (Flipped, Gears Below)' ",
+        "documentation from West Coast Products, which can be found at: ",
+        "https://docs.wcproducts.com/welcome/gearboxes/wcp-swerve-x/general-info/ratio-options",
+        "",
+        "However, the gear ratio that John and Bilal identified is 5.5, based on the data for ",
+        "'Flipped drive ratios' in the documentation at: ",
+        "https://docs.wcproducts.com/welcome/gearboxes/wcp-swerve-x/misc/other-configurations/ratio-options#belt-ratios#falcon-2"
+      ],
+      "gearRatio": 5.5,
       "factor": 0
     }
   },

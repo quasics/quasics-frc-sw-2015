@@ -1,0 +1,33 @@
+{
+  "_comment": [
+    "This data is based on guesswork and should be updated with actual ",
+    "measurements from the robot.",
+    "",
+    "Weights and dimensions are in imperial units, because that's what YAGSL expects. (*shrug*)"
+  ],
+  "location": {
+    "front": -15,
+    "left": -15
+  },
+  "absoluteEncoderOffset": 0,
+  "drive": {
+    "type": "krakenx60",
+    "id": 4,
+    "canbus": null
+  },
+  "angle": {
+    "type": "krakenx60",
+    "id": 8,
+    "canbus": null
+  },
+  "encoder": {
+    "type": "thrifty",
+    "id": 4,
+    "canbus": null
+  },
+  "inverted": {
+    "drive": false,
+    "angle": false
+  },
+  "absoluteEncoderInverted": false
+}

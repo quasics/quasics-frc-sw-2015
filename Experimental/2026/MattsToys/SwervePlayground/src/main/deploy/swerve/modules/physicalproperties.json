@@ -1,0 +1,36 @@
+{
+  "_comment": [
+    "This file contains the physical properties of the robot, including its mass, ",
+    "wheel grip coefficient of friction, and current limits for the drive and ",
+    "angle motors.  This data is based on guesswork and should be updated with actual ",
+    "measurements from the robot.",
+    "",
+    "The gear ratio values are based on the 'Swerve X Gear Ratios (Flipped, Gears Below)' ",
+    "documentation from West Coast Products, which can be found at: ",
+    "https://docs.wcproducts.com/welcome/gearboxes/wcp-swerve-x/general-info/ratio-options",
+    "",
+    "Weights and dimensions are in imperial units, because that's what YAGSL expects. (*shrug*)"
+  ],
+  "optimalVoltage": 12,
+  "robotMass": 50,
+  "wheelGripCoefficientOfFriction": 1.19,
+  "currentLimit": {
+    "drive": 40,
+    "angle": 20
+  },
+  "conversionFactors": {
+    "angle": {
+      "gearRatio": 13.3714,
+      "factor": 0
+    },
+    "drive": {
+      "diameter": 4,
+      "gearRatio": 459,
+      "factor": 0
+    }
+  },
+  "rampRate": {
+    "drive": 0.25,
+    "angle": 0.25
+  }
+}

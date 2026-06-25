@@ -13,7 +13,7 @@ import frc.robot.subsystems.SwerveSubsystem;
 
 public class RobotContainer {
   private final SwerveSubsystem m_drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
-      "swerve/falcon"));
+      "swerve/krakens"));
 
   public RobotContainer() {
     configureBindings();

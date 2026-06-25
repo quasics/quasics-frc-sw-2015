@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.Meters;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Encoder;
@@ -144,5 +145,11 @@ public class SimulationDrivebase extends AbstractDrivebase {
     m_logger.log(
         Verbosity.Debug,
         "Right encoder = " + getRightEncoder().getPosition());
+  }
+
+  @Override
+  public Angle getAngle() {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'getAngle'");
   }
 }

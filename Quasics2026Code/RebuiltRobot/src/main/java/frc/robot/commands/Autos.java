@@ -25,6 +25,7 @@ import frc.robot.subsystems.interfaces.IIndexer;
 import frc.robot.subsystems.interfaces.IIntake;
 import frc.robot.subsystems.interfaces.IShooter;
 import frc.robot.subsystems.interfaces.IShooterHood;
+import frc.robot.subsystems.real.AbstractDrivebase;
 import frc.robot.utils.PathPlannerHelper;
 
 /**
@@ -176,6 +177,16 @@ public final class Autos {
                 // >>>>>>> 8d118796e31126d6eea818fccdf689822599a765
         }
 
+        public static Command depotRunCommand(
+                        IDrivebase drivebase, IShooter shooter, Pose2d fieldPose, IShooterHood hood) {
+                return new UpdateStartingPositionData(drivebase, fieldPose)
+                                .andThen(new AlignToHub(drivebase))
+                                .andThen(new PivotHoodToPosition(hood, 1, Degrees.of(15)))
+                                .andThen(new ShootBasedOnDistanceAndTime(
+                                                shooter, drivebase, 0.387, 2, Seconds.of(6)))
+                                .andThen();
+        }
+
         public void configureSequenceSelector() {
                 // RED Autos
                 m_sequenceChooser.addOption("RED Left Trench",
@@ -188,6 +199,12 @@ public final class Autos {
                                                 Degrees.of(15),
                                                 new Pose2d(new Translation2d(12.989, 2.011),
                                                                 new Rotation2d(Degrees.of(0)))));
+                m_sequenceChooser.addOption("RED Depot run",
+                                generateSampleStartingCommand(m_drivebase, m_shooter, m_hood,
+                                                Degrees.of(15), new Pose2d(
+                                                                new Translation2d(12.989, 2.011),
+                                                                new Rotation2d(Degrees.of(0)))));
+
                 m_sequenceChooser.addOption("RED Hub",
                                 hubAuto(m_drivebase, m_shooter, m_hood, 5,
                                                 new Pose2d(new Translation2d(12.989, 4.035),

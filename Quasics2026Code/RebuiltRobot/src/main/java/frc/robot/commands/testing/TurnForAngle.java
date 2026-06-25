@@ -1,0 +1,146 @@
+//// Copyright (c) 2026, Quasics Robotics and other contributors.
+//// Open Source Software; you can modify and/or share it under the terms of
+//// the WPILib BSD license file in the root directory of this project.
+//
+// package frc.robot.commands.testing;
+//
+// import static edu.wpi.first.units.Units.Degrees;
+// import static edu.wpi.first.units.Units.DegreesPerSecond;
+// import static edu.wpi.first.units.Units.Meters;
+// import static edu.wpi.first.units.Units.MetersPerSecond;
+// import static edu.wpi.first.units.Units.Seconds;
+//
+// import edu.wpi.first.units.measure.Angle;
+// import edu.wpi.first.units.measure.AngularVelocity;
+// import edu.wpi.first.units.measure.Distance;
+// import edu.wpi.first.units.measure.LinearVelocity;
+// import edu.wpi.first.units.measure.Time;
+// import edu.wpi.first.wpilibj.Timer;
+// import edu.wpi.first.wpilibj2.command.Command;
+// import edu.wpi.first.wpilibj2.command.Subsystem;
+// import frc.robot.Constants;
+// import frc.robot.logging.Logger;
+// import frc.robot.subsystems.interfaces.IDrivebase;
+// import frc.robot.subsystems.interfaces.IIndexer;
+//
+// public class TurnForAngle extends Command {
+// private static final boolean LOG_VELOCITY = true;
+//
+// private final IDrivebase m_drivebase;
+// private final double m_Lpercent;
+// private final double m_Rpercent;
+// private final Angle m_angle;
+// private final Timer m_timer = new Timer();
+// private Angle m_targetAngle;
+// private Angle m_lastReportedAngle;
+// private double m_lastReportedTime;
+// Logger m_Logger = new Logger(Logger.Verbosity.Warn, "TurnForAngle");
+//
+// /**
+// * Constructor.
+// *
+// * @param drivebase drivebase being controlled
+// * @param percent percent speed to move at ([-1.0] to [+1.0]); this will be
+// * normalized to match the direction associated with distance
+// * @param distance distance to be travelled (as reported by the drive base's
+// * left-side encoder); negative distances indicate moving
+// * backward
+// */
+// public TurnForAngle(
+// IDrivebase drivebase, double percent, Angle angle) {
+// m_drivebase = drivebase;
+// m_angle = angle;
+//
+// // Normalize the percentage, making sure that its sign matches that of the
+// // distance.
+// m_Lpercent = Math.abs(percent) * Math.signum(angle.magnitude());
+// m_Rpercent = Math.abs(percent) * Math.signum(angle.magnitude());
+//
+// addRequirements((Subsystem) drivebase);
+// }
+//
+// //@Override
+// //public void initialize() {
+// // final Angle currentAngle = m_drivebase.get();
+// // m_lastReportedAngle = currentAngle;
+// // m_targetAngle = currentAngle.plus(m_angle);
+// // m_lastReportedTime = m_timer.get();
+// // m_drivebase.setPercent(m_Lpercent, m_Rpercent);
+// // m_timer.restart();
+//
+// // Enable braking mode
+// if (!m_drivebase.setBreakingMode(true)) {
+// System.err.println(
+// "*** Warning: couldn't enable braking mode for drivebase.");
+// System.err.println("*** This may impact test data.");
+// }
+//
+// // Debugging output (reporting starting conditions).
+// System.out.println("Starting driving at " + m_percent + " power, from "
+// + m_lastReportedDistance + " to " + m_targetDistance);
+// }
+//
+// static final double GEARING_RATIO = Constants.DRIVEBASE_GEAR_RATIO;
+//
+// @Override
+// public void execute() {
+// // Get current conditions.
+// final double now = m_timer.get();
+// //GET ANGLE DOES NOT WORK!!!! IT CAN ONLY RETURN 1!!!
+// final Angle currentAngle = m_drivebase.getAngle();
+//
+// // Optional logging of current "step" in conditions.
+// if (LOG_VELOCITY) {
+// final Time sampleTime = Seconds.of(now - m_lastReportedTime);
+// final Angle movementSinceLastSample =
+// currentAngle.minus(m_lastReportedAngle);
+// final AngularVelocity sampleVelocity =
+// movementSinceLastSample.div(sampleTime);
+// m_Logger.log(Logger.Verbosity.Debug,
+// String.format("Reported left distance: %.4f m (delta: %.4f m, "
+// + "rawMotor: %.4f rotations, withGearing: %.4f "
+// + "rotations), velocity: %.4f m/s (sampled: %.2f)\n",
+// currentAngle.in(Degrees), movementSinceLastSample.in(Degrees),
+// m_drivebase.getLeftRawDistance(),
+// m_drivebase.getLeftRawDistance() / GEARING_RATIO,
+// m_drivebase.getLeftVelocity().in(MetersPerSecond),
+// sampleVelocity.in(DegreesPerSecond)));
+// }
+//
+// // Testing velocity
+// System.out.println(
+// "Current time " + now + " / Distance Driven" + currentAngle);
+// System.out.println("Expected Speed: " + currentAngle.div(now));
+// System.out.println("Encoder Velocity:"
+// + m_drivebase.getLeftVelocity().in(MetersPerSecond));
+//
+// // Retain values for next report.
+// m_lastReportedAngle = currentAngle;
+// m_lastReportedTime = now;
+//
+// // Don't forget to "feed" the differential drivebase.
+// m_drivebase.setPercent(m_Lpercent, m_Rpercent);
+// }
+//
+// @Override
+// public void end(boolean interrupted) {
+// m_drivebase.stop();
+// m_timer.stop();
+// }
+//
+// @Override
+// public boolean isFinished() {
+// boolean result;
+// if (m_angle.baseUnitMagnitude() >= 0) {
+// // Desired distance was positive, so we're moving forward
+// //double temporary = Meters.of(m_drivebase.getAngle());
+// //result = m_drivebase.getAngle().get();
+// System.out.println("Forward - isFinished --> " + result);
+// } else {
+// // Desired distance was negative, so we're moving backward
+// result = m_drivebase.getAngle().get(m_targetAngle);
+// System.out.println("Backward - isFinished --> " + result);
+// }
+// return result;
+// }
+// }

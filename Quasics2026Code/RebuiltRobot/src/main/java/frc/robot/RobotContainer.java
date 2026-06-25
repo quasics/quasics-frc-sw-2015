@@ -40,6 +40,7 @@ import frc.robot.commands.RunClimber;
 import frc.robot.commands.RunIndexer;
 import frc.robot.commands.RunIntakeExtension;
 import frc.robot.commands.RunIntakeRollers;
+import frc.robot.commands.RunKicker;
 import frc.robot.commands.RunShooter;
 import frc.robot.commands.RunShooterForTime;
 import frc.robot.commands.RunShooterPID;
@@ -58,6 +59,7 @@ import frc.robot.subsystems.interfaces.IClimber;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.IIndexer;
 import frc.robot.subsystems.interfaces.IIntake;
+import frc.robot.subsystems.interfaces.IKicker;
 import frc.robot.subsystems.interfaces.ILighting;
 import frc.robot.subsystems.interfaces.IShooter;
 import frc.robot.subsystems.interfaces.IShooterHood;
@@ -68,6 +70,7 @@ import frc.robot.subsystems.real.NovaDriveBase;
 import frc.robot.subsystems.real.RealClimber;
 import frc.robot.subsystems.real.RealIndexer;
 import frc.robot.subsystems.real.RealIntake;
+import frc.robot.subsystems.real.RealKicker;
 import frc.robot.subsystems.real.RealShooter;
 import frc.robot.subsystems.real.RealShooterHood;
 import frc.robot.subsystems.real.SparkDriveBase;
@@ -186,6 +189,10 @@ public class RobotContainer {
   private final IClimber m_climber = switch (ROBOT_NAME) {
     case Lizzie -> new RealClimber();
     case Sally, Simulated -> new IClimber.NullClimber();
+  };
+  private final IKicker m_kicker = switch (ROBOT_NAME) {
+    case Lizzie -> new RealKicker();
+    case Sally, Simulated -> new IKicker.NullKicker();
   };
 
   /**
@@ -647,6 +654,14 @@ public class RobotContainer {
       new Trigger(() -> m_operatorController.getRawButton(
           XboxController.Button.kRightBumper.value))
           .whileTrue(new RunIndexer(m_indexer, 0.6, false));
+    }
+    if (m_kicker != null) {
+      new Trigger(() -> m_operatorController.getRawButton(
+          XboxController.Button.kA.value))
+          .whileTrue(new RunKicker(m_kicker, 0.387));
+      // new Trigger(() -> m_operatorController.getRawButton(
+      // XboxController.Button.kRightBumper.value))
+      // .whileTrue(new RunKicker(m_kicker, -0.6)); For Backwards if needed
     }
 
     if (m_shooter != null) {

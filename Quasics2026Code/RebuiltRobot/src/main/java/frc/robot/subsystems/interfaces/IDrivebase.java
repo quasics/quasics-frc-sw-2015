@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.interfaces;
 
+import static edu.wpi.first.units.Units.Degree;
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
@@ -11,6 +13,7 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
@@ -20,13 +23,20 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.hardware.sensors.IGyro;
 
 import java.util.function.Supplier;
+
+import com.ctre.phoenix6.hardware.Pigeon2;
 
 /**
  * Interface for drive base functionality.
  */
+
 public interface IDrivebase {
+
+  Pigeon2 m_gyro = new Pigeon2(1);
+
   /**
    * Drives the robot using arcade controls. (That is, one parameter controls
    * forward/backward speed, and the other controls turning speed.)
@@ -103,6 +113,8 @@ public interface IDrivebase {
   double mpsToPercent(LinearVelocity speed);
 
   double getHeading();
+
+  Angle getAngle();
 
   AngularVelocity getTurnRate();
 
@@ -220,6 +232,12 @@ public interface IDrivebase {
     @Override
     public AngularVelocity getTurnRate() {
       return RadiansPerSecond.of(0);
+    }
+
+    @Override
+    public Angle getAngle() {
+      //return m_gyro.getYaw();
+      return Degrees.of(1);
     }
 
     @Override

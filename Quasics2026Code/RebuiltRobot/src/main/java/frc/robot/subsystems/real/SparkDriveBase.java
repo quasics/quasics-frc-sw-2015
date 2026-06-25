@@ -13,6 +13,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import frc.robot.Constants;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
@@ -156,6 +157,12 @@ public class SparkDriveBase extends AbstractDrivebase {
     leaderConfig.follow(0);
     leader.configure(leaderConfig, ResetMode.kNoResetSafeParameters,
         PersistMode.kNoPersistParameters);
+  }
+
+  @Override
+  public Angle getAngle() {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'getAngle'");
   }
 
   // We've removed @Override periodic, but be sure to use super.periodic if we

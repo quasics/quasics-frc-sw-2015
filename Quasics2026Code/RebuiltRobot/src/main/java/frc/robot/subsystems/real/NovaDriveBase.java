@@ -10,6 +10,8 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 import com.thethriftybot.devices.ThriftyNova;
 import com.thethriftybot.devices.ThriftyNova.EncoderType;
 import com.thethriftybot.devices.ThriftyNova.ThriftyNovaConfig;
+
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import frc.robot.Constants;
 import frc.robot.Constants.CanBusIds.ThriftyNovaIds;
@@ -169,6 +171,12 @@ public class NovaDriveBase extends AbstractDrivebase {
       // Something went wrong when releasing the follower: log the error.
       e.printStackTrace();
     }
+  }
+
+  @Override
+  public Angle getAngle() {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'getAngle'");
   }
 
   // We've removed @Override periodic, but be sure to use super.periodic if we

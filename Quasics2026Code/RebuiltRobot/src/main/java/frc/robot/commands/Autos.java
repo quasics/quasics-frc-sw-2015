@@ -78,8 +78,7 @@ public final class Autos {
         }
 
         public Command waitBeforeIndexing(IIndexer indexer) {
-                return new WaitCommand(2.5);
-                // .andThen(new RunIndexerForTime(indexer, 0.1, true, 6));
+                return new WaitCommand(2.5).andThen(new RunIndexerForTime(indexer, 0.1, true, 4));
         }
 
         public Command hubAuto(IDrivebase drivebase, IShooter shooter,
@@ -92,9 +91,11 @@ public final class Autos {
         public Command hubBack(IDrivebase drivebase, IShooter shooter,
                         IShooterHood hood, double hoodAngle, Pose2d fieldPose, IIndexer indexer,
                         IIntake intake) {
-                return new UpdateStartingPositionData(drivebase, fieldPose)
-                                .andThen(new PivotHoodToPosition(hood, 0.15, Degrees.of(hoodAngle)))
+                return new UpdateStartingPositionData(drivebase, fieldPose).andThen(new PrintCommand("pivoting hood"))
+                                // .andThen(new PivotHoodToPosition(hood, 0.15, Degrees.of(hoodAngle)))
+                                .andThen(new PrintCommand("indexing and shooting"))
                                 .andThen(indexAndShoot(drivebase, shooter, indexer))
+                                .andThen(new PrintCommand("moving back"))
                                 .andThen(new DriveForDistance(m_drivebase, 0.25, Feet.of(-3)))
                                 .andThen(indexAndShoot(drivebase, shooter, indexer))
                                 .alongWith(raiseLowerPivotCycle());
@@ -174,7 +175,6 @@ public final class Autos {
                                 .andThen(new ShootBasedOnDistanceAndTime(
                                                 shooter, drivebase, 0.387, 2, Seconds.of(6)))
                                 .andThen(new PrintCommand("Done"));
-                // >>>>>>> 8d118796e31126d6eea818fccdf689822599a765
         }
 
         public static Command depotRunCommand(

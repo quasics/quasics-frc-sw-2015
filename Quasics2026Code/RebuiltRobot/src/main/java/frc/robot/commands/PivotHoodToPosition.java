@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Ratios;
 import frc.robot.Constants.Tolerances;
 import frc.robot.subsystems.interfaces.IShooterHood;
+import frc.robot.subsystems.interfaces.IShooterHood.NullShooterHood;
 
 /**
  * Moves the hood to a specified position.
@@ -53,6 +54,6 @@ public class PivotHoodToPosition extends Command {
   @Override
   public boolean isFinished() {
     return (m_hood.getCurrentAngle().lt(m_endAngle.plus(Tolerances.ANGLETOLERANCE)) &&
-        m_hood.getCurrentAngle().gt(m_endAngle.minus(Tolerances.ANGLETOLERANCE)));
+        m_hood.getCurrentAngle().gt(m_endAngle.minus(Tolerances.ANGLETOLERANCE)) || !m_hood.isReal());
   }
 }

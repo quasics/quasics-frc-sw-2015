@@ -68,6 +68,11 @@ public class RealShooterHood extends SubsystemBase implements IShooterHood {
   }
 
   @Override
+  public boolean isReal() {
+    return true;
+  }
+
+  @Override
   public void stop() {
     m_hood.set(0);
   }

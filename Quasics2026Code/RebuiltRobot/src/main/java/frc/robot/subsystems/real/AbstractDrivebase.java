@@ -398,7 +398,7 @@ public abstract class AbstractDrivebase
     // Update the field simulation shown on the smart dashboard
     m_field.setRobotPose(m_odometry.getPoseMeters());
     if (getVisionPose() != null) {
-      m_poseEstimator.addVisionMeasurement(getVisionPose(), Timer.getFPGATimestamp());
+      m_poseEstimator.addVisionMeasurement(getVisionPose(), Timer.getFPGATimestamp()); // this timer thing is wrong
     }
   }
 

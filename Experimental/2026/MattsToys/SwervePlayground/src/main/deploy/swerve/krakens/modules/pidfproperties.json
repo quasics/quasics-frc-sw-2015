@@ -1,4 +1,10 @@
 {
+  "_comment": [
+    "This data is based on guesswork and should be updated with actual ",
+    "values for the robot.",
+    "",
+    "Docs: https://docs.yagsl.com/configuring-yagsl/configuration/pidf-properties-configuration"
+  ],
   "drive": {
     "p": 0.0020645,
     "i": 0,
@@ -7,9 +13,9 @@
     "iz": 0
   },
   "angle": {
-    "p": 0.0020645,
+    "p": 50.0,
     "i": 0,
-    "d": 0,
+    "d": 0.32,
     "f": 0,
     "iz": 0
   }

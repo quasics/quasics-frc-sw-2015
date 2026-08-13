@@ -110,10 +110,14 @@ public class RobotContainer {
 
     // Add a simple auto option to have the robot drive forward for 1 second then
     // stop
-    autoChooser.addOption("Drive Forward",
+    autoChooser.addOption("Drive Forward (1s)",
         Commands.runOnce(
             m_drivebase::zeroGyroWithAlliance).withTimeout(.2)
             .andThen(m_drivebase.driveForward().withTimeout(1)));
+    autoChooser.addOption("Drive Forward (4s)",
+        Commands.runOnce(
+            m_drivebase::zeroGyroWithAlliance).withTimeout(.2)
+            .andThen(m_drivebase.driveForward().withTimeout(4)));
     // Put the autoChooser on the SmartDashboard
     SmartDashboard.putData("Auto Chooser", autoChooser);
 

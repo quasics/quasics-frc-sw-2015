@@ -10,7 +10,7 @@
     "Docs: https://docs.yagsl.com/configuring-yagsl/configuration/physical-properties-configuration"
   ],
   "optimalVoltage": 12,
-  "robotMass": 50,
+  "robotMass": 51.625,
   "wheelGripCoefficientOfFriction": 1.19,
   "currentLimit": {
     "drive": 40,

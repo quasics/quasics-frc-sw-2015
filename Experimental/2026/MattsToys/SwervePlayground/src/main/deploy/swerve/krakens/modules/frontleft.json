@@ -3,7 +3,9 @@
     "This data is based on guesswork and should be updated with actual ",
     "measurements from the robot.",
     "",
-    "Weights and dimensions are in imperial units, because that's what YAGSL expects. (*shrug*)"
+    "Weights and dimensions are in imperial units, because that's what YAGSL expects. (*shrug*)",
+    "",
+    "Docs: https://docs.yagsl.com/configuring-yagsl/configuration/swerve-module-configuration"
   ],
   "location": {
     "front": 15,

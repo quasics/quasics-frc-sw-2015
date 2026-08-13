@@ -1,6 +1,11 @@
 {
+  "_comment": [
+    "This file configures everything related to the overall Swerve Drive.",
+    "",
+    "Docs: https://docs.yagsl.com/configuring-yagsl/configuration/swerve-drive-configuration"
+  ],
   "imu": {
-    "type": "pigeon",
+    "type": "pigeon2",
     "id": 1,
     "canbus": null
   },

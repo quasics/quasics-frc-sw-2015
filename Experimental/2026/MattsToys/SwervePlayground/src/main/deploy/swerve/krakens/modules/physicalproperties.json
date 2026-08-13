@@ -46,6 +46,12 @@
     }
   },
   "rampRate": {
+    "_comment": [
+      "The ramp rate is the (minimum) time it should take for the motor to go from 0 to full power.",
+      "This is used to prevent the robot from accelerating too quickly.",
+      "",
+      "The ramp rates are in seconds."
+    ],
     "drive": 0.25,
     "angle": 0.25
   }

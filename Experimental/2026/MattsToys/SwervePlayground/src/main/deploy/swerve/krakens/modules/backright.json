@@ -8,8 +8,8 @@
     "Docs: https://docs.yagsl.com/configuring-yagsl/configuration/swerve-module-configuration"
   ],
   "location": {
-    "front": -15,
-    "left": -15
+    "front": -8.5625,
+    "left": -8.5625
   },
   "absoluteEncoderOffset": 0,
   "drive": {

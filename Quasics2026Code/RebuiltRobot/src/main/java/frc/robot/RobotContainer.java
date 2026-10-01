@@ -55,6 +55,7 @@ import frc.robot.commands.testing.RunIndexerTimedTest;
 import frc.robot.commands.testing.RunIntakeExtenstionTimedTest;
 import frc.robot.commands.testing.RunIntakeRollersTimedTest;
 import frc.robot.commands.testing.RunKickerTimedTest;
+import frc.robot.commands.testing.TurnForAngle;
 import frc.robot.subsystems.interfaces.IClimber;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.IIndexer;
@@ -431,6 +432,8 @@ public class RobotContainer {
     // ********************** */
     SmartDashboard.putData("Drive forward like a lot",
         new DriveForDistance(m_drivebase, .2, Meters.of(5)));
+    SmartDashboard.putData("Turn 90 deg",
+        new TurnForAngle(m_drivebase, 0.05, Degrees.of(90)));
     // **************** */
 
     // SmartDashboard.putData("Direction Climb Test", new

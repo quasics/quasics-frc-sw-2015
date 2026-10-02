@@ -5,10 +5,12 @@
     "angle motors.  This data is based on guesswork and should be updated with actual ",
     "measurements from the robot.",
     "",
-    "Weights and dimensions are in imperial units, because that's what YAGSL expects. (*shrug*)"
+    "Weights and dimensions are in imperial units, because that's what YAGSL expects. (*shrug*)",
+    "",
+    "Docs: https://docs.yagsl.com/configuring-yagsl/configuration/physical-properties-configuration"
   ],
   "optimalVoltage": 12,
-  "robotMass": 50,
+  "robotMass": 51.625,
   "wheelGripCoefficientOfFriction": 1.19,
   "currentLimit": {
     "drive": 40,
@@ -44,6 +46,12 @@
     }
   },
   "rampRate": {
+    "_comment": [
+      "The ramp rate is the (minimum) time it should take for the motor to go from 0 to full power.",
+      "This is used to prevent the robot from accelerating too quickly.",
+      "",
+      "The ramp rates are in seconds."
+    ],
     "drive": 0.25,
     "angle": 0.25
   }

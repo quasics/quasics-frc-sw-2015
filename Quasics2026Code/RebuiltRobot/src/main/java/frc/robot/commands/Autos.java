@@ -29,6 +29,7 @@ import frc.robot.subsystems.interfaces.IShooter;
 import frc.robot.subsystems.interfaces.IShooterHood;
 import frc.robot.subsystems.real.AbstractDrivebase;
 import frc.robot.utils.PathPlannerHelper;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 
 /**
  * Helper class, which will build commands/command sequences for use in
@@ -184,20 +185,47 @@ public final class Autos {
 
         public static Command hubToDepot(IDrivebase drivebase, IShooter shooter,
                         IShooterHood hood, double hoodAngle, Pose2d fieldPose, IIndexer indexer) {
-                return (new AlignToHub(drivebase))
+                return new UpdateStartingPositionData(drivebase, fieldPose)
+                                .andThen(new AlignToHub(drivebase))
                                 .andThen(new PrintCommand("Pivoting Hood"))
                                 .andThen(new PivotHoodToPosition(hood, 1, Degrees.of(15)))
                                 .andThen(new PrintCommand("Shooting"))
                                 .andThen(new ShootBasedOnDistanceAndTime(
                                                 shooter, drivebase, 0.387, 2, Seconds.of(6)))
-                                .andThen(new PrintCommand("driving backwards 3 ft"))
+                                .andThen(new PrintCommand("driving backwards 3 in"))
                                 .andThen(new DriveForDistance(drivebase, 0.15, Inches.of(-3)))
                                 .andThen(new PrintCommand("turning to depot"))
-                                .andThen(new TurnForAngle(drivebase, 0.08, Degrees.of(145.07))) // Either 30.93 or
-                                                                                                // 149.07
-                                .andThen(new PrintCommand("driving ~150 feet to depot"))
-                                .andThen(new DriveForDistance(drivebase, 0.25, Inches.of(126.61)));
+                                .andThen(new TurnForAngle(drivebase, 0.08, Degrees.of(158))) // Either 30.93 or
+                                                                                             // 149.07
+                                .andThen(new PrintCommand("driving towards depot"))
+                                .andThen(new DriveForDistance(drivebase, 0.25, Inches.of(106)))
+                                .andThen(new PrintCommand("turning to depot"))
+                                .andThen(new TurnForAngle(drivebase, 0.08, Degrees.of(-62.5)));
         }
+
+        // Make drive and intake command somehow |
+        // v
+        // public static Command driveAndIntake(IDrivebase drivebase, IIntake intake,
+        // double driveSpeed, double driveDistance){
+        // return addCommands(
+        // new DriveForDistance(drivebase, driveSpeed, Feet.of(driveDistance))
+        // //driveDistance is in feet only
+        // new RunIntakeRollers(intake, 0.55, true)
+        // );
+        // }
+
+        // Finish this
+        // public static Command leftTrenchToCenter(IDrivebase drivebase, IShooter
+        // shooter,
+        // IShooterHood hood, Angle hoodAngle, Pose2d fieldPose, IIndexer indexer,
+        // IIntake intake) {
+        // return new UpdateStartingPositionData(drivebase, fieldPose)
+        // .andThen(new PrintCommand(" doing the thing"))
+        // .andThen(new DriveForDistance(drivebase, 0.25, Feet.of(8)))
+        // .andThen(new TurnForAngle(drivebase, .085, Degrees.of(-45)))
+        // .andThen(new DriveForDistance(drivebase, .20, Feet.of(3)));
+        //
+        // }
 
         public static Command depotRunCommand(
                         IDrivebase drivebase, IShooter shooter, Pose2d fieldPose, IShooterHood hood) {
@@ -252,6 +280,13 @@ public final class Autos {
                                                 new Pose2d(new Translation2d(12.989, 4.035),
                                                                 new Rotation2d(Degrees.of(180))),
                                                 m_indexer));
+                // Finish this
+                // m_sequenceChooser.addOption("RED Left Trench to Center",
+                // leftTrenchToCenter(m_drivebase, m_shooter, m_hood,
+                // Degrees.of(15),
+                // new Pose2d(new Translation2d(12.57, 0.634),
+                // new Rotation2d(Degrees.of(180))),
+                // m_indexer, m_intake));
 
                 // BLUE Autos
                 m_sequenceChooser.addOption("BLUE Left Trench",
@@ -290,7 +325,7 @@ public final class Autos {
                                                                 new Translation2d(3.552, 4.035),
                                                                 new Rotation2d(Degrees.of(0))),
                                                 m_indexer, m_intake));
-                m_sequenceChooser.addOption("Blue Hub to Depot",
+                m_sequenceChooser.addOption("BLUE Hub to Depot",
                                 hubToDepot(m_drivebase, m_shooter, m_hood, 5,
                                                 new Pose2d(
                                                                 new Translation2d(3.552, 4.035),

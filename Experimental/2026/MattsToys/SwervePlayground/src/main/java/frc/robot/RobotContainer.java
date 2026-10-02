@@ -24,7 +24,6 @@ import frc.robot.subsystems.SwerveSubsystem;
 import java.io.File;
 import swervelib.SwerveInputStream;
 
-
 /**
  * This class is where the bulk of the robot should be declared.
  *
@@ -111,10 +110,14 @@ public class RobotContainer {
 
     // Add a simple auto option to have the robot drive forward for 1 second
     // then stop
-    autoChooser.addOption("Drive Forward",
+    autoChooser.addOption("Drive Forward (1s)",
         Commands.runOnce(m_drivebase::zeroGyroWithAlliance)
             .withTimeout(.2)
             .andThen(m_drivebase.driveForward().withTimeout(1)));
+    autoChooser.addOption("Drive Forward (4s)",
+        Commands.runOnce(m_drivebase::zeroGyroWithAlliance)
+            .withTimeout(.2)
+            .andThen(m_drivebase.driveForward().withTimeout(4)));
     // Put the autoChooser on the SmartDashboard
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -162,7 +165,8 @@ public class RobotContainer {
     }
     if (DriverStation.isTest()) {
       m_drivebase.setDefaultCommand(
-          driveFieldOrientedAnglularVelocity); // Override's drive command above!
+          driveFieldOrientedAnglularVelocity); // Override's drive command
+                                               // above!
 
       driverXbox.x().whileTrue(
           Commands.runOnce(m_drivebase::lock, m_drivebase).repeatedly());

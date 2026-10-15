@@ -58,8 +58,6 @@ public interface IShooterHood {
    */
   void moveUp(double speed);
 
-  boolean isReal();
-
   /** Stops the hood's motion. */
   void stop();
 
@@ -81,11 +79,6 @@ public interface IShooterHood {
     @Override
     public void moveUp(double speed) {
       // No-op.
-    }
-
-    @Override
-    public boolean isReal() {
-      return false;
     }
 
     @Override

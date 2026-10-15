@@ -40,7 +40,6 @@ import frc.robot.commands.RunClimber;
 import frc.robot.commands.RunIndexer;
 import frc.robot.commands.RunIntakeExtension;
 import frc.robot.commands.RunIntakeRollers;
-import frc.robot.commands.RunKicker;
 import frc.robot.commands.RunShooter;
 import frc.robot.commands.RunShooterForTime;
 import frc.robot.commands.RunShooterPID;
@@ -55,12 +54,10 @@ import frc.robot.commands.testing.RunIndexerTimedTest;
 import frc.robot.commands.testing.RunIntakeExtenstionTimedTest;
 import frc.robot.commands.testing.RunIntakeRollersTimedTest;
 import frc.robot.commands.testing.RunKickerTimedTest;
-import frc.robot.commands.testing.TurnForAngle;
 import frc.robot.subsystems.interfaces.IClimber;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.IIndexer;
 import frc.robot.subsystems.interfaces.IIntake;
-import frc.robot.subsystems.interfaces.IKicker;
 import frc.robot.subsystems.interfaces.ILighting;
 import frc.robot.subsystems.interfaces.IShooter;
 import frc.robot.subsystems.interfaces.IShooterHood;
@@ -189,11 +186,6 @@ public class RobotContainer {
   private final IClimber m_climber = switch (ROBOT_NAME) {
     case Lizzie -> new RealClimber();
     case Sally, Simulated -> new IClimber.NullClimber();
-  };
-  private final IKicker m_kicker = switch (ROBOT_NAME) {
-    // case Lizzie -> new RealKicker();
-    case Sally, Simulated -> new IKicker.NullKicker();
-    default -> new IKicker.NullKicker();
   };
 
   /**
@@ -435,8 +427,6 @@ public class RobotContainer {
     // ********************** */
     SmartDashboard.putData("Drive forward like a lot",
         new DriveForDistance(m_drivebase, .2, Meters.of(5)));
-    SmartDashboard.putData("Turn 90 deg",
-        new TurnForAngle(m_drivebase, 0.05, Degrees.of(90)));
     // **************** */
 
     // SmartDashboard.putData("Direction Climb Test", new
@@ -611,11 +601,13 @@ public class RobotContainer {
       new Trigger(()
                       -> m_driverController.getRawButton(
                           Constants.LogitechDualshock.LeftTrigger))
-          .whileTrue(new RunIntakeRollers(m_intake, 0.55, false));
+          .whileTrue(new RunIntakeRollers(m_intake, 0.35, false));
+      // THE SPEEDS WERE CHANGED FROM 55 TO 30-SOME
+      // ************************************
       new Trigger(()
                       -> m_driverController.getRawButton(
                           Constants.LogitechDualshock.RightTrigger))
-          .whileTrue(new RunIntakeRollers(m_intake, 0.55, true));
+          .whileTrue(new RunIntakeRollers(m_intake, 0.35, true));
 
       new Trigger(()
                       -> m_driverController.getRawButton(
@@ -631,11 +623,11 @@ public class RobotContainer {
       new Trigger(()
                       -> m_driverController.getRawButton(
                           Constants.LogitechDualshock.YButton))
-          .whileTrue(new RunClimber(m_climber, 0.5));
+          .whileTrue(new RunClimber(m_climber, 0.1));
       new Trigger(()
                       -> m_driverController.getRawButton(
                           Constants.LogitechDualshock.AButton))
-          .whileTrue(new RunClimber(m_climber, -0.3));
+          .whileTrue(new RunClimber(m_climber, -0.1));
     }
     new Trigger(()
                     -> m_driverController.getRawButton(
@@ -671,15 +663,6 @@ public class RobotContainer {
                       -> m_operatorController.getRawButton(
                           XboxController.Button.kRightBumper.value))
           .whileTrue(new RunIndexer(m_indexer, 0.6, false));
-    }
-    if (m_kicker != null) {
-      new Trigger(()
-                      -> m_operatorController.getRawButton(
-                          XboxController.Button.kA.value))
-          .whileTrue(new RunKicker(m_kicker, 0.387));
-      // new Trigger(() -> m_operatorController.getRawButton(
-      // XboxController.Button.kRightBumper.value))
-      // .whileTrue(new RunKicker(m_kicker, -0.6)); For Backwards if needed
     }
 
     if (m_shooter != null) {

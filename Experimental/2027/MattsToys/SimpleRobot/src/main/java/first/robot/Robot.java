@@ -8,12 +8,14 @@ import org.wpilib.command3.Scheduler;
 import org.wpilib.command3.button.CommandGamepad;
 import org.wpilib.framework.OpModeRobot;
 import first.robot.constants.DriverConstants;
+import first.robot.mechanisms.DriveBase;
 import first.robot.mechanisms.ExampleMechanism;
 
 public class Robot extends OpModeRobot {
   final ExampleMechanism exampleMechanism = new ExampleMechanism();
   final CommandGamepad exampleController =
       new CommandGamepad(DriverConstants.DRIVER_CONTROLLER_PORT);
+  final DriveBase driveBase = new DriveBase();
 
   public Robot() {}
 

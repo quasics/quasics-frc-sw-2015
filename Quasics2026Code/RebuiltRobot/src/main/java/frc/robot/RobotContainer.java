@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -35,6 +36,7 @@ import frc.robot.Constants.PwmPortIds;
 import frc.robot.commands.AlignToHub;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.Autos;
+import frc.robot.commands.ClearShot;
 import frc.robot.commands.PivotHoodToPosition;
 import frc.robot.commands.RunClimber;
 import frc.robot.commands.RunIndexer;
@@ -640,7 +642,8 @@ public class RobotContainer {
       new Trigger(() -> m_operatorController.getRawButton(
           XboxController.Button.kB.value))
           .whileTrue(againstHubShot());
-      new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kA.value)).whileTrue(trenchShot());
+      // new Trigger(() ->
+      // m_operatorController.getRawButton(XboxController.Button.kA.value)).whileTrue(trenchShot());
     }
     if (m_indexer != null) {
       new Trigger(() -> m_operatorController.getRawButton(
@@ -668,6 +671,11 @@ public class RobotContainer {
           XboxController.Button.kY.value))
           .whileTrue(
               new ShootBasedOnDistance(m_shooter, m_drivebase, 0.387, 2));
+      new Trigger(() -> m_driverController.getRawButton(
+          XboxController.Button.kA.value))
+          .whileTrue(
+              new SequentialCommandGroup(
+                  new ClearShot(m_shooter, m_drivebase, 0.387, 2)));
     }
   }
 

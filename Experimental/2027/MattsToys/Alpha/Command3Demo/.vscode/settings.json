@@ -18,9 +18,11 @@
     {
       "name": "WPIlibUnitTests",
       "workingDirectory": "${workspaceFolder}/build/jni/release",
-      "vmargs": [ "-Djava.library.path=${workspaceFolder}/build/jni/release" ],
+      "vmargs": [
+        "-Djava.library.path=${workspaceFolder}/build/jni/release"
+      ],
       "env": {
-        "LD_LIBRARY_PATH": "${workspaceFolder}/build/jni/release" ,
+        "LD_LIBRARY_PATH": "${workspaceFolder}/build/jni/release",
         "DYLD_LIBRARY_PATH": "${workspaceFolder}/build/jni/release"
       }
     },
@@ -63,5 +65,8 @@
   "editor.formatOnPaste": true,
   "editor.defaultFormatter": null,
   "editor.formatOnSave": true,
-  "java.inlayHints.formatParameters.enabled": true
+  "java.inlayHints.formatParameters.enabled": true,
+  "[java]": {
+    "editor.defaultFormatter": "xaver.clang-format"
+  }
 }

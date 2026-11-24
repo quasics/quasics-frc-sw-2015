@@ -1,5 +1,6 @@
 package first.robot;
 
+import static org.wpilib.units.Units.Degrees;
 import static org.wpilib.units.Units.Meters;
 
 import first.robot.mechanisms.DriveMechanism;
@@ -15,20 +16,30 @@ import org.wpilib.framework.RobotBase;
 import org.wpilib.math.geometry.Pose2d;
 import org.wpilib.math.geometry.Rotation2d;
 import org.wpilib.math.util.MathUtil;
+import org.wpilib.networktables.DoubleEntry;
+import org.wpilib.networktables.NetworkTable;
+import org.wpilib.networktables.NetworkTableInstance;
 import org.wpilib.telemetry.Telemetry;
 
 public class Robot extends OpModeRobot {
   private static final int DRIVER_CONTROLLER_PORT = 0;
   private static final double JOYSTICK_DEADBAND = 0.05;
 
-  // Simulation Keyboard 1 axis & button mappings (when dragged onto Joystick[0])
-  private static final int SIM_LEFT_THROTTLE_AXIS = 1;  // W/S
+  // Simulation Keyboard 1 axis & button mappings (when dragged onto
+  // Joystick[0])
+  private static final int SIM_LEFT_THROTTLE_AXIS = 1; // W/S
   private static final int SIM_RIGHT_THROTTLE_AXIS = 3; // I/K or Up/Down
   private static final int SIM_DRIVE_DISTANCE_BUTTON = 1; // Z
-  private static final int SIM_RESET_POSE_BUTTON = 2;     // X
-  private static final int SIM_DRIVE_TO_POSE_BUTTON = 3;  // C
+  private static final int SIM_RESET_POSE_BUTTON = 2; // X
+  private static final int SIM_DRIVE_TO_POSE_BUTTON = 3; // C
 
-  public static final Pose2d INITIAL_POSE =
+  // Dashboard NetworkTables topics for pre-match starting pose configuration
+  private static final String START_POSE_TABLE = "Dashboard/Start Pose";
+  private static final String START_X_TOPIC = "X (m)";
+  private static final String START_Y_TOPIC = "Y (m)";
+  private static final String START_HEADING_TOPIC = "Heading (deg)";
+
+  public static final Pose2d DEFAULT_INITIAL_POSE =
       new Pose2d(Meters.of(2.0), Meters.of(4.0), new Rotation2d());
 
   public final DriveMechanism driveMechanism;
@@ -36,6 +47,11 @@ public class Robot extends OpModeRobot {
   public final Trigger resetPoseTrigger;
   public final Trigger driveToPoseTrigger;
 
+  private final DoubleEntry startXEntry;
+  private final DoubleEntry startYEntry;
+  private final DoubleEntry startHeadingEntry;
+
+  private Pose2d lastAppliedStartPose = DEFAULT_INITIAL_POSE;
   private boolean wasDisabled = true;
 
   public Robot() {
@@ -43,44 +59,74 @@ public class Robot extends OpModeRobot {
     final DoubleSupplier rightSpeedSupplier;
 
     if (RobotBase.isReal()) {
-      CommandXboxController xbox = new CommandXboxController(DRIVER_CONTROLLER_PORT);
-      leftSpeedSupplier = () -> MathUtil.applyDeadband(-xbox.getLeftY(), JOYSTICK_DEADBAND);
-      rightSpeedSupplier = () -> MathUtil.applyDeadband(-xbox.getRightY(), JOYSTICK_DEADBAND);
+      CommandXboxController xbox =
+          new CommandXboxController(DRIVER_CONTROLLER_PORT);
+      leftSpeedSupplier =
+          () -> MathUtil.applyDeadband(-xbox.getLeftY(), JOYSTICK_DEADBAND);
+      rightSpeedSupplier =
+          () -> MathUtil.applyDeadband(-xbox.getRightY(), JOYSTICK_DEADBAND);
 
       driveDistanceTrigger = xbox.a();
       resetPoseTrigger = xbox.b();
       driveToPoseTrigger = xbox.x();
     } else {
       Joystick keyboard = new Joystick(DRIVER_CONTROLLER_PORT);
-      leftSpeedSupplier =
-          () ->
-              MathUtil.applyDeadband(
-                  -keyboard.getRawAxis(SIM_LEFT_THROTTLE_AXIS), JOYSTICK_DEADBAND);
-      rightSpeedSupplier =
-          () ->
-              MathUtil.applyDeadband(
-                  -keyboard.getRawAxis(SIM_RIGHT_THROTTLE_AXIS), JOYSTICK_DEADBAND);
+      leftSpeedSupplier = ()
+          -> MathUtil.applyDeadband(
+              -keyboard.getRawAxis(SIM_LEFT_THROTTLE_AXIS), JOYSTICK_DEADBAND);
+      rightSpeedSupplier = ()
+          -> MathUtil.applyDeadband(
+              -keyboard.getRawAxis(SIM_RIGHT_THROTTLE_AXIS), JOYSTICK_DEADBAND);
 
-      driveDistanceTrigger = new Trigger(() -> keyboard.getRawButton(SIM_DRIVE_DISTANCE_BUTTON));
-      resetPoseTrigger = new Trigger(() -> keyboard.getRawButton(SIM_RESET_POSE_BUTTON));
-      driveToPoseTrigger = new Trigger(() -> keyboard.getRawButton(SIM_DRIVE_TO_POSE_BUTTON));
+      driveDistanceTrigger =
+          new Trigger(() -> keyboard.getRawButton(SIM_DRIVE_DISTANCE_BUTTON));
+      resetPoseTrigger =
+          new Trigger(() -> keyboard.getRawButton(SIM_RESET_POSE_BUTTON));
+      driveToPoseTrigger =
+          new Trigger(() -> keyboard.getRawButton(SIM_DRIVE_TO_POSE_BUTTON));
     }
 
-    // Optional: enable simulated sensor noise before instantiating SimulatedDriveMechanism
-    // SimulatedDriveMechanism.setNoiseEnabled(true);
+    // Publish editable starting pose entries for the drive team
+    NetworkTable startPoseTable =
+        NetworkTableInstance.getDefault().getTable(START_POSE_TABLE);
+    startXEntry = startPoseTable.getDoubleTopic(START_X_TOPIC)
+                      .getEntry(DEFAULT_INITIAL_POSE.getX());
+    startYEntry = startPoseTable.getDoubleTopic(START_Y_TOPIC)
+                      .getEntry(DEFAULT_INITIAL_POSE.getY());
+    startHeadingEntry =
+        startPoseTable.getDoubleTopic(START_HEADING_TOPIC)
+            .getEntry(DEFAULT_INITIAL_POSE.getRotation().getDegrees());
 
-    driveMechanism =
-        RobotBase.isReal()
-            ? new DriveMechanism(leftSpeedSupplier, rightSpeedSupplier)
-            : new SimulatedDriveMechanism(leftSpeedSupplier, rightSpeedSupplier);
+    startXEntry.set(DEFAULT_INITIAL_POSE.getX());
+    startYEntry.set(DEFAULT_INITIAL_POSE.getY());
+    startHeadingEntry.set(DEFAULT_INITIAL_POSE.getRotation().getDegrees());
 
-    // Schedule initial pose reset through the mechanism command factory
-    Scheduler.getDefault().schedule(driveMechanism.resetPoseCommand(INITIAL_POSE));
+    // Optional: enable simulated sensor noise before instantiating
+    // SimulatedDriveMechanism SimulatedDriveMechanism.setNoiseEnabled(true);
+
+    driveMechanism = RobotBase.isReal()
+        ? new DriveMechanism(leftSpeedSupplier, rightSpeedSupplier)
+        : new SimulatedDriveMechanism(leftSpeedSupplier, rightSpeedSupplier);
+
+    // Sync initial starting pose immediately on Field2d before any OpMode is
+    // enabled
+    driveMechanism.syncInitialPose(DEFAULT_INITIAL_POSE);
+  }
+
+  /**
+   * Reads the drive team's currently configured starting pose from
+   * NetworkTables.
+   */
+  public Pose2d getConfiguredStartPose() {
+    return new Pose2d(Meters.of(startXEntry.get()),
+        Meters.of(startYEntry.get()),
+        new Rotation2d(Degrees.of(startHeadingEntry.get())));
   }
 
   @Override
   public void robotPeriodic() {
-    // Cancel active commands and stop drivetrain motors immediately upon entering Disabled mode
+    // Cancel active commands and stop drivetrain motors immediately upon
+    // entering Disabled mode
     boolean isDisabled = RobotState.isDisabled();
     if (isDisabled && !wasDisabled) {
       Scheduler.getDefault().cancelAll();
@@ -88,7 +134,18 @@ public class Robot extends OpModeRobot {
     }
     wasDisabled = isDisabled;
 
-    // Runs active OpMode coroutines, triggers, odometry updates, and simulation physics
+    // Reflect drive team changes to the starting pose immediately on Field2d
+    // while not enabled (covers both Disconnected and Disabled states)
+    if (!RobotState.isEnabled()) {
+      Pose2d configuredPose = getConfiguredStartPose();
+      if (!configuredPose.equals(lastAppliedStartPose)) {
+        lastAppliedStartPose = configuredPose;
+        driveMechanism.syncInitialPose(configuredPose);
+      }
+    }
+
+    // Runs active OpMode coroutines, triggers, odometry updates, and simulation
+    // physics
     Scheduler.getDefault().run();
 
     // Flush mechanism telemetry to NetworkTables 4 / DataLog

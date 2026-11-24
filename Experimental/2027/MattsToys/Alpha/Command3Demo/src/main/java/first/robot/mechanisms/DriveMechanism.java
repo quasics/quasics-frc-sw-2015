@@ -32,33 +32,37 @@ import org.wpilib.units.measure.Distance;
 import org.wpilib.units.measure.Time;
 
 /**
- * Tank drivetrain mechanism supporting teleop driving, closed-loop distance/pose commands,
- * pose estimation, and WPILib 2027 telemetry logging.
+ * Tank drivetrain mechanism supporting teleop driving, closed-loop
+ * distance/pose commands, pose estimation, and WPILib 2027 telemetry logging.
  *
  * <h2>Future Enhancements</h2>
  * <ul>
- *   <li><b>Optional Closed-Loop Wheel Velocity Control (Feedforward + Velocity PID):</b>
- *       Upgrade autonomous distance and pose-navigation commands from open-loop duty-cycle
- *       throttle percentages to physical velocity targets ({@code LinearVelocity} and
+ *   <li><b>Optional Closed-Loop Wheel Velocity Control (Feedforward + Velocity
+ * PID):</b> Upgrade autonomous distance and pose-navigation commands from
+ * open-loop duty-cycle throttle percentages to physical velocity targets
+ * ({@code LinearVelocity} and
  *       {@code AngularVelocity}):
  *       <ol>
- *         <li>Characterize the drivetrain with SysId to obtain static friction ({@code kS}),
- *             velocity ({@code kV}), and acceleration ({@code kA}) constants.</li>
- *         <li>Instantiate {@code DifferentialDriveKinematics} (using {@code TRACK_WIDTH}),
- *             {@code SimpleMotorFeedforward}, and left/right wheel velocity {@code PIDController}
- *             instances.</li>
- *         <li>Add {@code driveWheelSpeeds(LinearVelocity left, LinearVelocity right)} and
- *             {@code driveChassisSpeeds(ChassisSpeeds)} helpers that convert target wheel speeds
- *             into feedforward + PID voltage commands normalized by
+ *         <li>Characterize the drivetrain with SysId to obtain static friction
+ * ({@code kS}), velocity ({@code kV}), and acceleration ({@code kA})
+ * constants.</li> <li>Instantiate {@code DifferentialDriveKinematics} (using
+ * {@code TRACK_WIDTH}),
+ *             {@code SimpleMotorFeedforward}, and left/right wheel velocity
+ * {@code PIDController} instances.</li> <li>Add {@code
+ * driveWheelSpeeds(LinearVelocity left, LinearVelocity right)} and
+ *             {@code driveChassisSpeeds(ChassisSpeeds)} helpers that convert
+ * target wheel speeds into feedforward + PID voltage commands normalized by
  *             {@code RobotController.getBatteryVoltage()}.</li>
- *         <li>Update {@code driveDistanceCommand} and {@code driveToPoseCommand} to output target
- *             linear and angular velocities instead of duty-cycle throttle values, and log target
- *             vs. actual wheel speeds in {@code logTo(...)}.</li>
+ *         <li>Update {@code driveDistanceCommand} and {@code
+ * driveToPoseCommand} to output target linear and angular velocities instead of
+ * duty-cycle throttle values, and log target vs. actual wheel speeds in {@code
+ * logTo(...)}.</li>
  *       </ol>
  *   </li>
- *   <li><b>Vision-Based Pose Fusion:</b> Connect an AprilTag coprocessor (PhotonVision or
- *       Limelight) and call {@link #addVisionMeasurement(Pose2d, Time)} with latency-compensated
- *       timestamps from {@code Timer.getTimestamp()} to correct cumulative wheel-slip drift.</li>
+ *   <li><b>Vision-Based Pose Fusion:</b> Connect an AprilTag coprocessor
+ * (PhotonVision or Limelight) and call {@link #addVisionMeasurement(Pose2d,
+ * Time)} with latency-compensated timestamps from {@code Timer.getTimestamp()}
+ * to correct cumulative wheel-slip drift.</li>
  * </ul>
  */
 public class DriveMechanism implements Mechanism, TelemetryLoggable {
@@ -81,14 +85,10 @@ public class DriveMechanism implements Mechanism, TelemetryLoggable {
 
   // Pose estimator trust standard deviations: [x (m), y (m), theta (rad)]
   private static final Matrix<N3, N1> STATE_STD_DEVS =
-      VecBuilder.fill(
-          Meters.of(0.05).in(Meters),
-          Meters.of(0.05).in(Meters),
+      VecBuilder.fill(Meters.of(0.05).in(Meters), Meters.of(0.05).in(Meters),
           Degrees.of(2.0).in(Radians));
   private static final Matrix<N3, N1> VISION_MEASUREMENT_STD_DEVS =
-      VecBuilder.fill(
-          Meters.of(0.30).in(Meters),
-          Meters.of(0.30).in(Meters),
+      VecBuilder.fill(Meters.of(0.30).in(Meters), Meters.of(0.30).in(Meters),
           Degrees.of(15.0).in(Radians));
 
   // Drive-to-pose closed-loop control constants
@@ -114,11 +114,16 @@ public class DriveMechanism implements Mechanism, TelemetryLoggable {
   private static final Time DRIVE_DISTANCE_TIMEOUT = Seconds.of(5.0);
   private static final Time DRIVE_TO_POSE_TIMEOUT = Seconds.of(10.0);
 
-  // Protected hardware so SimulatedDriveMechanism can read throttle outputs and inject sensor state
-  protected final PWMSparkMax leftLeader = new PWMSparkMax(LEFT_LEADER_PWM_PORT);
-  private final PWMSparkMax leftFollower = new PWMSparkMax(LEFT_FOLLOWER_PWM_PORT);
-  protected final PWMSparkMax rightLeader = new PWMSparkMax(RIGHT_LEADER_PWM_PORT);
-  private final PWMSparkMax rightFollower = new PWMSparkMax(RIGHT_FOLLOWER_PWM_PORT);
+  // Protected hardware so SimulatedDriveMechanism can read throttle outputs and
+  // inject sensor state
+  protected final PWMSparkMax leftLeader =
+      new PWMSparkMax(LEFT_LEADER_PWM_PORT);
+  private final PWMSparkMax leftFollower =
+      new PWMSparkMax(LEFT_FOLLOWER_PWM_PORT);
+  protected final PWMSparkMax rightLeader =
+      new PWMSparkMax(RIGHT_LEADER_PWM_PORT);
+  private final PWMSparkMax rightFollower =
+      new PWMSparkMax(RIGHT_FOLLOWER_PWM_PORT);
   private final DifferentialDrive drive =
       new DifferentialDrive(leftLeader::setThrottle, rightLeader::setThrottle);
 
@@ -127,14 +132,19 @@ public class DriveMechanism implements Mechanism, TelemetryLoggable {
   protected final Encoder rightEncoder =
       new Encoder(RIGHT_ENCODER_CHANNEL_A, RIGHT_ENCODER_CHANNEL_B);
 
-  // TODO(Hardware Confirmation): Verify physical SystemCore mounting orientation and axis conventions.
-  // 1. Inspect the physical SystemCore controller on the chassis: confirm it is mounted flat
-  //    (parallel to the floor) rather than vertically on a wall/bellypan. If mounted vertically
-  //    or upside down, change MountOrientation.FLAT to match the hardware orientation.
-  // 2. Rotate the robot counter-clockwise (CCW) by 90 degrees on the floor and check
-  //    "Drive/Odometry/Heading (deg)" in telemetry to confirm yaw increases positively (+90 deg)
-  //    per WPILib NWU conventions.
-  protected final OnboardIMU imu = new OnboardIMU(OnboardIMU.MountOrientation.FLAT);
+  // TODO(Hardware Confirmation): Verify physical SystemCore mounting
+  // orientation and axis conventions.
+  // 1. Inspect the physical SystemCore controller on the chassis: confirm it is
+  // mounted flat
+  //    (parallel to the floor) rather than vertically on a wall/bellypan. If
+  //    mounted vertically or upside down, change MountOrientation.FLAT to match
+  //    the hardware orientation.
+  // 2. Rotate the robot counter-clockwise (CCW) by 90 degrees on the floor and
+  // check
+  //    "Drive/Odometry/Heading (deg)" in telemetry to confirm yaw increases
+  //    positively (+90 deg) per WPILib NWU conventions.
+  protected final OnboardIMU imu =
+      new OnboardIMU(OnboardIMU.MountOrientation.FLAT);
 
   private final DifferentialDrivePoseEstimator poseEstimator;
   protected final Field2d field = new Field2d();
@@ -151,18 +161,14 @@ public class DriveMechanism implements Mechanism, TelemetryLoggable {
     rightLeader.addFollower(rightFollower);
     rightLeader.setInverted(true);
 
-    Distance distancePerPulse = WHEEL_RADIUS.times(2.0 * Math.PI).div(ENCODER_CPR);
+    Distance distancePerPulse =
+        WHEEL_RADIUS.times(2.0 * Math.PI).div(ENCODER_CPR);
     leftEncoder.setDistancePerPulse(distancePerPulse.in(Meters));
     rightEncoder.setDistancePerPulse(distancePerPulse.in(Meters));
 
-    poseEstimator =
-        new DifferentialDrivePoseEstimator(
-            imu.getRotation2d(),
-            leftEncoder.getDistance(),
-            rightEncoder.getDistance(),
-            new Pose2d(),
-            STATE_STD_DEVS,
-            VISION_MEASUREMENT_STD_DEVS);
+    poseEstimator = new DifferentialDrivePoseEstimator(imu.getRotation2d(),
+        leftEncoder.getDistance(), rightEncoder.getDistance(), new Pose2d(),
+        STATE_STD_DEVS, VISION_MEASUREMENT_STD_DEVS);
 
     Scheduler.getDefault().addPeriodic(this::updateOdometry);
 
@@ -171,8 +177,8 @@ public class DriveMechanism implements Mechanism, TelemetryLoggable {
   }
 
   private void updateOdometry() {
-    poseEstimator.update(
-        imu.getRotation2d(), leftEncoder.getDistance(), rightEncoder.getDistance());
+    poseEstimator.update(imu.getRotation2d(), leftEncoder.getDistance(),
+        rightEncoder.getDistance());
     field.setRobotPose(poseEstimator.getEstimatedPosition());
   }
 
@@ -186,26 +192,39 @@ public class DriveMechanism implements Mechanism, TelemetryLoggable {
     poseEstimator.resetPosition(imu.getRotation2d(), 0.0, 0.0, pose);
   }
 
-  // TODO(Vision Pose Estimation): Connect a vision coprocessor (e.g., PhotonVision or Limelight)
-  // to fuse field-relative AprilTag pose estimates into DifferentialDrivePoseEstimator:
-  // 1. Measure the physical camera-to-robot Transform3d (X forward, Y left, Z up in meters, plus
-  //    roll/pitch/yaw in NWU coordinates) and apply it when transforming camera poses to robot poses.
-  // 2. Capture the exact frame capture timestamp using WPILib 2027's Timer.getTimestamp()
-  //    (subtracting pipeline latency) so DifferentialDrivePoseEstimator can replay odometry
-  //    history accurately and avoid latency-induced pose lag.
-  // 3. Filter out high-ambiguity single-tag detections (e.g., poseAmbiguity > 0.2) and dynamically
-  //    scale visionMeasurementStdDevs based on tag count and average distance to tags.
-  // 4. Call addVisionMeasurement(...) from the vision subsystem/periodic loop whenever a valid
+  // TODO(Vision Pose Estimation): Connect a vision coprocessor (e.g.,
+  // PhotonVision or Limelight) to fuse field-relative AprilTag pose estimates
+  // into DifferentialDrivePoseEstimator:
+  // 1. Measure the physical camera-to-robot Transform3d (X forward, Y left, Z
+  // up in meters, plus
+  //    roll/pitch/yaw in NWU coordinates) and apply it when transforming camera
+  //    poses to robot poses.
+  // 2. Capture the exact frame capture timestamp using WPILib 2027's
+  // Timer.getTimestamp()
+  //    (subtracting pipeline latency) so DifferentialDrivePoseEstimator can
+  //    replay odometry history accurately and avoid latency-induced pose lag.
+  // 3. Filter out high-ambiguity single-tag detections (e.g., poseAmbiguity >
+  // 0.2) and dynamically
+  //    scale visionMeasurementStdDevs based on tag count and average distance
+  //    to tags.
+  // 4. Call addVisionMeasurement(...) from the vision subsystem/periodic loop
+  // whenever a valid
   //    multi-tag or low-ambiguity target frame arrives.
 
-  /** Fuses an external vision pose measurement (e.g. AprilTag pipeline) into pose estimation. */
+  /**
+   * Fuses an external vision pose measurement (e.g. AprilTag pipeline) into
+   * pose estimation.
+   */
   public void addVisionMeasurement(Pose2d visionRobotPose, Time timestamp) {
     poseEstimator.addVisionMeasurement(visionRobotPose, timestamp.in(Seconds));
   }
 
-  /** Fuses an external vision pose measurement with custom trust standard deviations. */
-  public void addVisionMeasurement(
-      Pose2d visionRobotPose, Time timestamp, Matrix<N3, N1> visionMeasurementStdDevs) {
+  /**
+   * Fuses an external vision pose measurement with custom trust standard
+   * deviations.
+   */
+  public void addVisionMeasurement(Pose2d visionRobotPose, Time timestamp,
+      Matrix<N3, N1> visionMeasurementStdDevs) {
     poseEstimator.addVisionMeasurement(
         visionRobotPose, timestamp.in(Seconds), visionMeasurementStdDevs);
   }
@@ -231,148 +250,158 @@ public class DriveMechanism implements Mechanism, TelemetryLoggable {
   // Commands v3 Factory Methods
   // =========================================================================
 
-  /** Continuous tank drive command using the injected left and right speed suppliers. */
+  /**
+   * Continuous tank drive command using the injected left and right speed
+   * suppliers.
+   */
   public Command tankDriveCommand() {
     return tankDriveCommand(leftSpeedSupplier, rightSpeedSupplier);
   }
 
-  /** Continuous tank drive command using explicit left and right speed suppliers. */
-  public Command tankDriveCommand(DoubleSupplier leftSpeed, DoubleSupplier rightSpeed) {
-    return runRepeatedly(() -> drive.tankDrive(leftSpeed.getAsDouble(), rightSpeed.getAsDouble()))
+  /**
+   * Continuous tank drive command using explicit left and right speed
+   * suppliers.
+   */
+  public Command tankDriveCommand(
+      DoubleSupplier leftSpeed, DoubleSupplier rightSpeed) {
+    return runRepeatedly(()
+                             -> drive.tankDrive(leftSpeed.getAsDouble(),
+                                 rightSpeed.getAsDouble()))
         .named("Drive.TankDrive");
   }
 
-  /** Drives straight for a given distance (supports positive forward or negative reverse). */
+  /**
+   * Drives straight for a given distance (supports positive forward or
+   * negative reverse).
+   */
   public Command driveDistanceCommand(Distance distance, double speed) {
-    return run(
-            coroutine -> {
-              double targetMeters = distance.in(Meters);
-              double startDist = leftEncoder.getDistance();
-              double directedSpeed = Math.copySign(speed, targetMeters);
-              while (Math.abs(leftEncoder.getDistance() - startDist) < Math.abs(targetMeters)) {
-                drive.tankDrive(directedSpeed, directedSpeed);
-                coroutine.yield();
-              }
-              drive.tankDrive(0.0, 0.0);
-            })
+    return run(coroutine -> {
+      double targetMeters = distance.in(Meters);
+      double startDist = leftEncoder.getDistance();
+      double directedSpeed = Math.copySign(speed, targetMeters);
+      while (Math.abs(leftEncoder.getDistance() - startDist)
+          < Math.abs(targetMeters)) {
+        drive.tankDrive(directedSpeed, directedSpeed);
+        coroutine.yield();
+      }
+      drive.tankDrive(0.0, 0.0);
+    })
         .named("Drive.DriveDistance")
         .withTimeout(DRIVE_DISTANCE_TIMEOUT);
   }
 
   /**
-   * Commands v3 coroutine that drives the tank drivetrain to a field-relative target Pose2d
-   * and aligns to its target rotation.
+   * Commands v3 coroutine that drives the tank drivetrain to a field-relative
+   * target Pose2d and aligns to its target rotation.
    */
   public Command driveToPoseCommand(Pose2d targetPose) {
     return driveToPoseCommand(targetPose, true);
   }
 
   /**
-   * Commands v3 coroutine that drives the tank drivetrain to a field-relative target Pose2d
-   * using pose estimation. Latches the forward/reverse direction once when Stage 1 begins so
-   * the drivetrain never chatters near 90 degrees.
+   * Commands v3 coroutine that drives the tank drivetrain to a field-relative
+   * target Pose2d using pose estimation. Latches the forward/reverse direction
+   * once when Stage 1 begins so the drivetrain never chatters near 90 degrees.
    *
    * @param targetPose Target field-relative pose.
-   * @param alignFinalHeading If true, rotates in place at the destination to match
-   *     {@code targetPose.getRotation()}; if false, finishes as soon as the (X, Y) position
-   *     tolerance is reached (useful for pass-through intermediate waypoints).
+   * @param alignFinalHeading If true, rotates in place at the destination to
+   *     match
+   *     {@code targetPose.getRotation()}; if false, finishes as soon as the (X,
+   * Y) position tolerance is reached (useful for pass-through intermediate
+   * waypoints).
    */
-  public Command driveToPoseCommand(Pose2d targetPose, boolean alignFinalHeading) {
-    return run(
-            coroutine -> {
-              PIDController distancePid =
-                  new PIDController(DISTANCE_KP, DISTANCE_KI, DISTANCE_KD);
-              PIDController headingPid = new PIDController(HEADING_KP, HEADING_KI, HEADING_KD);
-              headingPid.enableContinuousInput(
-                  MIN_HEADING_INPUT.in(Degrees), MAX_HEADING_INPUT.in(Degrees));
+  public Command driveToPoseCommand(
+      Pose2d targetPose, boolean alignFinalHeading) {
+    return run(coroutine -> {
+      PIDController distancePid =
+          new PIDController(DISTANCE_KP, DISTANCE_KI, DISTANCE_KD);
+      PIDController headingPid =
+          new PIDController(HEADING_KP, HEADING_KI, HEADING_KD);
+      headingPid.enableContinuousInput(
+          MIN_HEADING_INPUT.in(Degrees), MAX_HEADING_INPUT.in(Degrees));
 
-              field.getObject("TargetPose").setPose(targetPose);
+      field.getObject("TargetPose").setPose(targetPose);
 
-              // Latch travel direction once when Stage 1 begins
-              Pose2d initialPose = getPose();
-              Translation2d initialToTarget =
-                  targetPose.getTranslation().minus(initialPose.getTranslation());
-              double initialHeadingErrorDeg =
-                  initialToTarget
-                      .getAngle()
-                      .orElse(initialPose.getRotation())
-                      .minus(initialPose.getRotation())
-                      .getDegrees();
+      // Latch travel direction once when Stage 1 begins
+      Pose2d initialPose = getPose();
+      Translation2d initialToTarget =
+          targetPose.getTranslation().minus(initialPose.getTranslation());
+      double initialHeadingErrorDeg = initialToTarget.getAngle()
+                                          .orElse(initialPose.getRotation())
+                                          .minus(initialPose.getRotation())
+                                          .getDegrees();
 
-              final boolean driveInReverse =
-                  Math.abs(initialHeadingErrorDeg) > REVERSE_HEADING_THRESHOLD.in(Degrees);
-              final double directionSign = driveInReverse ? -1.0 : 1.0;
+      final boolean driveInReverse = Math.abs(initialHeadingErrorDeg)
+          > REVERSE_HEADING_THRESHOLD.in(Degrees);
+      final double directionSign = driveInReverse ? -1.0 : 1.0;
 
-              // Stage 1: Drive to the target (X, Y) translation (latched direction)
-              while (true) {
-                Pose2d currentPose = getPose();
-                Translation2d toTarget =
-                    targetPose.getTranslation().minus(currentPose.getTranslation());
-                double distanceError = toTarget.getNorm();
+      // Stage 1: Drive to the target (X, Y) translation (latched direction)
+      while (true) {
+        Pose2d currentPose = getPose();
+        Translation2d toTarget =
+            targetPose.getTranslation().minus(currentPose.getTranslation());
+        double distanceError = toTarget.getNorm();
 
-                if (distanceError <= POSITION_TOLERANCE.in(Meters)) {
-                  break;
-                }
+        if (distanceError <= POSITION_TOLERANCE.in(Meters)) {
+          break;
+        }
 
-                Rotation2d bearingToTarget = toTarget.getAngle().orElse(currentPose.getRotation());
-                Rotation2d effectiveRobotHeading =
-                    driveInReverse
-                        ? currentPose.getRotation().plus(Rotation2d.k180deg)
-                        : currentPose.getRotation();
-                double effectiveHeadingErrorDeg =
-                    bearingToTarget.minus(effectiveRobotHeading).getDegrees();
+        Rotation2d bearingToTarget =
+            toTarget.getAngle().orElse(currentPose.getRotation());
+        Rotation2d effectiveRobotHeading = driveInReverse
+            ? currentPose.getRotation().plus(Rotation2d.k180deg)
+            : currentPose.getRotation();
+        double effectiveHeadingErrorDeg =
+            bearingToTarget.minus(effectiveRobotHeading).getDegrees();
 
-                double alignmentScale =
-                    Math.max(0.0, Math.cos(Math.toRadians(effectiveHeadingErrorDeg)));
-                double forwardSpeed =
-                    directionSign
-                        * Math.clamp(
-                            distancePid.calculate(0.0, distanceError) * alignmentScale,
-                            0.0,
-                            MAX_DRIVE_OUTPUT);
+        double alignmentScale =
+            Math.max(0.0, Math.cos(Math.toRadians(effectiveHeadingErrorDeg)));
+        double forwardSpeed = directionSign
+            * Math.clamp(
+                distancePid.calculate(0.0, distanceError) * alignmentScale, 0.0,
+                MAX_DRIVE_OUTPUT);
 
-                double turnSpeed =
-                    Math.clamp(
-                        headingPid.calculate(0.0, effectiveHeadingErrorDeg),
-                        -MAX_TURN_OUTPUT,
-                        MAX_TURN_OUTPUT);
+        double turnSpeed =
+            Math.clamp(headingPid.calculate(0.0, effectiveHeadingErrorDeg),
+                -MAX_TURN_OUTPUT, MAX_TURN_OUTPUT);
 
-                drive.arcadeDrive(forwardSpeed, turnSpeed);
-                coroutine.yield();
-              }
+        drive.arcadeDrive(forwardSpeed, turnSpeed);
+        coroutine.yield();
+      }
 
-              // Stage 2: Optionally rotate in place to match targetPose.getRotation()
-              if (alignFinalHeading) {
-                headingPid.reset();
-                int settledCount = 0;
-                while (true) {
-                  Pose2d currentPose = getPose();
-                  double finalHeadingErrorDeg =
-                      targetPose.getRotation().minus(currentPose.getRotation()).getDegrees();
+      // Stage 2: Optionally rotate in place to match targetPose.getRotation()
+      if (alignFinalHeading) {
+        headingPid.reset();
+        int settledCount = 0;
+        while (true) {
+          Pose2d currentPose = getPose();
+          double finalHeadingErrorDeg = targetPose.getRotation()
+                                            .minus(currentPose.getRotation())
+                                            .getDegrees();
 
-                  if (Math.abs(finalHeadingErrorDeg) <= HEADING_TOLERANCE.in(Degrees)) {
-                    settledCount++;
-                    if (settledCount >= HEADING_SETTLE_ITERATIONS) {
-                      break;
-                    }
-                    drive.arcadeDrive(0.0, 0.0);
-                    coroutine.yield();
-                    continue;
-                  }
+          if (Math.abs(finalHeadingErrorDeg) <= HEADING_TOLERANCE.in(Degrees)) {
+            settledCount++;
+            if (settledCount >= HEADING_SETTLE_ITERATIONS) {
+              break;
+            }
+            drive.arcadeDrive(0.0, 0.0);
+            coroutine.yield();
+            continue;
+          }
 
-                  settledCount = 0;
-                  double pidOutput = headingPid.calculate(0.0, finalHeadingErrorDeg);
-                  double feedforward = Math.copySign(TURN_KS, finalHeadingErrorDeg);
-                  double turnSpeed =
-                      Math.clamp(pidOutput + feedforward, -MAX_TURN_OUTPUT, MAX_TURN_OUTPUT);
+          settledCount = 0;
+          double pidOutput = headingPid.calculate(0.0, finalHeadingErrorDeg);
+          double feedforward = Math.copySign(TURN_KS, finalHeadingErrorDeg);
+          double turnSpeed = Math.clamp(
+              pidOutput + feedforward, -MAX_TURN_OUTPUT, MAX_TURN_OUTPUT);
 
-                  drive.arcadeDrive(0.0, turnSpeed);
-                  coroutine.yield();
-                }
-              }
+          drive.arcadeDrive(0.0, turnSpeed);
+          coroutine.yield();
+        }
+      }
 
-              drive.tankDrive(0.0, 0.0);
-            })
+      drive.tankDrive(0.0, 0.0);
+    })
         .named("Drive.DriveToPose")
         .withTimeout(DRIVE_TO_POSE_TIMEOUT);
   }

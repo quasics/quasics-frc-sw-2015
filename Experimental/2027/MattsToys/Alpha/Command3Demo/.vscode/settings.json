@@ -61,7 +61,7 @@
   "java.dependency.enableDependencyCheckup": false,
   "files.trimTrailingWhitespace": true,
   "editor.formatOnPaste": true,
-  "editor.defaultFormatter": "wpilibsuite.vscode-wpilib",
+  "editor.defaultFormatter": null,
   "editor.formatOnSave": true,
   "java.inlayHints.formatParameters.enabled": true
 }

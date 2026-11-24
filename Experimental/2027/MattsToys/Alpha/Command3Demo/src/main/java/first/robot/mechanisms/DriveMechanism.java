@@ -91,7 +91,7 @@ public class DriveMechanism implements Mechanism, TelemetryLoggable {
           Meters.of(0.30).in(Meters),
           Degrees.of(15.0).in(Radians));
 
-// Drive-to-pose closed-loop control constants
+  // Drive-to-pose closed-loop control constants
   private static final Distance POSITION_TOLERANCE = Meters.of(0.05);
   private static final Angle HEADING_TOLERANCE = Degrees.of(2.0);
   private static final int HEADING_SETTLE_ITERATIONS = 2;

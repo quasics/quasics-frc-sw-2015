@@ -21,13 +21,12 @@ public class Robot extends OpModeRobot {
   private static final int DRIVER_CONTROLLER_PORT = 0;
   private static final double JOYSTICK_DEADBAND = 0.05;
 
-  // Simulation Keyboard 1 axis & button mappings (when dragged onto
-  // Joystick[0])
-  private static final int SIM_LEFT_THROTTLE_AXIS = 1; // W/S
+  // Simulation Keyboard 1 axis & button mappings (when dragged onto Joystick[0])
+  private static final int SIM_LEFT_THROTTLE_AXIS = 1;  // W/S
   private static final int SIM_RIGHT_THROTTLE_AXIS = 3; // I/K or Up/Down
   private static final int SIM_DRIVE_DISTANCE_BUTTON = 1; // Z
-  private static final int SIM_RESET_POSE_BUTTON = 2; // X
-  private static final int SIM_DRIVE_TO_POSE_BUTTON = 3; // C
+  private static final int SIM_RESET_POSE_BUTTON = 2;     // X
+  private static final int SIM_DRIVE_TO_POSE_BUTTON = 3;  // C
 
   public static final Pose2d INITIAL_POSE =
       new Pose2d(Meters.of(2.0), Meters.of(4.0), new Rotation2d());
@@ -44,55 +43,52 @@ public class Robot extends OpModeRobot {
     final DoubleSupplier rightSpeedSupplier;
 
     if (RobotBase.isReal()) {
-      CommandXboxController xbox =
-          new CommandXboxController(DRIVER_CONTROLLER_PORT);
-      leftSpeedSupplier =
-          () -> MathUtil.applyDeadband(-xbox.getLeftY(), JOYSTICK_DEADBAND);
-      rightSpeedSupplier =
-          () -> MathUtil.applyDeadband(-xbox.getRightY(), JOYSTICK_DEADBAND);
+      CommandXboxController xbox = new CommandXboxController(DRIVER_CONTROLLER_PORT);
+      leftSpeedSupplier = () -> MathUtil.applyDeadband(-xbox.getLeftY(), JOYSTICK_DEADBAND);
+      rightSpeedSupplier = () -> MathUtil.applyDeadband(-xbox.getRightY(), JOYSTICK_DEADBAND);
 
       driveDistanceTrigger = xbox.a();
       resetPoseTrigger = xbox.b();
       driveToPoseTrigger = xbox.x();
     } else {
       Joystick keyboard = new Joystick(DRIVER_CONTROLLER_PORT);
-      leftSpeedSupplier = ()
-          -> MathUtil.applyDeadband(
-              -keyboard.getRawAxis(SIM_LEFT_THROTTLE_AXIS), JOYSTICK_DEADBAND);
-      rightSpeedSupplier = ()
-          -> MathUtil.applyDeadband(
-              -keyboard.getRawAxis(SIM_RIGHT_THROTTLE_AXIS), JOYSTICK_DEADBAND);
+      leftSpeedSupplier =
+          () ->
+              MathUtil.applyDeadband(
+                  -keyboard.getRawAxis(SIM_LEFT_THROTTLE_AXIS), JOYSTICK_DEADBAND);
+      rightSpeedSupplier =
+          () ->
+              MathUtil.applyDeadband(
+                  -keyboard.getRawAxis(SIM_RIGHT_THROTTLE_AXIS), JOYSTICK_DEADBAND);
 
-      driveDistanceTrigger =
-          new Trigger(() -> keyboard.getRawButton(SIM_DRIVE_DISTANCE_BUTTON));
-      resetPoseTrigger =
-          new Trigger(() -> keyboard.getRawButton(SIM_RESET_POSE_BUTTON));
-      driveToPoseTrigger =
-          new Trigger(() -> keyboard.getRawButton(SIM_DRIVE_TO_POSE_BUTTON));
+      driveDistanceTrigger = new Trigger(() -> keyboard.getRawButton(SIM_DRIVE_DISTANCE_BUTTON));
+      resetPoseTrigger = new Trigger(() -> keyboard.getRawButton(SIM_RESET_POSE_BUTTON));
+      driveToPoseTrigger = new Trigger(() -> keyboard.getRawButton(SIM_DRIVE_TO_POSE_BUTTON));
     }
 
-    // Optional: enable simulated sensor noise before instantiating
-    // SimulatedDriveMechanism SimulatedDriveMechanism.setNoiseEnabled(true);
+    // Optional: enable simulated sensor noise before instantiating SimulatedDriveMechanism
+    // SimulatedDriveMechanism.setNoiseEnabled(true);
 
-    driveMechanism = RobotBase.isReal()
-        ? new DriveMechanism(leftSpeedSupplier, rightSpeedSupplier)
-        : new SimulatedDriveMechanism(leftSpeedSupplier, rightSpeedSupplier);
+    driveMechanism =
+        RobotBase.isReal()
+            ? new DriveMechanism(leftSpeedSupplier, rightSpeedSupplier)
+            : new SimulatedDriveMechanism(leftSpeedSupplier, rightSpeedSupplier);
 
-    // Place the robot at a visible starting pose on the Field2d map
-    driveMechanism.resetPose(INITIAL_POSE);
+    // Schedule initial pose reset through the mechanism command factory
+    Scheduler.getDefault().schedule(driveMechanism.resetPoseCommand(INITIAL_POSE));
   }
 
   @Override
   public void robotPeriodic() {
-    // Cancel any running commands immediately upon entering Disabled mode
+    // Cancel active commands and stop drivetrain motors immediately upon entering Disabled mode
     boolean isDisabled = RobotState.isDisabled();
     if (isDisabled && !wasDisabled) {
       Scheduler.getDefault().cancelAll();
+      Scheduler.getDefault().schedule(driveMechanism.stopCommand());
     }
     wasDisabled = isDisabled;
 
-    // Runs active OpMode coroutines, triggers, odometry updates, and simulation
-    // physics
+    // Runs active OpMode coroutines, triggers, odometry updates, and simulation physics
     Scheduler.getDefault().run();
 
     // Flush mechanism telemetry to NetworkTables 4 / DataLog

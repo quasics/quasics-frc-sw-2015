@@ -15,8 +15,7 @@ import org.wpilib.units.measure.Time;
 
 @Autonomous(name = "Drive Forward (Configurable)")
 public class DriveForwardAutoOpMode extends PeriodicOpMode {
-  private static final String DISTANCE_TOPIC =
-      "/Dashboard/Auto/Drive Distance (m)";
+  private static final String DISTANCE_TOPIC = "/Dashboard/Auto/Drive Distance (m)";
   private static final Distance DEFAULT_DISTANCE = Meters.of(2.0);
   private static final double FORWARD_DRIVE_SPEED = 0.6;
   private static final Time PAUSE_DURATION = Seconds.of(0.5);
@@ -30,9 +29,10 @@ public class DriveForwardAutoOpMode extends PeriodicOpMode {
   public DriveForwardAutoOpMode(Robot robot) {
     this.robot = robot;
 
-    distanceEntry = NetworkTableInstance.getDefault()
-                        .getDoubleTopic(DISTANCE_TOPIC)
-                        .getEntry(DEFAULT_DISTANCE.in(Meters));
+    distanceEntry =
+        NetworkTableInstance.getDefault()
+            .getDoubleTopic(DISTANCE_TOPIC)
+            .getEntry(DEFAULT_DISTANCE.in(Meters));
 
     distanceEntry.set(DEFAULT_DISTANCE.in(Meters));
   }
@@ -41,22 +41,25 @@ public class DriveForwardAutoOpMode extends PeriodicOpMode {
   public void start() {
     autoCommand =
         robot.driveMechanism
-            .run(coroutine -> {
-              Distance targetDistance = Meters.of(distanceEntry.get());
+            .run(
+                coroutine -> {
+                  Distance targetDistance = Meters.of(distanceEntry.get());
 
-              robot.driveMechanism.resetPose(Robot.INITIAL_POSE);
+                  coroutine.await(robot.driveMechanism.resetPoseCommand(Robot.INITIAL_POSE));
 
-              // Step 1: Drive the dashboard-specified distance
-              coroutine.await(robot.driveMechanism.driveDistanceCommand(
-                  targetDistance, FORWARD_DRIVE_SPEED));
+                  // Step 1: Drive the dashboard-specified distance
+                  coroutine.await(
+                      robot.driveMechanism.driveDistanceCommand(
+                          targetDistance, FORWARD_DRIVE_SPEED));
 
-              // Step 2: Pause briefly
-              coroutine.wait(PAUSE_DURATION);
+                  // Step 2: Pause briefly
+                  coroutine.wait(PAUSE_DURATION);
 
-              // Step 3: Back up
-              coroutine.await(robot.driveMechanism.driveDistanceCommand(
-                  BACKUP_DISTANCE, BACKUP_DRIVE_SPEED));
-            })
+                  // Step 3: Back up
+                  coroutine.await(
+                      robot.driveMechanism.driveDistanceCommand(
+                          BACKUP_DISTANCE, BACKUP_DRIVE_SPEED));
+                })
             .named("Auto.DriveForward");
 
     Scheduler.getDefault().schedule(autoCommand);
